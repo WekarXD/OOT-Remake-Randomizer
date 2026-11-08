@@ -1,0 +1,3271 @@
+[
+{
+"file": "romfs/Banc/ZoraRiver/ZoraRiver_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8838426083116998768,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/ZoraRiver/ZoraRiver_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8838426083116998768,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/ZoraRiver/ZoraRiver_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_03",
+"hash": 9080915605353397341,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/ZoraFountain/ZoraFountain_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 15055117029957340138,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/ZoraDomain/ZoraDomain_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 3130048366421939233,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 16885214594534747225,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 16384925224245172970,
+"drop": "Item_Dungeon_Map",
+"event": "WaterTemple_GetMap"
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 18099019250896853049,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 16490222392193949581,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3693930347660122883,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 16424266294822218796,
+"drop": "Item_Dungeon_Compass",
+"event": "WaterTemple_GetCompass"
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 11682974908842171598,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 18059711820131847165,
+"drop": "Item_Longshot",
+"event": "WaterTemple_Room07_LongHook_FocusOnGimmick"
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 2503861086004941173,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03",
+"hash": 10378828369334876242,
+"drop": "Item_Dungeon_BossKey",
+"event": "ForesetTemple_GetBossKey"
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 5309180490719879013,
+"drop": "TBox_Shield_Deku",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 5703423643219134246,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 1501288453962537671,
+"drop": "Item_BombchuBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 13852283723126411131,
+"drop": "Item_Dungeon_Map",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 2203243501006528435,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 17407066694905911064,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Chair_A_02",
+"hash": 2366370276236625770,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 2622698183590059502,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 4456472609863985917,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 15633505270333176438,
+"drop": "Item_Dungeon_Compass",
+"event": "SpiritTemple_GetCompass"
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4277978357934400600,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 12909857529499414969,
+"drop": "Item_BombBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 14040210993541550542,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 9143177002861777924,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Chair_A_02",
+"hash": 6849975515385934623,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 8198965855062286952,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 5922868160074816160,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 3566787507379974065,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 17988176340970888479,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12042193296697281461,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03",
+"hash": 16272168033146555902,
+"drop": "Item_Dungeon_BossKey",
+"event": "ForesetTemple_GetBossKey"
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 13828480906010430010,
+"drop": "Item_BombBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Chair_A_02",
+"hash": 916921998451178398,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 266071935563370357,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 14285172824082073479,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 9886224756534347279,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_IronKnuckle_Pillar_A_01",
+"hash": 1378244670182613468,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8858270325665149688,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 12345747231768877602,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 3535930098895909483,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 8781054380795091131,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 3756369741882798824,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9852624243105848451,
+"drop": "Tbox_MagicJar_Large",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 13528903653876646082,
+"drop": "Item_Dungeon_Map",
+"event": "ShadowTemple_GetMap"
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 14535080241831873137,
+"drop": "Item_HoverBoot",
+"event": "SageOfShdawo_GetHoverBoots"
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 1733372171176975157,
+"drop": "Item_Dungeon_Compass",
+"event": "ShadowTemple_GetCompass"
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1111717451118505545,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 5781953901224064730,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10344372963276519235,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 3718790579351798247,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 942717339458442898,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 2739008401552783208,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 6352163088611595134,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 10054939734302812185,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 169081039115821925,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 5681107746948738726,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_07",
+"hash": 645964684709624210,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 17902550525792072472,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03",
+"hash": 9221365632831348137,
+"drop": "Item_Dungeon_BossKey",
+"event": "ForesetTemple_GetBossKey"
+},
+{
+"file": "romfs/Banc/SacredForestMeadow/SacredForestMeadow_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1764383515296652106,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/SacredForestMeadow/SacredForestMeadow_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 7995233962349162969,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/SacredForestMeadow/SacredForestMeadow_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1764383515296652106,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/SacredForestMeadow/SacredForestMeadow_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 7995233962349162969,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 7521824399864207059,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 1661231129625843374,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 17261237591139782514,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 14307285627541295517,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 12582583935041109669,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 15640208633097747924,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 4349592517917306866,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 9431172931320301236,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 15903102006731147891,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4016405848881617652,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 7228035372353946866,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 3102293137454811300,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 2026157113981043805,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 6305438045388642560,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 5831980957101408041,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 13550170368761162591,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 4541346301504764442,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 4262167623178799478,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 9161085961847838380,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 17337660928398648347,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 355724575355865248,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 7250344944862033169,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 13975641145686964401,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 7390716194495618474,
+"drop": "TBox_Rupee_Green",
+"event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 1775586642693927992,
+"drop": "Obj_MiniGame_SmallKey",
+"event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 12114077686306649660,
+"drop": "TBox_Rupee_Green",
+"event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 5350594583391365806,
+"drop": "Obj_MiniGame_SmallKey",
+"event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 9591654059707200528,
+"drop": "TBox_Rupee_Green",
+"event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 12763522142548402103,
+"drop": "Obj_MiniGame_SmallKey",
+"event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 13633455645485504369,
+"drop": "TBox_Rupee_Blue",
+"event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 6478285350658826847,
+"drop": "Obj_MiniGame_SmallKey",
+"event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 15659683110284072977,
+"drop": "TBox_Rupee_Blue",
+"event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+"hash": 18239509117326156183,
+"drop": "Obj_MiniGame_SmallKey",
+"event": "MiniGame_ChoiceTreasure_OpenLastHitTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_02",
+"hash": 16881481538337649070,
+"drop": "Obj_Heart_Piece",
+"event": "MiniGame_ChoiceTreasure_OpenClearTreasureBox"
+},
+{
+"file": "romfs/Banc/Market/Market_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_HrlCity_Shop_TBox_A_02",
+"hash": 6781536951709667179,
+"drop": "TBox_Rupee_Red",
+"event": "MiniGame_ChoiceTreasure_OpenClearTreasureBox"
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17479747339356189279,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 105365569697370932,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 16178671185680094683,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 14799938113178843638,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 2198102825223763053,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 700813349264257115,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 17993712008759335925,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 14353012063098347569,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 6371576460968048747,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 16206638005430417269,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17479747339356189279,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 7412275398037840462,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 4816761342260235661,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 4453932386573032729,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 5597448927131828918,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 8957227260103329265,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 5488835131617393219,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 2822270749178751883,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 12665247659442490400,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 5007394544348392451,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 46774521065789894,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 16386301107460847261,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 17935200704288465987,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 11634540265512998108,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4349272251343787229,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10831981390482426294,
+"drop": "TBox_Rupee_Green",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4555665598794293658,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9725242744547055868,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12786193094758345086,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 16757992849254467386,
+"drop": "Item_Sword_Kokiri",
+"event": "Get_StoneOfForest_GetSword"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 14818888396401495482,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 2108281022000564101,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 14828228683041039284,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 15406610986108637956,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 5133775918408786238,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4349272251343787229,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10831981390482426294,
+"drop": "TBox_Rupee_Green",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4555665598794293658,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9725242744547055868,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12786193094758345086,
+"drop": "TBox_Rupee_Blue",
+"event": "KokiriForest_TreasureBox_NaviChatOff"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 16757992849254467386,
+"drop": "Item_Sword_Kokiri",
+"event": "Get_StoneOfForest_GetSword"
+},
+{
+"file": "romfs/Banc/KokiriForest/KokiriForest_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 14818888396401495482,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 6233273780664277824,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 1202776697094645489,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 17138417389390636986,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12902291359202819102,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 13080955777249750889,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 313487388078450371,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 7122842226382586963,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 11490165347466345300,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12902291359202819102,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 11929552275106311978,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 14822820938445509245,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 6909031777249284340,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Kokiri_Beehive_A_01",
+"hash": 15036633555144416666,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/KakarikoVillage/KakarikoVillage_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12902291359202819102,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 11368028582977069031,
+"drop": "TBox_DekuNutBundle",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12889104996486369065,
+"drop": "Item_DekuStickBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 97733905166195279,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 16322427109872094443,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 18176645256741116364,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 13412951694392781478,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 2794401671936016215,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 15513822668871942093,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 9284193025315608699,
+"drop": "Item_Dungeon_Compass",
+"event": "InsideTheDekuTree_GetCompass"
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 8579518566955184384,
+"drop": "Item_Dungeon_Map",
+"event": "InsideTheDekuTree_GetMap"
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Enemy_Skulltula",
+"hash": 185722044654914961,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 13027331340815880287,
+"drop": "TBox_DekuNutBundle",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 821372075822700622,
+"drop": "Item_Range_SlingShot",
+"event": "InsideTheDekuTree_GetSlingShot"
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 7457705918063319421,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 9991051747036366069,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 5527401621172639818,
+"drop": "Item_Boomerang",
+"event": "InsideJabuJabuBelly_TreasureBoxWithRuto09"
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 3510516276638146208,
+"drop": "Item_Dungeon_Compass",
+"event": "InsideJabuJabuBelly_TreasureBoxWithRuto12"
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3609242017501283521,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 14933854942830098290,
+"drop": "Item_Dungeon_Map",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 5637390904733861408,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 4451366174329825617,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 8321479553829035058,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 17008314122241535243,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 13226303525664955816,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 7236701055993128778,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 18277713685010400796,
+"drop": "TBox_ArrowBundle_Medium",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 14404733996390762670,
+"drop": "Item_BombchuBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1029712040059298120,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 14046623154429024571,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 7461796063704896255,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 15320975652699461295,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 16388263394523613039,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 17027579458987042843,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 17668076197895283103,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 1055635021226486472,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 6010734382728304229,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 7330407673084744120,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 10109473840124398829,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 1233314011453258338,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 17657623307936361670,
+"drop": "Item_Gauntlet_Gold",
+"event": "InsideGanonCastle_Get_Gauntlet_Gold"
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 16913531450403950487,
+"drop": "TBox_ArrowBundle_Medium",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 14962432460641118089,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 4733634471038136588,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 7899179288432849355,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 3224502012561623799,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 14939864650084270773,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 15112722761056963440,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 8906715134377445150,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03_NoBake",
+"hash": 17092385671602176550,
+"drop": "Item_Dungeon_BossKey",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4128092231168513176,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 11498802739257120175,
+"drop": "Item_Dungeon_Map",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 3105481948394149361,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 13545259034644162992,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 6330430963809465220,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 15712947819189423505,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 13542013937093159888,
+"drop": "Item_Dungeon_Compass",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 17314383705983097019,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_04",
+"hash": 15011057361189787608,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 6859289214373847284,
+"drop": "Item_HeavyBoot",
+"event": "SageOfWater_MelodyGet_Water"
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17445672702269453589,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4706627579492125828,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 13942975907881711341,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 12433346503492556092,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 17838365680427384562,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 1472455071461140792,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 1702878762460339592,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 6794980312912759563,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 14621798303840927376,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 1758714094280233423,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 17130900495045735954,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 13290504378426406086,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 493105369468884447,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 14630606235340334840,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 13030954850772711586,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 16106513735391908889,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 13037178969835996014,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 12111374068099501077,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_memo11",
+"hash": 2967378296224661060,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9891111455604007674,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1163740567397714729,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 12081469056021144650,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4947448008209653397,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17023457248274633121,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 5755485285664292988,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 6900843020594897860,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 11631894770326169336,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01",
+"hash": 10444788187435815162,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17445672702269453589,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4293238463102171135,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 13505816572168486267,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 1439274781043171114,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 8132480728943356272,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 8827339149651327899,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 8258690081080809149,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 2907799653264284118,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 10950878580448147055,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 8023741251559567641,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 9778224113645681398,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 14012747169982643998,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 9014488669281029221,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 11310912260140613389,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 16053425221492455201,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 12870146517126532303,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 16059709934581007857,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Land_kokiri_Plant_A_02_DropFixed_03",
+"hash": 14040579338952279240,
+"drop": "Animal_Insect",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 5236682125833187881,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 7629603093975129142,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4115284299259285529,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 1388311011907432964,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 16400245230574378269,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_01",
+"hash": 8977808724731648233,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 5755485285664292988,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 6900843020594897860,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_memo11",
+"hash": 2967378296224661060,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Tree_A_02",
+"hash": 9860797772243961676,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/HountedWasteland/HountedWasteland_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 8825521833684392638,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/HountedWasteland/HountedWasteland_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 8825521833684392638,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 16912540161937823130,
+"drop": "TBox_Shield_Hylian",
+"event": null
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 9622128545943056087,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 16041366920820397198,
+"drop": "Item_Hookshot",
+"event": "MiniGame_DampeRace_OpenGoalTBox"
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 5534919361313859554,
+"drop": "Obj_Heart_Piece",
+"event": "MiniGame_DampeRace_OpenGoalTBox"
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 234006393181394602,
+"drop": "TBox_Rupee_Red",
+"event": "MiniGame_DampeRace_OpenGoalTBox"
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 4322670163630771947,
+"drop": "TBox_Rupee_Blue",
+"event": "MiniGame_DampeRace_OpenGoalTBox"
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 16912540161937823130,
+"drop": "TBox_Shield_Hylian",
+"event": null
+},
+{
+"file": "romfs/Banc/Graveyard/Graveyard_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 9622128545943056087,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 14670334697383013841,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4402942101476009858,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1176975953041865014,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 14647422914070455120,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3870071239709713434,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 9159710900681116662,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 10944569637726152230,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 7233425345132106189,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4402942101476009858,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1176975953041865014,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 14647422914070455120,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3870071239709713434,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 9159710900681116662,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 10944569637726152230,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 16954699510563627060,
+"drop": "Obj_DekuStick",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 6463521162691873710,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 17750686910716887133,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 6896071498853277403,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 3407692112799570510,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 18413589940135955604,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 15334540056586068351,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 10851977283896645114,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 13612880783193811229,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 15856256242099990922,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 6463521162691873710,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 17750686910716887133,
+"drop": "TBox_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 9231973890535833762,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 13179280208744162657,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 6205043616869463865,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 946934829814115422,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 14928885472468269852,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoValley/GerudoValley_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 15856256242099990922,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Gerudo_CowBoneDecoration_B_01",
+"hash": 3373427369268924584,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1883068192328530224,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 4519534997122863169,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 11563468890171962383,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 3717705376223508790,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 2436665354602612279,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 5329807728555596183,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3750231902048775592,
+"drop": "Item_BombBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 6897789835137994741,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 11754783663699171680,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 4709724720801091788,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4372363658229299619,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4320448574091221496,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8186301369655588602,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 1941083939696166170,
+"drop": "Item_Arrow_Ice",
+"event": "SubEvent_GetIceArrow_OpenTBox"
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 196331300747102419,
+"drop": "Item_BombchuBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 11683433230229591151,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 10743352138513225188,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10696620323243142689,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9911316961118170383,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 13501407288943710656,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 18403153827746969167,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 2651615114908793933,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 16326193461159913374,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 2817669269036620933,
+"drop": "Obj_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_MiddleBoss_GerudoThief_04",
+"hash": 13730570727502202323,
+"drop": "Obj_Dungeon_SmallKey_GerudoFortress_04",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_MiddleBoss_GerudoThief",
+"hash": 3350876166368957251,
+"drop": "Obj_Dungeon_SmallKey_GerudoFortress_01",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_MiddleBoss_GerudoThief_02",
+"hash": 3233425834948791513,
+"drop": "Obj_Dungeon_SmallKey_GerudoFortress_02",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 16619432200060282313,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_FlyingPot_SpiritTemple",
+"hash": 10448629319757216336,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_FlyingPot_SpiritTemple",
+"hash": 1503765887478653725,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05",
+"hash": 12401477347800941236,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Enemy_FlyingPot_SpiritTemple",
+"hash": 13384456307225149229,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 12343753510713797715,
+"drop": "Obj_Heart_Piece",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 1337254747199514230,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 16158747032522515754,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 7057323129962538362,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 2995876338500118652,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 15046736084248795685,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 5547511959614762973,
+"drop": "Obj_Bomb",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 10448158396041431760,
+"drop": "Obj_ArrowBundle_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 7806434487081634021,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/GanonCastle/CrumblingGanonCastle_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 13784984248963672668,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9038700938965170329,
+"drop": "TBox_ArrowBundle_Large",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 7535137041266964235,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 6948525240950728236,
+"drop": "Item_Dungeon_Compass",
+"event": "ForesetTemple_GetCompass"
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 11082303891540711688,
+"drop": "Item_Range_Bow",
+"event": "ForestTemple_GetBow"
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 14776684749746592758,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 3433400840978782007,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 6449977980406424425,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1171460703078800858,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 3174893090599461927,
+"drop": "Item_Dungeon_Map",
+"event": "ForesetTemple_GetMap"
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03_NoBake",
+"hash": 5306318520835485827,
+"drop": "Item_Dungeon_BossKey",
+"event": "ForesetTemple_GetBossKey"
+},
+{
+"file": "romfs/Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 15920957434854338961,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 3688520809244472975,
+"drop": "Item_Dungeon_Map",
+"event": "FireTemple_GetCompass"
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 12275059645282086381,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 13720304619349543095,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 2839526458267949318,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12945617941305968586,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 8757492004108970488,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 16785682308850448108,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 5634724236470386190,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3949488292768750868,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10521366928524045067,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 16713240760352215634,
+"drop": "Item_Dungeon_Compass",
+"event": "FireTemple_GetMap"
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_03",
+"hash": 14060099092170010696,
+"drop": "Item_Dungeon_BossKey",
+"event": "ForesetTemple_GetBossKey"
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 862385681502746018,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 17001858340376096722,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 15073195886628236505,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1705064956286753527,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9634924691849556346,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12567412825200613393,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 12083259659219538030,
+"drop": "Item_Hammer",
+"event": "FireTemple_GetHammer"
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 7589985979641292928,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 7234638808238324101,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 15858708076894317041,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 4529748032854378492,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 566103236844767323,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 3522439980243161940,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 7346745174625046398,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 7458365564915336038,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 2854211238375368215,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9947351236862205040,
+"drop": "TBox_Rupee_Gold",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 1582095331888138302,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 149870219864254928,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 6855679749452423265,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06",
+"hash": 5610384207225108871,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 13470335506895943486,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GanondorfStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_06_Dream",
+"hash": 4316212377750265553,
+"drop": "Obj_MagicJar_Small",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GerudoThiefStage_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05_Dream",
+"hash": 17398567770311452639,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GerudoThiefStage_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_05_Dream",
+"hash": 5705536351924279946,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 9885852591435111570,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 2988260348651760167,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 2478360857842555164,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 272710906552258554,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 17274067799607933872,
+"drop": "Obj_DekuSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/GohmaStage_Static.bcett.byml.zs",
+"gyaml": "Obj_Plant_Grass_A_01_Respawn",
+"hash": 16100187403005966396,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DreamWorld/WolfosStage_Static.bcett.byml.zs",
+"gyaml": "Enemy_Wolfos",
+"hash": 1673675859867305609,
+"drop": "Obj_Heart",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 8291119063305855945,
+"drop": "Item_Dungeon_Map",
+"event": "DodongoCavern_GetMap"
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 7524527082521156886,
+"drop": "TBox_Shield_Deku",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8607798771661947511,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 11133209227870230642,
+"drop": "Obj_Fairy",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 10493525405478862270,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 2045413023280716382,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12253889300578348965,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 11582649900854566065,
+"drop": "TBox_Shield_Deku",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 7764016096998075927,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 17531994809974271603,
+"drop": "Item_Dungeon_Compass",
+"event": "DodongoCavern_GetCompass"
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 12161709650443144121,
+"drop": "Item_BombBag_Small",
+"event": "Get_StoneOfFire_GetBombBag"
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_03",
+"hash": 4234933260265093025,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 850464708089653824,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 14514022023330510682,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 3068749159060442969,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 6141646481426607938,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 2046759311695128505,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 17813319975073074839,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 9203224707045543681,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 4108432179731449070,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 2490063409521505179,
+"drop": "Item_Gauntlet_Silver",
+"event": "SageOfSpirit_NaboorIsTakenAway"
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 10012167258643363548,
+"drop": "Item_Shield_Mirror",
+"event": "SageOfSpirit_GetShield"
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 1186167733408299582,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 17604351797179232812,
+"drop": "Obj_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 18089518693918851857,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 2465861655194430312,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 16808421367294770117,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 15615314528351978483,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 12414690125675705208,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_LiftRock_A_01",
+"hash": 352697202323389437,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 2490063409521505179,
+"drop": "Item_Gauntlet_Silver",
+"event": "SageOfSpirit_NaboorIsTakenAway"
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 10012167258643363548,
+"drop": "Item_Shield_Mirror",
+"event": "SageOfSpirit_GetShield"
+},
+{
+"file": "romfs/Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 1186167733408299582,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainTrail/DeathMountainTrail_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9809508929088891725,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainTrail/DeathMountainTrail_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 9809508929088891725,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainCrater/DeathMountainCrater_Adult_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1158729434763801603,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainCrater/DeathMountainCrater_Adult_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 9128916506605227251,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainCrater/DeathMountainCrater_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 1158729434763801603,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainCrater/DeathMountainCrater_Child_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_BrokenBox_A_01",
+"hash": 4502491733150659917,
+"drop": "Obj_Rupee_Green",
+"event": null
+},
+{
+"file": "romfs/Banc/DeathMountainCrater/DeathMountainCrater_Child_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01_NoBake",
+"hash": 9128916506605227251,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 631709185320708287,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 14911602953212243797,
+"drop": "Item_Dungeon_Compass",
+"event": "BottomOfTheWell_GetCompass"
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8397646530660039355,
+"drop": "Item_Dungeon_SmallKey",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 8975637636514249074,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 10905582354954996284,
+"drop": "TBox_Rupee_Red",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 5429815628949128345,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 12988877782812797760,
+"drop": "TBox_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_GlassTruth_A_01",
+"hash": 11718708984125260282,
+"drop": "TBox_Rupee_Purple",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02",
+"hash": 9466613428674883506,
+"drop": "Item_Dungeon_Map",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_01",
+"hash": 6064359710907908886,
+"drop": "Item_ScrubBusinessSeed",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_06",
+"hash": 874970148260328653,
+"drop": "TBox_Shield_Deku",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+"gyaml": "Obj_Pot_A_08",
+"hash": 8650410172248468465,
+"drop": "Obj_Rupee_Blue",
+"event": null
+},
+{
+"file": "romfs/Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+"gyaml": "Obj_TBox_A_02_NoBake",
+"hash": 16654774376625985726,
+"drop": "Item_GlassTruth",
+"event": "BottomOfTheWell_GetGlassTruth"
+}
+]

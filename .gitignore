@@ -1,0 +1,11 @@
+# Game data must never be committed
+*.nup
+test-mod/
+output/
+user_config.json
+
+# Tooling scratch
+.superpowers/
+__pycache__/
+*.pyc
+*.tmp/
