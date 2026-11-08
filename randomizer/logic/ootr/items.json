@@ -1,0 +1,1048 @@
+{
+ "Arrows": {
+  "type": "Refill"
+ },
+ "Arrows (10)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Arrows (30)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Arrows (5)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Big Poe": {
+  "type": "Drop"
+ },
+ "Biggoron Sword": {
+  "type": "Item"
+ },
+ "Blue Fire": {
+  "type": "Drop"
+ },
+ "Blue Fire Arrows": {
+  "type": "Item"
+ },
+ "Blue Potion": {
+  "type": "Item"
+ },
+ "Bolero of Fire": {
+  "type": "Song"
+ },
+ "Bomb (1)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Bomb Bag": {
+  "type": "Item"
+ },
+ "Bombchu Drop": {
+  "type": "Drop"
+ },
+ "Bombchus": {
+  "type": "Item"
+ },
+ "Bombchus (10)": {
+  "type": "Item"
+ },
+ "Bombchus (20)": {
+  "type": "Item"
+ },
+ "Bombchus (5)": {
+  "type": "Item"
+ },
+ "Bombs": {
+  "type": "Refill"
+ },
+ "Bombs (10)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Bombs (20)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Bombs (5)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Boomerang": {
+  "type": "Item"
+ },
+ "Boss Key": {
+  "type": "BossKey"
+ },
+ "Boss Key (Fire Temple)": {
+  "type": "BossKey"
+ },
+ "Boss Key (Forest Temple)": {
+  "type": "BossKey"
+ },
+ "Boss Key (Ganons Castle)": {
+  "type": "GanonBossKey"
+ },
+ "Boss Key (Shadow Temple)": {
+  "type": "BossKey"
+ },
+ "Boss Key (Spirit Temple)": {
+  "type": "BossKey"
+ },
+ "Boss Key (Water Temple)": {
+  "type": "BossKey"
+ },
+ "Bottle": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Big Poe": {
+  "type": "Item"
+ },
+ "Bottle with Blue Fire": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Blue Potion": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Bugs": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Fairy": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Fish": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Green Potion": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Milk": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Poe": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bottle with Red Potion": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Bow": {
+  "type": "Item"
+ },
+ "Broken Sword": {
+  "type": "Item"
+ },
+ "Bugs": {
+  "type": "Drop"
+ },
+ "Bunny Hood": {
+  "type": "Item"
+ },
+ "Buy Arrows (10)": {
+  "type": "Shop"
+ },
+ "Buy Arrows (30)": {
+  "type": "Shop"
+ },
+ "Buy Arrows (50)": {
+  "type": "Shop"
+ },
+ "Buy Blue Fire": {
+  "type": "Shop"
+ },
+ "Buy Blue Potion": {
+  "type": "Shop"
+ },
+ "Buy Bombchu (10)": {
+  "type": "Shop"
+ },
+ "Buy Bombchu (20)": {
+  "type": "Shop"
+ },
+ "Buy Bombchu (5)": {
+  "type": "Shop"
+ },
+ "Buy Bombs (10)": {
+  "type": "Shop"
+ },
+ "Buy Bombs (20)": {
+  "type": "Shop"
+ },
+ "Buy Bombs (30)": {
+  "type": "Shop"
+ },
+ "Buy Bombs (5) for 25 Rupees": {
+  "type": "Shop"
+ },
+ "Buy Bombs (5) for 35 Rupees": {
+  "type": "Shop"
+ },
+ "Buy Bottle Bug": {
+  "type": "Shop"
+ },
+ "Buy Deku Nut (10)": {
+  "type": "Shop"
+ },
+ "Buy Deku Nut (5)": {
+  "type": "Shop"
+ },
+ "Buy Deku Seeds (30)": {
+  "type": "Shop"
+ },
+ "Buy Deku Shield": {
+  "type": "Shop"
+ },
+ "Buy Deku Stick (1)": {
+  "type": "Shop"
+ },
+ "Buy Fairy's Spirit": {
+  "type": "Shop"
+ },
+ "Buy Fish": {
+  "type": "Shop"
+ },
+ "Buy Goron Tunic": {
+  "type": "Shop"
+ },
+ "Buy Green Potion": {
+  "type": "Shop"
+ },
+ "Buy Heart": {
+  "type": "Shop"
+ },
+ "Buy Hylian Shield": {
+  "type": "Shop"
+ },
+ "Buy Magic Bean": {
+  "alias": [
+   "Magic Bean",
+   10
+  ],
+  "type": "Item"
+ },
+ "Buy Poe": {
+  "type": "Shop"
+ },
+ "Buy Red Potion for 30 Rupees": {
+  "type": "Shop"
+ },
+ "Buy Red Potion for 40 Rupees": {
+  "type": "Shop"
+ },
+ "Buy Red Potion for 50 Rupees": {
+  "type": "Shop"
+ },
+ "Buy Zora Tunic": {
+  "type": "Shop"
+ },
+ "Chicken": {
+  "type": "Item"
+ },
+ "Claim Check": {
+  "type": "Item"
+ },
+ "Cojiro": {
+  "type": "Item"
+ },
+ "Compass": {
+  "type": "Compass"
+ },
+ "Compass (Bottom of the Well)": {
+  "type": "Compass"
+ },
+ "Compass (Deku Tree)": {
+  "type": "Compass"
+ },
+ "Compass (Dodongos Cavern)": {
+  "type": "Compass"
+ },
+ "Compass (Fire Temple)": {
+  "type": "Compass"
+ },
+ "Compass (Forest Temple)": {
+  "type": "Compass"
+ },
+ "Compass (Ice Cavern)": {
+  "type": "Compass"
+ },
+ "Compass (Jabu Jabus Belly)": {
+  "type": "Compass"
+ },
+ "Compass (Shadow Temple)": {
+  "type": "Compass"
+ },
+ "Compass (Spirit Temple)": {
+  "type": "Compass"
+ },
+ "Compass (Water Temple)": {
+  "type": "Compass"
+ },
+ "Deku Nut Capacity": {
+  "type": "Item"
+ },
+ "Deku Nut Drop": {
+  "type": "Drop"
+ },
+ "Deku Nuts": {
+  "type": "Refill"
+ },
+ "Deku Nuts (10)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Deku Nuts (5)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Deku Seeds": {
+  "type": "Refill"
+ },
+ "Deku Seeds (30)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Deku Shield": {
+  "type": "Item"
+ },
+ "Deku Shield Drop": {
+  "type": "Drop"
+ },
+ "Deku Stick (1)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Deku Stick Capacity": {
+  "type": "Item"
+ },
+ "Deku Stick Drop": {
+  "type": "Drop"
+ },
+ "Deku Sticks": {
+  "type": "Refill"
+ },
+ "Deliver Letter": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Dins Fire": {
+  "type": "Item"
+ },
+ "Double Defense": {
+  "type": "Item"
+ },
+ "Epona": {
+  "type": "Event"
+ },
+ "Eponas Song": {
+  "type": "Song"
+ },
+ "Eyeball Frog": {
+  "type": "Item"
+ },
+ "Eyedrops": {
+  "type": "Item"
+ },
+ "Fairy": {
+  "type": "Drop"
+ },
+ "Fairy Drop": {
+  "type": "Item"
+ },
+ "Farores Wind": {
+  "type": "Item"
+ },
+ "Fire Arrows": {
+  "type": "Item"
+ },
+ "Fire Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Fire Trial Clear": {
+  "type": "Event"
+ },
+ "Fish": {
+  "type": "Drop"
+ },
+ "Forest Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Forest Trial Clear": {
+  "type": "Event"
+ },
+ "Gerudo Mask": {
+  "type": "Item"
+ },
+ "Gerudo Membership Card": {
+  "type": "Item"
+ },
+ "Giants Knife": {
+  "type": "Item"
+ },
+ "Gold Skulltula Token": {
+  "type": "Token"
+ },
+ "Goron Mask": {
+  "type": "Item"
+ },
+ "Goron Ruby": {
+  "stone": true,
+  "type": "DungeonReward"
+ },
+ "Goron Tunic": {
+  "type": "Item"
+ },
+ "Heart Container": {
+  "alias": [
+   "Piece of Heart",
+   4
+  ],
+  "type": "Item"
+ },
+ "Hover Boots": {
+  "type": "Item"
+ },
+ "Hylian Shield": {
+  "type": "Item"
+ },
+ "Ice Arrows": {
+  "type": "Item"
+ },
+ "Ice Trap": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Iron Boots": {
+  "type": "Item"
+ },
+ "Keaton Mask": {
+  "type": "Item"
+ },
+ "Kokiri Emerald": {
+  "stone": true,
+  "type": "DungeonReward"
+ },
+ "Kokiri Sword": {
+  "type": "Item"
+ },
+ "Lens of Truth": {
+  "type": "Item"
+ },
+ "Light Arrows": {
+  "type": "Item"
+ },
+ "Light Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Light Trial Clear": {
+  "type": "Event"
+ },
+ "Magic Bean": {
+  "type": "Item"
+ },
+ "Magic Bean Pack": {
+  "alias": [
+   "Magic Bean",
+   10
+  ],
+  "type": "Item"
+ },
+ "Magic Meter": {
+  "type": "Item"
+ },
+ "Map": {
+  "type": "Map"
+ },
+ "Map (Bottom of the Well)": {
+  "type": "Map"
+ },
+ "Map (Deku Tree)": {
+  "type": "Map"
+ },
+ "Map (Dodongos Cavern)": {
+  "type": "Map"
+ },
+ "Map (Fire Temple)": {
+  "type": "Map"
+ },
+ "Map (Forest Temple)": {
+  "type": "Map"
+ },
+ "Map (Ice Cavern)": {
+  "type": "Map"
+ },
+ "Map (Jabu Jabus Belly)": {
+  "type": "Map"
+ },
+ "Map (Shadow Temple)": {
+  "type": "Map"
+ },
+ "Map (Spirit Temple)": {
+  "type": "Map"
+ },
+ "Map (Water Temple)": {
+  "type": "Map"
+ },
+ "Mask of Truth": {
+  "type": "Item"
+ },
+ "Megaton Hammer": {
+  "type": "Item"
+ },
+ "Milk": {
+  "type": "Item"
+ },
+ "Minuet of Forest": {
+  "type": "Song"
+ },
+ "Mirror Shield": {
+  "type": "Item"
+ },
+ "Nayrus Love": {
+  "type": "Item"
+ },
+ "Nocturne of Shadow": {
+  "type": "Song"
+ },
+ "Nothing": {
+  "type": "Item"
+ },
+ "Ocarina": {
+  "type": "Item"
+ },
+ "Ocarina A Button": {
+  "ocarina_button": true,
+  "type": "Item"
+ },
+ "Ocarina C down Button": {
+  "ocarina_button": true,
+  "type": "Item"
+ },
+ "Ocarina C left Button": {
+  "ocarina_button": true,
+  "type": "Item"
+ },
+ "Ocarina C right Button": {
+  "ocarina_button": true,
+  "type": "Item"
+ },
+ "Ocarina C up Button": {
+  "ocarina_button": true,
+  "type": "Item"
+ },
+ "Odd Mushroom": {
+  "type": "Item"
+ },
+ "Odd Potion": {
+  "type": "Item"
+ },
+ "Piece of Heart": {
+  "type": "Item"
+ },
+ "Piece of Heart (Out of Logic)": {
+  "type": "Item"
+ },
+ "Piece of Heart (Treasure Chest Game)": {
+  "alias": [
+   "Piece of Heart",
+   1
+  ],
+  "type": "Item"
+ },
+ "Poachers Saw": {
+  "type": "Item"
+ },
+ "Pocket Cucco": {
+  "type": "Item"
+ },
+ "Pocket Egg": {
+  "type": "Item"
+ },
+ "Prelude of Light": {
+  "type": "Song"
+ },
+ "Prescription": {
+  "type": "Item"
+ },
+ "Progressive Hookshot": {
+  "type": "Item"
+ },
+ "Progressive Scale": {
+  "type": "Item"
+ },
+ "Progressive Strength Upgrade": {
+  "type": "Item"
+ },
+ "Progressive Wallet": {
+  "type": "Item"
+ },
+ "Recovery Heart": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Requiem of Spirit": {
+  "type": "Song"
+ },
+ "Rupee (1)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Rupee (Treasure Chest Game) (1)": {
+  "type": "Item"
+ },
+ "Rupees": {
+  "type": "Refill"
+ },
+ "Rupees (20)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Rupees (200)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Rupees (5)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Rupees (50)": {
+  "junk": true,
+  "type": "Item"
+ },
+ "Rupees (Treasure Chest Game) (20)": {
+  "type": "Item"
+ },
+ "Rupees (Treasure Chest Game) (5)": {
+  "type": "Item"
+ },
+ "Rupees (Treasure Chest Game) (50)": {
+  "type": "Item"
+ },
+ "Rutos Letter": {
+  "type": "Item"
+ },
+ "Sarias Song": {
+  "type": "Song"
+ },
+ "Scarecrow Song": {
+  "type": "Event"
+ },
+ "Sell Big Poe": {
+  "bottle": true,
+  "type": "Item"
+ },
+ "Serenade of Water": {
+  "type": "Song"
+ },
+ "Shadow Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Shadow Trial Clear": {
+  "type": "Event"
+ },
+ "Silver Rupee (Bottom of the Well Basement)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Dodongos Cavern Staircase)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Fire Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Forest Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Light Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Shadow Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Spirit Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ganons Castle Water Trial)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Gerudo Training Ground Lava)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Gerudo Training Ground Slopes)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Gerudo Training Ground Water)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ice Cavern Push Block)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Ice Cavern Spinning Scythe)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Shadow Temple Huge Pit)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Shadow Temple Invisible Blades)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Shadow Temple Invisible Spikes)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Shadow Temple Scythe Shortcut)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Spirit Temple Adult Boulders)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Spirit Temple Adult Climb)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Spirit Temple Child Early Torches)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Spirit Temple Lobby and Lower Adult)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee (Spirit Temple Sun Block)": {
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Bottom of the Well Basement)": {
+  "alias": [
+   "Silver Rupee (Bottom of the Well Basement)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Dodongos Cavern Staircase)": {
+  "alias": [
+   "Silver Rupee (Dodongos Cavern Staircase)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Fire Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Fire Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Forest Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Forest Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Light Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Light Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Shadow Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Shadow Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Spirit Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Spirit Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ganons Castle Water Trial)": {
+  "alias": [
+   "Silver Rupee (Ganons Castle Water Trial)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Gerudo Training Ground Lava)": {
+  "alias": [
+   "Silver Rupee (Gerudo Training Ground Lava)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Gerudo Training Ground Slopes)": {
+  "alias": [
+   "Silver Rupee (Gerudo Training Ground Slopes)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Gerudo Training Ground Water)": {
+  "alias": [
+   "Silver Rupee (Gerudo Training Ground Water)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ice Cavern Push Block)": {
+  "alias": [
+   "Silver Rupee (Ice Cavern Push Block)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Ice Cavern Spinning Scythe)": {
+  "alias": [
+   "Silver Rupee (Ice Cavern Spinning Scythe)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Shadow Temple Huge Pit)": {
+  "alias": [
+   "Silver Rupee (Shadow Temple Huge Pit)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Shadow Temple Invisible Blades)": {
+  "alias": [
+   "Silver Rupee (Shadow Temple Invisible Blades)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Shadow Temple Invisible Spikes)": {
+  "alias": [
+   "Silver Rupee (Shadow Temple Invisible Spikes)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Shadow Temple Scythe Shortcut)": {
+  "alias": [
+   "Silver Rupee (Shadow Temple Scythe Shortcut)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Spirit Temple Adult Boulders)": {
+  "alias": [
+   "Silver Rupee (Spirit Temple Adult Boulders)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Spirit Temple Adult Climb)": {
+  "alias": [
+   "Silver Rupee (Spirit Temple Adult Climb)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Spirit Temple Child Early Torches)": {
+  "alias": [
+   "Silver Rupee (Spirit Temple Child Early Torches)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Spirit Temple Lobby and Lower Adult)": {
+  "alias": [
+   "Silver Rupee (Spirit Temple Lobby and Lower Adult)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Silver Rupee Pouch (Spirit Temple Sun Block)": {
+  "alias": [
+   "Silver Rupee (Spirit Temple Sun Block)",
+   10
+  ],
+  "type": "SilverRupee"
+ },
+ "Skull Mask": {
+  "type": "Item"
+ },
+ "Slingshot": {
+  "type": "Item"
+ },
+ "Small Key": {
+  "type": "SmallKey"
+ },
+ "Small Key (Bottom of the Well)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Fire Temple)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Forest Temple)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Ganons Castle)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Gerudo Training Ground)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Shadow Temple)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Spirit Temple)": {
+  "type": "SmallKey"
+ },
+ "Small Key (Thieves Hideout)": {
+  "type": "HideoutSmallKey"
+ },
+ "Small Key (Treasure Chest Game)": {
+  "type": "TCGSmallKey"
+ },
+ "Small Key (Water Temple)": {
+  "type": "SmallKey"
+ },
+ "Small Key Ring (Bottom of the Well)": {
+  "alias": [
+   "Small Key (Bottom of the Well)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Fire Temple)": {
+  "alias": [
+   "Small Key (Fire Temple)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Forest Temple)": {
+  "alias": [
+   "Small Key (Forest Temple)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Ganons Castle)": {
+  "alias": [
+   "Small Key (Ganons Castle)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Gerudo Training Ground)": {
+  "alias": [
+   "Small Key (Gerudo Training Ground)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Shadow Temple)": {
+  "alias": [
+   "Small Key (Shadow Temple)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Spirit Temple)": {
+  "alias": [
+   "Small Key (Spirit Temple)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Small Key Ring (Thieves Hideout)": {
+  "alias": [
+   "Small Key (Thieves Hideout)",
+   10
+  ],
+  "type": "HideoutSmallKeyRing"
+ },
+ "Small Key Ring (Treasure Chest Game)": {
+  "alias": [
+   "Small Key (Treasure Chest Game)",
+   10
+  ],
+  "type": "TCGSmallKeyRing"
+ },
+ "Small Key Ring (Water Temple)": {
+  "alias": [
+   "Small Key (Water Temple)",
+   10
+  ],
+  "type": "SmallKeyRing"
+ },
+ "Sold Out": {
+  "type": "Shop"
+ },
+ "Song of Storms": {
+  "type": "Song"
+ },
+ "Song of Time": {
+  "type": "Song"
+ },
+ "Spirit Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Spirit Trial Clear": {
+  "type": "Event"
+ },
+ "Spooky Mask": {
+  "type": "Item"
+ },
+ "Stone of Agony": {
+  "type": "Item"
+ },
+ "Suns Song": {
+  "type": "Song"
+ },
+ "Time Travel": {
+  "type": "Event"
+ },
+ "Triforce": {
+  "type": "Event"
+ },
+ "Triforce Piece": {
+  "type": "Item"
+ },
+ "Water Medallion": {
+  "medallion": true,
+  "type": "DungeonReward"
+ },
+ "Water Temple Clear": {
+  "type": "Event"
+ },
+ "Water Trial Clear": {
+  "type": "Event"
+ },
+ "Weird Egg": {
+  "type": "Item"
+ },
+ "Zeldas Letter": {
+  "type": "Item"
+ },
+ "Zeldas Lullaby": {
+  "type": "Song"
+ },
+ "Zora Mask": {
+  "type": "Item"
+ },
+ "Zora Sapphire": {
+  "stone": true,
+  "type": "DungeonReward"
+ },
+ "Zora Tunic": {
+  "type": "Item"
+ }
+}

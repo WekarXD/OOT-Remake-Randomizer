@@ -24,6 +24,8 @@
 - World/Water Temple.json
 - LogicHelpers.json
 - locations.json (generated from LocationList.py `location_table` with ast.literal_eval)
+- items.json (generated from ItemList.py `item_table` by walking the ast, no exec: item names
+  plus the logic flags `type`, `bottle`, `medallion`, `stone`, `ocarina_button`, `alias`, `junk`)
 
 ## Notes
 
