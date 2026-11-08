@@ -2,7 +2,7 @@
 Uso: python -I tools/make_test_batch.py <nup> <files.tsv> <out_dir>
 Solo lee el .nup; escribe en <out_dir>/0400486024DEC000/<Mod>/romfs/...
 """
-import os, struct, sys, zlib
+import os, shutil, struct, sys, zlib
 from compression import zstd
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'spikes'))
@@ -53,15 +53,14 @@ def rstb_find(rs, path):
 
 
 def write(out, mod, rel, data):
-    p = os.path.join(out, TITLE, mod, 'romfs', *rel.split('/'))
+    p = os.path.join(out, TITLE, mod + '.tmp', 'romfs', *rel.split('/'))
     os.makedirs(os.path.dirname(p), exist_ok=True)
     with open(p, 'wb') as f:
         f.write(data)
     print('wrote', p, len(data))
 
 
-def main():
-    nup, tsv, out = sys.argv[1:4]
+def build(nup, tsv, out): = sys.argv[1:4]
     _, pk = peek.nup_read(nup, tsv, 'romfs/Pack/ZsDic.pack.zs')
     dic = zstd.ZstdDict(peek.sarc(zstd.decompress(pk))['bcett.byml.zsdic'])
     _, rc = peek.nup_read(nup, tsv, RSTB + '.zs')
@@ -110,6 +109,22 @@ def main():
                 if not applied.get((h, new)):
                     raise SystemExit(f'FALLO: el cambio {h} -> {new} no se aplico en ningun mapa')
     print('Todos los cambios aplicados al menos una vez.')
+
+
+def main():
+    nup, tsv, out = sys.argv[1:4]
+    base = os.path.join(out, TITLE)
+    for mod in MODS:
+        shutil.rmtree(os.path.join(base, mod + '.tmp'), ignore_errors=True)
+    try:
+        build(nup, tsv, out)
+    except BaseException:
+        for mod in MODS:
+            shutil.rmtree(os.path.join(base, mod + '.tmp'), ignore_errors=True)
+        raise
+    for mod in MODS:
+        shutil.rmtree(os.path.join(base, mod), ignore_errors=True)
+        os.rename(os.path.join(base, mod + '.tmp'), os.path.join(base, mod))
 
 
 if __name__ == '__main__':

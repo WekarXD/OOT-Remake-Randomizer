@@ -4,6 +4,8 @@ Randomizador en Python para el remake de Ocarina of Time de Switch 2 (motor de T
 
 Estado: en desarrollo (v1). No incluye ningun archivo del juego; hace falta tu propio volcado (.nup).
 
+Requisitos: Python 3.14 o superior (usa `compression.zstd` de la biblioteca estandar).
+
 ## Lote de mods de prueba
 
 ```
