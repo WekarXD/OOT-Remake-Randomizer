@@ -41,7 +41,7 @@ que sí lo es, nunca al revés):
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 
 from randomizer import items as remake_items
@@ -136,13 +136,16 @@ class World:
             fixed[location] = actor
         return fixed
 
-    def reachable_locations(self, fixed: dict[str, str]) -> set[str]:
-        state, reached, _ = self._search(fixed, stop_at_win=False)
+    def reachable_locations(self, fixed: dict[str, str],
+                            owned: Iterable[str] = ()) -> set[str]:
+        """Ubicaciones alcanzables. `owned`: objetos extra que se dan por
+        tenidos desde el principio (para el *assumed fill*)."""
+        state, reached, _ = self._search(fixed, stop_at_win=False, owned=owned)
         return {loc for region, loc, fn in self._all_locations
                 if self._ok(fn, state, reached, region)}
 
-    def can_beat(self, fixed: dict[str, str]) -> bool:
-        return self._search(fixed, stop_at_win=True)[2]
+    def can_beat(self, fixed: dict[str, str], owned: Iterable[str] = ()) -> bool:
+        return self._search(fixed, stop_at_win=True, owned=owned)[2]
 
     # ---- internals -------------------------------------------------------
     def _relevant(self, item: str) -> bool:
@@ -164,9 +167,12 @@ class World:
         return ((region in reached['adult'] and fn(state, 'adult'))
                 or (region in reached['child'] and fn(state, 'child')))
 
-    def _search(self, fixed: dict[str, str], stop_at_win: bool):
+    def _search(self, fixed: dict[str, str], stop_at_win: bool,
+                owned: Iterable[str] = ()):
         state = State()
         for item in self.starting_items:
+            state.collect(item)
+        for item in owned:
             state.collect(item)
         reached = {age: {'Root'} for age in AGES}
         queues = {age: list(self.regions['Root'].exits) for age in AGES}
