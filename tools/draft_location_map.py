@@ -9,7 +9,8 @@ ninguno -> location null, status 'unmapped' y una nota con los candidatos y
 las posiciones, para resolver a mano.
 
 Nunca sobrescribe entradas revisadas a mano: status 'manual', o 'unmapped'
-con una nota que empieza por 'manual:'. Conserva siempre needs_event_patch.
+con una nota que empieza por 'manual:'. Conserva siempre needs_event_patch y
+strip_event.
 """
 import json
 import sys
@@ -92,6 +93,7 @@ def draft(chests, ootr: dict, existing: dict) -> dict:
         e = existing.get(str(h))
         if e and is_reviewed(e):
             out[str(h)] = dict(e)
+            out[str(h)].setdefault('strip_event', False)
             if e['location']:
                 used.add(e['location'])
 
@@ -110,6 +112,7 @@ def draft(chests, ootr: dict, existing: dict) -> dict:
             old = existing.get(key, {})
             entry = {'location': None, 'status': 'unmapped',
                      'needs_event_patch': bool(old.get('needs_event_patch', False)),
+                     'strip_event': bool(old.get('strip_event', False)),
                      'note': ''}
             where = f'{c.gyaml} {drop} en {zone} {fmt_pos(c.pos)}'
             if prefixes is None:

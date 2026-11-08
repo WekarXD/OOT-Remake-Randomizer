@@ -26,11 +26,33 @@ KEY_ITEM_LOCATIONS = {
     17657623307936361670: 'Ganons Castle Shadow Trial Golden Gauntlets Chest',
 }
 
-# Resultado de la PUERTA de la Task 1 (docs/test-batch-1.md, TestLote1): el
-# cofre de la Espada Kokiri dio la rupia verde, pero su evento
-# Get_StoneOfForest_GetSword siguió mostrando la escena y dando la espada.
-# Ese cofre necesita parchear su evento; los demás, de momento, no.
-EVENT_PATCH_HASHES: set[int] = {16757992849254467386}
+# Resultados de la PUERTA (docs/test-batch-1.md, apartado Resultados):
+# - TestLote1: el cofre de la Espada Kokiri dio la rupia verde, pero su evento
+#   Get_StoneOfForest_GetSword siguió dando la espada.
+# - TestLote3: quitando GetEventName a ese cofre dio el Bumerán y no la espada.
+# Por eso, los cofres de objeto clave cuyo evento solo entrega el objeto pierden
+# el evento (STRIP_EVENT_HASHES). Los que tienen un evento con más efectos
+# (canción, sabio, Ruto, carrera de Dampé) necesitan un parche de evento y se
+# quedan vanilla (EVENT_PATCH_HASHES).
+STRIP_EVENT_HASHES: set[int] = {
+    16757992849254467386,  # Espada Kokiri
+    821372075822700622,    # Resortera
+    11082303891540711688,  # Arco
+    12083259659219538030,  # Martillo
+    16654774376625985726,  # Lente de la Verdad
+    1941083939696166170,   # Flechas de hielo
+    17657623307936361670,  # Guanteletes de oro
+    12161709650443144121,  # Bolsa de bombas
+    18059711820131847165,  # Gancho largo
+}
+EVENT_PATCH_HASHES: set[int] = {
+    6859289214373847284,   # Botas de hierro (SageOfWater_MelodyGet_Water)
+    2490063409521505179,   # Guanteletes de plata
+    10012167258643363548,  # Escudo espejo
+    14535080241831873137,  # Botas levitadoras
+    16041366920820397198,  # Gancho (carrera de Dampé)
+    5527401621172639818,   # Bumerán (Ruto)
+}
 
 
 class LocationMapTest(unittest.TestCase):
@@ -63,6 +85,22 @@ class LocationMapTest(unittest.TestCase):
     def test_needs_event_patch_from_batch(self):
         got = {h for h, e in self.map.items() if e.needs_event_patch}
         self.assertEqual(got, EVENT_PATCH_HASHES)
+
+    def test_strip_event_from_batch(self):
+        got = {h for h, e in self.map.items() if e.strip_event}
+        self.assertEqual(got, STRIP_EVENT_HASHES)
+        self.assertFalse(STRIP_EVENT_HASHES & EVENT_PATCH_HASHES)
+        self.assertLessEqual(STRIP_EVENT_HASHES | EVENT_PATCH_HASHES,
+                             set(KEY_ITEM_LOCATIONS))
+
+    def test_strip_event_explicit_in_json(self):
+        raw = json.loads(locations.MAP_PATH.read_text(encoding='utf-8'))
+        for h, e in raw.items():
+            self.assertIsInstance(e.get('strip_event'), bool, h)
+
+    def test_strip_event_defaults_false(self):
+        e = locations.LocationEntry(1, None, 'unmapped', False)
+        self.assertFalse(e.strip_event)
 
     def test_status_consistent(self):
         for e in self.map.values():

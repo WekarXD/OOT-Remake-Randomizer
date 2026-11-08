@@ -69,3 +69,20 @@ Posibles objetos nuevos: Gancho largo, Guanteletes de oro, Escudo espejo, Flecha
 ## Notas finales
 
 Cuando termines, pasa los resultados y cualquier detalle raro (textos, cierres del juego, escenas que se quedan colgadas).
+
+## Resultados
+
+### TestLote1 (partida de niño, Bosque Kokiri)
+- **Casa de Mido**: los cuatro objetos nuevos se recibieron y se pueden usar:
+  - Gancho largo, sin tener antes el Gancho.
+  - Guanteletes de oro, sin tener antes los guanteletes anteriores.
+  - Escudo espejo, siendo niño.
+  - Flechas de hielo, siendo niño. Además, desbloquearon la barra de magia.
+- **Cofre de la Espada Kokiri** (R1): dio la rupia verde, pero su evento siguió mostrando la escena de la espada y dando la espada. La espada se puede usar, pero no sale en el inventario. Por eso este cofre necesita tratar su evento.
+
+### TestLote3 (cofre de la espada sin evento)
+- Se quitó el evento (`GetEventName`) del cofre de la Espada Kokiri y se puso el Bumerán dentro. El cofre dio el Bumerán y **no** dio la espada. Un evento que solo entrega el objeto se puede quitar sin problemas.
+- La parte del Árbol Deku no se pudo probar: la partida antigua había perdido la espada que daba el evento.
+
+### TestLote2 (partida de adulto)
+- Pendiente.
