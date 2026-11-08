@@ -1,0 +1,205 @@
+"""Servidor HTTP local (solo stdlib) + API JSON."""
+import json
+import sys
+import traceback
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import parse_qs, unquote, urlparse
+
+from .. import config, locations
+from ..fill import Settings
+from ..generate import GenerationError, generate
+from ..items import KEY_ITEM_HOME, KEY_ITEMS, LABELS_ES
+from ..nup import SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
+
+STATIC_DIR = Path(__file__).resolve().parent / 'static'
+MAX_BODY = 1024 * 1024
+MODES = ('vanilla', 'any_chest')
+
+
+def version_string(v: int) -> str:
+    return f'{v >> 16}.{(v >> 8) & 0xFF}.{v & 0xFF}'
+
+
+def _movable_flags() -> dict[str, bool]:
+    entries = list(locations.load_map().values())
+    return {actor: not any(e.needs_event_patch for e in entries if e.location == home)
+            for actor, home in KEY_ITEM_HOME.items()}
+
+
+class _BadRequest(Exception):
+    def __init__(self, message, status=400):
+        super().__init__(message)
+        self.status = status
+
+
+def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
+    config_path = Path(config_path)
+
+    class Handler(BaseHTTPRequestHandler):
+        server_version = 'RandoLocal'
+
+        def log_message(self, fmt, *args):
+            pass
+
+        # ---- respuestas ----
+        def _send(self, status, body: bytes, ctype):
+            self.send_response(status)
+            self.send_header('Content-Type', ctype)
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def _json(self, obj, status=200):
+            self._send(status, json.dumps(obj, ensure_ascii=False).encode('utf-8'),
+                       'application/json; charset=utf-8')
+
+        def _err(self, message, status=400, **extra):
+            self._json({'ok': False, 'error': message, **extra}, status)
+
+        def _read_json(self) -> dict:
+            try:
+                n = int(self.headers.get('Content-Length') or 0)
+            except ValueError:
+                raise _BadRequest('Content-Length inválido.')
+            if n > MAX_BODY:
+                raise _BadRequest('La petición es demasiado grande.', 413)
+            raw = self.rfile.read(n) if n else b''
+            if not raw:
+                return {}
+            try:
+                d = json.loads(raw.decode('utf-8'))
+            except ValueError:
+                raise _BadRequest('Cuerpo JSON inválido.')
+            if not isinstance(d, dict):
+                raise _BadRequest('Cuerpo JSON inválido.')
+            return d
+
+        def _dispatch(self, fn):
+            try:
+                fn()
+            except _BadRequest as e:
+                self._err(str(e), e.status)
+            except Exception as e:  # noqa: BLE001
+                traceback.print_exc(file=sys.stderr)
+                self._err(f'Error interno: {type(e).__name__}', 500)
+
+        def do_GET(self):
+            self._dispatch(self._get)
+
+        def do_POST(self):
+            self._dispatch(self._post)
+
+        # ---- GET ----
+        def _get(self):
+            url = urlparse(self.path)
+            p = url.path
+            if p == '/':
+                return self._static('index.html')
+            if p.startswith('/static/'):
+                return self._static(unquote(p[len('/static/'):]))
+            if p == '/api/config':
+                return self._json(config.load(config_path))
+            if p == '/api/items':
+                movable = _movable_flags()
+                return self._json([{'actor': a, 'label': LABELS_ES.get(a, a),
+                                    'movable': movable.get(a, True)} for a in KEY_ITEMS])
+            if p == '/api/spoiler':
+                return self._spoiler(parse_qs(url.query).get('path', [''])[0])
+            self._err('No encontrado.', 404)
+
+        def _static(self, rel):
+            types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
+                     '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml',
+                     '.json': 'application/json; charset=utf-8'}
+            try:
+                f = (STATIC_DIR / rel).resolve()
+                if STATIC_DIR.resolve() not in f.parents or not f.is_file():
+                    return self._err('No encontrado.', 404)
+                data = f.read_bytes()
+            except (OSError, ValueError):
+                return self._err('No encontrado.', 404)
+            self._send(200, data, types.get(f.suffix.lower(), 'application/octet-stream'))
+
+        def _spoiler(self, raw):
+            out_dir = config.load(config_path).get('out_dir')
+            try:
+                f = Path(raw).resolve()
+                root = Path(out_dir).resolve() if out_dir else None
+                ok = bool(raw and root is not None and f.name == 'spoiler.txt'
+                          and root in f.parents)
+            except (OSError, ValueError, TypeError):
+                ok = False
+            if not ok:
+                return self._err('Acceso denegado.', 403)
+            try:
+                data = f.read_bytes()
+            except OSError:
+                return self._err('No encontrado.', 404)
+            self._send(200, data, 'text/plain; charset=utf-8')
+
+        # ---- POST ----
+        def _post(self):
+            p = urlparse(self.path).path
+            body = self._read_json()
+            if p == '/api/validate':
+                return self._validate(body)
+            if p == '/api/generate':
+                return self._generate(body)
+            self._err('No encontrado.', 404)
+
+        def _validate(self, body):
+            path = str(body.get('nup_path') or '')
+            if not path or not Path(path).is_file():
+                return self._json({'ok': False, 'error': f'El archivo no existe: {path}'})
+            try:
+                nup = NupArchive(path)
+            except NupError as e:
+                return self._json({'ok': False, 'error': str(e)})
+            try:
+                if nup.title_id != TITLE_ID:
+                    return self._json({'ok': False, 'error':
+                                       'El archivo no es de Zelda: Ocarina of Time '
+                                       f'(title id 0x{nup.title_id:016X}).'})
+                v = nup.update_version
+                if v != SUPPORTED_UPDATE_VERSION:
+                    shown = version_string(v) if v is not None else 'sin actualización'
+                    return self._json({'ok': False, 'error':
+                                       f'Versión del juego no soportada: {shown}. '
+                                       f'Se necesita la {version_string(SUPPORTED_UPDATE_VERSION)}.'})
+                return self._json({'ok': True, 'version': version_string(v)})
+            finally:
+                nup.close()
+
+        def _generate(self, body):
+            nup_path = str(body.get('nup_path') or '')
+            out_dir = str(body.get('out_dir') or '')
+            seed = str(body.get('seed') or '').strip()
+            mode = body.get('key_items_mode', 'any_chest')
+            excluded = body.get('excluded_items') or []
+            if mode not in MODES:
+                return self._err('Modo de objetos clave no válido.')
+            if (not isinstance(excluded, list)
+                    or any(not isinstance(x, str) or x not in KEY_ITEMS for x in excluded)):
+                return self._err('Lista de objetos excluidos no válida.')
+            if not nup_path or not out_dir:
+                return self._err('Faltan la ruta del .nup o la carpeta de salida.')
+            settings = Settings(seed=seed, key_items_mode=mode,
+                                excluded_items=frozenset(excluded),
+                                spoiler=bool(body.get('spoiler', True)))
+            try:
+                res = generate(nup_path, out_dir, settings,
+                               overwrite=bool(body.get('overwrite', False)))
+            except GenerationError as e:
+                extra = {'exists': True} if e.exists else {}
+                return self._json({'ok': False, 'error': str(e), **extra})
+            cfg = config.load(config_path)
+            cfg.update({'nup_path': nup_path, 'out_dir': out_dir,
+                        'last_settings': {'seed': seed, 'key_items_mode': mode,
+                                          'excluded_items': sorted(excluded),
+                                          'spoiler': settings.spoiler}})
+            config.save(config_path, cfg)
+            self._json({'ok': True, 'seed': res.seed, 'mod_dir': res.mod_dir,
+                        'spoiler_txt': res.spoiler_txt})
+
+    return ThreadingHTTPServer(('127.0.0.1', port), Handler)
