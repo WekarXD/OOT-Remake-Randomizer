@@ -1,0 +1,2858 @@
+[
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "631709185320708287",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   11.97252082824707,
+   100.0,
+   -11.061166763305664
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "5429815628949128345",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -0.20073986053466797,
+   96.1925277709961,
+   -5.0
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "6064359710907908886",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   0.008443832397460938,
+   102.17013549804688,
+   -100.46894836425781
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "8397646530660039355",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   10.570440292358398,
+   99.9800033569336,
+   -4.5
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "8975637636514249074",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -11.000000953674316,
+   99.9800033569336,
+   -5.4305009841918945
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "9466613428674883506",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": null,
+  "pos": [
+   18.319231033325195,
+   87.44866180419922,
+   1.1546916961669922
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "10905582354954996284",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -29.58990478515625,
+   100.0,
+   -36.97732162475586
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "11718708984125260282",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   0.022019386291503906,
+   105.78045654296875,
+   -77.05462646484375
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "12988877782812797760",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   19.8576602935791,
+   97.81129455566406,
+   -18.574298858642578
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Dynamic.bcett.byml.zs",
+  "hash": "14911602953212243797",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": "BottomOfTheWell_GetCompass",
+  "pos": [
+   -12.394590377807617,
+   100.11688995361328,
+   -10.958719253540039
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+  "hash": "874970148260328653",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Deku",
+  "event": null,
+  "pos": [
+   33.85025405883789,
+   100.0,
+   -22.542991638183594
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+  "hash": "16654774376625985726",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_GlassTruth",
+  "event": "BottomOfTheWell_GetGlassTruth",
+  "pos": [
+   -0.04537588357925415,
+   92.42119598388672,
+   -110.26893615722656
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Adult_Dynamic.bcett.byml.zs",
+  "hash": "1158729434763801603",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -27.031509399414062,
+   67.62518310546875,
+   65.2132797241211
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Adult_Static.bcett.byml.zs",
+  "hash": "9128916506605227251",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -66.7614974975586,
+   70.38636016845703,
+   4.668245792388916
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Child_Dynamic.bcett.byml.zs",
+  "hash": "1158729434763801603",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -27.031509399414062,
+   67.62518310546875,
+   65.2132797241211
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Child_Static.bcett.byml.zs",
+  "hash": "9128916506605227251",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -66.7614974975586,
+   70.38636016845703,
+   4.668245792388916
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Adult_Dynamic.bcett.byml.zs",
+  "hash": "9809508929088891725",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -29.83672523498535,
+   120.25138854980469,
+   45.61362075805664
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Child_Dynamic.bcett.byml.zs",
+  "hash": "9809508929088891725",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -29.83672523498535,
+   120.25138854980469,
+   45.61362075805664
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+  "hash": "1186167733408299582",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -129.53871154785156,
+   76.9913101196289,
+   -36.544578552246094
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+  "hash": "2490063409521505179",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Gauntlet_Silver",
+  "event": "SageOfSpirit_NaboorIsTakenAway",
+  "pos": [
+   -168.6367645263672,
+   113.25,
+   29.545825958251953
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+  "hash": "10012167258643363548",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Shield_Mirror",
+  "event": "SageOfSpirit_GetShield",
+  "pos": [
+   -168.62867736816406,
+   113.25,
+   -8.628860473632812
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "1186167733408299582",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -129.53871154785156,
+   76.9913101196289,
+   -36.544578552246094
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "2490063409521505179",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Gauntlet_Silver",
+  "event": "SageOfSpirit_NaboorIsTakenAway",
+  "pos": [
+   -168.6367645263672,
+   113.25,
+   29.545825958251953
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "10012167258643363548",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Shield_Mirror",
+  "event": "SageOfSpirit_GetShield",
+  "pos": [
+   -168.62867736816406,
+   113.25,
+   -8.628860473632812
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+  "hash": "7524527082521156886",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Deku",
+  "event": null,
+  "pos": [
+   -20.750003814697266,
+   113.2750015258789,
+   -36.5
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+  "hash": "8291119063305855945",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": "DodongoCavern_GetMap",
+  "pos": [
+   -26.500003814697266,
+   100.25000762939453,
+   -37.999996185302734
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+  "hash": "8607798771661947511",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -30.130901336669922,
+   100.0,
+   -8.00323486328125
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+  "hash": "11582649900854566065",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Deku",
+  "event": null,
+  "pos": [
+   43.0438232421875,
+   113.1561508178711,
+   -8.749996185302734
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Dynamic.bcett.byml.zs",
+  "hash": "12253889300578348965",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -48.978641510009766,
+   116.01141357421875,
+   -63.93267822265625
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "850464708089653824",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   92.50000762939453,
+   114.9749984741211,
+   -50.25001525878906
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "7764016096998075927",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   82.99276733398438,
+   100.60016632080078,
+   -55.625
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "12161709650443144121",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_BombBag_Small",
+  "event": "Get_StoneOfFire_GetBombBag",
+  "pos": [
+   39.0,
+   115.71800231933594,
+   -23.000003814697266
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "17531994809974271603",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": "DodongoCavern_GetCompass",
+  "pos": [
+   -49.0,
+   103.6193618774414,
+   7.500003814697266
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "566103236844767323",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "2854211238375368215",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "3522439980243161940",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "4529748032854378492",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "7234638808238324101",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "7346745174625046398",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "7458365564915336038",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "7589985979641292928",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "9947351236862205040",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/DreamWorld/BossRushIntervalRoom_Static.bcett.byml.zs",
+  "hash": "15858708076894317041",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Gold",
+  "event": null,
+  "pos": [
+   0.0,
+   0.2064117193222046,
+   -6.451208591461182
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Dynamic.bcett.byml.zs",
+  "hash": "3688520809244472975",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": "FireTemple_GetCompass",
+  "pos": [
+   58.22758483886719,
+   147.08131408691406,
+   40.551998138427734
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "862385681502746018",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   31.400426864624023,
+   194.35394287109375,
+   -10.187762260437012
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "1705064956286753527",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   39.44905471801758,
+   105.2894287109375,
+   51.246742248535156
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "3949488292768750868",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   34.21538162231445,
+   105.30000305175781,
+   -46.45723342895508
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "5634724236470386190",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -39.16148376464844,
+   104.9905014038086,
+   24.638607025146484
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "8757492004108970488",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -6.979769229888916,
+   102.01001739501953,
+   -33.26520538330078
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "9634924691849556346",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   46.55499267578125,
+   150.5,
+   33.415409088134766
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "10521366928524045067",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -37.83451843261719,
+   145.23391723632812,
+   -0.5518722534179688
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "12083259659219538030",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Hammer",
+  "event": "FireTemple_GetHammer",
+  "pos": [
+   -31.76620864868164,
+   196.10000610351562,
+   -12.711023330688477
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "12567412825200613393",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   48.49911117553711,
+   146.9970703125,
+   -43.39179611206055
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "12945617941305968586",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -17.109039306640625,
+   146.98486328125,
+   -31.074241638183594
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "14060099092170010696",
+  "gyaml": "Obj_TBox_A_03",
+  "drop": "Item_Dungeon_BossKey",
+  "event": "ForesetTemple_GetBossKey",
+  "pos": [
+   -5.062701225280762,
+   100.9000015258789,
+   -8.699999809265137
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "15073195886628236505",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   31.697505950927734,
+   194.3523712158203,
+   -8.491735458374023
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "16713240760352215634",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": "FireTemple_GetMap",
+  "pos": [
+   34.136070251464844,
+   147.06590270996094,
+   -5.745555877685547
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "16785682308850448108",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   77.43024444580078,
+   141.1256103515625,
+   0.19242799282073975
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "17001858340376096722",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   33.10565185546875,
+   194.3523712158203,
+   -9.923896789550781
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Dynamic.bcett.byml.zs",
+  "hash": "9038700938965170329",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_ArrowBundle_Large",
+  "event": null,
+  "pos": [
+   -16.258508682250977,
+   60.71368408203125,
+   12.604936599731445
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "1171460703078800858",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -9.854165077209473,
+   117.50995635986328,
+   64.37187194824219
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "3174893090599461927",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": "ForesetTemple_GetMap",
+  "pos": [
+   38.75251007080078,
+   101.41349029541016,
+   -35.749996185302734
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "3433400840978782007",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -17.094999313354492,
+   114.81584167480469,
+   -63.643001556396484
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "5306318520835485827",
+  "gyaml": "Obj_TBox_A_03_NoBake",
+  "drop": "Item_Dungeon_BossKey",
+  "event": "ForesetTemple_GetBossKey",
+  "pos": [
+   -49.459999084472656,
+   129.5,
+   -63.70591735839844
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "6449977980406424425",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   16.44232749938965,
+   88.0250244140625,
+   -42.55992126464844
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "6948525240950728236",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Compass",
+  "event": "ForesetTemple_GetCompass",
+  "pos": [
+   17.084999084472656,
+   114.8189926147461,
+   -63.61600112915039
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "7535137041266964235",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -70.23164367675781,
+   107.0999984741211,
+   -26.485614776611328
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "11082303891540711688",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Range_Bow",
+  "event": "ForestTemple_GetBow",
+  "pos": [
+   0.19999997317790985,
+   114.7607192993164,
+   -68.5
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "14776684749746592758",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   0.013999970629811287,
+   105.78541564941406,
+   -62.75
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "15920957434854338961",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -52.82581329345703,
+   115.00021362304688,
+   4.233699798583984
+  ]
+ },
+ {
+  "banc": "Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+  "hash": "12343753510713797715",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   28.977933883666992,
+   131.5,
+   -93.67167663574219
+  ]
+ },
+ {
+  "banc": "Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+  "hash": "16619432200060282313",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   14.968271255493164,
+   89.1509780883789,
+   -67.69332885742188
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Dynamic.bcett.byml.zs",
+  "hash": "1883068192328530224",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   22.820547103881836,
+   98.02999877929688,
+   -45.62372589111328
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "196331300747102419",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_BombchuBundle_Small",
+  "event": null,
+  "pos": [
+   5.5,
+   98.02999877929688,
+   -45.5
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "1941083939696166170",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Arrow_Ice",
+  "event": "SubEvent_GetIceArrow_OpenTBox",
+  "pos": [
+   -1.8639999628067017,
+   98.02972412109375,
+   -48.0
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "2436665354602612279",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   4.060357093811035,
+   99.46806335449219,
+   -11.430798530578613
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "3717705376223508790",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   78.51373291015625,
+   94.02999877929688,
+   -43.900001525878906
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "3750231902048775592",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_BombBundle_Small",
+  "event": null,
+  "pos": [
+   -39.45528030395508,
+   103.51799774169922,
+   -130.76693725585938
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "4320448574091221496",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -1.75,
+   105.0270004272461,
+   -37.880157470703125
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "4372363658229299619",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   43.290000915527344,
+   98.4449234008789,
+   -82.44000244140625
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "4519534997122863169",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -55.12794876098633,
+   104.01863098144531,
+   -90.28524017333984
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "4709724720801091788",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   44.438899993896484,
+   98.65312957763672,
+   -5.399999618530273
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "5329807728555596183",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -42.09869384765625,
+   104.21499633789062,
+   -137.67062377929688
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "6897789835137994741",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -42.241947174072266,
+   104.21499633789062,
+   -123.61537170410156
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "8186301369655588602",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -13.25,
+   98.02999877929688,
+   -60.5
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "9911316961118170383",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -1.4756050109863281,
+   105.00387573242188,
+   -48.049556732177734
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "10696620323243142689",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -19.25,
+   98.02999877929688,
+   -46.25
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "10743352138513225188",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -9.0,
+   98.02999877929688,
+   -60.0
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "11563468890171962383",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -2.3399999141693115,
+   96.26948547363281,
+   -77.32904815673828
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "11683433230229591151",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   10.25,
+   98.02999877929688,
+   -50.5
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "11754783663699171680",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -53.658546447753906,
+   103.5202407836914,
+   -131.79502868652344
+  ]
+ },
+ {
+  "banc": "Banc/GerudoTrainingGround/GerudoTrainingGround_Static.bcett.byml.zs",
+  "hash": "13501407288943710656",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -50.25470733642578,
+   98.13371276855469,
+   -15.586512565612793
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+  "hash": "6463521162691873710",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   31.193531036376953,
+   -22.59844207763672,
+   37.01767349243164
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+  "hash": "13612880783193811229",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -33.71128845214844,
+   102.18989562988281,
+   22.058910369873047
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+  "hash": "17750686910716887133",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -47.273406982421875,
+   84.03892517089844,
+   -46.02861022949219
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Dynamic.bcett.byml.zs",
+  "hash": "18413589940135955604",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -43.273406982421875,
+   84.04393005371094,
+   -46.02861022949219
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Static.bcett.byml.zs",
+  "hash": "15856256242099990922",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   -9.457417488098145,
+   90.44999694824219,
+   34.98228073120117
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+  "hash": "6205043616869463865",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -43.273406982421875,
+   84.04393005371094,
+   -46.02861022949219
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+  "hash": "6463521162691873710",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   31.193531036376953,
+   -22.59844207763672,
+   37.01767349243164
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Dynamic.bcett.byml.zs",
+  "hash": "17750686910716887133",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -47.273406982421875,
+   84.03892517089844,
+   -46.02861022949219
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Static.bcett.byml.zs",
+  "hash": "15856256242099990922",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   -9.457417488098145,
+   90.44999694824219,
+   34.98228073120117
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+  "hash": "1176975953041865014",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -47.350006103515625,
+   113.68425750732422,
+   -2.3499999046325684
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+  "hash": "3870071239709713434",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -43.2379035949707,
+   113.68425750732422,
+   -8.374468803405762
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+  "hash": "4402942101476009858",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -48.41334915161133,
+   113.68425750732422,
+   1.9895728826522827
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Dynamic.bcett.byml.zs",
+  "hash": "14647422914070455120",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -47.350006103515625,
+   113.68425750732422,
+   -5.150000095367432
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Static.bcett.byml.zs",
+  "hash": "9159710900681116662",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -52.173980712890625,
+   94.79566192626953,
+   31.98935317993164
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Static.bcett.byml.zs",
+  "hash": "10944569637726152230",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -52.17424392700195,
+   94.79529571533203,
+   26.314300537109375
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+  "hash": "1176975953041865014",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -47.350006103515625,
+   113.68425750732422,
+   -2.3499999046325684
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+  "hash": "3870071239709713434",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -43.2379035949707,
+   113.68425750732422,
+   -8.374468803405762
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+  "hash": "4402942101476009858",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -48.41334915161133,
+   113.68425750732422,
+   1.9895728826522827
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Dynamic.bcett.byml.zs",
+  "hash": "14647422914070455120",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -47.350006103515625,
+   113.68425750732422,
+   -5.150000095367432
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+  "hash": "9159710900681116662",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -52.173980712890625,
+   94.79566192626953,
+   31.98935317993164
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+  "hash": "10944569637726152230",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -52.17424392700195,
+   94.79529571533203,
+   26.314300537109375
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Dynamic.bcett.byml.zs",
+  "hash": "16912540161937823130",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Hylian",
+  "event": null,
+  "pos": [
+   38.33354187011719,
+   86.28679656982422,
+   11.234395980834961
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "234006393181394602",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": "MiniGame_DampeRace_OpenGoalTBox",
+  "pos": [
+   -5.990825653076172,
+   82.53295135498047,
+   77.62625885009766
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "4322670163630771947",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Blue",
+  "event": "MiniGame_DampeRace_OpenGoalTBox",
+  "pos": [
+   -5.993101119995117,
+   82.53295135498047,
+   77.62272644042969
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "5534919361313859554",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Obj_Heart_Piece",
+  "event": "MiniGame_DampeRace_OpenGoalTBox",
+  "pos": [
+   -6.031002044677734,
+   82.53295135498047,
+   77.65815734863281
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "9622128545943056087",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   21.410106658935547,
+   85.80999755859375,
+   39.33332443237305
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "16041366920820397198",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Hookshot",
+  "event": "MiniGame_DampeRace_OpenGoalTBox",
+  "pos": [
+   -6.031003952026367,
+   82.53722381591797,
+   77.66008758544922
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Child_Dynamic.bcett.byml.zs",
+  "hash": "16912540161937823130",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Hylian",
+  "event": null,
+  "pos": [
+   38.33354187011719,
+   86.28679656982422,
+   11.234395980834961
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Child_Static.bcett.byml.zs",
+  "hash": "9622128545943056087",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   21.410106658935547,
+   85.80999755859375,
+   39.33332443237305
+  ]
+ },
+ {
+  "banc": "Banc/HountedWasteland/HountedWasteland_Adult_Static.bcett.byml.zs",
+  "hash": "8825521833684392638",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   16.012569427490234,
+   87.66375732421875,
+   -98.34648132324219
+  ]
+ },
+ {
+  "banc": "Banc/HountedWasteland/HountedWasteland_Child_Static.bcett.byml.zs",
+  "hash": "8825521833684392638",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   16.012569427490234,
+   87.66375732421875,
+   -98.34648132324219
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+  "hash": "1163740567397714729",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -5.732444763183594,
+   146.19009399414062,
+   406.8622741699219
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+  "hash": "2967378296224661060",
+  "gyaml": "Obj_TBox_A_01_memo11",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   -213.2954864501953,
+   133.46585083007812,
+   138.68511962890625
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+  "hash": "9891111455604007674",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   84.39884185791016,
+   152.63589477539062,
+   45.36202621459961
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+  "hash": "17023457248274633121",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -297.43524169921875,
+   131.29295349121094,
+   558.1093139648438
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Dynamic.bcett.byml.zs",
+  "hash": "17445672702269453589",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -151.87474060058594,
+   162.03024291992188,
+   265.2939453125
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "5755485285664292988",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   152.2323760986328,
+   136.02159118652344,
+   16.73427963256836
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "6900843020594897860",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -214.90460205078125,
+   98.02299499511719,
+   449.12030029296875
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Dynamic.bcett.byml.zs",
+  "hash": "17445672702269453589",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -151.87474060058594,
+   162.03024291992188,
+   265.2939453125
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "2967378296224661060",
+  "gyaml": "Obj_TBox_A_01_memo11",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   -213.2954864501953,
+   133.46585083007812,
+   138.68511962890625
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "5755485285664292988",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   152.2323760986328,
+   136.02159118652344,
+   16.73427963256836
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "6900843020594897860",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -214.90460205078125,
+   98.02299499511719,
+   449.12030029296875
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Dynamic.bcett.byml.zs",
+  "hash": "4128092231168513176",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -53.10926818847656,
+   107.19275665283203,
+   -34.19630432128906
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "6859289214373847284",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_HeavyBoot",
+  "event": "SageOfWater_MelodyGet_Water",
+  "pos": [
+   -46.22481155395508,
+   109.70999908447266,
+   42.527000427246094
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "11498802739257120175",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": null,
+  "pos": [
+   3.380000114440918,
+   113.71260833740234,
+   -80.19999694824219
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "13542013937093159888",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": null,
+  "pos": [
+   90.21640014648438,
+   104.51268005371094,
+   2.9221553802490234
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "1029712040059298120",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -36.02769088745117,
+   99.7453384399414,
+   -16.491859436035156
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "7461796063704896255",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -45.055137634277344,
+   99.7453384399414,
+   -16.60946273803711
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "14046623154429024571",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -40.55765151977539,
+   99.7453384399414,
+   -27.34482192993164
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "14404733996390762670",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_BombchuBundle_Small",
+  "event": null,
+  "pos": [
+   56.39374923706055,
+   99.49540710449219,
+   -15.179287910461426
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "15320975652699461295",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -52.186920166015625,
+   99.9953384399414,
+   -16.506025314331055
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Dynamic.bcett.byml.zs",
+  "hash": "18277713685010400796",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_ArrowBundle_Medium",
+  "event": null,
+  "pos": [
+   12.584466934204102,
+   103.8997802734375,
+   -65.89408874511719
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "4733634471038136588",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -52.191505432128906,
+   99.99542999267578,
+   -25.485021591186523
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "7899179288432849355",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -38.027687072753906,
+   104.00112915039062,
+   13.321775436401367
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "14962432460641118089",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -40.44684982299805,
+   99.86312866210938,
+   -20.99730682373047
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "16913531450403950487",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_ArrowBundle_Medium",
+  "event": null,
+  "pos": [
+   25.260623931884766,
+   103.00012969970703,
+   23.694896697998047
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "17092385671602176550",
+  "gyaml": "Obj_TBox_A_03_NoBake",
+  "drop": "Item_Dungeon_BossKey",
+  "event": null,
+  "pos": [
+   0.0731363296508789,
+   149.6500244140625,
+   -24.685300827026367
+  ]
+ },
+ {
+  "banc": "Banc/InsideGanonCastle/InsideGanonCastle_Static.bcett.byml.zs",
+  "hash": "17657623307936361670",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Gauntlet_Gold",
+  "event": "InsideGanonCastle_Get_Gauntlet_Gold",
+  "pos": [
+   48.28610610961914,
+   104.00733947753906,
+   -105.30329132080078
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "3510516276638146208",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Compass",
+  "event": "InsideJabuJabuBelly_TreasureBoxWithRuto12",
+  "pos": [
+   25.51691436767578,
+   92.29351806640625,
+   -175.93125915527344
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "3609242017501283521",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   -34.1844596862793,
+   82.46908569335938,
+   -51.981082916259766
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "5527401621172639818",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Boomerang",
+  "event": "InsideJabuJabuBelly_TreasureBoxWithRuto09",
+  "pos": [
+   -31.303817749023438,
+   92.3927993774414,
+   -131.90882873535156
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "14933854942830098290",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": null,
+  "pos": [
+   37.70000076293945,
+   77.55000305175781,
+   -57.118343353271484
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Dynamic.bcett.byml.zs",
+  "hash": "11368028582977069031",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_DekuNutBundle",
+  "event": null,
+  "pos": [
+   -65.2408676147461,
+   125.62507629394531,
+   0.02361336536705494
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Dynamic.bcett.byml.zs",
+  "hash": "12889104996486369065",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_DekuStickBundle_Small",
+  "event": null,
+  "pos": [
+   -10.398595809936523,
+   79.38362121582031,
+   -12.559906005859375
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "821372075822700622",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Range_SlingShot",
+  "event": "InsideTheDekuTree_GetSlingShot",
+  "pos": [
+   -54.38746643066406,
+   111.95770263671875,
+   12.210469245910645
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "8579518566955184384",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": "InsideTheDekuTree_GetMap",
+  "pos": [
+   6.513911247253418,
+   108.4000015258789,
+   7.246145248413086
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "9284193025315608699",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": "InsideTheDekuTree_GetCompass",
+  "pos": [
+   -48.2940673828125,
+   120.36531066894531,
+   0.0
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "13027331340815880287",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_DekuNutBundle",
+  "event": null,
+  "pos": [
+   -42.916072845458984,
+   116.20028686523438,
+   19.345672607421875
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+  "hash": "12902291359202819102",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -41.68712615966797,
+   79.71666717529297,
+   11.395039558410645
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Dynamic.bcett.byml.zs",
+  "hash": "13080955777249750889",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   5.55987548828125,
+   130.16580200195312,
+   41.432716369628906
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+  "hash": "11929552275106311978",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   5.559871673583984,
+   130.165771484375,
+   41.432716369628906
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Dynamic.bcett.byml.zs",
+  "hash": "12902291359202819102",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -41.68712615966797,
+   79.71666717529297,
+   11.395039558410645
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Dynamic.bcett.byml.zs",
+  "hash": "12902291359202819102",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": null,
+  "pos": [
+   -41.68712615966797,
+   79.71666717529297,
+   11.395039558410645
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "4349272251343787229",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -132.1832733154297,
+   123.88790130615234,
+   -16.005447387695312
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "4555665598794293658",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -54.211090087890625,
+   112.26409912109375,
+   -40.87862014770508
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "9725242744547055868",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -49.31772232055664,
+   112.26399993896484,
+   -40.89042282104492
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "10831981390482426294",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Green",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -50.28564453125,
+   112.26399993896484,
+   -42.033172607421875
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "12786193094758345086",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -53.19863510131836,
+   112.26399993896484,
+   -42.09917068481445
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml.zs",
+  "hash": "16757992849254467386",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Sword_Kokiri",
+  "event": "Get_StoneOfForest_GetSword",
+  "pos": [
+   -82.62326049804688,
+   122.26268005371094,
+   32.953887939453125
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Static.bcett.byml.zs",
+  "hash": "14818888396401495482",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -70.83718872070312,
+   103.57520294189453,
+   -63.38836669921875
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "4349272251343787229",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -132.1832733154297,
+   123.88790130615234,
+   -16.005447387695312
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "4555665598794293658",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -54.211090087890625,
+   112.26409912109375,
+   -40.87862014770508
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "9725242744547055868",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -49.31772232055664,
+   112.26399993896484,
+   -40.89042282104492
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "10831981390482426294",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Green",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -50.28564453125,
+   112.26399993896484,
+   -42.033172607421875
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "12786193094758345086",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "KokiriForest_TreasureBox_NaviChatOff",
+  "pos": [
+   -53.19863510131836,
+   112.26399993896484,
+   -42.09917068481445
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml.zs",
+  "hash": "16757992849254467386",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Sword_Kokiri",
+  "event": "Get_StoneOfForest_GetSword",
+  "pos": [
+   -82.62326049804688,
+   122.26268005371094,
+   32.953887939453125
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Static.bcett.byml.zs",
+  "hash": "14818888396401495482",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   -70.83718872070312,
+   103.57520294189453,
+   -63.38836669921875
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Adult_Dynamic.bcett.byml.zs",
+  "hash": "17479747339356189279",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -49.4013671875,
+   104.53118896484375,
+   71.85358428955078
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Child_Dynamic.bcett.byml.zs",
+  "hash": "17479747339356189279",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -49.4013671875,
+   104.53118896484375,
+   71.85358428955078
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "1775586642693927992",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "Obj_MiniGame_SmallKey",
+  "event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox",
+  "pos": [
+   -74.91524505615234,
+   97.88382720947266,
+   9.66461181640625
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "5350594583391365806",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "Obj_MiniGame_SmallKey",
+  "event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox",
+  "pos": [
+   -85.91536712646484,
+   97.88382720947266,
+   9.66477108001709
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "6478285350658826847",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "Obj_MiniGame_SmallKey",
+  "event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox",
+  "pos": [
+   -107.91536712646484,
+   97.88382720947266,
+   9.664770126342773
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "6781536951709667179",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_02",
+  "drop": "TBox_Rupee_Red",
+  "event": "MiniGame_ChoiceTreasure_OpenClearTreasureBox",
+  "pos": [
+   -131.57797241210938,
+   97.8905029296875,
+   12.671160697937012
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "7390716194495618474",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "TBox_Rupee_Green",
+  "event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox",
+  "pos": [
+   -74.91524505615234,
+   97.88382720947266,
+   15.651840209960938
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "9591654059707200528",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "TBox_Rupee_Green",
+  "event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox",
+  "pos": [
+   -96.91536712646484,
+   97.88382720947266,
+   15.651999473571777
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "12114077686306649660",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "TBox_Rupee_Green",
+  "event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox",
+  "pos": [
+   -85.91536712646484,
+   97.88382720947266,
+   15.651999473571777
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "12763522142548402103",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "Obj_MiniGame_SmallKey",
+  "event": "MiniGame_ChoiceTreasure_OpenHitTreasureBox",
+  "pos": [
+   -96.91536712646484,
+   97.88382720947266,
+   9.66477108001709
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "13633455645485504369",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox",
+  "pos": [
+   -107.91536712646484,
+   97.88382720947266,
+   15.651998519897461
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "15659683110284072977",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "TBox_Rupee_Blue",
+  "event": "MiniGame_ChoiceTreasure_OpenMissTreasureBox",
+  "pos": [
+   -118.91536712646484,
+   97.88382720947266,
+   15.651998519897461
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "16881481538337649070",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_02",
+  "drop": "Obj_Heart_Piece",
+  "event": "MiniGame_ChoiceTreasure_OpenClearTreasureBox",
+  "pos": [
+   -131.57797241210938,
+   97.8905029296875,
+   12.671160697937012
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "18239509117326156183",
+  "gyaml": "Obj_HrlCity_Shop_TBox_A_01",
+  "drop": "Obj_MiniGame_SmallKey",
+  "event": "MiniGame_ChoiceTreasure_OpenLastHitTreasureBox",
+  "pos": [
+   -118.91536712646484,
+   97.88382720947266,
+   9.664770126342773
+  ]
+ },
+ {
+  "banc": "Banc/SacredForestMeadow/SacredForestMeadow_Adult_Dynamic.bcett.byml.zs",
+  "hash": "1764383515296652106",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   12.101873397827148,
+   95.98155975341797,
+   -73.77139282226562
+  ]
+ },
+ {
+  "banc": "Banc/SacredForestMeadow/SacredForestMeadow_Adult_Static.bcett.byml.zs",
+  "hash": "7995233962349162969",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -3.7037930488586426,
+   82.28499603271484,
+   67.23433685302734
+  ]
+ },
+ {
+  "banc": "Banc/SacredForestMeadow/SacredForestMeadow_Child_Dynamic.bcett.byml.zs",
+  "hash": "1764383515296652106",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   12.101873397827148,
+   95.98155975341797,
+   -73.77139282226562
+  ]
+ },
+ {
+  "banc": "Banc/SacredForestMeadow/SacredForestMeadow_Child_Static.bcett.byml.zs",
+  "hash": "7995233962349162969",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   -3.7037930488586426,
+   82.28499603271484,
+   67.23433685302734
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+  "hash": "8858270325665149688",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   21.131282806396484,
+   56.400001525878906,
+   98.35862731933594
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+  "hash": "9852624243105848451",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Tbox_MagicJar_Large",
+  "event": null,
+  "pos": [
+   -190.05667114257812,
+   41.28810501098633,
+   -69.42733764648438
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Dynamic.bcett.byml.zs",
+  "hash": "12345747231768877602",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   128.01904296875,
+   51.979736328125,
+   10.48712158203125
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "169081039115821925",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   118.38680267333984,
+   52.13592529296875,
+   -17.66887664794922
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "1111717451118505545",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   98.895263671875,
+   87.18690490722656,
+   -25.659481048583984
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "1733372171176975157",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Compass",
+  "event": "ShadowTemple_GetCompass",
+  "pos": [
+   84.08194732666016,
+   87.31476593017578,
+   22.87545394897461
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "3718790579351798247",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   177.7633514404297,
+   60.904930114746094,
+   98.61054992675781
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "5681107746948738726",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "TBox_Rupee_Green",
+  "event": null,
+  "pos": [
+   101.19000244140625,
+   52.099998474121094,
+   -17.600000381469727
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "5781953901224064730",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -1.46999990940094,
+   63.5,
+   98.64646911621094
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "9221365632831348137",
+  "gyaml": "Obj_TBox_A_03",
+  "drop": "Item_Dungeon_BossKey",
+  "event": "ForesetTemple_GetBossKey",
+  "pos": [
+   -173.22999572753906,
+   41.40999984741211,
+   -69.0999984741211
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "10344372963276519235",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   177.7633514404297,
+   60.904930114746094,
+   95.23897552490234
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "13528903653876646082",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Map",
+  "event": "ShadowTemple_GetMap",
+  "pos": [
+   2.63100004196167,
+   90.54215240478516,
+   -26.214271545410156
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "14535080241831873137",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_HoverBoot",
+  "event": "SageOfShdawo_GetHoverBoots",
+  "pos": [
+   -72.6235580444336,
+   90.52069854736328,
+   -10.149049758911133
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "17902550525792072472",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -181.8605194091797,
+   41.387996673583984,
+   -12.582869529724121
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Dynamic.bcett.byml.zs",
+  "hash": "5309180490719879013",
+  "gyaml": "Obj_TBox_A_06",
+  "drop": "TBox_Shield_Deku",
+  "event": null,
+  "pos": [
+   -56.028404235839844,
+   104.7476577758789,
+   -67.56875610351562
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "1501288453962537671",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_BombchuBundle_Small",
+  "event": null,
+  "pos": [
+   -39.24767303466797,
+   119.1500015258789,
+   -39.6173210144043
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "2203243501006528435",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -10.895488739013672,
+   124.75932312011719,
+   -60.568626403808594
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "4277978357934400600",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   48.88932800292969,
+   100.2800064086914,
+   -77.9800033569336
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "5703423643219134246",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -15.323025703430176,
+   104.7392349243164,
+   -60.244529724121094
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "9143177002861777924",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   53.65800094604492,
+   132.09999084472656,
+   4.736478805541992
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "12042193296697281461",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   55.79999923706055,
+   130.89202880859375,
+   -50.02566146850586
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "12909857529499414969",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_BombBundle_Small",
+  "event": null,
+  "pos": [
+   43.40170669555664,
+   119.1500015258789,
+   -47.540000915527344
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "13828480906010430010",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_BombBundle_Small",
+  "event": null,
+  "pos": [
+   -25.43305778503418,
+   158.21356201171875,
+   -51.285160064697266
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "13852283723126411131",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Map",
+  "event": null,
+  "pos": [
+   0.0,
+   114.1500015258789,
+   -57.58060073852539
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "14040210993541550542",
+  "gyaml": "Obj_TBox_GlassTruth_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   57.95800018310547,
+   132.09999084472656,
+   4.736478805541992
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "15633505270333176438",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Item_Dungeon_Compass",
+  "event": "SpiritTemple_GetCompass",
+  "pos": [
+   13.0,
+   104.76075744628906,
+   -63.74300003051758
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "16272168033146555902",
+  "gyaml": "Obj_TBox_A_03",
+  "drop": "Item_Dungeon_BossKey",
+  "event": "ForesetTemple_GetBossKey",
+  "pos": [
+   19.799999237060547,
+   151.02000427246094,
+   -65.08999633789062
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "17407066694905911064",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -61.224998474121094,
+   132.75,
+   -27.67871856689453
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "2503861086004941173",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -44.0,
+   102.30000305175781,
+   -19.503679275512695
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "3693930347660122883",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   -1.2143666744232178,
+   112.0,
+   -51.849998474121094
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "10378828369334876242",
+  "gyaml": "Obj_TBox_A_03",
+  "drop": "Item_Dungeon_BossKey",
+  "event": "ForesetTemple_GetBossKey",
+  "pos": [
+   33.119998931884766,
+   103.65535736083984,
+   -81.48907470703125
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "11682974908842171598",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Red",
+  "event": null,
+  "pos": [
+   12.0,
+   92.70881652832031,
+   -4.5
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "16384925224245172970",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Map",
+  "event": "WaterTemple_GetMap",
+  "pos": [
+   36.75,
+   119.51000213623047,
+   -4.489998817443848
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "16424266294822218796",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Dungeon_Compass",
+  "event": "WaterTemple_GetCompass",
+  "pos": [
+   -68.2562484741211,
+   104.26000213623047,
+   20.149999618530273
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "16490222392193949581",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   56.8654899597168,
+   118.38999938964844,
+   -28.1200008392334
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "18059711820131847165",
+  "gyaml": "Obj_TBox_A_02",
+  "drop": "Item_Longshot",
+  "event": "WaterTemple_Room07_LongHook_FocusOnGimmick",
+  "pos": [
+   -77.9000015258789,
+   126.600341796875,
+   -99.1657485961914
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "18099019250896853049",
+  "gyaml": "Obj_TBox_A_01_NoBake",
+  "drop": "Item_Dungeon_SmallKey",
+  "event": null,
+  "pos": [
+   43.75,
+   99.97901153564453,
+   -4.5
+  ]
+ },
+ {
+  "banc": "Banc/ZoraDomain/ZoraDomain_Child_Static.bcett.byml.zs",
+  "hash": "3130048366421939233",
+  "gyaml": "Obj_TBox_A_02_NoBake",
+  "drop": "Obj_Heart_Piece",
+  "event": null,
+  "pos": [
+   28.799999237060547,
+   100.38980865478516,
+   -4.8770270347595215
+  ]
+ },
+ {
+  "banc": "Banc/ZoraFountain/ZoraFountain_Adult_Dynamic.bcett.byml.zs",
+  "hash": "15055117029957340138",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "TBox_Rupee_Purple",
+  "event": null,
+  "pos": [
+   33.00502395629883,
+   108.49029541015625,
+   1.6981154680252075
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Adult_Dynamic.bcett.byml.zs",
+  "hash": "8838426083116998768",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -16.722293853759766,
+   74.92900085449219,
+   29.72640609741211
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Child_Dynamic.bcett.byml.zs",
+  "hash": "8838426083116998768",
+  "gyaml": "Obj_TBox_A_01",
+  "drop": "Item_ScrubBusinessSeed",
+  "event": null,
+  "pos": [
+   -16.722293853759766,
+   74.92900085449219,
+   29.72640609741211
+  ]
+ }
+]
