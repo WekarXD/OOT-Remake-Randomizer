@@ -1,6 +1,7 @@
 """Servidor HTTP local (solo stdlib) + API JSON."""
 import json
 import sys
+import threading
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,6 +16,7 @@ from ..nup import SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
 STATIC_DIR = Path(__file__).resolve().parent / 'static'
 MAX_BODY = 1024 * 1024
 MODES = ('vanilla', 'any_chest')
+_CONFIG_LOCK = threading.Lock()
 
 
 def version_string(v: int) -> str:
@@ -62,6 +64,8 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                 n = int(self.headers.get('Content-Length') or 0)
             except ValueError:
                 raise _BadRequest('Content-Length inválido.')
+            if n < 0:
+                raise _BadRequest('Content-Length inválido.')
             if n > MAX_BODY:
                 raise _BadRequest('La petición es demasiado grande.', 413)
             raw = self.rfile.read(n) if n else b''
@@ -84,11 +88,30 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                 traceback.print_exc(file=sys.stderr)
                 self._err(f'Error interno: {type(e).__name__}', 500)
 
+        def _check_origin(self, post):
+            port = self.server.server_address[1]
+            allowed = {f'127.0.0.1:{port}', f'localhost:{port}'}
+            if self.headers.get('Host') not in allowed:
+                raise _BadRequest('Host no permitido.', 403)
+            if post:
+                origin = self.headers.get('Origin')
+                if origin and origin not in {f'http://{h}' for h in allowed}:
+                    raise _BadRequest('Origen no permitido.', 403)
+                ctype = (self.headers.get('Content-Type') or '').lower()
+                if not ctype.startswith('application/json'):
+                    raise _BadRequest('Content-Type debe ser application/json.', 415)
+
         def do_GET(self):
-            self._dispatch(self._get)
+            def run():
+                self._check_origin(False)
+                self._get()
+            self._dispatch(run)
 
         def do_POST(self):
-            self._dispatch(self._post)
+            def run():
+                self._check_origin(True)
+                self._post()
+            self._dispatch(run)
 
         # ---- GET ----
         def _get(self):
@@ -150,7 +173,11 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
 
         def _validate(self, body):
             path = str(body.get('nup_path') or '')
-            if not path or not Path(path).is_file():
+            try:
+                exists = bool(path) and Path(path).is_file()
+            except (OSError, ValueError):
+                exists = False
+            if not exists:
                 return self._json({'ok': False, 'error': f'El archivo no existe: {path}'})
             try:
                 nup = NupArchive(path)
@@ -193,12 +220,13 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             except GenerationError as e:
                 extra = {'exists': True} if e.exists else {}
                 return self._json({'ok': False, 'error': str(e), **extra})
-            cfg = config.load(config_path)
-            cfg.update({'nup_path': nup_path, 'out_dir': out_dir,
-                        'last_settings': {'seed': seed, 'key_items_mode': mode,
-                                          'excluded_items': sorted(excluded),
-                                          'spoiler': settings.spoiler}})
-            config.save(config_path, cfg)
+            with _CONFIG_LOCK:
+                cfg = config.load(config_path)
+                cfg.update({'nup_path': nup_path, 'out_dir': out_dir,
+                            'last_settings': {'seed': seed, 'key_items_mode': mode,
+                                              'excluded_items': sorted(excluded),
+                                              'spoiler': settings.spoiler}})
+                config.save(config_path, cfg)
             self._json({'ok': True, 'seed': res.seed, 'mod_dir': res.mod_dir,
                         'spoiler_txt': res.spoiler_txt})
 

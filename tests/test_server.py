@@ -26,9 +26,13 @@ class ServerTest(unittest.TestCase):
         self.addCleanup(self.server.server_close)
         self.addCleanup(self.server.shutdown)
 
-    def req(self, path, body=None, raw=None):
+    def req(self, path, body=None, raw=None, headers=None):
         data = raw if raw is not None else (None if body is None else json.dumps(body).encode())
         r = urllib.request.Request(self.base + path, data=data)
+        if data is not None:
+            r.add_header('Content-Type', 'application/json')
+        for k, v in (headers or {}).items():
+            r.add_header(k, v)
         try:
             with urllib.request.urlopen(r) as resp:
                 return resp.status, resp.headers, resp.read()
@@ -132,6 +136,61 @@ class ServerTest(unittest.TestCase):
     def test_static_only_serves_static_dir(self):
         self.assertEqual(self.req('/static/../server.py')[0], 404)
         self.assertEqual(self.req('/static/nope.css')[0], 404)
+
+    def raw_http(self, method, path, headers, body=b''):
+        import http.client
+        c = http.client.HTTPConnection('127.0.0.1', self.server.server_address[1])
+        c.putrequest(method, path, skip_host=True, skip_accept_encoding=True)
+        for k, v in headers.items():
+            c.putheader(k, v)
+        c.endheaders(body)
+        r = c.getresponse()
+        data = r.read()
+        c.close()
+        return r.status, data
+
+    def test_bad_host_rejected(self):
+        st, _ = self.raw_http('GET', '/api/config', {'Host': 'evil.com'})
+        self.assertEqual(st, 403)
+        port = self.server.server_address[1]
+        st, _ = self.raw_http('GET', '/api/config', {'Host': f'localhost:{port}'})
+        self.assertEqual(st, 200)
+
+    def test_post_requires_json_content_type(self):
+        st, _, _ = self.req('/api/validate', raw=b'{}',
+                            headers={'Content-Type': 'text/plain'})
+        self.assertEqual(st, 415)
+
+    def test_post_bad_origin_rejected(self):
+        st, _, _ = self.req('/api/validate', {'nup_path': 'x'},
+                            headers={'Origin': 'http://evil.com'})
+        self.assertEqual(st, 403)
+        st, _, _ = self.req('/api/validate', {'nup_path': 'x'}, headers={'Origin': self.base})
+        self.assertEqual(st, 200)
+
+    def test_negative_content_length(self):
+        port = self.server.server_address[1]
+        st, _ = self.raw_http('POST', '/api/validate', {
+            'Host': f'127.0.0.1:{port}', 'Content-Type': 'application/json',
+            'Content-Length': '-5'})
+        self.assertEqual(st, 400)
+
+    def test_validate_nul_path(self):
+        st, d = self.jreq('/api/validate', {'nup_path': 'C:\\a\x00b'})
+        self.assertEqual(st, 200)
+        self.assertFalse(d['ok'])
+        self.assertTrue(d['error'].startswith('El archivo no existe'))
+
+    def test_validate_non_nup_file(self):
+        f = self.tmp / 'x.nup'
+        f.write_bytes(b'not a nup' * 20)
+        st, d = self.jreq('/api/validate', {'nup_path': str(f)})
+        self.assertFalse(d['ok'])
+        self.assertTrue(d['error'])
+
+    def test_static_encoded_traversal(self):
+        st, _, _ = self.req('/static/%2e%2e/server.py')
+        self.assertIn(st, (403, 404))
 
     def test_index_served(self):
         status, headers, data = self.req('/')

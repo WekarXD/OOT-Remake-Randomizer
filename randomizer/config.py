@@ -1,5 +1,7 @@
 """Configuración del usuario (user_config.json en la raíz del proyecto)."""
 import json
+import os
+import tempfile
 from pathlib import Path
 
 DEFAULT_PATH = Path(__file__).resolve().parent.parent / 'user_config.json'
@@ -16,6 +18,14 @@ def load(path: Path) -> dict:
 
 def save(path: Path, d: dict) -> None:
     path = Path(path)
-    tmp = path.with_name(path.name + '.tmp')
-    tmp.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
-    tmp.replace(path)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=path.name + '.', suffix='.tmp')
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json.dump(d, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise

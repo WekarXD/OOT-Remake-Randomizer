@@ -1,5 +1,6 @@
 """python -m randomizer [--port 8765] [--no-browser]"""
 import argparse
+import sys
 import webbrowser
 
 from . import config
@@ -11,7 +12,11 @@ def main():
     ap.add_argument('--port', type=int, default=8765)
     ap.add_argument('--no-browser', action='store_true')
     args = ap.parse_args()
-    server = make_server(args.port, config.DEFAULT_PATH)
+    try:
+        server = make_server(args.port, config.DEFAULT_PATH)
+    except OSError:
+        print(f'El puerto {args.port} está ocupado; usa --port', file=sys.stderr)
+        sys.exit(1)
     url = f'http://127.0.0.1:{server.server_address[1]}/'
     print(f'Servidor en {url} (Ctrl+C para salir)')
     if not args.no_browser:
