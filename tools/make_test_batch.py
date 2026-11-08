@@ -60,7 +60,7 @@ def write(out, mod, rel, data):
     print('wrote', p, len(data))
 
 
-def build(nup, tsv, out): = sys.argv[1:4]
+def build(nup, tsv, out):
     _, pk = peek.nup_read(nup, tsv, 'romfs/Pack/ZsDic.pack.zs')
     dic = zstd.ZstdDict(peek.sarc(zstd.decompress(pk))['bcett.byml.zsdic'])
     _, rc = peek.nup_read(nup, tsv, RSTB + '.zs')
