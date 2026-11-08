@@ -1,0 +1,119 @@
+import hashlib
+import json
+import os
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+from randomizer import locations
+from randomizer.fill import Settings
+from randomizer.formats import byml
+from randomizer.formats.rstb import Rstb, banc_rstb_size
+from randomizer.game import GameData
+from randomizer.generate import GenerationError, generate, safe_seed_name
+from randomizer.nup import NupArchive
+from randomizer.patch import RSTB_PATH
+
+NUP_PATH = os.environ.get('OOT_NUP')
+
+
+def _hashes(root: Path) -> dict[str, str]:
+    return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(root.rglob('*')) if p.is_file()}
+
+
+class SeedNameTest(unittest.TestCase):
+    def test_safe_seed_name(self):
+        self.assertEqual(safe_seed_name('Mi semilla ñ/1'), 'Mi-semilla-n-1')
+        with self.assertRaises(ValueError):
+            safe_seed_name('///')
+        self.assertEqual(len(safe_seed_name('a' * 60)), 40)
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+class RealTests(unittest.TestCase):
+    def test_failed_generation_leaves_nothing(self):
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch('randomizer.fill.World.can_beat', return_value=False):
+                with self.assertRaises(GenerationError):
+                    generate(NUP_PATH, out, Settings(seed='fallo'))
+            self.assertEqual(os.listdir(out), [])
+
+    def test_existing_dir_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as out:
+            s = Settings(seed='dup')
+            r = generate(NUP_PATH, out, s)
+            before = _hashes(Path(r.mod_dir))
+            with self.assertRaises(GenerationError) as cm:
+                generate(NUP_PATH, out, s)
+            self.assertIs(cm.exception.exists, True)
+            self.assertEqual(_hashes(Path(r.mod_dir)), before)
+
+    def test_generate_byte_identical(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            s = Settings(seed='igual')
+            ra = generate(NUP_PATH, a, s)
+            rb = generate(NUP_PATH, b, s)
+            ha, hb = _hashes(Path(ra.mod_dir)), _hashes(Path(rb.mod_dir))
+            self.assertTrue(ha)
+            self.assertEqual(ha, hb)
+
+    def test_generated_files_reread_and_events(self):
+        loc_map = locations.load_map()
+        with tempfile.TemporaryDirectory() as out, NupArchive(NUP_PATH) as nup:
+            res = generate(NUP_PATH, out, Settings(seed='reread'))
+            game = GameData(nup)
+            chests = game.chests()
+            original = {c.hash: c.drop for c in chests}
+            orig_event = {c.hash: c.event for c in chests}
+            spoil = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            placement = {int(r['hash']): r['placed'] for r in spoil['chests']}
+            stripped = {int(h) for h in spoil['stripped_event_sites']}
+            changed = {h for h, d in placement.items() if original[h] != d}
+            self.assertTrue(stripped)
+            self.assertTrue(stripped <= changed)
+            self.assertTrue(all(loc_map[h].strip_event for h in stripped))
+
+            rstb = Rstb.load(game.codec.decompress(
+                RSTB_PATH, (Path(res.mod_dir) / 'romfs' / RSTB_PATH).read_bytes()))
+            files = [f for f in res.changed_files if f.startswith('Banc/')]
+            self.assertTrue(files)
+            kept_event = 0
+            for f in files:
+                comp = (Path(res.mod_dir) / 'romfs' / f).read_bytes()
+                raw = game.codec.decompress(f, comp)
+                self.assertEqual(rstb.get(f[:-3]), banc_rstb_size(len(raw)), f)
+                _ver, root = byml.load(raw)
+                for a in root['Actors']:
+                    dyn = a.get('Dynamic') if isinstance(a, dict) else None
+                    h = a.get('Hash') if isinstance(a, dict) else None
+                    if not isinstance(dyn, dict) or h not in original \
+                            or 'Drop__DropActor' not in dyn:
+                        continue
+                    self.assertEqual(dyn['Drop__DropActor'], placement[h])
+                    if h in stripped:
+                        self.assertNotIn('GetEventName', dyn)
+                    elif h in changed and orig_event[h] is not None:
+                        self.assertEqual(dyn.get('GetEventName'), orig_event[h])
+                        kept_event += 1
+            self.assertGreater(kept_event, 0)
+            # Todas las copias de cada cofre cambiado están en un mapa escrito.
+            written = set(files)
+            for c in chests:
+                if c.hash in changed:
+                    self.assertIn(c.banc, written)
+
+    def test_spoiler_sections(self):
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, Settings(seed='texto'))
+            text = Path(res.spoiler_txt).read_text(encoding='utf-8')
+            for sec in ('Semilla', 'Ajustes', 'Versión del randomizer',
+                        'Versión del juego', 'Objetos clave', 'Todos los cofres',
+                        'Excluidos / sin asociar'):
+                self.assertIn(sec, text)
+            self.assertFalse((Path(res.mod_dir) / 'romfs' / 'spoiler.txt').exists())
+
+
+if __name__ == '__main__':
+    unittest.main()
