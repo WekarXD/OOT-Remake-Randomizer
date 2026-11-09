@@ -23,7 +23,7 @@ Desactiva TestEscenas1 y activa TestEscenas2. Otra vez partida nueva.
 
 - [ ] Las escenas del Árbol Deku, hasta recibir la Esmeralda Kokiri, salen sin los diálogos de historia.
 - [ ] Recibo la Esmeralda Kokiri.
-- [ ] Las escenas de Zelda, hasta la Canción de Zelda, salen sin los diálogos de historia.
+- [ ] La charla con Zelda en el jardín del castillo sale entera, como siempre (es normal: esa charla no se recorta). Las escenas de alrededor (antes y después de la charla, hasta la Canción de Zelda) son más cortas.
 - [ ] Recibo la Carta de Zelda.
 - [ ] Aprendo la Canción de Zelda.
 - [ ] Al terminar cada tramo me quedo en el mismo sitio donde acababa antes.
@@ -31,6 +31,7 @@ Desactiva TestEscenas1 y activa TestEscenas2. Otra vez partida nueva.
 Además, durante toda la prueba fíjate en esto:
 
 - [ ] **Cuelgues:** el juego no se congela ni se queda atascado en ninguna escena. Si pasa, apunta en qué escena o lugar.
+- [ ] **Escenas sin terminar:** ¿Alguna escena se quedó sin terminar o con la pantalla en negro? Si pasa, apunta cuál y dónde.
 - [ ] **Textos que desaparecen:** no falta ningún texto que debería salir (carteles, avisos del sistema, explicaciones de controles). Si falta alguno, apunta cuál y dónde.
 
 Notas: ______

@@ -102,6 +102,17 @@ class RealTests(unittest.TestCase):
             text = Path(r.spoiler_txt).read_text(encoding='utf-8')
             self.assertIn('Saltar cinemáticas: Sí', text)
 
+    def test_cutscene_errors_wrapped(self):
+        from randomizer.formats.bfevfl import BfevflError
+        for exc in (ValueError('crece'), BfevflError('roto')):
+            with tempfile.TemporaryDirectory() as out:
+                with mock.patch('randomizer.generate.build_cutscene_files',
+                                side_effect=exc):
+                    with self.assertRaises(GenerationError) as cm:
+                        generate(NUP_PATH, out, Settings(seed='cine', skip_cutscenes=True))
+                self.assertIn('No se pudieron preparar las cinemáticas', str(cm.exception))
+                self.assertEqual(os.listdir(out), [])
+
     def test_vanilla_with_skip_cutscenes(self):
         with tempfile.TemporaryDirectory() as out:
             r = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla',

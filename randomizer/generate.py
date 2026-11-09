@@ -11,6 +11,7 @@ from pathlib import Path
 
 from . import locations, patch, spoiler
 from .cutscenes import build_cutscene_files
+from .formats.bfevfl import BfevflError
 from .fill import FillError, Settings, place
 from .game import GameData
 from .logic.world import World, load_vanilla_settings
@@ -80,7 +81,13 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
-                extras = build_cutscene_files(game) if settings.skip_cutscenes else None
+                extras = None
+                if settings.skip_cutscenes:
+                    try:
+                        extras = build_cutscene_files(game)
+                    except (ValueError, BfevflError) as e:
+                        raise GenerationError(
+                            f'No se pudieron preparar las cinemáticas: {e}') from e
                 changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras)
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
