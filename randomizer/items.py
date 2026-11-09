@@ -19,6 +19,10 @@ KEY_ITEMS: dict[str, str] = {
     'Item_BombBag_Small': 'Bomb Bag',
 }
 
+# La lógica necesita estos objetos para moverse: excluirlos nunca da una
+# partida completable.
+NON_EXCLUDABLE = frozenset({'Item_Longshot', 'Item_Gauntlet_Gold'})
+
 # Nivel de los objetos progresivos. El nivel 1 de fuerza (brazalete Goron)
 # es fijo, de evento.
 ITEM_LEVEL: dict[str, tuple[str, int]] = {

@@ -4,7 +4,7 @@ from collections import Counter
 from pathlib import Path
 
 from randomizer import items, locations
-from randomizer.fill import FillError, Settings, place
+from randomizer.fill import NO_KEY_TARGET_ZONES, FillError, Settings, place
 from randomizer.game import load_chests_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
@@ -110,6 +110,27 @@ class FillTest(unittest.TestCase):
         for h in self.orig:
             if h not in eligible:
                 self.assertEqual(result[h], self.orig[h], h)
+
+    def test_spoiler_toggle_does_not_change_placement(self):
+        self.assertEqual(self._place(seed='X', spoiler=True),
+                         self._place(seed='X', spoiler=False))
+
+    def test_non_excludable_raises(self):
+        for actor in sorted(items.NON_EXCLUDABLE):
+            with self.assertRaises(FillError) as cm:
+                self._place(seed='A', excluded_items=frozenset({actor}))
+            self.assertIn('No se puede excluir', str(cm.exception))
+            self.assertIn('la lógica necesita moverlo', str(cm.exception))
+
+    def test_no_key_items_in_guarded_zones(self):
+        zone = {c.hash: c.banc.split('/')[1] for c in self.chests}
+        self.assertTrue(set(zone.values()) & NO_KEY_TARGET_ZONES)
+        for i in range(50):
+            result = self._place(seed=f'zona{i}')
+            for h, drop in result.items():
+                if zone[h] in NO_KEY_TARGET_ZONES and drop in items.KEY_ITEMS:
+                    # solo puede quedar el objeto original (sitio no elegible)
+                    self.assertEqual(drop, self.orig[h], (i, h))
 
     def test_unknown_mode_raises(self):
         with self.assertRaises(FillError):

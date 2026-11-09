@@ -34,7 +34,7 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 - Llaves, mapas, brujulas, canciones y objetos de PNJ no se randomizan.
 - La imagen y el texto del cofre pueden seguir mostrando el objeto original (aceptado en la v1); lo que recibes es el objeto nuevo.
 - Las Flechas de hielo tambien desbloquean el medidor de magia.
-- Activar o desactivar "Generar registro de spoilers" cambia la colocacion para la misma semilla.
+- Los objetos clave no se colocan en el Templo del Agua, el Templo del Fuego, el Pozo ni el Centro de Entrenamiento Gerudo en esta versión.
 - La logica es la de OoTR sin glitches.
 
 ## Tests

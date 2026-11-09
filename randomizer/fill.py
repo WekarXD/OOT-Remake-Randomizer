@@ -19,13 +19,22 @@ from dataclasses import dataclass
 
 from randomizer import RANDO_VERSION
 from randomizer.game import ChestActor
-from randomizer.items import DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS
+from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS_ES,
+                              NON_EXCLUDABLE)
 from randomizer.locations import LocationEntry
 from randomizer.logic.world import World
 
 MODES = ('vanilla', 'any_chest')
 MAX_ATTEMPTS = 100
 FILLER = 'Rupees (5)'
+# Zonas (segmento de la ruta del Banc tras 'Banc/') donde no se colocan objetos
+# clave. Sus cofres siguen siendo origen de objetos y destino de relleno, pero
+# en el remake el número de llaves pequeñas y de puertas de estas mazmorras
+# difiere del N64 (Templo del Agua 4 llaves en vez de 6, Centro de
+# Entrenamiento Gerudo, Pozo) y la llave gratis del Templo del Fuego es una
+# suposición de OoTR; la lógica no es fiable ahí.
+NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
+                                 'BottomOfTheWell', 'FireTemple'})
 
 
 @dataclass(frozen=True)
@@ -43,6 +52,7 @@ class FillError(Exception):
 def _settings_key(settings: Settings) -> str:
     data = dataclasses.asdict(settings)
     del data['seed']
+    del data['spoiler']  # solo afecta a los archivos de salida, no a la colocación
     data['excluded_items'] = sorted(settings.excluded_items)
     return json.dumps(data, sort_keys=True)
 
@@ -90,7 +100,8 @@ def _fixed(world_base: dict[str, str], loc_map: dict[int, LocationEntry],
 
 def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
              moving: list[int], loc_map: dict[int, LocationEntry], world: World,
-             base: dict[str, str]) -> dict[int, str] | None:
+             base: dict[str, str], no_key: frozenset[int] = frozenset()
+             ) -> dict[int, str] | None:
     # Sitios elegibles que se quedan fijos: los de objetos clave excluidos.
     pinned = {h: original[h] for h in eligible
               if original[h] in KEY_ITEMS and h not in moving}
@@ -105,7 +116,7 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     for i, item in enumerate(to_place):
         reach = world.reachable_locations(_fixed(base, loc_map, placed),
                                           owned=to_place[i + 1:])
-        candidates = [h for h in free if h not in placed
+        candidates = [h for h in free if h not in placed and h not in no_key
                       and loc_map[h].location in reach]
         if not candidates:
             return None
@@ -129,6 +140,11 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     """Mapa Hash -> Drop__DropActor para todos los cofres de `chests`."""
     if settings.key_items_mode not in MODES:
         raise FillError(f'Modo de objetos clave desconocido: {settings.key_items_mode!r}')
+    bad = settings.excluded_items & NON_EXCLUDABLE
+    if bad:
+        label = ', '.join(LABELS_ES.get(a, a) for a in sorted(bad))
+        raise FillError(f'No se puede excluir {label}: la lógica necesita moverlo '
+                        'para que la partida sea completable.')
     original = _original_drops(chests)
     if settings.key_items_mode == 'vanilla':
         return dict(original)
@@ -136,13 +152,15 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     eligible = _eligible(chests, loc_map, original)
     moving = [h for h in eligible if original[h] in KEY_ITEMS
               and original[h] not in settings.excluded_items]
+    no_key = frozenset(c.hash for c in chests
+                       if c.banc.split('/')[1:2] and c.banc.split('/')[1] in NO_KEY_TARGET_ZONES)
     base = world.vanilla_fixed()
     for h in eligible:
         base[loc_map[h].location] = FILLER
 
     for attempt in range(MAX_ATTEMPTS + 1):
         result = _attempt(_rng(settings, attempt), original, eligible, moving,
-                          loc_map, world, base)
+                          loc_map, world, base, no_key)
         if result is not None:
             return result
     raise FillError('No se ha podido generar una semilla completable con estos ajustes')
