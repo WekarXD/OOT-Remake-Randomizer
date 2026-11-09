@@ -20,7 +20,7 @@ Abre el navegador con la interfaz. Opciones: `--port <numero>` (por defecto 8765
 
 ## Instalar el mod en Lichii
 
-1. Copia la carpeta `Rando_<semilla>` (con su `romfs`) a `load/0400486024DEC000/Rando_<semilla>/romfs/...` dentro de los datos de Lichii. Tambien puedes hacer clic derecho sobre el juego en Lichii y abrir la carpeta de mods.
+1. Copia la carpeta `Rando_<semilla>` (con su `romfs`) a `load/0400486024DEC000/Rando_<semilla>/romfs/...` dentro de los datos de Lichii. Si Lichii ofrece una opción para abrir la carpeta de mods del juego (clic derecho sobre el juego), úsala; si no, busca la carpeta load/0400486024DEC000/ dentro de la carpeta de datos de Lichii (su ubicación depende de tu instalación).
 2. Deja activo **un solo** mod `Rando_*` a la vez; quita o desactiva los demas.
 3. Empieza una partida nueva (una partida ya guardada no refleja el cambio).
 
@@ -29,7 +29,7 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 ## Limitaciones de la v1
 
 - **Se mueven 9 objetos clave:** Espada Kokiri, Resortera, Arco, Martillo, Lente de la Verdad, Flechas de hielo, Guanteletes de oro, Bolsa de bombas y Gancho largo.
-- **Se quedan en su sitio 6:** Boomerang (Bumeran), Gancho, Botas de hierro, Botas levitadoras, Guanteletes de plata y Escudo espejo, porque sus cofres llevan eventos de historia.
+- **Se quedan en su sitio 6:** Bumerán, Gancho, Botas de hierro, Botas levitadoras, Guanteletes de plata y Escudo espejo, porque sus cofres llevan eventos de historia.
 - Solo 104 de los 203 cofres estan asociados con la logica; el resto conserva su contenido original.
 - Llaves, mapas, brujulas, canciones y objetos de PNJ no se randomizan.
 - La imagen y el texto del cofre pueden seguir mostrando el objeto original (aceptado en la v1); lo que recibes es el objeto nuevo.
@@ -40,7 +40,10 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 ## Tests
 
 ```
-set OOT_NUP=<ruta al .nup>
+REM cmd:
+set OOT_NUP=C:utal\juego.nup
+# PowerShell:
+$env:OOT_NUP="C:utal\juego.nup"
 python -m unittest
 ```
 
