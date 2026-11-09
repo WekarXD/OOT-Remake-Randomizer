@@ -29,7 +29,16 @@
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     };
     const r = await fetch(path, opts);
-    return r.json();
+    try {
+      return await r.json();
+    } catch (e) {
+      throw new Error('invalid');
+    }
+  }
+
+  function errText(e) {
+    return e && e.message === 'invalid' ? 'Respuesta inválida del servidor.'
+      : 'No se pudo contactar con el servidor.';
   }
 
   function setStatus(el, text, cls) {
@@ -48,12 +57,15 @@
     const p = $('nup').value.trim();
     const st = $('nup-status');
     if (!p) { setStatus(st, ''); return; }
+    setStatus(st, 'Comprobando…');
     try {
       const r = await api('/api/validate', { nup_path: p });
+      if ($('nup').value.trim() !== p) return;
       if (r.ok) setStatus(st, '✔ Versión ' + r.version + ' detectada', 'ok');
       else setStatus(st, r.error || 'Error de validación.', 'err');
     } catch (e) {
-      setStatus(st, 'No se pudo contactar con el servidor.', 'err');
+      if ($('nup').value.trim() !== p) return;
+      setStatus(st, errText(e), 'err');
     }
   }
 
@@ -118,7 +130,7 @@
         setStatus(res, r.error || 'Error desconocido.', 'err');
       }
     } catch (e) {
-      setStatus(res, 'No se pudo contactar con el servidor.', 'err');
+      setStatus(res, errText(e), 'err');
     }
     btn.disabled = false;
     btn.textContent = 'Generar';

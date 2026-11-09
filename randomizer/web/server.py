@@ -11,16 +11,12 @@ from .. import config, locations
 from ..fill import Settings
 from ..generate import GenerationError, generate
 from ..items import KEY_ITEM_HOME, KEY_ITEMS, LABELS_ES
-from ..nup import SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
+from ..nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
 
 STATIC_DIR = Path(__file__).resolve().parent / 'static'
 MAX_BODY = 1024 * 1024
 MODES = ('vanilla', 'any_chest')
 _CONFIG_LOCK = threading.Lock()
-
-
-def version_string(v: int) -> str:
-    return f'{v >> 16}.{(v >> 8) & 0xFF}.{v & 0xFF}'
 
 
 def _movable_flags() -> dict[str, bool]:
@@ -190,11 +186,11 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                                        f'(title id 0x{nup.title_id:016X}).'})
                 v = nup.update_version
                 if v != SUPPORTED_UPDATE_VERSION:
-                    shown = version_string(v) if v is not None else 'sin actualización'
+                    shown = f'actualización {v}' if v is not None else 'sin actualización'
                     return self._json({'ok': False, 'error':
                                        f'Versión del juego no soportada: {shown}. '
-                                       f'Se necesita la {version_string(SUPPORTED_UPDATE_VERSION)}.'})
-                return self._json({'ok': True, 'version': version_string(v)})
+                                       f'Se necesita la {SUPPORTED_DISPLAY_VERSION}.'})
+                return self._json({'ok': True, 'version': SUPPORTED_DISPLAY_VERSION})
             finally:
                 nup.close()
 

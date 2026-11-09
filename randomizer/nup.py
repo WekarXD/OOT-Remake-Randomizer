@@ -5,6 +5,7 @@ import struct
 from compression import zstd
 
 SUPPORTED_UPDATE_VERSION = 131072
+SUPPORTED_DISPLAY_VERSION = '1.1.1'  # versión mostrada por el juego para la actualización 131072
 TITLE_ID = 0x0400486024DEC000
 
 _NONE = 0xFFFFFFFF

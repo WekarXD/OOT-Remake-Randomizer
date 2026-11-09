@@ -7,6 +7,9 @@ def _label(drop: str) -> str:
     return LABELS_ES.get(drop, drop)
 
 
+MODE_LABELS = {'any_chest': 'Cualquier cofre', 'vanilla': 'Vanilla'}
+
+
 def _zone(banc: str) -> str:
     parts = banc.split('/')
     return parts[1] if len(parts) > 2 else banc
@@ -58,7 +61,7 @@ def to_text(d: dict) -> str:
     s = d['settings']
     excl = ', '.join(_label(i) for i in s['excluded_items']) or 'ninguno'
     lines = ['Semilla', f'  {d["seed"]}', '', 'Ajustes',
-             f'  Modo de objetos clave: {s["key_items_mode"]}',
+             f'  Modo de objetos clave: {MODE_LABELS.get(s["key_items_mode"], s["key_items_mode"])}',
              f'  Objetos excluidos: {excl}',
              '', 'Versión del randomizer', f'  {d["randomizer_version"]}', '',
              'Versión del juego', f'  {d["game_version"]}', '', 'Objetos clave']

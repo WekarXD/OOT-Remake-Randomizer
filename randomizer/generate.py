@@ -13,7 +13,7 @@ from . import locations, patch, spoiler
 from .fill import FillError, Settings, place
 from .game import GameData
 from .logic.world import World, load_vanilla_settings
-from .nup import SUPPORTED_UPDATE_VERSION, NupArchive, NupError
+from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError
 
 
 class GenerationError(Exception):
@@ -77,7 +77,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 changed = patch.write_mod(game, placement, tmp_dir)
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
-                                         str(nup.update_version))
+                                         SUPPORTED_DISPLAY_VERSION)
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
                                                          encoding='utf-8')
                     (tmp_dir / 'spoiler.json').write_text(

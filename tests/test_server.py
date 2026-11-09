@@ -188,6 +188,15 @@ class ServerTest(unittest.TestCase):
         self.assertFalse(d['ok'])
         self.assertTrue(d['error'])
 
+    def test_validate_reports_display_version(self):
+        from randomizer.nup import SUPPORTED_UPDATE_VERSION, TITLE_ID
+        f = self.tmp / 'g.nup'
+        f.write_bytes(b'x')
+        fake = mock.MagicMock(title_id=TITLE_ID, update_version=SUPPORTED_UPDATE_VERSION)
+        with mock.patch('randomizer.web.server.NupArchive', return_value=fake):
+            st, d = self.jreq('/api/validate', {'nup_path': str(f)})
+        self.assertEqual(d, {'ok': True, 'version': '1.1.1'})
+
     def test_static_encoded_traversal(self):
         st, _, _ = self.req('/static/%2e%2e/server.py')
         self.assertIn(st, (403, 404))
