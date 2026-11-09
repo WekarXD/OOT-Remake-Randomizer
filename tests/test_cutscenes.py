@@ -449,6 +449,74 @@ class TestCutsceneFiles(unittest.TestCase):
         acts = Counter(fn.events[i].action for i in after)
         self.assertGreater(acts['EventTriggerSetGameDataBool'], 0)
 
+    def _assert_entry_untouched(self, flow, entry):
+        path = FLOW_DIR + flow + '.bfevfl.zs'
+        orig = self.game.codec.decompress(path, self.nup.read(path))
+        new = self.flows.get(path, (orig, orig))[1]
+        fo, fn = EventFlow(orig), EventFlow(new)
+        start = fo.entry_points[entry]
+        self.assertEqual(fn.entry_points[entry], start, (flow, entry))
+        for i in _reach(fo.events, start):
+            eo, en = fo.events[i], fn.events[i]
+            self.assertEqual((eo.next, eo.cases, eo.forks, eo.join),
+                             (en.next, en.cases, en.forks, en.join), (flow, entry, i))
+        return fo
+
+    def test_gameplay_hints_untouched(self):
+        # Ronda 2: el Deku del Árbol Deku que da la clave del orden (y sus
+        # hermanos) perdía la charla porque Get_StoneOfForest era "*". Las
+        # pistas de juego no se recortan nunca: su entrada (y los subflujos
+        # del mismo flujo a los que llama) queda fuera de la lista.
+        hints = {
+            'Get_StoneOfForest': ['Talk_Deku_01', 'Talk_Deku_02', 'Talk_Deku_03',
+                                  'Talk_Deku_01_Attacked', 'Talk_Deku_02_Attacked',
+                                  'Talk_Deku_03_Attacked', 'Disappear',
+                                  'FocusFaceCamera', 'Focus_ForDeku', 'InitTalk_Attacked'],
+            'Get_StoneOfFire': ['Check_DaruniaDoor', 'CarpetCam'],
+            'DoorOfTime': ['Check_SpiritStoneBase'],
+            'Get_StoneOfWater': ['StoneOfWater_ElevatedFloor_NaviTalk'],
+            'Dm_LostWood_0040': ['C01', 'Dm_LostWood_0040_SecondTure',
+                                 'Dm_LostWood_0040_SecondFalse',
+                                 'HitTargetOfDekuScrub_WalletFull'],
+        }
+        talks = 0
+        for flow, entries in hints.items():
+            spec = self.policy['story_flows'].get(flow)
+            self.assertIsInstance(spec, list, flow)
+            for entry in entries:
+                self.assertNotIn(entry, spec, (flow, entry))
+                fo = self._assert_entry_untouched(flow, entry)
+                talks += sum(1 for i in _reach(fo.events, fo.entry_points[entry])
+                             if fo.events[i].action == 'EventTalk')
+        self.assertGreater(talks, 10)
+        # El resto de Get_StoneOfForest sigue siendo historia y se recorta.
+        spec = self.policy['story_flows']['Get_StoneOfForest']
+        self.assertIn('GetSword', spec)
+        self.assertIn('Boss_Win', spec)
+        self.assertIn(FLOW_DIR + 'Get_StoneOfForest.bfevfl.zs', self.flows)
+
+    def test_kokiri_007_first_reaction_listed(self):
+        # Ronda 2: el Kokiri que corta la salida. Near_FirstReaction es su
+        # reacción forzada (EventRequestActor.RequestEventName en el banc
+        # KokiriForest_Child_Static -> fila SubEvent). Se lista y su recorte
+        # conserva los switch y todo lo que no es de la fase 1.
+        flow = 'Npc_Kokiri_007_Child'
+        spec = self.policy['story_flows'].get(flow)
+        self.assertIsInstance(spec, list)
+        self.assertLessEqual({'Near_FirstReaction', 'Talk', 'GoToDekuTree', 'GoToMido'},
+                             set(spec))
+        pairs = _phase1(self.policy)
+        fo, fn = self._trimmed(flow)
+        for entry, start in fo.entry_points.items():
+            before = _reach(fo.events, start)
+            after = _reach(fn.events, fn.entry_points[entry])
+            for i in before - after:
+                self.assertTrue(_is_phase1(fo.events[i], pairs), (entry, i))
+                self.assertNotEqual(fo.events[i].kind, SWITCH, (entry, i))
+        # Una entrada de un solo globo que acaba en "fin" no puede quedar
+        # apuntando a "fin": se conserva (regla de punteros a fin).
+        self.assertNotEqual(fn.entry_points['Near_FirstReaction'], END)
+
     def test_deterministic(self):
         again = cutscenes.build_cutscene_files(self.game)
         self.assertEqual(list(again), list(self.files))

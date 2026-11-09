@@ -7,7 +7,10 @@ Solo lee el .nup. Escribe:
 - `story_flows`: flujos de historia ("*") por prefijo y, para los flujos de
   PNJ de historia, la lista de entradas candidatas (las que no son charla
   `Talk`/`Near`) menos las descartadas en la revisión manual (REVIEWED_OUT),
-  más las conversaciones forzadas curadas (FORCED_TALKS);
+  más las conversaciones forzadas curadas (FORCED_TALKS); al final, las
+  conversaciones que nunca se recortan (KEEP_TALKS: pistas de juego) salen
+  de la lista y un flujo "*" con alguna de ellas pasa a ser la lista de sus
+  demás entradas;
 - `actions`: lista blanca de acciones por fase.
 
 Imprime las entradas candidatas de los PNJ con sus acciones para revisarlas.
@@ -24,6 +27,7 @@ from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, POLICY_PATH, reachable  # n
 from randomizer.formats.bfevfl import ACTION, SWITCH, EventFlow  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
+from tools.find_forced_talks import subflow_calls  # noqa: E402
 
 STORY_PREFIXES = ('Dm_', 'Get_Stone', 'SageOf', 'AllSage', 'Meet_', 'Goto_',
                   'MelodyGet_', 'SubEvent_Get', 'Get_Epona', 'DoorOfTime',
@@ -70,7 +74,12 @@ FORCED_TALKS = {
         'KokiriForest_Get_StoneOfForest_Completed_Event',  # activador de zona
         'Talk'],
     'Npc_Kokiri_007_Child': [             # corta la salida (IA de bloqueo)
-        'GoToDekuTree', 'GoToMido', 'Talk'],
+        'GoToDekuTree', 'GoToMido', 'Talk',
+        # Ronda 2: reacción al acercarse a la salida (globo). La lanza un
+        # activador de zona (EventRequestActor.RequestEventName en
+        # KokiriForest_Child_Static, fila SubEvent). Es un solo globo que
+        # acaba en "fin", así que la regla de punteros a fin lo conserva.
+        'Near_FirstReaction'],
     'Npc_Kokiri_010_Child': [             # tutorial de fijar el blanco
         'FocusOnAttentionRock_ShieldDeku', 'FocusOnAttentionRock_ShieldDeku_Short'],
     'Npc_Kokiri_011_Child': [             # te para delante de la tienda
@@ -101,6 +110,37 @@ FORCED_TALKS = {
         'InterestTalk_Zelda_Child_ChangeTheTopic'],
     # Kakariko: avisos de Navi sobre las Skulltulas doradas
     'GatheringTokenGold': ['NaviGuide_GatheringTokenGold', 'NaviGuide_TokenGold_Over10'],
+}
+
+# Ronda 2 (2026-11-09): conversaciones que nunca se recortan aunque estén en
+# un flujo "*". Sobre todo pistas de juego (pedido del usuario: el Deku del
+# Árbol Deku que da la clave del orden perdía la charla). Ante la duda se
+# dejan. El flujo "*" pasa a ser la lista de todas sus entradas menos estas
+# y menos las entradas de flujos de historia a las que llaman como subflujo
+# (en cadena); `removable_events` ya protege todo lo que se alcanza desde una
+# entrada no listada. Motivos en el informe de la ronda 2.
+KEEP_TALKS = {
+    # Dekus del Árbol Deku (clave del orden 2-3-1) y sus versiones al
+    # golpearlos (TalkEventName / DamageEventName de Enemy_Scrub_Deku*).
+    'Get_StoneOfForest': [
+        'Talk_Deku_01', 'Talk_Deku_02', 'Talk_Deku_03',
+        'Talk_Deku_01_Attacked', 'Talk_Deku_02_Attacked', 'Talk_Deku_03_Attacked'],
+    # Navi ante la puerta de Darunia (pista: tocar música); el jugador
+    # enseña máscaras a Darunia (voluntario, como Mask_* de Zelda).
+    'Get_StoneOfFire': ['Check_DaruniaDoor', 'Mask_Darunia_Message'],
+    # Leer el altar de las piedras (EventNameFromInstanceParam).
+    'DoorOfTime': ['Check_SpiritStoneBase'],
+    # Pistas de Navi en mazmorras y zonas (puzles, calor).
+    'Get_StoneOfWater': ['StoneOfWater_ElevatedFloor_NaviTalk'],
+    'SageOfFire': ['SageOfFire_NaviScorching', 'SageOfFire_NaviCraterTalk'],
+    'SageOfWater': ['WaterTemple_WaterLevelChange_Navi'],
+    'SageOfSpirit_RescueCarpenter': ['Windowhint_1', 'Windowhint_4'],
+    # Minijuego del Deku de las dianas (Bosque Perdido): los minijuegos se quedan.
+    'Dm_LostWood_0040': ['C01', 'Dm_LostWood_0040_SecondTure',
+                         'Dm_LostWood_0040_SecondFalse', 'HitTargetOfDekuScrub_WalletFull'],
+    # Enseñar máscaras (voluntario).
+    'Get_Epona': ['Mask_All'],
+    'SubEvent_GetEponaSong': ['Mask_All'],
 }
 
 ACTIONS = {
@@ -152,6 +192,45 @@ def _describe(flow, start):
     return ' | '.join(out)
 
 
+def _flow(game, nup, name):
+    path = FLOW_DIR + name + FLOW_EXT
+    raw = game.codec.decompress(path, nup.read(path))
+    return raw, EventFlow(raw)
+
+
+def _apply_keep_talks(game, nup, story):
+    """Quita de `story` las entradas de KEEP_TALKS y sus subflujos de historia."""
+    keep: dict[str, set] = {}
+    todo = []
+    for name, entries in KEEP_TALKS.items():
+        if name not in story:
+            raise ValueError(f'{name}: no es un flujo de historia')
+        _raw, flow = _flow(game, nup, name)
+        missing = set(entries) - set(flow.entry_points)
+        if missing:
+            raise ValueError(f'{name}: entradas inexistentes {sorted(missing)}')
+        todo += [(name, e) for e in entries]
+    while todo:
+        name, entry = todo.pop()
+        if entry in keep.get(name, ()):
+            continue
+        keep.setdefault(name, set()).add(entry)
+        raw, _flow_ = _flow(game, nup, name)
+        for call in subflow_calls(raw, name, entry):
+            sub, sub_entry = call.split(':', 1)
+            if sub in story and sub_entry in _flow(game, nup, sub)[1].entry_points:
+                todo.append((sub, sub_entry))
+    for name, entries in sorted(keep.items()):
+        spec = story[name]
+        allowed = _flow(game, nup, name)[1].entry_points if spec == '*' else spec
+        rest = sorted(e for e in allowed if e not in entries)
+        print(f'KEEP {name}: {", ".join(sorted(entries))}')
+        if rest:
+            story[name] = rest
+        else:
+            del story[name]
+
+
 def build(nup) -> dict:
     game = GameData(nup)
     names = [p[len(FLOW_DIR):-len(FLOW_EXT)] for p in nup.list(FLOW_DIR)
@@ -180,6 +259,7 @@ def build(nup) -> dict:
         if story.get(name) == '*':
             raise ValueError(f'{name}: ya es un flujo de historia completo')
         story[name] = sorted(set(story.get(name, [])) | set(entries))
+    _apply_keep_talks(game, nup, story)
     return {
         'intro_component_lists': ['Dm_Kokiri_0000'],
         'story_flows': dict(sorted(story.items())),

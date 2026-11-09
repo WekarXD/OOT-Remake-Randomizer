@@ -172,3 +172,11 @@ Resultado de la tanda 2 en el juego: llega al Árbol Deku sin cuelgues ni pérdi
 - **Cómo se elige:** una lista revisada a mano de pares (flujo, entrada) en `cutscenes.json`, apoyada por una herramienta que encuentra las conversaciones forzadas (cómo se disparan en los bancs y en EventSetting).
   - Ante la duda, una conversación se deja.
 - **Prueba en el juego:** `TestEscenas3`, desde partida nueva hasta el Árbol Deku y el Castillo/Kakariko.
+
+### 8.1 Ronda 2 (2026-11-09, tras jugar la semilla de aceptación)
+
+- **Las pistas de juego no se recortan nunca.** El Deku del Árbol Deku que da la clave del orden perdía la charla porque `Get_StoneOfForest` era "*".
+  - `tools/build_cutscene_list.py` tiene una lista `KEEP_TALKS` de pares (flujo, entrada) que se quedan: los Dekus del Árbol Deku, Navi ante la puerta de Darunia, el altar de las piedras, pistas de Navi en mazmorras, el minijuego del Deku de las dianas y enseñar máscaras.
+  - Un flujo "*" con alguna de ellas pasa a ser la lista de sus demás entradas. También salen las entradas de flujos de historia a las que llaman como subflujo, en cadena. El recorte ya protege todo lo que se alcanza desde una entrada no listada, así que `cutscenes.py` no cambia.
+  - Ante la duda, una charla se deja.
+- **El Kokiri que corta la salida** (`Npc_Kokiri_007_Child`): se añade `Near_FirstReaction` (globo lanzado por un activador de zona). Es un solo globo que acaba en "fin", así que la regla de punteros a fin lo conserva. Lo que el Kokiri sigue diciendo al chocar con él son diálogos seguidos de un switch (azar, indicadores), que la regla de diálogos con elección conserva; cambiar eso es cambiar una regla de seguridad y queda para decidir.
