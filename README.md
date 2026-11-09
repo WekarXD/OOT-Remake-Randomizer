@@ -41,9 +41,9 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 
 ```
 REM cmd:
-set OOT_NUP=C:utaljuego.nup
+set OOT_NUP=C:\ruta\al\juego.nup
 # PowerShell:
-$env:OOT_NUP="C:utaljuego.nup"
+$env:OOT_NUP="C:\ruta\al\juego.nup"
 python -m unittest
 ```
 
