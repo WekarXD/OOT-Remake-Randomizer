@@ -40,3 +40,10 @@ Si tienes tiempo:
 
 ## Resultados
 
+Resultados en el juego (2026-11-10):
+
+- **A (Gancho, `Item_Hookshot`): se ve, pero no se puede coger.** Los objetos `Item_*` no sirven como objeto suelto en el mundo.
+- **B (rupia roja, `Obj_Rupee_Red`): funciona.**
+- **C (pieza de corazón, `Obj_Heart_Piece`): funciona.** En este juego las piezas de corazón se recogen con una acción, no al pasar por encima; eso es así también en el juego original.
+- **Conclusión:** `Drop__DropActor` en una Skulltula dorada sí se respeta, pero solo con objetos `Obj_*`. Los objetos clave no pueden ir en Skulltulas, jarrones, cajas ni colmenas; ahí solo caben objetos menores.
+
