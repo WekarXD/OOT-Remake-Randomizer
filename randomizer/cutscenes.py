@@ -37,6 +37,57 @@ def _matches(ev, pairs) -> bool:
                                   or ('*', ev.action) in pairs)
 
 
+def _successors(events, i: int) -> list[int]:
+    ev = events[i]
+    out = [ev.next, *ev.cases, *ev.forks, ev.join]
+    return [j for j in out if j is not None and j != END and 0 <= j < len(events)]
+
+
+def on_cycle(events) -> set[int]:
+    """Eventos que están en algún ciclo del grafo (Tarjan iterativo).
+
+    Mismas aristas que `reachable`: next, casos, ramas y join.
+    """
+    index, low, onstack, stack, out = {}, {}, set(), [], set()
+    counter = 0
+    for root in range(len(events)):
+        if root in index:
+            continue
+        work = [(root, iter(_successors(events, root)))]
+        index[root] = low[root] = counter
+        counter += 1
+        stack.append(root)
+        onstack.add(root)
+        while work:
+            v, it = work[-1]
+            w = next(it, None)
+            if w is not None:
+                if w not in index:
+                    index[w] = low[w] = counter
+                    counter += 1
+                    stack.append(w)
+                    onstack.add(w)
+                    work.append((w, iter(_successors(events, w))))
+                elif w in onstack:
+                    low[v] = min(low[v], index[w])
+                continue
+            work.pop()
+            if work:
+                u = work[-1][0]
+                low[u] = min(low[u], low[v])
+            if low[v] == index[v]:
+                comp = []
+                while True:
+                    w = stack.pop()
+                    onstack.discard(w)
+                    comp.append(w)
+                    if w == v:
+                        break
+                if len(comp) > 1 or v in _successors(events, v):
+                    out.update(comp)
+    return out
+
+
 def reachable(events, start: int) -> set[int]:
     """Eventos alcanzables desde `start` dentro del flujo.
 
@@ -63,7 +114,9 @@ def removable_events(flow: EventFlow, spec, pairs) -> set[int]:
     for name, start in flow.entry_points.items():
         target = story if spec == '*' or name in spec else other
         target |= reachable(events, start)
-    cands = {i for i in story - other if _matches(events[i], pairs)}
+    # Nada que esté en un ciclo (p. ej. esperas de un bucle de sondeo
+    # switch -> espera -> switch): quitarlo dejaría un bucle sin espera.
+    cands = {i for i in story - other - on_cycle(events) if _matches(events[i], pairs)}
     return {i for i in cands if not is_choice_talk(events, i, pairs)}
 
 

@@ -1,10 +1,12 @@
 import os
 import unittest
 from collections import Counter
+from types import SimpleNamespace
 
 from randomizer import cutscenes
+from randomizer.cutscenes import on_cycle
 from randomizer.formats import byml
-from randomizer.formats.bfevfl import ACTION, END, SWITCH, EventFlow
+from randomizer.formats.bfevfl import ACTION, END, SWITCH, Event, EventFlow
 from randomizer.game import GameData
 from randomizer.nup import NupArchive
 
@@ -58,6 +60,30 @@ class TestPolicyShape(unittest.TestCase):
         for name, spec in pol['story_flows'].items():
             self.assertFalse(name.startswith(('DmF_', 'Dm_StaffCredit_', 'Dm_Title_')), name)
             self.assertTrue(spec == '*' or (isinstance(spec, list) and spec), name)
+
+
+class TestPollingLoop(unittest.TestCase):
+    def test_wait_in_polling_loop_kept(self):
+        # 0: talk -> 1: switch [2 -> fin, 3 -> espera] ; 3: espera -> 1
+        events = [
+            Event(0, ACTION, actor='Npc_A', action='EventTalk', next=1),
+            Event(1, SWITCH, actor='GameDataActor', query='EventQueryIsGameDataBool',
+                  cases=[2, 3]),
+            Event(2, ACTION, actor='EventSystemActor', action='EventWait', next=END),
+            Event(3, ACTION, actor='EventSystemActor', action='EventWait', next=1),
+        ]
+        flow = SimpleNamespace(events=events, entry_points={'E': 0})
+        pairs = cutscenes.active_actions(cutscenes.load_policy())
+        self.assertEqual(cutscenes.on_cycle(events), {1, 3})
+        removable = cutscenes.removable_events(flow, '*', pairs)
+        self.assertNotIn(3, removable)
+        self.assertIn(2, removable)
+
+
+def _non_action_cycle(events):
+    """Algún ciclo formado solo por eventos que no son acciones."""
+    sub = [e if e.kind != ACTION else Event(e.index, ACTION) for e in events]
+    return {i for i in on_cycle(sub) if events[i].kind != ACTION}
 
 
 @unittest.skipUnless(NUP, 'OOT_NUP no definido')
@@ -178,6 +204,14 @@ class TestCutsceneFiles(unittest.TestCase):
         for start in fn.entry_points.values():
             reach |= _reach(fn.events, start)
         self.assertIn(32, reach)
+
+    def test_no_action_free_cycles(self):
+        for path, (_orig, new) in self.flows.items():
+            fn = EventFlow(new)
+            reach = set()
+            for start in fn.entry_points.values():
+                reach |= _reach(fn.events, start)
+            self.assertFalse(_non_action_cycle(fn.events) & reach, path)
 
     def test_deterministic(self):
         again = cutscenes.build_cutscene_files(self.game)
