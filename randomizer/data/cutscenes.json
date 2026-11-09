@@ -507,8 +507,16 @@
    "Retaliation"
   ],
   "Npc_Hylia_Zelda_Child": [
+   "AboutFireStone",
+   "AboutWaterStone",
+   "InterestTalk_Zelda_Child",
+   "InterestTalk_Zelda_Child_ChangeTheTopic",
+   "Intro",
+   "Talk",
+   "ThatsAll",
    "Zelda_CanbeStopped_Impa_01",
-   "Zelda_CanbeStopped_Impa_02"
+   "Zelda_CanbeStopped_Impa_02",
+   "aboutGeneral"
   ],
   "Npc_Kokiri_007_Child": [
    "GoToDekuTree",

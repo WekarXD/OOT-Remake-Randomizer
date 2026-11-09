@@ -87,7 +87,18 @@ FORCED_TALKS = {
         'FoundBySecurity_Common_IsFirst', 'FoundBySecurity_Courtyard',
         'Soldier_RandomTalk', 'Soldier_RandomTalk_IsAfterSecond'],
     'Npc_Hylia_ImperialSoldier_001_Child': ['Retaliation'],
-    'Npc_Hylia_Zelda_Child': ['Zelda_CanbeStopped_Impa_01', 'Zelda_CanbeStopped_Impa_02'],
+    # Ampliación 1b (pedida por el usuario): la charla con Zelda en el jardín.
+    # No es forzada: el jugador pulsa A (fila Npc_Hylia_Zelda_Child_DC1C2_TTT,
+    # NPCTalkNoPause -> Talk), pero el usuario la quiere fuera por ser
+    # historia. La escena forzada del jardín (Goto_HyruleCastle_MeetZelda ->
+    # Dm_HrlCastle_0035/_0050) ya es "*". Se listan Talk y las entradas a las
+    # que llama; las de máscaras (Mask_*) se quedan. Las preguntas con
+    # elección y los bucles del menú de temas se conservan por las reglas.
+    'Npc_Hylia_Zelda_Child': [
+        'Zelda_CanbeStopped_Impa_01', 'Zelda_CanbeStopped_Impa_02',
+        'Talk', 'Intro', 'aboutGeneral', 'ThatsAll', 'AboutFireStone',
+        'AboutWaterStone', 'InterestTalk_Zelda_Child',
+        'InterestTalk_Zelda_Child_ChangeTheTopic'],
     # Kakariko: avisos de Navi sobre las Skulltulas doradas
     'GatheringTokenGold': ['NaviGuide_GatheringTokenGold', 'NaviGuide_TokenGold_Over10'],
 }

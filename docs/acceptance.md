@@ -4,7 +4,7 @@ Semilla: **ACEPTACION1**. La carpeta `output/acceptance/Rando_ACEPTACION1` solo 
 
 La semilla ACEPTACION1 se regeneró después de la revisión final: la misma semilla da la misma colocación con o sin spoiler. Se volvió a regenerar al dejar fija la Bolsa de bombas (TestLote5: fuera de su cofre original las bombas no se pueden lanzar); ahora está siempre en su cofre de la Caverna de los Dodongos.
 
-También se regeneró con **Saltar cinemáticas** activado (los objetos no cambian de sitio). Si generas la tuya, marca esa casilla en la pestaña General. Las conversaciones que eliges tú (por ejemplo Zelda en el jardín) y el aviso de Navi de fijar el blanco siguen saliendo.
+También se regeneró con **Saltar cinemáticas** activado (los objetos no cambian de sitio). Si generas la tuya, marca esa casilla en la pestaña General. La charla con Zelda en el jardín ahora es más corta; siguen saliendo sus preguntas con respuesta a elegir, el menú de temas y los trozos animados. Las demás conversaciones que eliges tú y el aviso de Navi de fijar el blanco siguen saliendo.
 
 ## Preparar
 

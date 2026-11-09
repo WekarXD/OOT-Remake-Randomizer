@@ -418,6 +418,37 @@ class TestCutsceneFiles(unittest.TestCase):
         self.assertGreater(acts['EventNpcBlockerEndBlockerAI'], 0)
         self.assertGreater(acts['EventTriggerSetGameDataBool'], 0)
 
+    def test_zelda_garden_talk_kept_safe(self):
+        # Charla con Zelda en el jardín (pedida por el usuario, ampliación 1b).
+        # La escena del jardín (Goto_HyruleCastle_MeetZelda -> Dm_HrlCastle_0035
+        # y _0050) ya es historia completa; además se listan las entradas de
+        # la charla de Zelda (no las de máscaras). Se conservan todos los
+        # switch y todas las acciones que no son de la fase 1 (indicadores,
+        # subflujos, IA), y la charla pierde algún diálogo.
+        for flow in ('Goto_HyruleCastle', 'Dm_HrlCastle_0035', 'Dm_HrlCastle_0050'):
+            self.assertEqual(self.policy['story_flows'].get(flow), '*', flow)
+        entries = {'Talk', 'Intro', 'aboutGeneral', 'ThatsAll', 'AboutFireStone',
+                   'AboutWaterStone', 'InterestTalk_Zelda_Child',
+                   'InterestTalk_Zelda_Child_ChangeTheTopic'}
+        spec = self.policy['story_flows'].get('Npc_Hylia_Zelda_Child')
+        self.assertIsInstance(spec, list)
+        self.assertLessEqual(entries, set(spec))
+        self.assertFalse({e for e in spec if e.startswith('Mask_')})
+        pairs = _phase1(self.policy)
+        fo, fn = self._trimmed('Npc_Hylia_Zelda_Child')
+        for entry, start in fo.entry_points.items():
+            before = _reach(fo.events, start)
+            after = _reach(fn.events, fn.entry_points[entry])
+            for i in before - after:
+                self.assertTrue(_is_phase1(fo.events[i], pairs), (entry, i))
+                self.assertNotEqual(fo.events[i].kind, SWITCH, (entry, i))
+        before = _reach(fo.events, fo.entry_points['Talk'])
+        after = _reach(fn.events, fn.entry_points['Talk'])
+        self.assertTrue([i for i in before - after
+                         if fo.events[i].action == 'EventTalk'])
+        acts = Counter(fn.events[i].action for i in after)
+        self.assertGreater(acts['EventTriggerSetGameDataBool'], 0)
+
     def test_deterministic(self):
         again = cutscenes.build_cutscene_files(self.game)
         self.assertEqual(list(again), list(self.files))

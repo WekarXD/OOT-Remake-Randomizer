@@ -45,12 +45,15 @@ Desactiva TestEscenas2 y deja **solo TestEscenas3** activo. Partida nueva otra v
 - [ ] **Fijar el blanco:** el tutorial de los Kokiri sobre fijar el blanco ya no sale.
 - [ ] Llego al Árbol Deku y lo termino.
 - [ ] Llego al Castillo de Hyrule (Zelda) sin problemas.
+- [ ] **Zelda en el jardín:** la charla es más corta. Si después vuelves a hablar con ella (pulsando A), esa charla también es más corta. Sigo recibiendo la Carta de Zelda y aprendiendo la Canción de Zelda.
 - [ ] Llego a Kakariko sin problemas.
 
 Cosas que **siguen saliendo** (es normal, no son fallos):
 
 - El aviso de Navi para "fijar el blanco" seguirá apareciendo. No se puede quitar con este método. Solo debe desaparecer el tutorial de los Kokiri.
-- La charla de Zelda en el jardín del castillo, entera, como en la tanda 2.
+- De la charla de Zelda en el jardín siguen saliendo algunas partes:
+  - las preguntas en las que eliges una respuesta y el menú en el que eliges de qué hablar con ella;
+  - tres trozos que son animaciones (cuando la conoces, a mitad de la charla y la despedida). No se pueden recortar con este método.
 
 Avisos que ahora se recortan **en todo el juego**, no solo de niño. Apunta si alguno se comporta raro:
 
