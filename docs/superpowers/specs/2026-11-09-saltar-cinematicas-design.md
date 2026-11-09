@@ -78,7 +78,7 @@ Quiere una opción más en la página, **"Saltar cinemáticas"**, para jugar má
 - En modo Vanilla de objetos clave con la opción activada, el mod se genera igualmente, solo con los cambios de escenas. El aviso de "sin cambios" solo sale si no hay ningún cambio.
 
 ### 4.2 Desbloquear el salto de la introducción
-- Con la opción activada, el mod incluye `Dm_Kokiri_0000…EventSettingComponentList.bgyml` sin el componente `SkipSetting`, y actualiza su entrada RSTB.
+- Con la opción activada, el mod incluye `Dm_Kokiri_0000…EventSettingComponentList.bgyml` sin el componente `SkipSetting`. Su entrada RSTB no se toca: el archivo nuevo es más pequeño, y el valor RSTB es un límite superior de búfer. Si alguna vez saliera más grande, la generación falla.
 - `Dm_Title_0005` y `Dm_StaffCredit_0005` no se tocan.
 
 ### 4.3 Recortar escenas de la historia
