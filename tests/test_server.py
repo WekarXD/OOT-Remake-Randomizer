@@ -57,10 +57,11 @@ class ServerTest(unittest.TestCase):
 
     def test_generate_exists_flag(self):
         with mock.patch('randomizer.web.server.generate',
-                        side_effect=GenerationError('x', exists=True)):
+                        side_effect=GenerationError('x', exists=True, mod_dir='o/Rando_s')):
             status, d = self.jreq('/api/generate', self.gen_body())
         self.assertFalse(d['ok'])
         self.assertTrue(d['exists'])
+        self.assertEqual(d['mod_dir'], 'o/Rando_s')
 
     def test_generate_ok_saves_config(self):
         res = GenerateResult('s', 'mod', 'mod/spoiler.txt', None, [])
@@ -87,6 +88,61 @@ class ServerTest(unittest.TestCase):
         self.assertFalse(d1['ok'])
         self.assertFalse(d2['ok'])
         g.assert_not_called()
+
+    def test_generate_rejects_non_excludable(self):
+        with mock.patch('randomizer.web.server.generate') as g:
+            status, d = self.jreq('/api/generate',
+                                  self.gen_body(excluded_items=['Item_Longshot']))
+        self.assertEqual(status, 400)
+        self.assertEqual(d['error'], 'No se puede excluir Gancho largo: la lógica necesita '
+                         'moverlo para que la partida sea completable.')
+        g.assert_not_called()
+
+    def test_generate_drops_non_movable_from_excluded(self):
+        res = GenerateResult('s', 'mod', None, None, [])
+        with mock.patch('randomizer.web.server.generate', return_value=res) as g:
+            self.jreq('/api/generate', self.gen_body(
+                excluded_items=['Item_Hookshot', 'Item_Range_Bow']))
+        self.assertEqual(g.call_args.args[2].excluded_items, frozenset({'Item_Range_Bow'}))
+
+    def test_generate_spoiler_must_be_bool(self):
+        with mock.patch('randomizer.web.server.generate') as g:
+            for bad in ('no', 0, None):
+                status, d = self.jreq('/api/generate', self.gen_body(spoiler=bad))
+                self.assertEqual(status, 400, bad)
+        g.assert_not_called()
+
+    def test_generate_null_mod_dir(self):
+        res = GenerateResult('s', None, None, None, [])
+        with mock.patch('randomizer.web.server.generate', return_value=res):
+            status, d = self.jreq('/api/generate', self.gen_body())
+        self.assertTrue(d['ok'])
+        self.assertIsNone(d['mod_dir'])
+
+    def test_generate_concurrent_409(self):
+        started, release = threading.Event(), threading.Event()
+
+        def slow(*a, **k):
+            started.set()
+            release.wait(10)
+            return GenerateResult('s', 'mod', None, None, [])
+
+        results = []
+        with mock.patch('randomizer.web.server.generate', side_effect=slow):
+            t = threading.Thread(
+                target=lambda: results.append(self.jreq('/api/generate', self.gen_body())))
+            t.start()
+            self.assertTrue(started.wait(10))
+            status, d = self.jreq('/api/generate', self.gen_body())
+            release.set()
+            t.join(10)
+        self.assertEqual(status, 409)
+        self.assertEqual(d, {'ok': False, 'error': 'Ya hay una generación en curso.'})
+        self.assertTrue(results[0][1]['ok'])
+        # El cerrojo se libera.
+        res = GenerateResult('s', 'mod', None, None, [])
+        with mock.patch('randomizer.web.server.generate', return_value=res):
+            self.assertTrue(self.jreq('/api/generate', self.gen_body())[1]['ok'])
 
     def test_unhandled_exception_500(self):
         with mock.patch('randomizer.web.server.generate', side_effect=RuntimeError('boom')):
@@ -121,6 +177,10 @@ class ServerTest(unittest.TestCase):
         status, items = self.jreq('/api/items')
         self.assertEqual(len(items), 15)
         self.assertTrue(all(i['label'] for i in items))
+        excludable = {i['actor'] for i in items if i['excludable']}
+        self.assertFalse(excludable & {'Item_Longshot', 'Item_Gauntlet_Gold'})
+        self.assertTrue(all(not i['excludable'] for i in items if not i['movable']))
+        self.assertEqual(len(excludable), 15 - 6 - 2)
         movable = {i['actor'] for i in items if not i['movable']}
         self.assertEqual(movable, {'Item_HeavyBoot', 'Item_Gauntlet_Silver',
                                    'Item_Shield_Mirror', 'Item_HoverBoot',

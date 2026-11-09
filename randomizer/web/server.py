@@ -10,13 +10,14 @@ from urllib.parse import parse_qs, unquote, urlparse
 from .. import config, locations
 from ..fill import Settings
 from ..generate import GenerationError, generate
-from ..items import KEY_ITEM_HOME, KEY_ITEMS, LABELS_ES
+from ..items import KEY_ITEM_HOME, KEY_ITEMS, LABELS_ES, NON_EXCLUDABLE
 from ..nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
 
 STATIC_DIR = Path(__file__).resolve().parent / 'static'
 MAX_BODY = 1024 * 1024
 MODES = ('vanilla', 'any_chest')
 _CONFIG_LOCK = threading.Lock()
+_GENERATE_LOCK = threading.Lock()
 
 
 def _movable_flags() -> dict[str, bool]:
@@ -122,7 +123,9 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             if p == '/api/items':
                 movable = _movable_flags()
                 return self._json([{'actor': a, 'label': LABELS_ES.get(a, a),
-                                    'movable': movable.get(a, True)} for a in KEY_ITEMS])
+                                    'movable': movable.get(a, True),
+                                    'excludable': movable.get(a, True)
+                                    and a not in NON_EXCLUDABLE} for a in KEY_ITEMS])
             if p == '/api/spoiler':
                 return self._spoiler(parse_qs(url.query).get('path', [''])[0])
             self._err('No encontrado.', 404)
@@ -205,17 +208,31 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             if (not isinstance(excluded, list)
                     or any(not isinstance(x, str) or x not in KEY_ITEMS for x in excluded)):
                 return self._err('Lista de objetos excluidos no válida.')
+            spoiler = body.get('spoiler', True)
+            if not isinstance(spoiler, bool):
+                return self._err('El ajuste de spoiler debe ser verdadero o falso.')
+            bad = [x for x in excluded if x in NON_EXCLUDABLE]
+            if bad:
+                return self._err(
+                    f'No se puede excluir {LABELS_ES.get(bad[0], bad[0])}: la lógica '
+                    'necesita moverlo para que la partida sea completable.')
             if not nup_path or not out_dir:
                 return self._err('Faltan la ruta del .nup o la carpeta de salida.')
+            movable = _movable_flags()
+            # Los no movibles nunca se mueven: no deben alterar la clave del RNG.
+            effective = frozenset(x for x in excluded if movable.get(x, True))
             settings = Settings(seed=seed, key_items_mode=mode,
-                                excluded_items=frozenset(excluded),
-                                spoiler=bool(body.get('spoiler', True)))
+                                excluded_items=effective, spoiler=spoiler)
+            if not _GENERATE_LOCK.acquire(blocking=False):
+                return self._err('Ya hay una generación en curso.', 409)
             try:
                 res = generate(nup_path, out_dir, settings,
                                overwrite=bool(body.get('overwrite', False)))
             except GenerationError as e:
-                extra = {'exists': True} if e.exists else {}
+                extra = {'exists': True, 'mod_dir': e.mod_dir} if e.exists else {}
                 return self._json({'ok': False, 'error': str(e), **extra})
+            finally:
+                _GENERATE_LOCK.release()
             with _CONFIG_LOCK:
                 cfg = config.load(config_path)
                 cfg.update({'nup_path': nup_path, 'out_dir': out_dir,
@@ -224,6 +241,7 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                                               'spoiler': settings.spoiler}})
                 config.save(config_path, cfg)
             self._json({'ok': True, 'seed': res.seed, 'mod_dir': res.mod_dir,
-                        'spoiler_txt': res.spoiler_txt})
+                        'spoiler_txt': res.spoiler_txt,
+                        'changed_files': res.changed_files})
 
     return ThreadingHTTPServer(('127.0.0.1', port), Handler)

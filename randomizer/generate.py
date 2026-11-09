@@ -17,9 +17,10 @@ from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive
 
 
 class GenerationError(Exception):
-    def __init__(self, message: str, exists: bool = False):
+    def __init__(self, message: str, exists: bool = False, mod_dir: str | None = None):
         super().__init__(message)
         self.exists = exists
+        self.mod_dir = mod_dir
 
 
 @dataclass
@@ -57,7 +58,8 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
     mod_dir = Path(out_dir) / f'Rando_{name}'
     tmp_dir = mod_dir.with_name(mod_dir.name + '.tmp')
     if mod_dir.exists() and not overwrite:
-        raise GenerationError(f'Ya existe la carpeta "{mod_dir}".', exists=True)
+        raise GenerationError(f'Ya existe la carpeta "{mod_dir}".', exists=True,
+                              mod_dir=str(mod_dir))
 
     txt_path = json_path = None
     try:

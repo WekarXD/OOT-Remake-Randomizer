@@ -46,6 +46,11 @@
     el.className = 'status' + (cls ? ' ' + cls : '');
   }
 
+  function folderName(p) {
+    const parts = String(p).split(/[\\/]+/).filter(Boolean);
+    return parts.length ? parts[parts.length - 1] : String(p);
+  }
+
   function randomSeed() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const a = new Uint32Array(10);
@@ -81,12 +86,12 @@
       cb.checked = excluded.includes(it.actor);
       lab.appendChild(cb);
       lab.appendChild(document.createTextNode(' ' + it.label));
-      if (!it.movable) {
+      if (!it.movable || it.excludable === false) {
         cb.disabled = true;
         cb.checked = false;
         lab.classList.add('disabled');
         const s = document.createElement('span');
-        s.textContent = '(fijo en esta versión)';
+        s.textContent = it.movable ? ' (necesario para la lógica)' : '(fijo en esta versión)';
         lab.appendChild(s);
       }
       box.appendChild(lab);
@@ -120,12 +125,20 @@
         spoiler: $('spoiler').checked, overwrite: !!overwrite,
       });
       if (r.ok) {
-        setStatus(res, '✔ Mod Rando_' + r.seed + ' creado en ' + r.mod_dir +
-          '. Desactiva otros mods Rando_* de este juego en Lichii.', 'ok');
+        if (r.mod_dir && Array.isArray(r.changed_files) && r.changed_files.length === 0) {
+          setStatus(res, 'Semilla generada sin cambios (modo Vanilla). Solo se creó el registro en ' +
+            r.mod_dir + '.', 'ok');
+        } else if (r.mod_dir) {
+          setStatus(res, '✔ Mod ' + folderName(r.mod_dir) + ' creado en ' + r.mod_dir +
+            '. Desactiva otros mods Rando_* de este juego en Lichii.', 'ok');
+        } else {
+          setStatus(res, 'Semilla generada sin cambios (modo Vanilla).', 'ok');
+        }
         $('seed').value = r.seed;
         showSpoilerLink(r.spoiler_txt);
       } else if (r.exists && !overwrite) {
-        retry = window.confirm('Ya existe Rando_' + seed + '. ¿Sobrescribir?');
+        retry = window.confirm('Ya existe ' + (r.mod_dir ? folderName(r.mod_dir) : 'esa carpeta') +
+          '. ¿Sobrescribir?');
       } else {
         setStatus(res, r.error || 'Error desconocido.', 'err');
       }
