@@ -23,7 +23,7 @@ Desactiva TestEscenas1 y activa TestEscenas2. Otra vez partida nueva.
 
 - [ ] Las escenas del Árbol Deku, hasta recibir la Esmeralda Kokiri, salen sin los diálogos de historia.
 - [ ] Recibo la Esmeralda Kokiri.
-- [ ] La charla con Zelda en el jardín del castillo sale entera, como siempre (es normal: esa charla no se recorta). Las escenas de alrededor (antes y después de la charla, hasta la Canción de Zelda) son más cortas.
+- [ ] La charla con Zelda en el jardín del castillo es más corta. Solo siguen saliendo sus animaciones grabadas, el menú en el que eliges qué preguntarle y sus preguntas. Las escenas de alrededor (hasta la Canción de Zelda) también son más cortas.
 - [ ] Recibo la Carta de Zelda.
 - [ ] Aprendo la Canción de Zelda.
 - [ ] Al terminar cada tramo me quedo en el mismo sitio donde acababa antes.
@@ -45,15 +45,15 @@ Desactiva TestEscenas2 y deja **solo TestEscenas3** activo. Partida nueva otra v
 - [ ] **Fijar el blanco:** el tutorial de los Kokiri sobre fijar el blanco ya no sale.
 - [ ] Llego al Árbol Deku y lo termino.
 - [ ] Llego al Castillo de Hyrule (Zelda) sin problemas.
-- [ ] **Zelda en el jardín:** la charla es más corta. Si después vuelves a hablar con ella (pulsando A), esa charla también es más corta. Sigo recibiendo la Carta de Zelda y aprendiendo la Canción de Zelda.
+- [ ] **Zelda en el jardín:** la primera vez que la ves, la escena es igual que en la tanda 2 (ya estaba recortada). Lo nuevo: si vuelves a hablar con ella (pulsando A), esa charla es más corta. Sigo recibiendo la Carta de Zelda y aprendiendo la Canción de Zelda.
 - [ ] Llego a Kakariko sin problemas.
 
 Cosas que **siguen saliendo** (es normal, no son fallos):
 
 - El aviso de Navi para "fijar el blanco" seguirá apareciendo. No se puede quitar con este método. Solo debe desaparecer el tutorial de los Kokiri.
-- De la charla de Zelda en el jardín siguen saliendo algunas partes:
-  - las preguntas en las que eliges una respuesta y el menú en el que eliges de qué hablar con ella;
-  - tres trozos que son animaciones (cuando la conoces, a mitad de la charla y la despedida). No se pueden recortar con este método.
+- De la primera charla con Zelda en el jardín siguen saliendo, como en la tanda 2:
+  - tres animaciones grabadas (cuando la conoces, a mitad de la charla y la despedida). No se pueden recortar con este método;
+  - el menú en el que eliges qué preguntarle y su pregunta de sí o no.
 
 Avisos que ahora se recortan **en todo el juego**, no solo de niño. Apunta si alguno se comporta raro:
 
