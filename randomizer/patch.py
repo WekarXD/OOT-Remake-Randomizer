@@ -1,10 +1,10 @@
 """Escritura del mod: reescribe los mapas Banc con los cofres cambiados."""
 from pathlib import Path
 
-from . import locations
 from .formats import byml
 from .formats.rstb import Rstb, banc_rstb_size
 from .game import GameData
+from .locations import LocationEntry
 
 RSTB_PATH = 'System/Resource/ResourceSizeTable.Product.111.Nin_Ounce_NVN2.rsizetable.zs'
 
@@ -15,11 +15,11 @@ def _write(mod_root: Path, rel: str, data: bytes) -> None:
     p.write_bytes(data)
 
 
-def write_mod(game: GameData, placement: dict[int, str], mod_root: Path) -> list[str]:
+def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
+              loc_map: dict[int, LocationEntry]) -> list[str]:
     chests = game.chests()
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
-    loc_map = locations.load_map()
     # Sitios cambiados que pierden su GetEventName (evento que solo entrega
     # el objeto original). Nunca se toca el evento de otros cofres.
     strip = {h for h in changed if h in loc_map and loc_map[h].strip_event}

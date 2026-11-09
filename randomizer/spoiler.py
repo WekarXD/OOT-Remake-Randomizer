@@ -1,6 +1,6 @@
 """Spoiler: JSON y texto en español."""
 from . import RANDO_VERSION
-from .items import KEY_ITEMS, LABELS_ES
+from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS_ES
 
 
 def _label(drop: str) -> str:
@@ -21,6 +21,7 @@ def build(settings, placement, chests, loc_map, game_version) -> dict:
     for c in chests:
         original.setdefault(c.hash, c.drop)
         site.setdefault(c.hash, c)
+    shop = {c.hash for c in chests if 'HrlCity_Shop' in c.gyaml}
 
     all_chests, key_items, excluded, stripped = [], [], [], []
     for h in sorted(site):
@@ -34,8 +35,17 @@ def build(settings, placement, chests, loc_map, game_version) -> dict:
                'original': original[h], 'placed': placed,
                'changed': placed != original[h]}
         all_chests.append(row)
-        if e is None or e.needs_event_patch:
-            excluded.append(row)
+        reason = None
+        if h in shop:
+            reason = 'tienda'
+        elif original[h].startswith(DUNGEON_ITEM_PREFIXES):
+            reason = 'objeto de mazmorra'
+        elif e is None:
+            reason = 'sin asociar'
+        elif e.needs_event_patch:
+            reason = 'evento de historia'
+        if reason:
+            excluded.append({**row, 'reason': reason})
         if placed in KEY_ITEMS and e is not None and not e.needs_event_patch:
             key_items.append({'item': placed, 'label': _label(placed),
                               'location': e.location, 'zone': _zone(c.banc),
@@ -76,5 +86,6 @@ def to_text(d: dict) -> str:
     lines += ['', 'Excluidos / sin asociar']
     for r in d['excluded']:
         loc = r['location'] or 'sin asociar'
-        lines.append(f'  {r["zone"]} {r["hash"]} [{loc}]: {_label(r["original"])}')
+        lines.append(f'  {r["zone"]} {r["hash"]} [{loc}]: {_label(r["original"])}'
+                     f' ({r["reason"]})')
     return '\n'.join(lines) + '\n'

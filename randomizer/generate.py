@@ -13,7 +13,7 @@ from . import locations, patch, spoiler
 from .fill import FillError, Settings, place
 from .game import GameData
 from .logic.world import World, load_vanilla_settings
-from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError
+from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError, TITLE_ID
 
 
 class GenerationError(Exception):
@@ -25,7 +25,7 @@ class GenerationError(Exception):
 @dataclass
 class GenerateResult:
     seed: str
-    mod_dir: str
+    mod_dir: str | None
     spoiler_txt: str | None
     spoiler_json: str | None
     changed_files: list[str]
@@ -63,6 +63,9 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
     try:
         try:
             with NupArchive(nup_path) as nup:
+                if nup.title_id != TITLE_ID:
+                    raise GenerationError(
+                        f'Este archivo no es Ocarina of Time ({TITLE_ID:016X}).')
                 if nup.update_version != SUPPORTED_UPDATE_VERSION:
                     raise GenerationError(
                         f'Versión del juego no soportada: {nup.update_version}')
@@ -74,7 +77,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
-                changed = patch.write_mod(game, placement, tmp_dir)
+                changed = patch.write_mod(game, placement, tmp_dir, loc_map)
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION)
@@ -87,10 +90,31 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     json_path = str(mod_dir / 'spoiler.json')
         except (NupError, FillError) as e:
             raise GenerationError(str(e)) from e
-        if mod_dir.exists():
-            shutil.rmtree(mod_dir)
-        tmp_dir.rename(mod_dir)
+        if not changed and not settings.spoiler:
+            # Modo Vanilla sin spoiler: no hay nada que escribir.
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            return GenerateResult(settings.seed, None, None, None, [])
+        _swap_in(tmp_dir, mod_dir)
     except BaseException:
         shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
     return GenerateResult(settings.seed, str(mod_dir), txt_path, json_path, changed)
+
+
+def _swap_in(tmp_dir: Path, mod_dir: Path) -> None:
+    """tmp -> mod_dir sin perder el mod anterior si algo falla."""
+    old = mod_dir.with_name(mod_dir.name + '.old')
+    backed_up = False
+    if mod_dir.exists():
+        if old.exists():
+            shutil.rmtree(old)
+        mod_dir.rename(old)
+        backed_up = True
+    try:
+        tmp_dir.rename(mod_dir)
+    except BaseException:
+        if backed_up:
+            old.rename(mod_dir)
+        raise
+    if backed_up:
+        shutil.rmtree(old, ignore_errors=True)

@@ -50,6 +50,54 @@ class RealTests(unittest.TestCase):
             self.assertIs(cm.exception.exists, True)
             self.assertEqual(_hashes(Path(r.mod_dir)), before)
 
+    def test_overwrite_failure_keeps_old_mod(self):
+        real_rename = Path.rename
+
+        def flaky(self, target):
+            if self.name.endswith('.tmp'):
+                raise OSError('boom')
+            return real_rename(self, target)
+
+        with tempfile.TemporaryDirectory() as out:
+            s = Settings(seed='atomico')
+            r = generate(NUP_PATH, out, s)
+            before = _hashes(Path(r.mod_dir))
+            with mock.patch.object(Path, 'rename', flaky):
+                with self.assertRaises(OSError):
+                    generate(NUP_PATH, out, s, overwrite=True)
+            self.assertEqual(_hashes(Path(r.mod_dir)), before)
+            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomico'])
+            # Y un overwrite normal funciona y no deja .old.
+            generate(NUP_PATH, out, s, overwrite=True)
+            self.assertEqual(_hashes(Path(r.mod_dir)), before)
+            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomico'])
+
+    def test_wrong_title_id(self):
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch('randomizer.generate.TITLE_ID', 1):
+                with self.assertRaises(GenerationError) as cm:
+                    generate(NUP_PATH, out, Settings(seed='t'))
+            self.assertIn('no es Ocarina of Time', str(cm.exception))
+            self.assertEqual(os.listdir(out), [])
+
+    def test_vanilla_mode_no_changes(self):
+        with tempfile.TemporaryDirectory() as out:
+            r = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla',
+                                                 spoiler=False))
+            self.assertIsNone(r.mod_dir)
+            self.assertEqual(r.changed_files, [])
+            self.assertEqual(os.listdir(out), [])
+            r = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla'))
+            self.assertEqual(r.changed_files, [])
+            self.assertEqual(sorted(os.listdir(r.mod_dir)), ['spoiler.json', 'spoiler.txt'])
+
+    def test_spoiler_excluded_reasons(self):
+        with tempfile.TemporaryDirectory() as out:
+            r = generate(NUP_PATH, out, Settings(seed='razon'))
+            data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
+            reasons = {x['reason'] for x in data['excluded']}
+            self.assertTrue({'tienda', 'objeto de mazmorra'} <= reasons)
+
     def test_generate_byte_identical(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
             s = Settings(seed='igual')
