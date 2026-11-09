@@ -139,6 +139,31 @@ class TestChoiceTalkFork(unittest.TestCase):
         self.assertIn(0, self._removable(events))
 
 
+class TestLinearChoiceRule(unittest.TestCase):
+    # Ronda 2b: un diálogo seguido de un switch solo es una pregunta si el
+    # switch lee la respuesta (TalkChoice o Select), no si echa a suertes o
+    # mira un indicador.
+    def _removable(self, query):
+        events = [
+            _talk(0, 1),
+            Event(1, SWITCH, actor='GameSystemActor', query=query, cases=[2, 3]),
+            _wait(2, END), _wait(3, END),
+        ]
+        flow = SimpleNamespace(events=events, entry_points={'E': 0})
+        pairs = cutscenes.active_actions(cutscenes.load_policy())
+        return cutscenes.removable_events(flow, '*', pairs)
+
+    def test_talk_choice_kept(self):
+        for q in ('EventQueryTalkChoice2', 'EventQueryTalkChoice4',
+                  'EventQueryFairyFountainSelectSpecialAbility'):
+            self.assertNotIn(0, self._removable(q), q)
+
+    def test_non_answer_switch_removed(self):
+        for q in ('EventQueryRandomChoice2', 'EventQueryAvoidDuplicationRandomChoice2',
+                  'EventQueryIsGameDataBool', 'EventQueryPlayerIsChild'):
+            self.assertIn(0, self._removable(q), q)
+
+
 class TestSystemText(unittest.TestCase):
     def test_signs_and_system_text_kept(self):
         events = [
@@ -288,7 +313,9 @@ class TestCutsceneFiles(unittest.TestCase):
                    and events[j].action != 'EventTalk'):
                 seen.add(j)
                 j = events[j].next
-            return j != END and events[j].kind == SWITCH
+            # Ronda 2b: solo cuenta un switch que lee la respuesta.
+            return (j != END and events[j].kind == SWITCH and events[j].query
+                    and ('TalkChoice' in events[j].query or 'Select' in events[j].query))
 
         found = 0
         for path, (orig, new) in self.flows.items():
@@ -425,8 +452,8 @@ class TestCutsceneFiles(unittest.TestCase):
         # la charla de Zelda (no las de máscaras). Se conservan todos los
         # switch y todas las acciones que no son de la fase 1 (indicadores,
         # subflujos, IA), y la charla pierde algún diálogo.
-        for flow in ('Goto_HyruleCastle', 'Dm_HrlCastle_0035', 'Dm_HrlCastle_0050'):
-            self.assertEqual(self.policy['story_flows'].get(flow), '*', flow)
+        # Ronda 2b: Dm_HrlCastle_0035/_0050 ya no se recortan (Link congelado).
+        self.assertEqual(self.policy['story_flows'].get('Goto_HyruleCastle'), '*')
         entries = {'Talk', 'Intro', 'aboutGeneral', 'ThatsAll', 'AboutFireStone',
                    'AboutWaterStone', 'InterestTalk_Zelda_Child',
                    'InterestTalk_Zelda_Child_ChangeTheTopic'}
@@ -516,6 +543,37 @@ class TestCutsceneFiles(unittest.TestCase):
         # Una entrada de un solo globo que acaba en "fin" no puede quedar
         # apuntando a "fin": se conserva (regla de punteros a fin).
         self.assertNotEqual(fn.entry_points['Near_FirstReaction'], END)
+
+    def test_kokiri_007_talks_removed(self):
+        # Ronda 2b: los diálogos del Kokiri 007 seguidos de un switch de azar
+        # o de indicador ya no cuentan como preguntas y se quitan todos.
+        fo, fn = self._trimmed('Npc_Kokiri_007_Child')
+        for entry in ('Talk', 'GoToDekuTree', 'GoToMido'):
+            after = _reach(fn.events, fn.entry_points[entry])
+            talks = [i for i in after if fn.events[i].action == 'EventTalk']
+            self.assertEqual(talks, [], entry)
+
+    def test_frozen_link_flows_not_trimmed(self):
+        # Ronda 2b: escenas en las que el join espera a animaciones que no se
+        # quitan; recortadas, Link se queda quieto. No se tocan.
+        frozen = ['Dm_Kokiri_0060', 'Dm_Kokiri_0130', 'Dm_Kokiri_0145', 'Dm_Kokiri_0155',
+                  'Dm_Deku_0003', 'Dm_HrlField_0020', 'Dm_HrlCastle_0000',
+                  'Dm_HrlCastle_0020', 'Dm_HrlCastle_0020.110', 'Dm_HrlCastle_0035',
+                  'Dm_HrlCastle_0050', 'Dm_LonLon_0020', 'Dm_Kakariko_0010']
+        for flow in frozen:
+            self.assertNotIn(flow, self.policy['story_flows'], flow)
+            self.assertNotIn(FLOW_DIR + flow + '.bfevfl.zs', self.files, flow)
+
+    def test_fork_branches_never_emptied(self):
+        # Ronda 2b: el juego original no tiene ninguna rama de fork que vaya
+        # directa al join (0 de 12369), así que la regla se mantiene: ninguna
+        # rama recortada apunta al join ni a "fin".
+        for path, (orig, new) in self.flows.items():
+            fo, fn = EventFlow(orig), EventFlow(new)
+            for eo, en in zip(fo.events, fn.events):
+                for bo, bn in zip(eo.forks, en.forks):
+                    if bn != bo:
+                        self.assertNotIn(bn, (en.join, END), (path, eo.index))
 
     def test_deterministic(self):
         again = cutscenes.build_cutscene_files(self.game)

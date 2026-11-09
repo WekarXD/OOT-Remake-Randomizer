@@ -180,3 +180,9 @@ Resultado de la tanda 2 en el juego: llega al Árbol Deku sin cuelgues ni pérdi
   - Un flujo "*" con alguna de ellas pasa a ser la lista de sus demás entradas. También salen las entradas de flujos de historia a las que llaman como subflujo, en cadena. El recorte ya protege todo lo que se alcanza desde una entrada no listada, así que `cutscenes.py` no cambia.
   - Ante la duda, una charla se deja.
 - **El Kokiri que corta la salida** (`Npc_Kokiri_007_Child`): se añade `Near_FirstReaction` (globo lanzado por un activador de zona). Es un solo globo que acaba en "fin", así que la regla de punteros a fin lo conserva. Lo que el Kokiri sigue diciendo al chocar con él son diálogos seguidos de un switch (azar, indicadores), que la regla de diálogos con elección conserva; cambiar eso es cambiar una regla de seguridad y queda para decidir.
+
+### 8.2 Ronda 2b (decisiones del controlador)
+
+- **Diálogos con elección, regla lineal:** un diálogo seguido de un switch solo es una pregunta si la consulta del switch lee la respuesta. Eso es si contiene `TalkChoice` (el mismo criterio que la regla de forks/joins) o `Select` (`EventQueryFairyFountainSelectSpecialAbility`). Los switch de azar (`RandomChoice*`) y de indicadores ya no cuentan.
+- **Forks:** el juego original no tiene ninguna rama de fork que vaya directa al join, ni que llegue a él sin acciones: 0 de 12369 ramas en 914 flujos. La regla de §6b se mantiene, así que las líneas del Gran Árbol Deku que van en paralelo con una animación se quedan.
+- **Link congelado:** las escenas cuyo join espera a animaciones que no se quitan no se recortan (`FROZEN_LINK` en la herramienta): `Dm_Kokiri_0060/0130/0145/0155`, `Dm_Deku_0003`, `Dm_HrlField_0020`, `Dm_HrlCastle_0000/0020(.110)/0035/0050`, `Dm_LonLon_0020` y `Dm_Kakariko_0010`.

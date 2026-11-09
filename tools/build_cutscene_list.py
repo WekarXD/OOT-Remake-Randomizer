@@ -40,6 +40,16 @@ NPC_RE = re.compile(r'Npc_(Hylia_Zelda_|Hylia_Impa_|Kokiri_Saria_|Goron_Darunia_
                     r'Zora_Ruto_|Gerudo_Nabooru_|Hylia_Rauru|Hylia_Sheik_)')
 CHATTER_RE = re.compile(r'(^|_)(Talk|Near)\d*$')
 
+# Ronda 2b (2026-11-09): frozen-Link: join waits on animations. Escenas cuyo
+# join espera a animaciones que no se quitan (fase 2): recortadas, Link se
+# queda quieto hasta que acaban. No se recortan. Dm_HrlCastle_0020.110 es la
+# variante de Dm_HrlCastle_0020.
+FROZEN_LINK = frozenset({
+    'Dm_Kokiri_0060', 'Dm_Kokiri_0130', 'Dm_Kokiri_0145', 'Dm_Kokiri_0155',
+    'Dm_Deku_0003', 'Dm_HrlField_0020', 'Dm_HrlCastle_0000', 'Dm_HrlCastle_0020',
+    'Dm_HrlCastle_0020.110', 'Dm_HrlCastle_0035', 'Dm_HrlCastle_0050',
+    'Dm_LonLon_0020', 'Dm_Kakariko_0010'})
+
 # Revisión manual (2026-11-09): entradas candidatas que son charla normal o
 # repetible (temas al azar, elecciones, máscaras, cámaras auxiliares, avisos
 # de Impa). Ante la duda se dejan fuera: mejor ver una escena que bloquearse.
@@ -237,6 +247,8 @@ def build(nup) -> dict:
              if p.endswith(FLOW_EXT)]
     story: dict = {}
     for name in names:
+        if name in FROZEN_LINK:
+            continue
         if name.startswith(STORY_PREFIXES) and not name.startswith(EXCLUDED_PREFIXES):
             story[name] = '*'
         elif NPC_RE.match(name):
@@ -259,6 +271,9 @@ def build(nup) -> dict:
         if story.get(name) == '*':
             raise ValueError(f'{name}: ya es un flujo de historia completo')
         story[name] = sorted(set(story.get(name, [])) | set(entries))
+    missing = FROZEN_LINK - set(names)
+    if missing:
+        raise ValueError(f'FROZEN_LINK: flujos inexistentes {sorted(missing)}')
     _apply_keep_talks(game, nup, story)
     return {
         'intro_component_lists': ['Dm_Kokiri_0000'],

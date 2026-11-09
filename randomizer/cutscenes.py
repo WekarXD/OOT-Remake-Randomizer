@@ -169,14 +169,24 @@ def _reaches_talk_choice(events, i: int, joins) -> bool:
     return False
 
 
+# Consultas de switch que leen la respuesta de un diálogo (ronda 2b). Las de
+# azar (RandomChoice*) o de indicadores no la leen.
+TALK_ANSWER_QUERIES = ('TalkChoice', 'Select')
+
+
+def reads_talk_answer(query) -> bool:
+    return bool(query) and any(k in query for k in TALK_ANSWER_QUERIES)
+
+
 def is_choice_talk(events, i: int, pairs, joins=None) -> bool:
     """`EventTalk` cuyo resultado lee un switch posterior.
 
     Dos reglas (basta una):
     - Se sigue `next` saltando las acciones de la lista blanca que no son
       diálogos (p. ej. un cambio de emoción entre la pregunta y el switch),
-      se quiten o no en este flujo; si lo primero que queda es un switch, el
-      diálogo es una pregunta.
+      se quiten o no en este flujo; si lo primero que queda es un switch que
+      lee la respuesta (`reads_talk_answer`: TalkChoice o Select), el diálogo
+      es una pregunta.
     - Se llega a un switch TalkChoice sin pasar por otro EventTalk, también a
       través de forks y joins (p. ej. pregunta -> fork -> join -> TalkChoice2).
     """
@@ -192,7 +202,8 @@ def is_choice_talk(events, i: int, pairs, joins=None) -> bool:
            and _matches(events[j], pairs) and events[j].action != 'EventTalk'):
         seen.add(j)
         j = events[j].next
-    return j is not None and 0 <= j < len(events) and events[j].kind == SWITCH
+    return (j is not None and 0 <= j < len(events) and events[j].kind == SWITCH
+            and reads_talk_answer(events[j].query))
 
 
 def trim_flow(data: bytes, spec, pairs) -> bytes | None:
