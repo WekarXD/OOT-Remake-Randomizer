@@ -278,3 +278,54 @@
   - Una sección de "Resultados" vacía.
 
 - [ ] **Step 4:** Commit con el mensaje `test: in-game cutscene test batches`.
+
+---
+
+## Ampliación 1 — conversaciones forzadas (spec §8)
+
+### Task 6: Encontrar y listar las conversaciones forzadas de la infancia
+
+**Files:**
+- Create: `tools/find_forced_talks.py`
+- Modify: `randomizer/data/cutscenes.json` (`story_flows`: entradas de flujos `Npc_*` / `Navi*`), `tools/build_cutscene_list.py` (que la lista curada se conserve al regenerar)
+- Test: `tests/test_cutscenes.py`
+
+**Interfaces:**
+- Consumes: `EventFlow` (tarea 1), `build_cutscene_files` / `trim_flow` / `removable_events` (tarea 3 y revisión final), `RSDB/EventSetting.Product.111.rstbl.byml.zs` (filas con `FlowchartFileName`, `EntryPointName`, `EventSettingComponentList`), bancs (`GameData.load_banc`).
+- Produces: `python -I tools/find_forced_talks.py <nup> [--zones ...]` → lista por zona de candidatos (flujo, entrada, cómo se dispara, acciones que quitaría); entradas curadas añadidas a `story_flows` como listas `["<entrada>", ...]`.
+
+**Reglas:**
+- **Forzada:** se dispara sola, por un activador de zona o un evento de paso, o corta el paso. No lo es una charla que el jugador inicia: filas `NPCTalkNoPause` / `NPCTalk` de un personaje con el que se habla por elección, tiendas, minijuegos, ni pedir una pista a Navi con su botón (`NaviHelp` / `InitTalk_NaviHelp`).
+- **El implementador investiga primero cómo se disparan** (componentes de EventSetting, actores activadores en los bancs) y documenta el criterio en el informe y en el docstring de la herramienta.
+- **Alcance:** la infancia en `KokiriForest`, `InsideTheDekuTree`, `HyruleField`, `Market`, `HyruleCastle` y `KakarikoVillage`.
+- **Casos obligatorios, si se confirma que son forzados:**
+  - Mido cortando el paso (`Npc_Kokiri_Mido_Child`);
+  - el tutorial de fijar el blanco (`Npc_Kokiri_010_Child:FocusOnAttentionRock_ShieldDeku_Short`);
+  - el aviso forzado de Navi (`NaviHint`: la entrada de `NaviLockOnHint`).
+  - Si una entrada es compartida con un uso voluntario (por ejemplo, `Hint_00` también lo usa la pista voluntaria), se queda fuera y se anota.
+- **Ante la duda, fuera.**
+
+- [ ] **Step 1: Tests (OOT_NUP)**
+  - `test_forced_talks_listed`: los casos obligatorios confirmados están en `story_flows` y su recorte quita al menos un `EventTalk`.
+  - `test_voluntary_talks_untouched`: en los flujos de PNJ listados, los eventos alcanzables desde entradas no listadas no cambian. Esto ya lo cubre `test_shared_events_untouched`; se amplía a todos los flujos de PNJ listados.
+  - `test_mido_gate_kept`: en el flujo de Mido recortado se conservan todos los switch y todas las acciones que no son de la fase 1.
+- [ ] **Step 2:** Ejecutar `python -m unittest tests.test_cutscenes -v`. Se espera un FAIL.
+- [ ] **Step 3:** Implementar la herramienta, ejecutarla, curar la lista y regenerar `cutscenes.json`.
+- [ ] **Step 4:** Volver a ejecutar los tests y después la suite completa. Se espera un PASS.
+- [ ] **Step 5:** Commit con el mensaje `feat: trim forced childhood conversations` y, en el cuerpo, la lista curada con su motivo.
+
+### Task 7: Tanda 3 en el juego
+
+**Files:**
+- Modify: `docs/test-cutscenes.md`
+
+- [ ] **Step 1:** Generar `test-mod/0400486024DEC000/TestEscenas3` con `python -I tools/make_cutscene_batch.py <nup> test-mod/0400486024DEC000/TestEscenas3 --only all`.
+- [ ] **Step 2:** Añadir la sección "Tanda 3" a la guía, en partida nueva:
+  - Mido sin texto, pero sin dejar pasar sin espada y escudo;
+  - el tutorial de fijar el blanco ya no sale;
+  - se llega al Árbol Deku, al Castillo (Zelda) y a Kakariko;
+  - no hay cuelgues, pantallas negras ni objetos que falten;
+  - qué conversaciones forzadas siguen saliendo, con dónde.
+
+  Más una sección de "Resultados" vacía.
+- [ ] **Step 3:** Commit con el mensaje `test: cutscene test batch 3`.
