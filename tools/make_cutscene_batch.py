@@ -25,6 +25,20 @@ def select(files: dict, only: str) -> dict:
     return dict(files)
 
 
+def _inside(path, d):
+    """True si `path` es `d` o esta dentro de `d` (d es igual o ancestro de path)."""
+    path, d = os.path.normcase(os.path.abspath(path)), os.path.normcase(os.path.abspath(d))
+    return path == d or path.startswith(d.rstrip(os.sep) + os.sep)
+
+
+def _check_replaceable(d):
+    """Solo se reemplaza un directorio inexistente, vacio o con solo `romfs`."""
+    if not os.path.exists(d):
+        return
+    if not os.path.isdir(d) or set(os.listdir(d)) - {'romfs'}:
+        raise SystemExit(f'FALLO: {d} no esta vacio ni es una tanda anterior (solo romfs); no se toca')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('nup')
@@ -40,7 +54,15 @@ def main():
 
     out = os.path.abspath(a.out_dir)
     tmp = out + '.tmp'
-    shutil.rmtree(tmp, ignore_errors=True)
+    old = out + '.old'
+    cwd = os.getcwd()
+    for guard in (cwd, os.path.abspath(a.nup)):
+        if _inside(guard, out):
+            raise SystemExit(f'FALLO: {out} es igual a un directorio que contiene {guard}')
+    for d in (out, tmp, old):
+        _check_replaceable(d)
+    shutil.rmtree(tmp) if os.path.isdir(tmp) else None
+    shutil.rmtree(old) if os.path.isdir(old) else None
     try:
         for rel, data in sorted(files.items()):
             p = os.path.join(tmp, 'romfs', *rel.split('/'))
@@ -48,11 +70,20 @@ def main():
             with open(p, 'wb') as f:
                 f.write(data)
             print('wrote', rel, len(data))
-        shutil.rmtree(out, ignore_errors=True)
+    except BaseException:
+        shutil.rmtree(tmp)
+        raise
+    had_old = os.path.isdir(out)
+    if had_old:
+        os.rename(out, old)
+    try:
         os.rename(tmp, out)
     except BaseException:
-        shutil.rmtree(tmp, ignore_errors=True)
-        raise
+        if had_old:
+            os.rename(old, out)
+        raise SystemExit(f'FALLO: no se pudo colocar {out}; se restauro el anterior')
+    if had_old:
+        shutil.rmtree(old)
     print(f'{len(files)} archivos en {out}')
 
 
