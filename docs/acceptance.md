@@ -2,7 +2,7 @@
 
 Semilla: **ACEPTACION1**. La carpeta `output/acceptance/Rando_ACEPTACION1` solo existe en el equipo donde se genero; si no la tienes, genera la tuya con `python -m randomizer`. Deja marcado "Generar registro de spoilers" y usa el `spoiler.txt` de tu semilla (con otra semilla los objetos cambian de sitio; adapta las tablas de abajo a tu spoiler).
 
-La semilla ACEPTACION1 se regeneró después de la revisión final: la misma semilla da la misma colocación con o sin spoiler.
+La semilla ACEPTACION1 se regeneró después de la revisión final: la misma semilla da la misma colocación con o sin spoiler. Se volvió a regenerar al dejar fija la Bolsa de bombas (TestLote5: fuera de su cofre original las bombas no se pueden lanzar); ahora está siempre en su cofre de la Caverna de los Dodongos.
 
 ## Preparar
 
@@ -10,14 +10,15 @@ La semilla ACEPTACION1 se regeneró después de la revisión final: la misma sem
 - [ ] Copia `Rando_ACEPTACION1` a `load/0400486024DEC000/` (carpeta de mods de Lichii).
 - [ ] Empieza una **partida nueva**.
 
-## Comprobar 3 objetos clave (segun el spoiler)
+## Comprobar 4 objetos clave (segun el spoiler)
 
 Spoiler de ACEPTACION1:
 
 | Objeto | Donde esta | Visto |
 |---|---|---|
-| Espada Kokiri | Casa de Mido, cofre de arriba a la izquierda | [ ] OK  [ ] FALLO |
-| Bolsa de bombas | Casa de Mido, cofre de abajo a la derecha | [ ] OK  [ ] FALLO |
+| Espada Kokiri | Casa de Mido, cofre de abajo a la izquierda | [ ] OK  [ ] FALLO |
+| Lente de la Verdad | Casa de Mido, cofre de arriba a la izquierda | [ ] OK  [ ] FALLO |
+| Gancho largo | Bosque Kokiri, el cofre de la Espada Kokiri (pasadizo) | [ ] OK  [ ] FALLO |
 | Resortera | Árbol Deku, el cofre grande de la sala de la Resortera (sitio original) | [ ] OK  [ ] FALLO |
 
 Si no está donde se indica, anota dónde lo encontraste.

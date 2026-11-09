@@ -42,7 +42,6 @@ STRIP_EVENT_HASHES: set[int] = {
     16654774376625985726,  # Lente de la Verdad
     1941083939696166170,   # Flechas de hielo
     17657623307936361670,  # Guanteletes de oro
-    12161709650443144121,  # Bolsa de bombas
     18059711820131847165,  # Gancho largo
 }
 EVENT_PATCH_HASHES: set[int] = {
@@ -52,6 +51,9 @@ EVENT_PATCH_HASHES: set[int] = {
     14535080241831873137,  # Botas levitadoras
     16041366920820397198,  # Gancho (carrera de Dampé)
     5527401621172639818,   # Bumerán (Ruto)
+    # Bolsa de bombas: fuera de su cofre las bombas no se pueden lanzar
+    # (TestLote5, ni siquiera con su evento original). Fija por ahora.
+    12161709650443144121,
 }
 
 

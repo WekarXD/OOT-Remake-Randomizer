@@ -204,10 +204,10 @@
  },
  "12161709650443144121": {
   "location": "Dodongos Cavern Bomb Bag Chest",
-  "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small en DodongoCavern (39.0, 115.7, -23.0)",
+  "needs_event_patch": true,
+  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small en DodongoCavern (39.0, 115.7, -23.0); fija: fuera de su cofre las bombas no se pueden lanzar (TestLote5)",
   "status": "auto",
-  "strip_event": true
+  "strip_event": false
  },
  "12253889300578348965": {
   "location": null,

@@ -28,8 +28,8 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 
 ## Limitaciones de la v1
 
-- **Se mueven 9 objetos clave:** Espada Kokiri, Resortera, Arco, Martillo, Lente de la Verdad, Flechas de hielo, Guanteletes de oro, Bolsa de bombas y Gancho largo.
-- **Se quedan en su sitio 6:** Bumerán, Gancho, Botas de hierro, Botas levitadoras, Guanteletes de plata y Escudo espejo, porque sus cofres llevan eventos de historia.
+- **Se mueven 8 objetos clave:** Espada Kokiri, Resortera, Arco, Martillo, Lente de la Verdad, Flechas de hielo, Guanteletes de oro y Gancho largo.
+- **Se quedan en su sitio 7:** Bumerán, Gancho, Botas de hierro, Botas levitadoras, Guanteletes de plata y Escudo espejo, porque sus cofres llevan eventos de historia, y la Bolsa de bombas, porque fuera de su cofre las bombas no se pueden lanzar (se investiga).
 - Solo 104 de los 203 cofres estan asociados con la logica; el resto conserva su contenido original.
 - Llaves, mapas, brujulas, canciones y objetos de PNJ no se randomizan.
 - La imagen y el texto del cofre pueden seguir mostrando el objeto original (aceptado en la v1); lo que recibes es el objeto nuevo.

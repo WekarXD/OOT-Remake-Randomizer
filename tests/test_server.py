@@ -180,10 +180,10 @@ class ServerTest(unittest.TestCase):
         excludable = {i['actor'] for i in items if i['excludable']}
         self.assertFalse(excludable & {'Item_Longshot', 'Item_Gauntlet_Gold'})
         self.assertTrue(all(not i['excludable'] for i in items if not i['movable']))
-        self.assertEqual(len(excludable), 15 - 6 - 2)
+        self.assertEqual(len(excludable), 15 - 7 - 2)
         movable = {i['actor'] for i in items if not i['movable']}
         self.assertEqual(movable, {'Item_HeavyBoot', 'Item_Gauntlet_Silver',
-                                   'Item_Shield_Mirror', 'Item_HoverBoot',
+                                   'Item_Shield_Mirror', 'Item_HoverBoot', 'Item_BombBag_Small',
                                    'Item_Hookshot', 'Item_Boomerang'})
 
     def test_config_roundtrip_and_corrupt(self):
