@@ -357,6 +357,67 @@ class TestCutsceneFiles(unittest.TestCase):
                 reach |= _reach(fn.events, start)
             self.assertFalse(_non_action_cycle(fn.events) & reach, path)
 
+    def _trimmed(self, flow):
+        path = FLOW_DIR + flow + '.bfevfl.zs'
+        self.assertTrue(path in self.flows, f"{flow} no se recorta")
+        return (EventFlow(b) for b in self.flows[path])
+
+    def test_forced_talks_listed(self):
+        # Casos obligatorios confirmados (ampliación 1): Mido cortando el paso
+        # y el tutorial de fijar el blanco. Cada recorte quita algún EventTalk.
+        cases = {
+            'Npc_Kokiri_Mido_Child': 'Talk',
+            'Npc_Kokiri_010_Child': 'FocusOnAttentionRock_ShieldDeku_Short',
+        }
+        for flow, entry in cases.items():
+            spec = self.policy['story_flows'].get(flow)
+            self.assertIsInstance(spec, list, flow)
+            self.assertIn(entry, spec, flow)
+            fo, fn = self._trimmed(flow)
+            before = _reach(fo.events, fo.entry_points[entry])
+            after = _reach(fn.events, fn.entry_points[entry])
+            gone = [i for i in before - after if fo.events[i].action == 'EventTalk']
+            self.assertTrue(gone, (flow, entry))
+        # El aviso de Navi (NaviLockOnHint -> NaviHint:Hint_00) comparte la
+        # entrada con la pista voluntaria: se queda fuera.
+        self.assertNotIn('NaviHint', self.policy['story_flows'])
+
+    def test_voluntary_talks_untouched(self):
+        # Flujos de PNJ/Navi listados por entradas: lo que se alcanza desde
+        # una entrada no listada no cambia, y cada flujo listado se recorta.
+        listed = {n: s for n, s in self.policy['story_flows'].items() if s != '*'}
+        self.assertTrue(any(n.startswith('Npc_') for n in listed))
+        checked = 0
+        for name, spec in listed.items():
+            fo, fn = self._trimmed(name)
+            for entry, start in fo.entry_points.items():
+                if entry in spec:
+                    continue
+                self.assertEqual(fn.entry_points[entry], start, (name, entry))
+                for i in _reach(fo.events, start):
+                    eo, en = fo.events[i], fn.events[i]
+                    self.assertEqual((eo.next, eo.cases, eo.forks, eo.join),
+                                     (en.next, en.cases, en.forks, en.join),
+                                     (name, entry, i))
+                    checked += 1
+        self.assertGreater(checked, 0)
+
+    def test_mido_gate_kept(self):
+        # Mido: se conservan todos los switch y todas las acciones que no son
+        # de la fase 1 (la IA de bloqueo, los indicadores, los pasos).
+        pairs = _phase1(self.policy)
+        fo, fn = self._trimmed('Npc_Kokiri_Mido_Child')
+        for entry, start in fo.entry_points.items():
+            before = _reach(fo.events, start)
+            after = _reach(fn.events, fn.entry_points[entry])
+            for i in before - after:
+                self.assertTrue(_is_phase1(fo.events[i], pairs), (entry, i))
+                self.assertNotEqual(fo.events[i].kind, SWITCH, (entry, i))
+        talk = _reach(fn.events, fn.entry_points['Talk'])
+        acts = Counter(fn.events[i].action for i in talk)
+        self.assertGreater(acts['EventNpcBlockerEndBlockerAI'], 0)
+        self.assertGreater(acts['EventTriggerSetGameDataBool'], 0)
+
     def test_deterministic(self):
         again = cutscenes.build_cutscene_files(self.game)
         self.assertEqual(list(again), list(self.files))

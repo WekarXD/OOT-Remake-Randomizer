@@ -6,7 +6,8 @@ Solo lee el .nup. Escribe:
 - `intro_component_lists`: introducciones cuyo salto se desbloquea;
 - `story_flows`: flujos de historia ("*") por prefijo y, para los flujos de
   PNJ de historia, la lista de entradas candidatas (las que no son charla
-  `Talk`/`Near`) menos las descartadas en la revisión manual (REVIEWED_OUT);
+  `Talk`/`Near`) menos las descartadas en la revisión manual (REVIEWED_OUT),
+  más las conversaciones forzadas curadas (FORCED_TALKS);
 - `actions`: lista blanca de acciones por fase.
 
 Imprime las entradas candidatas de los PNJ con sus acciones para revisarlas.
@@ -42,8 +43,7 @@ REVIEWED_OUT = {
     'Npc_Hylia_Zelda_Child': {
         'AboutFireStone', 'AboutWaterStone', 'InterestTalk_Zelda_Child',
         'InterestTalk_Zelda_Child_ChangeTheTopic', 'Intro', 'Mask_All',
-        'Sub_CanbeStopped_Impa_Camera', 'ThatsAll', 'Zelda_CanbeStopped_Impa_01',
-        'Zelda_CanbeStopped_Impa_02', 'aboutGeneral'},
+        'Sub_CanbeStopped_Impa_Camera', 'ThatsAll', 'aboutGeneral'},
     'Npc_Hylia_Zelda_Adult': {'Mask_All'},
     'Npc_Goron_Darunia_Child': {'Mask_All'},
     'Npc_Hylia_Sheik_Adult': {'Mask_Talk_NoTopic', 'Talk_AfterKakariko'},
@@ -56,6 +56,40 @@ REVIEWED_OUT = {
         'InitTalk_Saria_OcarinaPlaying_SacredForestMeadow', 'Mask_All',
         'PlayOcarina_InBack', 'PlayOcarina_InFront',
         'StartTalking_DuringPlayerTurn_ForSaria'},
+}
+
+# Ampliación 1 (2026-11-09): conversaciones forzadas de la infancia, revisadas
+# a mano a partir de tools/find_forced_talks.py (ver su docstring para el
+# criterio). Se suman a `story_flows` aunque la entrada esté en REVIEWED_OUT.
+# Fuera (y por qué) en el informe de la tarea 6: Navi (Hint_00 compartida con
+# la pista voluntaria y sin diálogo en el flujo), burbujas al acercarse,
+# tiendas, minijuegos y el tutorial de acciones de Npc_Kokiri_006 (opcional).
+FORCED_TALKS = {
+    # Bosque Kokiri
+    'Npc_Kokiri_Mido_Child': [            # corta el paso (IA de bloqueo)
+        'KokiriForest_Get_StoneOfForest_Completed_Event',  # activador de zona
+        'Talk'],
+    'Npc_Kokiri_007_Child': [             # corta la salida (IA de bloqueo)
+        'GoToDekuTree', 'GoToMido', 'Talk'],
+    'Npc_Kokiri_010_Child': [             # tutorial de fijar el blanco
+        'FocusOnAttentionRock_ShieldDeku', 'FocusOnAttentionRock_ShieldDeku_Short'],
+    'Npc_Kokiri_011_Child': [             # te para delante de la tienda
+        'KokiriForest_Kokiri_011_StopInFrontOfShop_00'],
+    # Bosque Kokiri y Campo de Hyrule: aviso de Navi sobre la tierra blanda
+    'Field_PlantMagicBean': ['CheckSoil', 'CheckSoil_01'],
+    # Mercado, Castillo y Kakariko: guardias que te paran (CanbeStopped)
+    'NpcCommon': ['Sub_CanbeStopped_Npc_01', 'Sub_CanbeStopped_Npc_02'],
+    # Mercado: la dueña de la casa al entrar
+    'Npc_Hylia_052_Child': ['isPlayerInHouse'],
+    # Castillo: te pillan los guardias; el guardia que dispara; Impa te para
+    'HyruleCastle_FoundBySecurity': [
+        'FoundBySecurity', 'FoundBySecurity_Common', 'FoundBySecurity_Common_Courtyard',
+        'FoundBySecurity_Common_IsFirst', 'FoundBySecurity_Courtyard',
+        'Soldier_RandomTalk', 'Soldier_RandomTalk_IsAfterSecond'],
+    'Npc_Hylia_ImperialSoldier_001_Child': ['Retaliation'],
+    'Npc_Hylia_Zelda_Child': ['Zelda_CanbeStopped_Impa_01', 'Zelda_CanbeStopped_Impa_02'],
+    # Kakariko: avisos de Navi sobre las Skulltulas doradas
+    'GatheringTokenGold': ['NaviGuide_GatheringTokenGold', 'NaviGuide_TokenGold_Over10'],
 }
 
 ACTIONS = {
@@ -126,6 +160,15 @@ def build(nup) -> dict:
             keep = [e for e in cands if e not in out]
             if keep:
                 story[name] = keep
+    for name, entries in FORCED_TALKS.items():
+        path = FLOW_DIR + name + FLOW_EXT
+        flow = EventFlow(game.codec.decompress(path, nup.read(path)))
+        missing = set(entries) - set(flow.entry_points)
+        if missing:
+            raise ValueError(f'{name}: entradas inexistentes {sorted(missing)}')
+        if story.get(name) == '*':
+            raise ValueError(f'{name}: ya es un flujo de historia completo')
+        story[name] = sorted(set(story.get(name, [])) | set(entries))
     return {
         'intro_component_lists': ['Dm_Kokiri_0000'],
         'story_flows': dict(sorted(story.items())),

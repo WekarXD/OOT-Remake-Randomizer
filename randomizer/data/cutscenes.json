@@ -462,6 +462,14 @@
   "Dm_Zora_0020": "*",
   "DoorOfTime": "*",
   "EscapeFromCrumblingGanonCastle": "*",
+  "Field_PlantMagicBean": [
+   "CheckSoil",
+   "CheckSoil_01"
+  ],
+  "GatheringTokenGold": [
+   "NaviGuide_GatheringTokenGold",
+   "NaviGuide_TokenGold_Over10"
+  ],
   "Get_Epona": "*",
   "Get_StoneOfFire": "*",
   "Get_StoneOfForest": "*",
@@ -476,9 +484,48 @@
   "Goto_SpiritTemple": "*",
   "Goto_WaterTemple": "*",
   "Goto_ZoraRiver": "*",
+  "HyruleCastle_FoundBySecurity": [
+   "FoundBySecurity",
+   "FoundBySecurity_Common",
+   "FoundBySecurity_Common_Courtyard",
+   "FoundBySecurity_Common_IsFirst",
+   "FoundBySecurity_Courtyard",
+   "Soldier_RandomTalk",
+   "Soldier_RandomTalk_IsAfterSecond"
+  ],
   "Meet_DekuTree": "*",
   "Meet_GreatFairy": "*",
   "MelodyGet_Sun_SubEvent": "*",
+  "NpcCommon": [
+   "Sub_CanbeStopped_Npc_01",
+   "Sub_CanbeStopped_Npc_02"
+  ],
+  "Npc_Hylia_052_Child": [
+   "isPlayerInHouse"
+  ],
+  "Npc_Hylia_ImperialSoldier_001_Child": [
+   "Retaliation"
+  ],
+  "Npc_Hylia_Zelda_Child": [
+   "Zelda_CanbeStopped_Impa_01",
+   "Zelda_CanbeStopped_Impa_02"
+  ],
+  "Npc_Kokiri_007_Child": [
+   "GoToDekuTree",
+   "GoToMido",
+   "Talk"
+  ],
+  "Npc_Kokiri_010_Child": [
+   "FocusOnAttentionRock_ShieldDeku",
+   "FocusOnAttentionRock_ShieldDeku_Short"
+  ],
+  "Npc_Kokiri_011_Child": [
+   "KokiriForest_Kokiri_011_StopInFrontOfShop_00"
+  ],
+  "Npc_Kokiri_Mido_Child": [
+   "KokiriForest_Get_StoneOfForest_Completed_Event",
+   "Talk"
+  ],
   "OpeningEvent": "*",
   "SageOfFire": "*",
   "SageOfForest": "*",
