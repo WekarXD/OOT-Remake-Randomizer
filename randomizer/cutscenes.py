@@ -11,9 +11,11 @@ from pathlib import Path
 
 from .evtrim import compute_trim
 from .formats import byml
-from .formats.bfevfl import ACTION, END, SWITCH, EventFlow, patch_pointers
+from .formats.bfevfl import ACTION, END, FORK, SWITCH, EventFlow, patch_pointers
 
 ACTIVE_PHASE = 1
+# Carteles y textos del sistema: nunca se quitan (ver la especificación).
+PROTECTED_ACTORS = frozenset({'SystemTextNPC', 'SignBoard_EventStarter'})
 POLICY_PATH = Path(__file__).resolve().parent / 'data' / 'cutscenes.json'
 FLOW_DIR = 'Event/EventFlow/'
 FLOW_EXT = '.bfevfl.zs'
@@ -116,20 +118,74 @@ def removable_events(flow: EventFlow, spec, pairs) -> set[int]:
         target |= reachable(events, start)
     # Nada que esté en un ciclo (p. ej. esperas de un bucle de sondeo
     # switch -> espera -> switch): quitarlo dejaría un bucle sin espera.
-    cands = {i for i in story - other - on_cycle(events) if _matches(events[i], pairs)}
-    return {i for i in cands if not is_choice_talk(events, i, pairs)}
+    cands = {i for i in story - other - on_cycle(events)
+             if _matches(events[i], pairs) and events[i].actor not in PROTECTED_ACTORS}
+    joins = _branch_joins(events)
+    return {i for i in cands if not is_choice_talk(events, i, pairs, joins)}
 
 
-def is_choice_talk(events, i: int, pairs) -> bool:
+def _branch_joins(events) -> dict[int, set[int]]:
+    """Evento -> joins a los que sigue el flujo cuando su rama termina.
+
+    Un evento de una rama de fork cuyo `next` (o un caso) es 0xFFFF continúa
+    en el join del fork. Las ramas anidadas reciben también los joins de
+    fuera (sobreaproximación: solo hace conservar más).
+    """
+    out: dict[int, set[int]] = {}
+    for ev in events:
+        if ev.kind != FORK or ev.join is None:
+            continue
+        seen, stack = set(), list(ev.forks)
+        while stack:
+            j = stack.pop()
+            if j is None or j == END or j == ev.join or j in seen                     or not 0 <= j < len(events):
+                continue
+            seen.add(j)
+            e = events[j]
+            if e.next == END or END in e.cases:
+                out.setdefault(j, set()).add(ev.join)
+            stack.extend(_successors(events, j))
+    return out
+
+
+def _reaches_talk_choice(events, i: int, joins) -> bool:
+    """Desde `i`, ¿se llega a un switch TalkChoice sin pasar por otro EventTalk?
+
+    Sigue next, casos, ramas y join, y del final de una rama al join de su fork.
+    """
+    seen, stack = {i}, [*_successors(events, i), *joins.get(i, ())]
+    while stack:
+        j = stack.pop()
+        if j in seen:
+            continue
+        seen.add(j)
+        e = events[j]
+        if e.kind == SWITCH and e.query and 'TalkChoice' in e.query:
+            return True
+        if e.kind == ACTION and e.action == 'EventTalk':
+            continue
+        stack.extend(_successors(events, j))
+        stack.extend(joins.get(j, ()))
+    return False
+
+
+def is_choice_talk(events, i: int, pairs, joins=None) -> bool:
     """`EventTalk` cuyo resultado lee un switch posterior.
 
-    Se sigue `next` saltando las acciones de la lista blanca que no son
-    diálogos (p. ej. un cambio de emoción entre la pregunta y el switch),
-    se quiten o no en este flujo; si lo primero que queda es un switch, el
-    diálogo es una pregunta y no se quita.
+    Dos reglas (basta una):
+    - Se sigue `next` saltando las acciones de la lista blanca que no son
+      diálogos (p. ej. un cambio de emoción entre la pregunta y el switch),
+      se quiten o no en este flujo; si lo primero que queda es un switch, el
+      diálogo es una pregunta.
+    - Se llega a un switch TalkChoice sin pasar por otro EventTalk, también a
+      través de forks y joins (p. ej. pregunta -> fork -> join -> TalkChoice2).
     """
     if events[i].kind != ACTION or events[i].action != 'EventTalk':
         return False
+    if joins is None:
+        joins = _branch_joins(events)
+    if _reaches_talk_choice(events, i, joins):
+        return True
     seen = {i}
     j = events[i].next
     while (j is not None and j != END and 0 <= j < len(events) and j not in seen
@@ -144,7 +200,9 @@ def trim_flow(data: bytes, spec, pairs) -> bytes | None:
     flow = EventFlow(data)
     if not flow.events:
         return None
-    removed, retarget = compute_trim(flow.events, removable_events(flow, spec, pairs))
+    roots = {i for i in flow.entry_points.values() if i != END}
+    removed, retarget = compute_trim(flow.events, removable_events(flow, spec, pairs),
+                                     roots)
     if not removed:
         return None
     new_targets = {off: retarget[idx] for off, idx in flow.pointer_slots()

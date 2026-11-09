@@ -52,6 +52,45 @@ class TrimTests(unittest.TestCase):
         removed, _ = compute_trim(ev, {1})
         self.assertEqual(removed, set())
 
+    def test_switch_case_to_end_keeps_first(self):
+        # 0: switch [1 -> 2 -> fin, 3 -> fin]
+        ev = [Event(index=0, kind=SWITCH, cases=[1, 3]),
+              act(1, 2), act(2, END), act(3, END)]
+        removed, rt = compute_trim(ev, {1, 2, 3})
+        self.assertNotIn(1, removed)
+        self.assertNotIn(3, removed)
+        self.assertIn(2, removed)
+        self.assertEqual(rt[2], END)
+
+    def test_switch_case_to_kept_still_removed(self):
+        ev = [Event(index=0, kind=SWITCH, cases=[1, 3]),
+              act(1, 2), act(2, END), act(3, END)]
+        removed, rt = compute_trim(ev, {1})
+        self.assertEqual(removed, {1})
+        self.assertEqual(rt[1], 2)
+
+    def test_root_to_end_keeps_first(self):
+        ev = [act(0, 1), act(1, END), act(2, 3), act(3, END)]
+        removed, rt = compute_trim(ev, {0, 1, 2, 3}, roots={0})
+        self.assertNotIn(0, removed)
+        self.assertIn(1, removed)
+        # 2 no es raíz: puede desaparecer entero.
+        self.assertEqual(rt[2], END)
+
+    def test_root_to_kept_still_removed(self):
+        ev = [act(0, 1), act(1, END)]
+        removed, rt = compute_trim(ev, {0}, roots={0})
+        self.assertEqual((removed, rt), ({0}, {0: 1}))
+
+    def test_fixed_point_switch_and_fork(self):
+        # Un switch dentro de una rama de fork: ambas reglas interactúan.
+        ev = [Event(index=0, kind=FORK, forks=[1], join=4),
+              Event(index=1, kind=SWITCH, cases=[2, 3]),
+              act(2, END), act(3, END),
+              Event(index=4, kind=JOIN, next=END)]
+        removed, _ = compute_trim(ev, {2, 3}, roots={0})
+        self.assertEqual(removed, set())
+
     def test_contraction_property(self):
         rng = random.Random(1234)
         n = 50

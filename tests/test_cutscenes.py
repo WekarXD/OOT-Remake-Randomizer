@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from randomizer import cutscenes
 from randomizer.cutscenes import on_cycle
 from randomizer.formats import byml
-from randomizer.formats.bfevfl import ACTION, END, SWITCH, Event, EventFlow
+from randomizer.formats.bfevfl import ACTION, END, FORK, JOIN, SWITCH, Event, EventFlow
 from randomizer.game import GameData
 from randomizer.nup import NupArchive
 
@@ -78,6 +78,114 @@ class TestPollingLoop(unittest.TestCase):
         removable = cutscenes.removable_events(flow, '*', pairs)
         self.assertNotIn(3, removable)
         self.assertIn(2, removable)
+
+
+def _talk(i, nxt, actor='Npc_A'):
+    return Event(i, ACTION, actor=actor, action='EventTalk', next=nxt)
+
+
+def _wait(i, nxt):
+    return Event(i, ACTION, actor='EventSystemActor', action='EventWait', next=nxt)
+
+
+class TestChoiceTalkFork(unittest.TestCase):
+    def setUp(self):
+        self.pairs = cutscenes.active_actions(cutscenes.load_policy())
+
+    def _removable(self, events, entry=0):
+        flow = SimpleNamespace(events=events, entry_points={'E': entry})
+        return cutscenes.removable_events(flow, '*', self.pairs)
+
+    def test_question_through_fork_join(self):
+        # 0: pregunta -> 1: fork [2] join 3 ; 2: Navi habla (fin de rama)
+        # 3: join -> 4: TalkChoice2 [5, 6]
+        events = [
+            _talk(0, 1),
+            Event(1, FORK, forks=[2, 7], join=3),
+            _talk(2, END, actor='Npc_Navi'),
+            Event(3, JOIN, next=4),
+            Event(4, SWITCH, actor='GameSystemActor', query='EventQueryTalkChoice2',
+                  cases=[5, 6]),
+            _wait(5, END), _wait(6, END), _wait(7, END),
+        ]
+        rem = self._removable(events)
+        self.assertNotIn(0, rem)
+        self.assertNotIn(2, rem)
+        self.assertIn(7, rem)
+
+    def test_other_talk_blocks(self):
+        # 0: charla -> 1: charla -> 2: fork -> 3: join -> 4: TalkChoice2
+        events = [
+            _talk(0, 1), _talk(1, 2),
+            Event(2, FORK, forks=[5], join=3),
+            Event(3, JOIN, next=4),
+            Event(4, SWITCH, actor='GameSystemActor', query='EventQueryTalkChoice3',
+                  cases=[END]),
+            _wait(5, END),
+        ]
+        rem = self._removable(events)
+        self.assertIn(0, rem)
+        self.assertNotIn(1, rem)
+
+    def test_non_choice_switch_after_fork(self):
+        events = [
+            _talk(0, 1),
+            Event(1, FORK, forks=[4], join=2),
+            Event(2, JOIN, next=3),
+            Event(3, SWITCH, actor='GameDataActor', query='EventQueryIsGameDataBool',
+                  cases=[END]),
+            _wait(4, END),
+        ]
+        self.assertIn(0, self._removable(events))
+
+
+class TestSystemText(unittest.TestCase):
+    def test_signs_and_system_text_kept(self):
+        events = [
+            _talk(0, 1, actor='SystemTextNPC'),
+            _talk(1, 2, actor='SignBoard_EventStarter'),
+            _talk(2, 3),
+            _wait(3, END),
+        ]
+        flow = SimpleNamespace(events=events, entry_points={'E': 0})
+        pairs = cutscenes.active_actions(cutscenes.load_policy())
+        rem = cutscenes.removable_events(flow, '*', pairs)
+        self.assertNotIn(0, rem)
+        self.assertNotIn(1, rem)
+        self.assertEqual(rem, {2, 3})
+
+
+def _reaches_talk_choice(events, i):
+    """Independiente del código: recorre con pila de joins.
+
+    Desde el EventTalk `i`, ¿se llega a un switch TalkChoice sin pasar por
+    otro EventTalk? Un final de rama (0xFFFF) continúa en el join del fork.
+    """
+    n = len(events)
+    seen, stack = set(), [(events[i].next, ())]
+    while stack:
+        j, joins = stack.pop()
+        if j is None or j == END:
+            if joins:
+                stack.append((joins[-1], joins[:-1]))
+            continue
+        if not 0 <= j < n or (j, joins) in seen:
+            continue
+        seen.add((j, joins))
+        ev = events[j]
+        if ev.kind == ACTION and ev.action == 'EventTalk':
+            continue
+        if ev.kind == SWITCH:
+            if ev.query and 'TalkChoice' in ev.query:
+                return True
+            stack.extend((c, joins) for c in ev.cases)
+        elif ev.kind == FORK:
+            stack.extend((b, joins + (ev.join,)) for b in ev.forks)
+        elif ev.kind == JOIN and joins and joins[-1] == j:
+            stack.append((ev.next, joins[:-1]))
+        else:
+            stack.append((ev.next, joins))
+    return False
 
 
 def _non_action_cycle(events):
@@ -191,7 +299,8 @@ class TestCutsceneFiles(unittest.TestCase):
                 for i in before:
                     ev = fo.events[i]
                     if (ev.kind == ACTION and ev.action == 'EventTalk'
-                            and leads_to_switch(fo.events, i)):
+                            and (leads_to_switch(fo.events, i)
+                                 or _reaches_talk_choice(fo.events, i))):
                         found += 1
                         self.assertIn(i, after, (path, name, i))
         self.assertGreater(found, 0)
@@ -204,6 +313,41 @@ class TestCutsceneFiles(unittest.TestCase):
         for start in fn.entry_points.values():
             reach |= _reach(fn.events, start)
         self.assertIn(32, reach)
+
+    def test_choice_talk_through_fork_join(self):
+        # Ruto (42) y Navi (46) preguntan; la respuesta se lee tras fork 49
+        # -> join 50 -> TalkChoice2 125.
+        path = FLOW_DIR + 'Dm_InsideJabu_Jabu_0050.bfevfl.zs'
+        self.assertIn(path, self.flows)
+        fo, fn = (EventFlow(b) for b in self.flows[path])
+        self.assertIn('TalkChoice', fo.events[125].query)
+        reach = set()
+        for start in fn.entry_points.values():
+            reach |= _reach(fn.events, start)
+        self.assertIn(42, reach)
+        self.assertIn(46, reach)
+
+    def test_no_new_end_pointers(self):
+        for path, (orig, new) in self.flows.items():
+            fo, fn = EventFlow(orig), EventFlow(new)
+            for name, start in fo.entry_points.items():
+                if fn.entry_points[name] == END:
+                    self.assertEqual(start, END, (path, name))
+            for eo, en in zip(fo.events, fn.events):
+                for co, cn in zip(eo.cases, en.cases):
+                    if cn == END:
+                        self.assertEqual(co, END, (path, eo.index))
+
+    def test_signs_and_system_text_untouched(self):
+        protected = {'SystemTextNPC', 'SignBoard_EventStarter'}
+        for path, (orig, new) in self.flows.items():
+            fo, fn = EventFlow(orig), EventFlow(new)
+            before, after = set(), set()
+            for name, start in fo.entry_points.items():
+                before |= _reach(fo.events, start)
+                after |= _reach(fn.events, fn.entry_points[name])
+            for i in before - after:
+                self.assertNotIn(fo.events[i].actor, protected, (path, i))
 
     def test_no_action_free_cycles(self):
         for path, (_orig, new) in self.flows.items():
