@@ -152,3 +152,23 @@ Quiere una opción más en la página, **"Saltar cinemáticas"**, para jugar má
 - La lista exacta de puntos de entrada de historia y de acciones de la lista blanca, partiendo de §4.3 y de los datos.
 - Cómo detectar qué switch depende de un diálogo con elección (por ejemplo, consultas de resultado de diálogo inmediatamente después del `EventTalk`).
 - Si un punto de entrada resulta peligroso de recortar en las pruebas, se saca de la lista: es mejor ver una escena que bloquear la partida.
+
+## 8. Ampliación 1 (2026-11-09, aprobada por el usuario)
+
+Resultado de la tanda 2 en el juego: llega al Árbol Deku sin cuelgues ni pérdidas. Pero siguen saliendo conversaciones que el usuario quiere quitar, como Mido cortando el paso o el tutorial de fijar el blanco. Estaban fuera por el no-objetivo de §2 (charlas de personajes y mensajes de Navi).
+
+**Nueva regla, que sustituye ese no-objetivo:**
+- **Se recortan las conversaciones que saltan solas o cortan el paso**, aunque estén en flujos de personajes (`Npc_*`) o de Navi (`NaviHint` y similares).
+  - Ejemplos: Mido bloqueando, los Kokiri que explican controles, los avisos forzados de Navi (por ejemplo `NaviLockOnHint`), Saria en el puente, Zelda en el jardín, Impa.
+- **Se quedan las que elige el jugador:**
+  - hablar con un personaje acercándose a él;
+  - tiendas;
+  - minijuegos;
+  - pedir una pista a Navi con su botón.
+- **Lo que la charla comprueba o da se conserva:**
+  - las comprobaciones (switch), los objetos y los indicadores no se quitan nunca;
+  - siguen valiendo todas las reglas de §4.3, §6b y la revisión final: bucles, diálogos con elección y punteros a "fin".
+- **Alcance de esta ampliación:** primero, la infancia (Bosque Kokiri, Árbol Deku, Campo de Hyrule, Mercado, Castillo y Kakariko). El resto vendrá en otra ampliación, tras probar esta.
+- **Cómo se elige:** una lista revisada a mano de pares (flujo, entrada) en `cutscenes.json`, apoyada por una herramienta que encuentra las conversaciones forzadas (cómo se disparan en los bancs y en EventSetting).
+  - Ante la duda, una conversación se deja.
+- **Prueba en el juego:** `TestEscenas3`, desde partida nueva hasta el Árbol Deku y el Castillo/Kakariko.
