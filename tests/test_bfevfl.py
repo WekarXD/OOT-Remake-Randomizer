@@ -1,4 +1,5 @@
 import os
+import struct
 import unittest
 
 from randomizer.formats.bfevfl import (BfevflError, Event, EventFlow, patch_pointers,
@@ -67,6 +68,7 @@ class BfevflTests(unittest.TestCase):
 GIFT_FLOW = 'Dm_Kokiri_0155.bfevfl.zs'
 GIFT_KEYS = {51: 'Actor', 52: 'ActorName'}
 GIFT_ITEM = 'Item_Ocarina_Fairy'
+LONG_VALUE = 'Item_Ocarina_Fairy_Longer_Test'  # no cabe y no existe
 
 
 def _all_params(flow):
@@ -74,7 +76,6 @@ def _all_params(flow):
 
 
 def _assert_valid(test, data):
-    import struct
     reloc, size = struct.unpack_from('<II', data, 0x18)
     test.assertEqual(size, len(data))
     test.assertEqual(data[reloc:reloc + 4], b'RELT')
@@ -117,47 +118,70 @@ class StringParamTests(unittest.TestCase):
             self.assertEqual(flow.pointer_slots(), self.flow.pointer_slots())
             self.assertEqual(flow.entry_points, self.flow.entry_points)
 
+    def test_inplace_when_fits(self):
+        # Vanilla: cada texto es una copia propia justo detrás de su parámetro.
+        for ev, key in GIFT_KEYS.items():
+            slot = self.flow._string_slot(ev, key)
+            s = struct.unpack_from('<Q', self.data, slot)[0]
+            self.assertEqual(s, slot + 8)
+            end = s + 3 + len(GIFT_ITEM)
+            end += end & 1
+            new = set_string_param(self.data, ev, key, 'Item_Hookshot')
+            self.assertEqual(len(new), len(self.data))
+            self.assertEqual(new[:s], self.data[:s])
+            self.assertEqual(new[end:], self.data[end:])
+            self.assertEqual(new[s:end],
+                             (b'\x0d\x00Item_Hookshot').ljust(end - s, b'\0'))
+            self.assertEqual(_assert_valid(self, new).action_params(ev)[key], 'Item_Hookshot')
+            self.assertEqual(string_param_owners(new, ev, key), [ev])
+
     def test_reuse_existing_string(self):
-        # 'Npc_Navi' está en el pool de cadenas; 'Weapon_R' solo en otro parámetro.
-        for value in ('Npc_Navi', 'Weapon_R'):
+        # No caben en los 18 bytes de 'Item_Ocarina_Fairy': se reapunta.
+        # 'Dm_Item_Ocarina_Fairy_Saria' está en el pool; 'C02-Player_Child-A-0'
+        # solo en el parámetro ASCommand del evento 0.
+        slot = self.flow._string_slot(52, 'ActorName')
+        for value in ('Dm_Item_Ocarina_Fairy_Saria', 'C02-Player_Child-A-0'):
             new = set_string_param(self.data, 52, 'ActorName', value)
             self.assertEqual(len(new), len(self.data))
+            self.assertNotEqual(new[slot:slot + 8], self.data[slot:slot + 8])
             self.assertEqual(_assert_valid(self, new).action_params(52)['ActorName'], value)
 
     def test_grow_file_valid(self):
-        value = 'Item_Hookshot'
-        self.assertNotIn(value.encode(), self.data)
-        new = set_string_param(self.data, 51, 'Actor', value)
+        self.assertNotIn(LONG_VALUE.encode(), self.data)
+        new = set_string_param(self.data, 51, 'Actor', LONG_VALUE)
         self.assertGreater(len(new), len(self.data))
         flow = _assert_valid(self, new)
         self.assertEqual(len(flow.events), len(self.flow.events))
         self.assertEqual(flow.pointer_slots(), self.flow.pointer_slots())
+        self.assertEqual(flow.action_params(51)['Actor'], LONG_VALUE)
         # Una segunda vez ya reutiliza la cadena añadida.
-        again = set_string_param(new, 52, 'ActorName', value)
+        again = set_string_param(new, 52, 'ActorName', LONG_VALUE)
         self.assertEqual(len(again), len(new))
-        self.assertEqual(EventFlow(again).action_params(52)['ActorName'], value)
+        self.assertEqual(EventFlow(again).action_params(52)['ActorName'], LONG_VALUE)
 
     def test_other_events_untouched(self):
         self.assertEqual(string_param_owners(self.data, 52, 'ActorName'), [52])
-        self.assertEqual(string_param_owners(self.data, 55, 'BoneName'), [55])
-        shared = set_string_param(self.data, 52, 'ActorName', 'Weapon_R')
-        self.assertEqual(string_param_owners(shared, 52, 'ActorName'), [52, 55])
-        self.assertEqual(string_param_owners(shared, 55, 'BoneName'), [52, 55])
+        self.assertEqual(string_param_owners(self.data, 0, 'ASCommand'), [0])
+        shared = set_string_param(self.data, 52, 'ActorName', 'C02-Player_Child-A-0')
+        self.assertEqual(string_param_owners(shared, 52, 'ActorName'), [0, 52])
+        self.assertEqual(string_param_owners(shared, 0, 'ASCommand'), [0, 52])
+        # La cadena compartida no se edita en sitio aunque el texto quepa.
         changed = set_string_param(shared, 52, 'ActorName', 'Item_Hookshot')
         flow = _assert_valid(self, changed)
         self.assertEqual(flow.action_params(52)['ActorName'], 'Item_Hookshot')
-        self.assertEqual(flow.action_params(55)['BoneName'], 'Weapon_R')
+        self.assertEqual(flow.action_params(0)['ASCommand'], 'C02-Player_Child-A-0')
         self.assertEqual(string_param_owners(changed, 52, 'ActorName'), [52])
 
     def test_coexists_with_trim(self):
         off, idx = self.flow.pointer_slots()[0]
         trim = {off: 0xFFFF if idx != 0xFFFF else 0}
-        a = set_string_param(patch_pointers(self.data, trim), 51, 'Actor', 'Item_Hookshot')
-        b = patch_pointers(set_string_param(self.data, 51, 'Actor', 'Item_Hookshot'), trim)
-        self.assertEqual(a, b)
-        flow = _assert_valid(self, a)
-        self.assertEqual(flow.action_params(51)['Actor'], 'Item_Hookshot')
-        self.assertEqual(dict(flow.pointer_slots())[off], trim[off])
+        for value in ('Item_Hookshot', LONG_VALUE):  # en sitio y ampliando
+            a = set_string_param(patch_pointers(self.data, trim), 51, 'Actor', value)
+            b = patch_pointers(set_string_param(self.data, 51, 'Actor', value), trim)
+            self.assertEqual(a, b)
+            flow = _assert_valid(self, a)
+            self.assertEqual(flow.action_params(51)['Actor'], value)
+            self.assertEqual(dict(flow.pointer_slots())[off], trim[off])
 
     def test_errors(self):
         with self.assertRaises(BfevflError):

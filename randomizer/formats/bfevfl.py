@@ -32,7 +32,8 @@ Cada elemento: u8 tipo, u8 0, u16 nº de valores, u32 0, u64 0, y los datos:
   12 identificador de actor: u64 -> nombre, u64 -> subnombre
 En el juego solo aparecen los tipos 0, 2, 3, 4, 5, 9 y 12. La cadena de un
 parámetro de texto está justo detrás de su elemento (no en el pool) y ninguna
-la comparte otro parámetro.
+la comparte otro parámetro; por eso `set_string_param` la sobrescribe en sitio
+cuando el texto nuevo cabe (el diseño del archivo queda idéntico).
 
 Cadena: u16 longitud, bytes UTF-8, NUL, relleno a 2 bytes.
 
@@ -263,16 +264,32 @@ class EventFlow:
 def set_string_param(data: bytes, event_index: int, key: str, value: str) -> bytes:
     """Devuelve el archivo con el parámetro de texto `key` del evento cambiado.
 
-    Solo se reescribe el puntero de ese parámetro (nunca la cadena en sí, que
-    podría compartir otro). Si ya hay una cadena igual se reapunta a ella y el
-    tamaño no cambia; si no, se añade al final del pool y se ajustan el nº de
-    cadenas, la RELT, el tamaño de su sección y el del archivo.
+    Por orden: (1) si la cadena es la copia propia del parámetro (como en el
+    juego original), nadie más apunta a ella y el texto nuevo no es más largo,
+    se sobrescribe en sitio (longitud, bytes y ceros hasta el final del hueco
+    original); (2) si ya hay una cadena igual, se reapunta el parámetro a ella;
+    (3) si no, se añade al final del pool, se reapunta y se ajustan el nº de
+    cadenas, la RELT, el tamaño de su sección y el del archivo. Una cadena
+    compartida o del pool nunca se edita en sitio.
     """
     flow = EventFlow(data)
     slot = flow._string_slot(event_index, key)
     raw = value.encode('utf-8')
     if len(raw) > 0xFFFF or b'\0' in raw:
         raise BfevflError(f'Texto no válido: {value!r}')
+    # 1) En sitio: la copia propia del parámetro (justo detrás del elemento),
+    #    si nadie más la usa y el texto nuevo cabe. El archivo queda idéntico
+    #    salvo esos bytes: mismo tamaño, sin RSTB ni reapuntar.
+    old = flow._u64(slot)
+    old_len = flow._u16(old)
+    sharers = [s for _, s in flow._string_slots() if flow._u64(s) == old]
+    if old == slot + 8 and len(sharers) == 1 and len(raw) <= old_len:
+        storage_end = old + 3 + old_len
+        storage_end += storage_end & 1
+        out = bytearray(data)
+        out[old:storage_end] = (struct.pack('<H', len(raw)) + raw).ljust(storage_end - old, b'\0')
+        return bytes(out)
+    # 2) Reapuntar a una cadena igual que ya exista.
     target = flow._find_string(raw)
     if target is not None:
         out = bytearray(data)
