@@ -91,6 +91,26 @@ class RealTests(unittest.TestCase):
             self.assertEqual(r.changed_files, [])
             self.assertEqual(sorted(os.listdir(r.mod_dir)), ['spoiler.json', 'spoiler.txt'])
 
+    def test_generate_skip_cutscenes(self):
+        with tempfile.TemporaryDirectory() as out:
+            r = generate(NUP_PATH, out, Settings(seed='cine', skip_cutscenes=True))
+            self.assertIn('Event/EventSetting/EventSettingComponentList/'
+                          'Dm_Kokiri_0000.engine__event__EventSettingComponentList.bgyml',
+                          r.changed_files)
+            self.assertTrue(any(f.startswith('Event/EventFlow/') and f.endswith('.bfevfl.zs')
+                                for f in r.changed_files))
+            text = Path(r.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('Saltar cinemáticas: Sí', text)
+
+    def test_vanilla_with_skip_cutscenes(self):
+        with tempfile.TemporaryDirectory() as out:
+            r = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla',
+                                                 spoiler=False, skip_cutscenes=True))
+            self.assertIsNotNone(r.mod_dir)
+            self.assertTrue(r.changed_files)
+            self.assertFalse(any('Banc' in f for f in r.changed_files))
+            self.assertNotIn(RSTB_PATH, r.changed_files)
+
     def test_spoiler_excluded_reasons(self):
         with tempfile.TemporaryDirectory() as out:
             r = generate(NUP_PATH, out, Settings(seed='razon'))

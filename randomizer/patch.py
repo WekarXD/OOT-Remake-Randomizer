@@ -16,7 +16,8 @@ def _write(mod_root: Path, rel: str, data: bytes) -> None:
 
 
 def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
-              loc_map: dict[int, LocationEntry]) -> list[str]:
+              loc_map: dict[int, LocationEntry],
+              extra_files: dict[str, bytes] | None = None) -> list[str]:
     chests = game.chests()
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
@@ -24,12 +25,15 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     # el objeto original). Nunca se toca el evento de otros cofres.
     strip = {h for h in changed if h in loc_map and loc_map[h].strip_event}
     bancs = sorted({c.banc for c in chests if c.hash in changed})
+    written = []
+    for rel, data in (extra_files or {}).items():
+        _write(mod_root, rel, data)
+        written.append(rel)
     if not bancs:
-        return []
+        return sorted(written)
 
     rs_raw = game.codec.decompress(RSTB_PATH, game.nup.read(RSTB_PATH))
     rstb = Rstb.load(rs_raw)
-    written = []
     for path in bancs:
         ver, root = game.load_banc(path)
         for a in root['Actors']:

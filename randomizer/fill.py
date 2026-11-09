@@ -43,6 +43,7 @@ class Settings:
     key_items_mode: str = 'any_chest'  # 'vanilla' | 'any_chest'
     excluded_items: frozenset[str] = frozenset()
     spoiler: bool = True
+    skip_cutscenes: bool = False
 
 
 class FillError(Exception):
@@ -53,6 +54,7 @@ def _settings_key(settings: Settings) -> str:
     data = dataclasses.asdict(settings)
     del data['seed']
     del data['spoiler']  # solo afecta a los archivos de salida, no a la colocación
+    del data['skip_cutscenes']  # idem: no cambia la colocación
     data['excluded_items'] = sorted(settings.excluded_items)
     return json.dumps(data, sort_keys=True)
 

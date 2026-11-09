@@ -115,6 +115,10 @@ class FillTest(unittest.TestCase):
         self.assertEqual(self._place(seed='X', spoiler=True),
                          self._place(seed='X', spoiler=False))
 
+    def test_skip_cutscenes_not_in_key(self):
+        self.assertEqual(self._place(seed='X', skip_cutscenes=True),
+                         self._place(seed='X', skip_cutscenes=False))
+
     def test_non_excludable_raises(self):
         for actor in sorted(items.NON_EXCLUDABLE):
             with self.assertRaises(FillError) as cm:

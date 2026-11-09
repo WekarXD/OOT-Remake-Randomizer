@@ -211,6 +211,9 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             spoiler = body.get('spoiler', True)
             if not isinstance(spoiler, bool):
                 return self._err('El ajuste de spoiler debe ser verdadero o falso.')
+            skip = body.get('skip_cutscenes', False)
+            if not isinstance(skip, bool):
+                return self._err('skip_cutscenes debe ser true o false')
             bad = [x for x in excluded if x in NON_EXCLUDABLE]
             if bad:
                 return self._err(
@@ -222,7 +225,8 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             # Los no movibles nunca se mueven: no deben alterar la clave del RNG.
             effective = frozenset(x for x in excluded if movable.get(x, True))
             settings = Settings(seed=seed, key_items_mode=mode,
-                                excluded_items=effective, spoiler=spoiler)
+                                excluded_items=effective, spoiler=spoiler,
+                                skip_cutscenes=skip)
             if not _GENERATE_LOCK.acquire(blocking=False):
                 return self._err('Ya hay una generación en curso.', 409)
             try:
@@ -238,7 +242,8 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                 cfg.update({'nup_path': nup_path, 'out_dir': out_dir,
                             'last_settings': {'seed': seed, 'key_items_mode': mode,
                                               'excluded_items': sorted(excluded),
-                                              'spoiler': settings.spoiler}})
+                                              'spoiler': settings.spoiler,
+                                              'skip_cutscenes': skip}})
                 config.save(config_path, cfg)
             self._json({'ok': True, 'seed': res.seed, 'mod_dir': res.mod_dir,
                         'spoiler_txt': res.spoiler_txt,

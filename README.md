@@ -18,6 +18,8 @@ python -m randomizer
 
 Abre el navegador con la interfaz. Opciones: `--port <numero>` (por defecto 8765) y `--no-browser` (no abre el navegador). Elige el `.nup`, la semilla y los ajustes, y pulsa generar. El mod se crea en una carpeta `Rando_<semilla>`.
 
+- **Saltar cinemáticas**: quita los pasos visuales de las cinemáticas en la fase 1 (el resto del juego no cambia).
+
 ## Instalar el mod en Lichii
 
 1. Copia la carpeta `Rando_<semilla>` (con su `romfs`) a `load/0400486024DEC000/Rando_<semilla>/romfs/...` dentro de los datos de Lichii. Si Lichii ofrece una opción para abrir la carpeta de mods del juego (clic derecho sobre el juego), úsala; si no, busca la carpeta load/0400486024DEC000/ dentro de la carpeta de datos de Lichii (su ubicación depende de tu instalación).

@@ -122,7 +122,7 @@
       const r = await api('/api/generate', {
         nup_path: $('nup').value.trim(), out_dir: $('outdir').value.trim(), seed: seed,
         key_items_mode: $('mode').value, excluded_items: excludedList(),
-        spoiler: $('spoiler').checked, overwrite: !!overwrite,
+        spoiler: $('spoiler').checked, skip_cutscenes: $('skip-cutscenes').checked, overwrite: !!overwrite,
       });
       if (r.ok) {
         if (r.mod_dir && Array.isArray(r.changed_files) && r.changed_files.length === 0) {
@@ -177,6 +177,7 @@
     $('seed').value = ls.seed || randomSeed();
     if (ls.key_items_mode === 'vanilla' || ls.key_items_mode === 'any_chest') $('mode').value = ls.key_items_mode;
     if (typeof ls.spoiler === 'boolean') $('spoiler').checked = ls.spoiler;
+    if (typeof ls.skip_cutscenes === 'boolean') $('skip-cutscenes').checked = ls.skip_cutscenes;
     try {
       renderItems(await api('/api/items'), Array.isArray(ls.excluded_items) ? ls.excluded_items : []);
     } catch (e) {

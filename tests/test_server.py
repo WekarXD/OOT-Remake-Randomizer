@@ -112,6 +112,20 @@ class ServerTest(unittest.TestCase):
                 self.assertEqual(status, 400, bad)
         g.assert_not_called()
 
+    def test_skip_cutscenes_strict_bool(self):
+        with mock.patch('randomizer.web.server.generate') as g:
+            for bad in ('si', 1, None):
+                status, d = self.jreq('/api/generate', self.gen_body(skip_cutscenes=bad))
+                self.assertEqual(status, 400, bad)
+                self.assertEqual(d['error'], 'skip_cutscenes debe ser true o false')
+        g.assert_not_called()
+
+    def test_last_settings_without_skip(self):
+        config.save(self.cfg, {'last_settings': {'seed': 'a'}})
+        status, d = self.jreq('/api/config')
+        self.assertEqual(status, 200)
+        self.assertNotIn('skip_cutscenes', d['last_settings'])
+
     def test_generate_null_mod_dir(self):
         res = GenerateResult('s', None, None, None, [])
         with mock.patch('randomizer.web.server.generate', return_value=res):

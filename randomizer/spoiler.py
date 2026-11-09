@@ -57,7 +57,8 @@ def build(settings, placement, chests, loc_map, game_version) -> dict:
         'seed': settings.seed,
         'settings': {'key_items_mode': settings.key_items_mode,
                      'excluded_items': sorted(settings.excluded_items),
-                     'spoiler': settings.spoiler},
+                     'spoiler': settings.spoiler,
+                     'skip_cutscenes': settings.skip_cutscenes},
         'randomizer_version': RANDO_VERSION,
         'game_version': game_version,
         'key_items': key_items,
@@ -73,6 +74,7 @@ def to_text(d: dict) -> str:
     lines = ['Semilla', f'  {d["seed"]}', '', 'Ajustes',
              f'  Modo de objetos clave: {MODE_LABELS.get(s["key_items_mode"], s["key_items_mode"])}',
              f'  Objetos excluidos: {excl}',
+             f'  Saltar cinemáticas: {"Sí" if s.get("skip_cutscenes") else "No"}',
              '', 'Versión del randomizer', f'  {d["randomizer_version"]}', '',
              'Versión del juego', f'  {d["game_version"]}', '', 'Objetos clave']
     for k in d['key_items']:
