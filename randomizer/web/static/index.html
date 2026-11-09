@@ -1,5 +1,74 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><title>Randomizer OoT</title></head>
-<body><!-- Provisional: la Task 11 lo reemplaza -->
-<nav><a>General</a> <a>Objetos</a> <a>Lógica</a> <a>Spoiler</a></nav>
-</body></html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Randomizer OoT</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main>
+<h1>Randomizer de Ocarina of Time</h1>
+<div class="tabs" role="tablist" aria-label="Secciones">
+  <button role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true">General</button>
+  <button role="tab" id="tab-objetos" aria-controls="panel-objetos" aria-selected="false" tabindex="-1">Objetos</button>
+  <button role="tab" id="tab-logica" aria-controls="panel-logica" aria-selected="false" tabindex="-1">Lógica</button>
+  <button role="tab" id="tab-spoiler" aria-controls="panel-spoiler" aria-selected="false" tabindex="-1">Spoiler</button>
+</div>
+
+<section role="tabpanel" id="panel-general" aria-labelledby="tab-general">
+  <label for="nup">Ruta del juego (.nup)</label>
+  <input type="text" id="nup" autocomplete="off" spellcheck="false">
+  <div id="nup-status" class="status" aria-live="polite"></div>
+
+  <label for="outdir">Carpeta de salida (carpeta de mods de Lichii para este juego)</label>
+  <input type="text" id="outdir" autocomplete="off" spellcheck="false">
+
+  <label for="seed">Semilla</label>
+  <div class="row">
+    <input type="text" id="seed" autocomplete="off" spellcheck="false">
+    <button type="button" id="dice" title="Semilla aleatoria" aria-label="Generar semilla aleatoria">🎲</button>
+  </div>
+
+  <button type="button" id="generate" class="primary">Generar</button>
+  <div id="result" class="status" aria-live="polite"></div>
+</section>
+
+<section role="tabpanel" id="panel-objetos" aria-labelledby="tab-objetos" hidden>
+  <label for="mode">Objetos clave</label>
+  <select id="mode">
+    <option value="vanilla">Vanilla</option>
+    <option value="any_chest" selected>Cualquier cofre</option>
+  </select>
+
+  <fieldset>
+    <legend>Excluir objetos</legend>
+    <div id="items"></div>
+    <p class="hint">Algunos objetos clave están fijos en esta versión porque su cofre tiene un evento de historia.</p>
+  </fieldset>
+
+  <p class="hint">Los cofres del minijuego de la Plaza del Mercado y los que tienen llaves, mapas o brújulas no reciben objetos clave en esta versión.</p>
+
+  <div class="soon">
+    <label class="check disabled"><input type="checkbox" disabled> Llaves pequeñas <span>(próximamente)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Mapas y brújulas <span>(próximamente)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Canciones <span>(próximamente)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Objetos de NPCs <span>(próximamente)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Rupias y consumibles <span>(próximamente)</span></label>
+  </div>
+</section>
+
+<section role="tabpanel" id="panel-logica" aria-labelledby="tab-logica" hidden>
+  <label class="check"><input type="checkbox" checked disabled> Sin glitches</label>
+  <p class="hint">Toda semilla generada se puede completar.</p>
+</section>
+
+<section role="tabpanel" id="panel-spoiler" aria-labelledby="tab-spoiler" hidden>
+  <label class="check"><input type="checkbox" id="spoiler" checked> Generar registro de spoilers</label>
+  <p><a href="#" id="spoiler-link" hidden>Ver registro</a></p>
+  <pre id="spoiler-text" hidden></pre>
+</section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
