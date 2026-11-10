@@ -1,6 +1,6 @@
 # Lote de prueba 13: qué impide que el objeto llegue al inventario
 
-En los lotes 11 y 12 los objetos flotaban y se cogían, pero no llegaban al inventario. La copia de la rupia del lote 10 sí daba el objeto (la Resortera), aunque había que pulsar A. Este lote prueba por separado cada diferencia entre las dos.
+En los lotes 11 y 12 los objetos flotaban y se cogían, pero no llegaban al inventario. La copia de la rupia del lote 10 parecía dar la Resortera (con el botón A), pero el usuario ya la tenía del cofre, así que no está claro que la diera. Este lote prueba de nuevo esa copia con un objeto que no se tiene, y prueba por separado cada diferencia con la ficha.
 
 ## Preparar
 
@@ -14,7 +14,7 @@ En los lotes 11 y 12 los objetos flotaban y se cogían, pero no llegaban al inve
 |---|---|---|---|
 | A | Sala de la brújula (piso de arriba) | **Bumerán** | Copia de la ficha, pero con la forma de "atrapar" de los objetos normales (no la de la ficha) |
 | B | Sótano | **Gancho** | Copia de la rupia, como en el lote 10, pero con la recogida al pasar por encima activada |
-| C | Sótano | **Bolsa de bombas** | Como B, más la física de la ficha (para ver si así flota) |
+| C | Sótano | **Bolsa de bombas** | Exactamente la copia de la rupia del lote 10 (se coge con A). Es la prueba limpia |
 | D | Sala del fondo del sótano | Su ficha normal | Nada (control) |
 
 Con cada uno, prueba primero a **pasar por encima**. Si no se coge, prueba con el **botón A**.

@@ -33,7 +33,7 @@ Nota sobre A: si ya tienes la Resortera del cofre, fíjate al menos en si aparec
 
 Resultados en el juego (2026-11-10). Para llegar a la primera Skulltula hubo que coger antes la Resortera, porque las colisiones del remake obligan a matar a las Skulltulas del camino.
 
-- **A (copia de la rupia roja → Resortera): funciona.** Cae al suelo y se coge, pero con el botón A, no al pasar por encima. Cogerla teniéndola ya no da problemas.
+- **A (copia de la rupia roja → Resortera): funciona.** Cae al suelo y se coge, pero con el botón A, no al pasar por encima. Cogerla teniéndola ya no da problemas. **Ojo:** como ya se tenía la Resortera del cofre, no queda claro que esta copia la diera. Se repite en el lote 13 (C) con la Bolsa de bombas.
 - **B (copia de la carta → Bumerán):** se queda flotando y no se coge al pasar por encima. Por dónde se quedó, no se pudo coger.
 - **C (copia de la pieza de corazón → Gancho):** se queda flotando con el brillo y la zona de recogida de la pieza de corazón. No se coge al pasar por encima.
 - **D: ficha normal.** El juego no se colgó.
