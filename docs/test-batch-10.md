@@ -31,4 +31,15 @@ Nota sobre A: si ya tienes la Resortera del cofre, fíjate al menos en si aparec
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10). Para llegar a la primera Skulltula hubo que coger antes la Resortera, porque las colisiones del remake obligan a matar a las Skulltulas del camino.
+
+- **A (copia de la rupia roja → Resortera): funciona.** Cae al suelo y se coge, pero con el botón A, no al pasar por encima. Cogerla teniéndola ya no da problemas.
+- **B (copia de la carta → Bumerán):** se queda flotando y no se coge al pasar por encima. Por dónde se quedó, no se pudo coger.
+- **C (copia de la pieza de corazón → Gancho):** se queda flotando con el brillo y la zona de recogida de la pieza de corazón. No se coge al pasar por encima.
+- **D: ficha normal.** El juego no se colgó.
+
+Conclusiones:
+
+- Un actor nuevo dado de alta en el registro aparece y entrega el objeto clave de su fila (`ActorName`).
+- Lo de cogerlo al pasar por encima depende de `DefaultAutoGet` en el `PouchContentParam`. Los objetos clave no lo tienen, y por eso hacía falta el botón A.
+- Lo que quiere el usuario es que el objeto se quede flotando donde estaba la Skulltula y se coja al pasar por encima, con el Gancho o con el Bumerán. Eso es justo lo que hace la ficha dorada (`Obj_Token_Gold`), así que el lote 11 usa la ficha como base.
