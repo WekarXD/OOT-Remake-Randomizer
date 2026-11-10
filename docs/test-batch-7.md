@@ -28,5 +28,7 @@ Aviso: sin la Ocarina no puedes tocar canciones hasta que consigas la Ocarina de
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultado en el juego (2026-11-10): **funciona.** Saria entrega el Bumerán en vez de la Ocarina de las Hadas; sale en el inventario y se puede lanzar de niño. La escena termina bien.
+
+Conclusión: cambiar el parámetro de texto de una escena de regalo sirve para entregar otro objeto clave (`Item_*`). La fase A queda superada.
 
