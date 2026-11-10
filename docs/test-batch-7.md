@@ -1,6 +1,6 @@
-# Lote de prueba 7: Saria te da el Gancho en vez de la Ocarina
+# Lote de prueba 7: Saria te da el Bumerán en vez de la Ocarina
 
-Objetivo: comprobar que se puede cambiar el regalo de un personaje en una escena. Saria te da la Ocarina de las Hadas al despedirte de ella en el puente; en este lote te dará el **Gancho** (`Item_Hookshot`).
+Objetivo: comprobar que se puede cambiar el regalo de un personaje en una escena. Saria te da la Ocarina de las Hadas al despedirte de ella en el puente; en este lote te dará el **Bumerán** (`Item_Boomerang`, se puede usar de niño).
 
 Si funciona, se podrán repartir también otros regalos de personajes (ocarinas, Tarjeta Gerudo, etc.).
 
@@ -20,8 +20,8 @@ Aviso: sin la Ocarina no puedes tocar canciones hasta que consigas la Ocarina de
 
 - [ ] Haz el Árbol Deku (o lo mínimo para poder salir del bosque) y sal del Bosque Kokiri por el puente.
 - [ ] Despídete de Saria en el puente.
-- [ ] ¿Recibes el **Gancho** en vez de la Ocarina? ______
-- [ ] ¿El Gancho sale en el inventario y se puede usar? ______
+- [ ] ¿Recibes el **Bumerán** en vez de la Ocarina? ______
+- [ ] ¿El Bumerán sale en el inventario y se puede lanzar? ______
 - [ ] ¿La escena termina bien, sin cuelgue ni pantalla negra? ______
 - [ ] ¿La Ocarina de las Hadas **no** aparece? (es lo esperado) ______
 - [ ] Si algo ha fallado (otro objeto, nada, cuelgue), apunta qué. ______

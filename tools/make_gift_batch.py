@@ -1,8 +1,8 @@
-"""Lote de prueba 7: Saria entrega el Gancho en vez de la Ocarina de las Hadas.
+"""Lote de prueba 7: Saria entrega el Bumerán en vez de la Ocarina de las Hadas.
 Uso: python -I tools/make_gift_batch.py <nup> <out_dir>
 Solo lee el .nup; escribe en <out_dir>/romfs/...  Si <out_dir> ya existe y no
 esta vacio, se reemplaza de forma atomica (se construye en <out_dir>.tmp).
-Cambia 'Item_Ocarina_Fairy' por 'Item_Hookshot' en los eventos 51 (Actor) y
+Cambia 'Item_Ocarina_Fairy' por 'Item_Boomerang' en los eventos 51 (Actor) y
 52 (ActorName) de Dm_Kokiri_0155. Si el archivo cambia de tamano, escribe
 tambien la RSTB.
 """
@@ -20,7 +20,7 @@ from randomizer.formats.zs import ZsCodec  # noqa: E402
 
 FLOW = 'Event/EventFlow/Dm_Kokiri_0155.bfevfl'
 FLOW_ZS = FLOW + '.zs'
-OLD, NEW = 'Item_Ocarina_Fairy', 'Item_Hookshot'
+OLD, NEW = 'Item_Ocarina_Fairy', 'Item_Boomerang'
 EDITS = ((51, 'Actor'), (52, 'ActorName'))
 
 
