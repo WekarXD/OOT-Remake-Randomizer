@@ -35,4 +35,10 @@ Para cada una, apunta qué se ve al morir y si se puede coger. Puede que haga fa
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10):
+
+- **A (carta de Ruto, `Obj_Bottle_Letter`): la da**, pero se queda flotando donde estaba la Skulltula y no cae al suelo. Si la Skulltula está alta, no se podría coger. Es por su comportamiento (flota como en el agua), así que no sirve de base.
+- **B y C (actores nuevos): no aparece nada.**
+- **D: ficha normal.**
+
+Causa de B y C: el juego tiene un registro de actores (`RSDB/ActorInfo` y `RSDB/GameActorInfo`), y los actores nuevos no estaban dados de alta. Ese registro es también lo que hace que la carta funcione: su fila dice `ActorName: Item_Bottle_Letter`, es decir, "al cogerme, soy la carta". Se prueba en el lote 10.
