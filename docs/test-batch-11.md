@@ -33,4 +33,9 @@ Si puedes, coge el objeto de A, B o C de formas distintas: uno pasando por encim
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10):
+
+- **A (Bumerán), B (Gancho) y C (Bolsa de bombas): aparecen, flotan como una ficha, con su brillo, y se cogen.** Pero el objeto **no llega al inventario** y no se puede usar.
+- **D: ficha normal.**
+
+Causa: al cogerla, la ficha ejecuta su propio "final", que suma una ficha, en vez del final genérico de los objetos del suelo, que mete el objeto en el inventario. En los archivos son el `DeathRef` (`Item_Token_Gold`, frente a `DropItem`) y el comportamiento (`AIInfoRef`). La rupia del lote 10 usaba el genérico, y por eso daba la Resortera. Se prueba en el lote 12.
