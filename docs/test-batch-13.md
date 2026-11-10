@@ -31,4 +31,11 @@ Con cada uno, prueba primero a **pasar por encima**. Si no se coge, prueba con e
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10):
+
+- **A (ficha con la forma de atrapar normal, Bumerán):** flota y se coge al pasar por encima, pero no llega al inventario.
+- **B (rupia con recogida automática, Gancho):** cae lentamente y no se puede coger.
+- **C (copia exacta de la rupia del lote 10, Bolsa de bombas):** cae lentamente y no se puede coger. Por tanto, el lote 10 no demostraba nada: ninguna copia ha dado un objeto todavía.
+- **D: ficha normal.**
+
+Causa encontrada: hay un tercer registro, **`RSDB/PouchActorInfo`**, que dice qué actores pueden ir al inventario y cómo. La carta de Ruto del juego (`Obj_Bottle_Letter`) tiene ahí una fila, copia de la de `Item_Bottle_Letter`; la ficha y las rupias también. Las copias no estaban en él, así que el juego no sabía qué hacer al cogerlas. Se prueba en el lote 14.
