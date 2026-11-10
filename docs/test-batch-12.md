@@ -31,4 +31,9 @@ En este lote, cada actor sigue siendo una copia de la ficha, pero lleva piezas d
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10):
+
+- **A, B y C: flotan con el brillo de la ficha y se cogen al pasar por encima, pero ninguno llega al inventario.** C también flota, aunque lleva el comportamiento genérico.
+- **D: ficha normal.**
+
+Conclusión: el "final" y el comportamiento no son la causa. Frente a la rupia del lote 10, que sí daba el objeto, quedan dos diferencias: la recogida automática (`DefaultAutoGet`) y la forma de "atrapar" de la ficha (`AttentionSender`), que puede lanzar la recogida especial de las fichas. Se prueban por separado en el lote 13.
