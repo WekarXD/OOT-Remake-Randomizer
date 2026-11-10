@@ -32,4 +32,18 @@ Las tres son copias de la ficha dorada y deberían flotar y cogerse al pasar por
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-10): **funciona.**
+
+- **A (ficha tal cual, Bumerán):** flota, se coge al pasar por encima, sale en el inventario y se puede usar.
+- **B (ficha con final genérico, Gancho):** flota, se puede coger con el Bumerán y sale en el inventario.
+- **C (ficha con todo genérico, Bolsa de bombas):** flota, se coge con el Bumerán y sale en el inventario con 20 bombas, pero no se pueden lanzar. Es el mismo fallo ya conocido del v1: la Bolsa de bombas fuera de su cofre original nunca deja lanzar bombas (commit 2ad8165). No tiene que ver con las Skulltulas.
+- **D: ficha normal.**
+
+Conclusión: para que un objeto del mundo dé un objeto clave hacen falta cuatro cosas:
+
+1. Un actor nuevo, copia de `Obj_Token_Gold` con el modelo, el nombre y el `PouchContentParam` del objeto (más `DefaultAutoGet`).
+2. Su entrada en el RSTB.
+3. Sus filas en `RSDB/ActorInfo`, `RSDB/GameActorInfo` y **`RSDB/PouchActorInfo`** (copia de la fila del objeto).
+4. Apuntar a él en `Drop__DropActor`.
+
+La variante más sencilla, la ficha tal cual (A), basta.
