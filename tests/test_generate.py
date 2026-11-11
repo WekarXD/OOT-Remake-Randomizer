@@ -253,6 +253,9 @@ class RealTests(unittest.TestCase):
                         'Excluded / unmapped'):
                 self.assertIn(sec, text)
             self.assertFalse((Path(res.mod_dir) / 'romfs' / 'spoiler.txt').exists())
+            # Same bytes on every platform (the web page writes '\n').
+            for name in ('spoiler.txt', 'spoiler.json'):
+                self.assertNotIn(b'\r\n', (Path(res.mod_dir) / name).read_bytes())
 
     def test_generate_tokensanity_all(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:

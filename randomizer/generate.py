@@ -104,11 +104,13 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map)
+                    # '\n' line endings everywhere, so the spoiler log is the same
+                    # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
-                                                         encoding='utf-8')
+                                                         encoding='utf-8', newline='\n')
                     (tmp_dir / 'spoiler.json').write_text(
                         json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True),
-                        encoding='utf-8')
+                        encoding='utf-8', newline='\n')
                     txt_path = str(mod_dir / 'spoiler.txt')
                     json_path = str(mod_dir / 'spoiler.json')
         except (NupError, FillError) as e:
