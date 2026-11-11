@@ -18,3 +18,40 @@ def read(data: bytes) -> dict:
         nm = data[noff:data.index(b'\0', noff)].decode('utf-8')
         out[nm] = data[data_off + s:data_off + e]
     return out
+
+
+def _name_hash(name: str, key: int = 0x65) -> int:
+    h = 0
+    for c in name.encode('utf-8'):
+        h = (h * key + c) & 0xFFFFFFFF
+    return h
+
+
+def write(files: dict, align: int = 8, data_align: int = 0x20) -> bytes:
+    """Escribe un SARC little-endian; nodos ordenados por hash de nombre."""
+    names = sorted(files, key=_name_hash)
+    sfnt = bytearray()
+    offs = {}
+    for n in names:
+        offs[n] = len(sfnt)
+        sfnt += n.encode('utf-8') + b'\0'
+        sfnt += b'\0' * (-len(sfnt) % 4)
+    hdr_len = 0x14 + 0xC + 16 * len(names) + 8 + len(sfnt)
+    data_off = -(-hdr_len // data_align) * data_align
+    data = bytearray()
+    nodes = []
+    for n in names:
+        data += b'\0' * (-len(data) % align)
+        start = len(data)
+        data += files[n]
+        nodes.append((_name_hash(n), 0x01000000 | (offs[n] // 4), start, len(data)))
+    out = bytearray(b'SARC')
+    out += struct.pack('<HHIIHH', 0x14, 0xFEFF, 0, data_off, 0x100, 0)
+    out += b'SFAT' + struct.pack('<HHI', 0xC, len(names), 0x65)
+    for nd in nodes:
+        out += struct.pack('<IIII', *nd)
+    out += b'SFNT' + struct.pack('<HH', 8, 0) + sfnt
+    out += b'\0' * (data_off - len(out))
+    out += data
+    struct.pack_into('<I', out, 8, len(out))
+    return bytes(out)

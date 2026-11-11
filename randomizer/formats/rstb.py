@@ -55,6 +55,19 @@ class Rstb:
             raise KeyError(path)
         e[1] = size
 
+    def add(self, path: str, size: int) -> None:
+        crc = zlib.crc32(path.encode())
+        lo, hi = 0, len(self._crcs)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self._crcs[mid][0] < crc:
+                lo = mid + 1
+            else:
+                hi = mid
+        if lo < len(self._crcs) and self._crcs[lo][0] == crc:
+            raise ValueError(f'{path} ya existe en la RSTB')
+        self._crcs.insert(lo, [crc, size])
+
     def dump(self) -> bytes:
         ver, nbs = self._header
         out = bytearray(b'RESTBL')

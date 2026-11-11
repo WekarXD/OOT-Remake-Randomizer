@@ -3,7 +3,7 @@ import struct
 import unittest
 import zlib
 
-from randomizer.formats import byml
+from randomizer.formats import byml, sarc
 from randomizer.formats.byml import U32, U64, F32
 from randomizer.formats.rstb import Rstb, banc_rstb_size
 
@@ -67,6 +67,26 @@ class RstbTests(unittest.TestCase):
     def test_banc_rstb_size(self):
         self.assertEqual(banc_rstb_size(510884), 511176)
 
+    def test_rstb_add_sorted_and_duplicate(self):
+        r = Rstb((1, 160), [[10, 1], [0xFFFFFFF0, 3]], [])
+        r.add('x', 7)
+        crcs = [c for c, _ in r._crcs]
+        self.assertEqual(crcs, sorted(crcs))
+        self.assertEqual(r.get('x'), 7)
+        with self.assertRaises(ValueError):
+            r.add('x', 8)
+
+
+class SarcWriteTests(unittest.TestCase):
+    def test_sarc_write_roundtrip_synthetic(self):
+        files = {'b/x.bin': b'' * 5, 'a.txt': b'hola', 'c': b''}
+        self.assertEqual(sarc.read(sarc.write(files)), files)
+
+    def test_sarc_write_node_order(self):
+        raw = sarc.write({'zz': b'1', 'a': b'2'})
+        hashes = [struct.unpack_from('<I', raw, 0x14 + 0xC + 16 * i)[0] for i in range(2)]
+        self.assertEqual(hashes, sorted(hashes))
+
 
 @unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
 class RealTests(unittest.TestCase):
@@ -88,6 +108,16 @@ class RealTests(unittest.TestCase):
                 self.assertEqual(_types(root), _types(root2), p)
                 self.assertEqual(rstb.get(p[:-3]), banc_rstb_size(len(raw)), p)
                 self.assertEqual(codec.decompress(p, codec.compress(p, new)), new)
+
+    def test_sarc_write_byte_exact_real_packs(self):
+        from randomizer.nup import NupArchive
+        from randomizer.formats.zs import ZsCodec
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            for name in ('Obj_Bottle_Letter', 'Item_Hookshot', 'Obj_Heart_Piece'):
+                p = f'Pack/Actor/{name}.pack.zs'
+                raw = codec.decompress(p, nup.read(p))
+                self.assertEqual(sarc.write(sarc.read(raw)), raw, name)
 
 
 def _types(v):
