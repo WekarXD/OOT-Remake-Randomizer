@@ -1,49 +1,48 @@
-# Lote de prueba 6: ¿qué pueden soltar las Skulltulas doradas?
+# Test batch 6: what can Gold Skulltulas drop?
 
-Objetivo: saber si una Skulltula dorada puede soltar otro objeto en lugar de su ficha. Hay dos casos:
+Goal: find out whether a Gold Skulltula can drop another item instead of its token. There are two cases:
 
-- un **objeto importante** (`Item_*`, como el Gancho);
-- un **objeto "de suelo"** (`Obj_*`, como una rupia o una pieza de corazón).
+- an **important item** (`Item_*`, such as the Hookshot);
+- a **"ground" item** (`Obj_*`, such as a rupee or a piece of heart).
 
-El resultado decide qué se puede repartir en Skulltulas, jarrones, cajas y colmenas.
+The result decides what can be placed in Skulltulas, pots, crates and beehives.
 
-## Preparar
+## Setup
 
-- [ ] Desactiva cualquier otro mod `Rando_*`, `TestLote*` y `TestEscenas*`.
-- [ ] Copia `test-mod/0400486024DEC000/TestLote6` a `load/0400486024DEC000/` en Lichii.
-- [ ] Empieza una **partida nueva**: el mod solo cambia el Árbol Deku, así que puedes ir directo a por él.
+- [ ] Disable any other `Rando_*`, `TestBatch*` and `TestScenes*` mod.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch6` to `load/0400486024DEC000/` in Lichii.
+- [ ] Start a **new game**: the mod only changes the Deku Tree, so you can go straight there.
 
-## Qué cambia
+## What changes
 
-Hay cuatro Skulltulas doradas en el Árbol Deku. Las salas son mi suposición a partir de los datos.
+There are four Gold Skulltulas in the Deku Tree. The rooms are my guess from the data.
 
-| Skulltula | Sala (creo) | Debería soltar |
+| Skulltula | Room (I think) | Should drop |
 |---|---|---|
-| A | Sala de la brújula (piso de arriba, en la pared de enredaderas) | **Gancho** |
-| B | Sótano, primera sala (una de las dos) | **Rupia roja** |
-| C | Sótano, primera sala (la otra) | **Pieza de corazón** |
-| D | Sala del fondo del sótano | Su ficha normal (sin cambios, de control) |
+| A | Compass room (upper floor, on the vine wall) | **Hookshot** |
+| B | Basement, first room (one of the two) | **Red rupee** |
+| C | Basement, first room (the other) | **Piece of Heart** |
+| D | Back room of the basement | Its normal token (unchanged, control) |
 
-## Comprobar
+## Check
 
-Para cada Skulltula apunta qué ha soltado y si te lo has podido quedar:
+For each Skulltula note what it dropped and whether you could keep it:
 
-- [ ] **A:** ¿Gancho? ¿Aparece en el inventario y se puede usar? ______
-- [ ] **B:** ¿Rupia roja? ¿Sube el contador en 20? ______
-- [ ] **C:** ¿Pieza de corazón? ¿Sube el contador de piezas? ______
-- [ ] **D:** ¿Ficha de Skulltula normal? ______
-- [ ] Si alguna ha soltado su ficha normal en vez del objeto nuevo, o nada, o el juego se ha colgado, apunta cuál. ______
+- [ ] **A:** Hookshot? Does it appear in the inventory and can it be used? ______
+- [ ] **B:** Red rupee? Does the counter go up by 20? ______
+- [ ] **C:** Piece of Heart? Does the piece counter go up? ______
+- [ ] **D:** Normal Skulltula token? ______
+- [ ] If any dropped its normal token instead of the new item, or nothing, or the game hung, note which. ______
 
-Si tienes tiempo:
+If you have time:
 
-- [ ] Sal del Árbol Deku y vuelve a entrar. ¿Vuelven a aparecer las Skulltulas A, B o C? ______
+- [ ] Leave the Deku Tree and come back in. Do Skulltulas A, B or C reappear? ______
 
-## Resultados
+## Results
 
-Resultados en el juego (2026-11-10):
+In-game results (2026-11-10):
 
-- **A (Gancho, `Item_Hookshot`): se ve, pero no se puede coger.** Los objetos `Item_*` no sirven como objeto suelto en el mundo.
-- **B (rupia roja, `Obj_Rupee_Red`): funciona.**
-- **C (pieza de corazón, `Obj_Heart_Piece`): funciona.** En este juego las piezas de corazón se recogen con una acción, no al pasar por encima; eso es así también en el juego original.
-- **Conclusión:** `Drop__DropActor` en una Skulltula dorada sí se respeta, pero solo con objetos `Obj_*`. Los objetos clave no pueden ir en Skulltulas, jarrones, cajas ni colmenas; ahí solo caben objetos menores.
-
+- **A (Hookshot, `Item_Hookshot`): it is visible, but cannot be picked up.** `Item_*` objects do not work as loose items in the world.
+- **B (red rupee, `Obj_Rupee_Red`): works.**
+- **C (piece of heart, `Obj_Heart_Piece`): works.** In this game pieces of heart are picked up with an action, not by walking over them; that is also the case in the original game.
+- **Conclusion:** `Drop__DropActor` on a Gold Skulltula is respected, but only with `Obj_*` objects. Key items cannot go in Skulltulas, pots, crates or beehives; only minor items fit there.

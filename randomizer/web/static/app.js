@@ -37,8 +37,8 @@
   }
 
   function errText(e) {
-    return e && e.message === 'invalid' ? 'Respuesta inválida del servidor.'
-      : 'No se pudo contactar con el servidor.';
+    return e && e.message === 'invalid' ? 'Invalid response from the server.'
+      : 'Could not reach the server.';
   }
 
   function setStatus(el, text, cls) {
@@ -62,12 +62,12 @@
     const p = $('nup').value.trim();
     const st = $('nup-status');
     if (!p) { setStatus(st, ''); return; }
-    setStatus(st, 'Comprobando…');
+    setStatus(st, 'Checking…');
     try {
       const r = await api('/api/validate', { nup_path: p });
       if ($('nup').value.trim() !== p) return;
-      if (r.ok) setStatus(st, '✔ Versión ' + r.version + ' detectada', 'ok');
-      else setStatus(st, r.error || 'Error de validación.', 'err');
+      if (r.ok) setStatus(st, '✔ Version ' + r.version + ' detected', 'ok');
+      else setStatus(st, r.error || 'Validation error.', 'err');
     } catch (e) {
       if ($('nup').value.trim() !== p) return;
       setStatus(st, errText(e), 'err');
@@ -91,7 +91,7 @@
         cb.checked = false;
         lab.classList.add('disabled');
         const s = document.createElement('span');
-        s.textContent = it.movable ? ' (necesario para la lógica)' : '(fijo en esta versión)';
+        s.textContent = it.movable ? ' (required by the logic)' : '(fixed in this version)';
         lab.appendChild(s);
       }
       box.appendChild(lab);
@@ -114,7 +114,7 @@
     const btn = $('generate');
     const res = $('result');
     btn.disabled = true;
-    btn.textContent = 'Generando…';
+    btn.textContent = 'Generating…';
     setStatus(res, '');
     let retry = false;
     try {
@@ -127,27 +127,26 @@
       });
       if (r.ok) {
         if (r.mod_dir && Array.isArray(r.changed_files) && r.changed_files.length === 0) {
-          setStatus(res, 'Semilla generada sin cambios (modo Vanilla). Solo se creó el registro en ' +
+          setStatus(res, 'Seed generated with no changes (Vanilla mode). Only the spoiler log was created in ' +
             r.mod_dir + '.', 'ok');
         } else if (r.mod_dir) {
-          setStatus(res, '✔ Mod ' + folderName(r.mod_dir) + ' creado en ' + r.mod_dir +
-            '. Desactiva otros mods Rando_* de este juego en Lichii.', 'ok');
+          setStatus(res, '✔ Mod ' + folderName(r.mod_dir) + ' created in ' + r.mod_dir +
+            '. Disable other Rando_* mods for this game in Lichii.', 'ok');
         } else {
-          setStatus(res, 'Semilla generada sin cambios (modo Vanilla).', 'ok');
+          setStatus(res, 'Seed generated with no changes (Vanilla mode).', 'ok');
         }
         $('seed').value = r.seed;
         showSpoilerLink(r.spoiler_txt);
       } else if (r.exists && !overwrite) {
-        retry = window.confirm('Ya existe ' + (r.mod_dir ? folderName(r.mod_dir) : 'esa carpeta') +
-          '. ¿Sobrescribir?');
+        retry = window.confirm((r.mod_dir ? folderName(r.mod_dir) : 'That folder') + ' already exists. Overwrite?');
       } else {
-        setStatus(res, r.error || 'Error desconocido.', 'err');
+        setStatus(res, r.error || 'Unknown error.', 'err');
       }
     } catch (e) {
       setStatus(res, errText(e), 'err');
     }
     btn.disabled = false;
-    btn.textContent = 'Generar';
+    btn.textContent = 'Generate';
     if (retry) return generate(true);
   }
 
@@ -158,9 +157,9 @@
     try {
       const r = await fetch('/api/spoiler?path=' + encodeURIComponent(spoilerPath));
       if (r.ok) pre.textContent = await r.text();
-      else pre.textContent = (await r.json()).error || 'No se pudo cargar el registro.';
+      else pre.textContent = (await r.json()).error || 'Could not load the spoiler log.';
     } catch (err) {
-      pre.textContent = 'No se pudo cargar el registro.';
+      pre.textContent = 'Could not load the spoiler log.';
     }
     pre.hidden = false;
   });
@@ -171,7 +170,7 @@
 
   async function init() {
     let cfg = {};
-    try { cfg = await api('/api/config'); } catch (e) { /* sin config */ }
+    try { cfg = await api('/api/config'); } catch (e) { /* no config */ }
     const ls = cfg.last_settings || {};
     if (cfg.nup_path) { $('nup').value = cfg.nup_path; validate(); }
     if (cfg.out_dir) $('outdir').value = cfg.out_dir;
@@ -183,7 +182,7 @@
     try {
       renderItems(await api('/api/items'), Array.isArray(ls.excluded_items) ? ls.excluded_items : []);
     } catch (e) {
-      $('items').textContent = 'No se pudo cargar la lista de objetos.';
+      $('items').textContent = 'Could not load the item list.';
     }
   }
   init();

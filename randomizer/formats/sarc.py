@@ -1,14 +1,14 @@
-"""Lector de archivos SARC (little-endian)."""
+"""Reader for SARC files (little-endian)."""
 import struct
 
 
 def read(data: bytes) -> dict:
     if data[:4] != b'SARC':
-        raise ValueError('No es un archivo SARC válido.')
+        raise ValueError('Not a valid SARC file.')
     hlen, _bom = struct.unpack_from('<HH', data, 4)
     data_off = struct.unpack_from('<I', data, 0xC)[0]
     if data[hlen:hlen + 4] != b'SFAT':
-        raise ValueError('SARC dañado: falta la tabla SFAT.')
+        raise ValueError('Corrupt SARC: SFAT table missing.')
     n = struct.unpack_from('<H', data, hlen + 6)[0]
     nodes = [struct.unpack_from('<IIII', data, hlen + 0xC + 16 * i) for i in range(n)]
     names = hlen + 0xC + 16 * n + 8
@@ -28,7 +28,7 @@ def _name_hash(name: str, key: int = 0x65) -> int:
 
 
 def write(files: dict, align: int = 8, data_align: int = 0x20) -> bytes:
-    """Escribe un SARC little-endian; nodos ordenados por hash de nombre."""
+    """Write a little-endian SARC; nodes sorted by name hash."""
     names = sorted(files, key=_name_hash)
     sfnt = bytearray()
     offs = {}

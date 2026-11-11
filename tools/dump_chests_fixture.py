@@ -1,4 +1,4 @@
-"""Genera tests/fixtures/chests.json desde el .nup real (OOT_NUP)."""
+"""Generates tests/fixtures/chests.json from the real .nup (OOT_NUP)."""
 import json
 import os
 import sys
@@ -14,7 +14,7 @@ from randomizer.nup import NupArchive  # noqa: E402
 def main():
     nup_path = os.environ.get('OOT_NUP')
     if not nup_path:
-        sys.exit('Defina la variable de entorno OOT_NUP.')
+        sys.exit('Set the OOT_NUP environment variable.')
     out = ROOT / 'tests' / 'fixtures' / 'chests.json'
     with NupArchive(nup_path) as nup:
         rows = chests_to_json(GameData(nup).chests())
@@ -22,7 +22,7 @@ def main():
     with open(out, 'w', encoding='utf-8', newline='\n') as f:
         json.dump(rows, f, indent=1, ensure_ascii=False)
         f.write('\n')
-    print(f'{len(rows)} cofres -> {out}')
+    print(f'{len(rows)} chests -> {out}')
 
 
 if __name__ == '__main__':

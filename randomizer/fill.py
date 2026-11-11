@@ -1,17 +1,17 @@
-"""Reparto determinista de objetos clave entre cofres (assumed fill).
+"""Deterministic fill of key items among chests (assumed fill).
 
-`place` devuelve, para cada Hash de cofre, el `Drop__DropActor` que tendrá.
-Solo se tocan los sitios elegibles (cofre asociado a una ubicación de OoTR,
-sin parche de evento, fuera de la tienda y sin objeto de mazmorra). Los
-objetos clave de esos sitios se colocan con *assumed fill*: al colocar cada
-uno se dan por tenidos todos los que faltan por colocar y se elige al azar
-entre los sitios libres alcanzables. El resto del contenido de los sitios
-elegibles se baraja entre los sitios que quedan libres. El resultado se
-valida con `World.can_beat`; si falla se reintenta con otro RNG.
+`place` returns, for each chest Hash, the `Drop__DropActor` it will have.
+Only eligible sites are touched (a chest mapped to an OoTR location, with no
+event patch, outside the shop and not holding a dungeon item). The key items
+of those sites are placed with *assumed fill*: when placing each one, all
+those still to be placed are assumed owned and a site is chosen at random
+among the reachable free sites. The rest of the contents of the eligible
+sites is shuffled among the sites left free. The result is validated with
+`World.can_beat`; if it fails, it is retried with another RNG.
 
-Con `tokensanity` distinto de `'off'`, las Skulltulas doradas que entran según
-el modo (`gs_sites`) son sitios elegibles más, cuyo contenido original es la
-ficha (`TOKEN`). Las fichas entran en el reparto como el resto del contenido.
+With `tokensanity` other than `'off'`, the Gold Skulltulas that qualify under
+the mode (`gs_sites`) are additional eligible sites, whose original content
+is the token (`TOKEN`). Tokens enter the fill like the rest of the content.
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from dataclasses import dataclass
 
 from randomizer import RANDO_VERSION
 from randomizer.game import ChestActor, SkulltulaActor
-from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS_ES,
+from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
                               NON_EXCLUDABLE)
 from randomizer.locations import GsEntry, LocationEntry
 from randomizer.logic.world import World
@@ -34,12 +34,12 @@ TOKEN = 'Obj_Token_Gold'
 OOTR_TOKEN = 'Gold Skulltula Token'
 MAX_ATTEMPTS = 100
 FILLER = 'Rupees (5)'
-# Zonas (segmento de la ruta del Banc tras 'Banc/') donde no se colocan objetos
-# clave. Sus cofres siguen siendo origen de objetos y destino de relleno, pero
-# en el remake el número de llaves pequeñas y de puertas de estas mazmorras
-# difiere del N64 (Templo del Agua 4 llaves en vez de 6, Centro de
-# Entrenamiento Gerudo, Pozo) y la llave gratis del Templo del Fuego es una
-# suposición de OoTR; la lógica no es fiable ahí.
+# Zones (path segment of the Banc after 'Banc/') where no key items are
+# placed. Their chests are still sources of items and destinations for filler,
+# but in the remake the number of small keys and doors in these dungeons
+# differs from the N64 (Water Temple has 4 keys instead of 6, Gerudo Training
+# Ground, Well) and the free key in the Fire Temple is an OoTR assumption;
+# the logic is not reliable there.
 NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
                                  'BottomOfTheWell', 'FireTemple'})
 
@@ -51,7 +51,7 @@ class Settings:
     excluded_items: frozenset[str] = frozenset()
     spoiler: bool = True
     skip_cutscenes: bool = False
-    tokensanity: str = 'off'  # ver TOKENSANITY
+    tokensanity: str = 'off'  # see TOKENSANITY
 
 
 class FillError(Exception):
@@ -61,11 +61,11 @@ class FillError(Exception):
 def _settings_key(settings: Settings) -> str:
     data = dataclasses.asdict(settings)
     del data['seed']
-    del data['spoiler']  # solo afecta a los archivos de salida, no a la colocación
-    del data['skip_cutscenes']  # idem: no cambia la colocación
+    del data['spoiler']  # only affects the output files, not the placement
+    del data['skip_cutscenes']  # same: does not change the placement
     data['excluded_items'] = sorted(settings.excluded_items)
     if settings.tokensanity == 'off':
-        del data['tokensanity']  # la clave queda como antes de existir la opción
+        del data['tokensanity']  # the key stays as it was before the option existed
     return json.dumps(data, sort_keys=True)
 
 
@@ -80,7 +80,7 @@ def _original_drops(chests: list[ChestActor]) -> dict[int, str]:
     for c in chests:
         prev = out.setdefault(c.hash, c.drop)
         if prev != c.drop:
-            raise FillError(f'El cofre {c.hash} tiene contenidos distintos en sus copias')
+            raise FillError(f'Chest {c.hash} has different contents in its copies')
     return out
 
 
@@ -100,10 +100,10 @@ def _eligible(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
 
 def gs_sites(skulltulas: list[SkulltulaActor], gs_map: dict[int, GsEntry] | None,
              mode: str) -> list[int]:
-    """Hash de las Skulltulas que son sitios con este modo de tokensanity,
-    sin duplicados y ordenados. Las que no están en `gs_map` no entran."""
+    """Hashes of the Skulltulas that are sites under this tokensanity mode,
+    without duplicates and sorted. Those not in `gs_map` are left out."""
     if mode not in TOKENSANITY:
-        raise FillError(f'Modo de tokensanity desconocido: {mode!r}')
+        raise FillError(f'Unknown tokensanity mode: {mode!r}')
     if mode == 'off' or not gs_map:
         return []
     out = set()
@@ -116,8 +116,8 @@ def gs_sites(skulltulas: list[SkulltulaActor], gs_map: dict[int, GsEntry] | None
 
 def _fixed(world_base: dict[str, str], site_loc: dict[int, str],
            placed: dict[int, str]) -> dict[str, str]:
-    """`fixed` de la lógica: base vanilla con los sitios elegibles a relleno
-    (`world_base`) y los objetos clave y las fichas ya colocados encima."""
+    """The logic's `fixed`: vanilla base with the eligible sites set to filler
+    (`world_base`) and the key items and tokens already placed on top."""
     fixed = dict(world_base)
     for h in sorted(placed):
         drop = placed[h]
@@ -133,14 +133,14 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
              base: dict[str, str], no_key: frozenset[int] = frozenset(),
              gs: frozenset[int] = frozenset(),
              gs_forbidden: frozenset[str] = frozenset()) -> dict[int, str] | None:
-    # Sitios elegibles que se quedan fijos: los de objetos clave excluidos.
+    # Eligible sites that stay fixed: those of excluded key items.
     pinned = {h: original[h] for h in eligible
               if original[h] in KEY_ITEMS and h not in moving}
     free = [h for h in eligible if h not in pinned]
 
     to_place = [original[h] for h in moving]
     rng.shuffle(to_place)
-    # Estable: progresivos de nivel más alto primero, el resto en orden barajado.
+    # Stable: higher-level progressives first, the rest in shuffled order.
     to_place.sort(key=lambda a: -ITEM_LEVEL[a][1] if a in ITEM_LEVEL else 0)
 
     placed: dict[int, str] = dict(pinned)
@@ -157,12 +157,12 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     rest = [original[h] for h in free if h not in moving]
     rng.shuffle(rest)
     open_sites = [h for h in free if h not in placed]
-    # Las Skulltulas libres se llenan primero, con los primeros contenidos
-    # barajados que se pueden soltar; lo que queda va a los cofres libres.
+    # Free Skulltulas are filled first, with the first shuffled contents that
+    # can be dropped; what is left goes to the free chests.
     open_gs = [h for h in open_sites if h in gs]
     allowed = [i for i, drop in enumerate(rest) if drop not in gs_forbidden][:len(open_gs)]
     if len(allowed) < len(open_gs):
-        raise FillError('No hay suficientes objetos que se puedan soltar en las Skulltulas')
+        raise FillError('Not enough items that can be dropped by the Skulltulas')
     for h, i in zip(open_gs, allowed, strict=True):
         placed[h] = rest[i]
     taken = set(allowed)
@@ -183,21 +183,21 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
           skulltulas: list[SkulltulaActor] = (),
           gs_map: dict[int, GsEntry] | None = None,
           gs_forbidden: frozenset[str] = frozenset()) -> dict[int, str]:
-    """Mapa Hash -> Drop__DropActor para todos los cofres de `chests` y las
-    Skulltulas que entran con `settings.tokensanity` (ver `gs_sites`).
-    `gs_forbidden`: contenidos que no pueden ir a una Skulltula."""
+    """Hash -> Drop__DropActor map for all chests in `chests` and the
+    Skulltulas that qualify under `settings.tokensanity` (see `gs_sites`).
+    `gs_forbidden`: contents that cannot go to a Skulltula."""
     if settings.key_items_mode not in MODES:
-        raise FillError(f'Modo de objetos clave desconocido: {settings.key_items_mode!r}')
+        raise FillError(f'Unknown key item mode: {settings.key_items_mode!r}')
     bad = settings.excluded_items & NON_EXCLUDABLE
     if bad:
-        label = ', '.join(LABELS_ES.get(a, a) for a in sorted(bad))
-        raise FillError(f'No se puede excluir {label}: la lógica necesita moverlo '
-                        'para que la partida sea completable.')
+        label = ', '.join(LABELS.get(a, a) for a in sorted(bad))
+        raise FillError(f'Cannot exclude {label}: the logic needs to move it '
+                        'for the game to be beatable.')
     gs = gs_sites(skulltulas, gs_map, settings.tokensanity)
     original = _original_drops(chests)
     for h in gs:
         if h in original:
-            raise FillError(f'El Hash {h} es a la vez cofre y Skulltula')
+            raise FillError(f'Hash {h} is both a chest and a Skulltula')
         original[h] = TOKEN
     if settings.key_items_mode == 'vanilla':
         return dict(original)
@@ -222,4 +222,4 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
                           site_loc, world, base, no_key, frozenset(gs), gs_forbidden)
         if result is not None:
             return result
-    raise FillError('No se ha podido generar una semilla completable con estos ajustes')
+    raise FillError('Could not generate a beatable seed with these settings')

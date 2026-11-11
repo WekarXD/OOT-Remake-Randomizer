@@ -1,10 +1,10 @@
-"""Opción "Saltar cinemáticas": política de escenas y archivos del mod.
+"""The "Skip cutscenes" option: scene policy and mod files.
 
-- Desbloquea el salto de las introducciones listadas (quita `SkipSetting`
-  de su EventSettingComponentList).
-- Recorta de los flujos de historia las acciones que solo muestran (lista
-  blanca de la fase activa) reescribiendo en su sitio los índices de evento;
-  los archivos no cambian de tamaño.
+- Unlocks skipping of the listed intros (removes `SkipSetting` from their
+  EventSettingComponentList).
+- Trims from the story flows the actions that only display things (allowlist
+  of the active phase), rewriting the event indices in place; the files do
+  not change size.
 """
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ from .formats import byml
 from .formats.bfevfl import ACTION, END, FORK, SWITCH, EventFlow, patch_pointers
 
 ACTIVE_PHASE = 1
-# Carteles y textos del sistema: nunca se quitan (ver la especificación).
+# Signs and system texts: never removed (see the specification).
 PROTECTED_ACTORS = frozenset({'SystemTextNPC', 'SignBoard_EventStarter'})
 POLICY_PATH = Path(__file__).resolve().parent / 'data' / 'cutscenes.json'
 FLOW_DIR = 'Event/EventFlow/'
@@ -29,7 +29,7 @@ def load_policy() -> dict:
 
 
 def active_actions(policy: dict, phase: int = ACTIVE_PHASE) -> set[tuple[str, str]]:
-    """Pares (actor|'*', acción) de las fases 1..phase."""
+    """Pairs (actor|'*', action) of phases 1..phase."""
     return {tuple(p) for k, pairs in policy['actions'].items()
             if int(k) <= phase for p in pairs}
 
@@ -46,9 +46,9 @@ def _successors(events, i: int) -> list[int]:
 
 
 def on_cycle(events) -> set[int]:
-    """Eventos que están en algún ciclo del grafo (Tarjan iterativo).
+    """Events that are on some cycle of the graph (iterative Tarjan).
 
-    Mismas aristas que `reachable`: next, casos, ramas y join.
+    Same edges as `reachable`: next, cases, branches and join.
     """
     index, low, onstack, stack, out = {}, {}, set(), [], set()
     counter = 0
@@ -91,9 +91,9 @@ def on_cycle(events) -> set[int]:
 
 
 def reachable(events, start: int) -> set[int]:
-    """Eventos alcanzables desde `start` dentro del flujo.
+    """Events reachable from `start` within the flow.
 
-    Sigue next, casos, ramas y join; no entra en las llamadas de subflujo.
+    Follows next, cases, branches and join; does not enter subflow calls.
     """
     seen, stack = set(), [start]
     while stack:
@@ -110,14 +110,14 @@ def reachable(events, start: int) -> set[int]:
 
 
 def removable_events(flow: EventFlow, spec, pairs) -> set[int]:
-    """Acciones que se pueden quitar del flujo según su lista de entradas."""
+    """Actions that can be removed from the flow according to its entry list."""
     events = flow.events
     story, other = set(), set()
     for name, start in flow.entry_points.items():
         target = story if spec == '*' or name in spec else other
         target |= reachable(events, start)
-    # Nada que esté en un ciclo (p. ej. esperas de un bucle de sondeo
-    # switch -> espera -> switch): quitarlo dejaría un bucle sin espera.
+    # Nothing that is on a cycle (e.g. waits in a polling loop
+    # switch -> wait -> switch): removing it would leave a loop without a wait.
     cands = {i for i in story - other - on_cycle(events)
              if _matches(events[i], pairs) and events[i].actor not in PROTECTED_ACTORS}
     joins = _branch_joins(events)
@@ -125,11 +125,11 @@ def removable_events(flow: EventFlow, spec, pairs) -> set[int]:
 
 
 def _branch_joins(events) -> dict[int, set[int]]:
-    """Evento -> joins a los que sigue el flujo cuando su rama termina.
+    """Event -> joins the flow continues to when its branch ends.
 
-    Un evento de una rama de fork cuyo `next` (o un caso) es 0xFFFF continúa
-    en el join del fork. Las ramas anidadas reciben también los joins de
-    fuera (sobreaproximación: solo hace conservar más).
+    An event in a fork branch whose `next` (or a case) is 0xFFFF continues at
+    the fork's join. Nested branches also receive the outer joins
+    (over-approximation: it only makes more events get kept).
     """
     out: dict[int, set[int]] = {}
     for ev in events:
@@ -149,9 +149,9 @@ def _branch_joins(events) -> dict[int, set[int]]:
 
 
 def _reaches_talk_choice(events, i: int, joins) -> bool:
-    """Desde `i`, ¿se llega a un switch TalkChoice sin pasar por otro EventTalk?
+    """From `i`, is a TalkChoice switch reached without passing another EventTalk?
 
-    Sigue next, casos, ramas y join, y del final de una rama al join de su fork.
+    Follows next, cases, branches and join, and from the end of a branch to its fork's join.
     """
     seen, stack = {i}, [*_successors(events, i), *joins.get(i, ())]
     while stack:
@@ -169,8 +169,8 @@ def _reaches_talk_choice(events, i: int, joins) -> bool:
     return False
 
 
-# Consultas de switch que leen la respuesta de un diálogo (ronda 2b). Las de
-# azar (RandomChoice*) o de indicadores no la leen.
+# Switch queries that read the answer of a dialogue (round 2b). Random ones
+# (RandomChoice*) or flag-based ones do not read it.
 TALK_ANSWER_QUERIES = ('TalkChoice', 'Select')
 
 
@@ -179,16 +179,16 @@ def reads_talk_answer(query) -> bool:
 
 
 def is_choice_talk(events, i: int, pairs, joins=None) -> bool:
-    """`EventTalk` cuyo resultado lee un switch posterior.
+    """An `EventTalk` whose result is read by a later switch.
 
-    Dos reglas (basta una):
-    - Se sigue `next` saltando las acciones de la lista blanca que no son
-      diálogos (p. ej. un cambio de emoción entre la pregunta y el switch),
-      se quiten o no en este flujo; si lo primero que queda es un switch que
-      lee la respuesta (`reads_talk_answer`: TalkChoice o Select), el diálogo
-      es una pregunta.
-    - Se llega a un switch TalkChoice sin pasar por otro EventTalk, también a
-      través de forks y joins (p. ej. pregunta -> fork -> join -> TalkChoice2).
+    Two rules (either is enough):
+    - Follow `next`, skipping allowlisted actions that are not dialogues
+      (e.g. an emotion change between the question and the switch), whether
+      or not they are removed in this flow; if the first thing left is a
+      switch that reads the answer (`reads_talk_answer`: TalkChoice or
+      Select), the dialogue is a question.
+    - A TalkChoice switch is reached without passing another EventTalk, also
+      through forks and joins (e.g. question -> fork -> join -> TalkChoice2).
     """
     if events[i].kind != ACTION or events[i].action != 'EventTalk':
         return False
@@ -207,7 +207,7 @@ def is_choice_talk(events, i: int, pairs, joins=None) -> bool:
 
 
 def trim_flow(data: bytes, spec, pairs) -> bytes | None:
-    """Flujo recortado (misma longitud), o None si no cambia."""
+    """The trimmed flow (same length), or None if it does not change."""
     flow = EventFlow(data)
     if not flow.events:
         return None
@@ -223,7 +223,7 @@ def trim_flow(data: bytes, spec, pairs) -> bytes | None:
 
 
 def unlock_skip(raw: bytes) -> bytes | None:
-    """Lista de componentes sin `SkipSetting`, o None si no lo tiene."""
+    """The component list without `SkipSetting`, or None if it has none."""
     ver, root = byml.load(raw)
     comps = root.get('Components') if isinstance(root, dict) else None
     if not isinstance(comps, dict) or 'SkipSetting' not in comps:
@@ -231,13 +231,13 @@ def unlock_skip(raw: bytes) -> bytes | None:
     del comps['SkipSetting']
     out = byml.dump(root, ver)
     if len(out) > len(raw):
-        raise ValueError(f'La lista de componentes crece al quitar SkipSetting '
+        raise ValueError(f'The component list grows when removing SkipSetting '
                          f'({len(raw)} -> {len(out)} bytes).')
     return out
 
 
 def build_cutscene_files(game) -> dict[str, bytes]:
-    """Ruta romfs -> bytes finales (los .zs comprimidos), en orden de ruta."""
+    """romfs path -> final bytes (the compressed .zs), in path order."""
     policy = load_policy()
     pairs = active_actions(policy)
     files: dict[str, bytes] = {}

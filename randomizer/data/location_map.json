@@ -2,1421 +2,1421 @@
  "10012167258643363548": {
   "location": "Spirit Temple Mirror Shield Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Shield_Mirror en DesertColossus (-168.6, 113.2, -8.6); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Shield_Mirror in DesertColossus (-168.6, 113.2, -8.6); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "1029712040059298120": {
   "location": "Ganons Castle Light Trial First Left Chest",
   "needs_event_patch": false,
-  "note": "manual: grupo de la prueba de la luz; mismos requisitos",
+  "note": "manual: Light Trial group; same requirements",
   "status": "manual",
   "strip_event": false
  },
  "10344372963276519235": {
   "location": "Shadow Temple Invisible Blades Visible Chest",
   "needs_event_patch": false,
-  "note": "manual: par visible/invisible juntos (z=95/99); misma región",
+  "note": "manual: visible/invisible pair together (z=95/99); same region",
   "status": "manual",
   "strip_event": false
  },
  "10378828369334876242": {
   "location": "Water Temple Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey en WaterTemple (33.1, 103.7, -81.5)",
+  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey in WaterTemple (33.1, 103.7, -81.5)",
   "status": "auto",
   "strip_event": false
  },
  "10521366928524045067": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (-37.8, 145.2, -0.6); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (-37.8, 145.2, -0.6); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "10696620323243142689": {
   "location": "Gerudo Training Ground Maze Path First Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01 TBox_Rupee_Purple en GerudoTrainingGround (-19.2, 98.0, -46.2)",
+  "note": "auto: Obj_TBox_A_01 TBox_Rupee_Purple in GerudoTrainingGround (-19.2, 98.0, -46.2)",
   "status": "auto",
   "strip_event": false
  },
  "10743352138513225188": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_06 TBox_Rupee_Red en GerudoTrainingGround (-9.0, 98.0, -60.0); candidatos: Gerudo Training Ground Maze Path Second Chest; cofres del grupo: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_06 TBox_Rupee_Red in GerudoTrainingGround (-9.0, 98.0, -60.0); candidates: Gerudo Training Ground Maze Path Second Chest; group chests: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "10831981390482426294": {
   "location": "KF Midos Bottom Left Chest",
   "needs_event_patch": false,
-  "note": "manual: casa de Mido, rupia verde = Rupee (1)",
+  "note": "manual: Mido's house, green rupee = Rupee (1)",
   "status": "manual",
   "strip_event": false
  },
  "10905582354954996284": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en BottomOfTheWell (-29.6, 100.0, -37.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in BottomOfTheWell (-29.6, 100.0, -37.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "10944569637726152230": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake TBox_Rupee_Purple en GoronCity (-52.2, 94.8, 26.3); candidatos: GC Maze Center Chest; GC Maze Right Chest; cofres del grupo: 3870071239709713434(-43.2, 113.7, -8.4), 10944569637726152230(-52.2, 94.8, 26.3)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake TBox_Rupee_Purple in GoronCity (-52.2, 94.8, 26.3); candidates: GC Maze Center Chest; GC Maze Right Chest; group chests: 3870071239709713434(-43.2, 113.7, -8.4), 10944569637726152230(-52.2, 94.8, 26.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "11082303891540711688": {
   "location": "Forest Temple Bow Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Range_Bow en ForestTemple (0.2, 114.8, -68.5)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Range_Bow in ForestTemple (0.2, 114.8, -68.5)",
   "status": "auto",
   "strip_event": true
  },
  "1111717451118505545": {
   "location": "Shadow Temple Early Silver Rupee Chest",
   "needs_event_patch": false,
-  "note": "manual: llave a la altura de la brújula (y=87), región First Beamos",
+  "note": "manual: key at compass height (y=87), First Beamos region",
   "status": "manual",
   "strip_event": false
  },
  "11368028582977069031": {
   "location": "Deku Tree Compass Room Side Chest",
   "needs_event_patch": false,
-  "note": "manual: nueces, y=126, sobre la sala de la brújula (y=120)",
+  "note": "manual: nuts, y=126, above the compass room (y=120)",
   "status": "manual",
   "strip_event": false
  },
  "11498802739257120175": {
   "location": "Ice Cavern Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en IceCavern (3.4, 113.7, -80.2)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in IceCavern (3.4, 113.7, -80.2)",
   "status": "auto",
   "strip_event": false
  },
  "11563468890171962383": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (-2.3, 96.3, -77.3); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (-2.3, 96.3, -77.3); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "11582649900854566065": {
   "location": "Dodongos Cavern End of Bridge Chest",
   "needs_event_patch": false,
-  "note": "manual: escudo Deku a ~15 del cofre de la bolsa de bombas (puente lejano)",
+  "note": "manual: Deku Shield ~15 from the Bomb Bag chest (far bridge)",
   "status": "manual",
   "strip_event": false
  },
  "1158729434763801603": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en DeathMountainCrater (-27.0, 67.6, 65.2)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in DeathMountainCrater (-27.0, 67.6, 65.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "1163740567397714729": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_Rupee_Red en HyruleField (-5.7, 146.2, 406.9); candidatos: HF Southeast Grotto Chest; cofres del grupo: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_Rupee_Red in HyruleField (-5.7, 146.2, 406.9); candidates: HF Southeast Grotto Chest; group chests: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
   "status": "unmapped",
   "strip_event": false
  },
  "11682974908842171598": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en WaterTemple (12.0, 92.7, -4.5)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in WaterTemple (12.0, 92.7, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "11683433230229591151": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_06 TBox_Rupee_Red en GerudoTrainingGround (10.2, 98.0, -50.5); candidatos: Gerudo Training Ground Maze Path Second Chest; cofres del grupo: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_06 TBox_Rupee_Red in GerudoTrainingGround (10.2, 98.0, -50.5); candidates: Gerudo Training Ground Maze Path Second Chest; group chests: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "1171460703078800858": {
   "location": "Forest Temple First Room Chest",
   "needs_event_patch": false,
-  "note": "manual: llave en z=64, lejos del resto: sala de entrada, en alto (y=118)",
+  "note": "manual: key at z=64, far from the rest: entrance room, high up (y=118)",
   "status": "manual",
   "strip_event": false
  },
  "11718708984125260282": {
   "location": "Bottom of the Well Invisible Chest",
   "needs_event_patch": false,
-  "note": "manual: único cofre invisible del pozo; 50 en vez de 200 rupias",
+  "note": "manual: the only invisible chest in the Well; 50 instead of 200 rupees",
   "status": "manual",
   "strip_event": false
  },
  "11754783663699171680": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed en GerudoTrainingGround (-53.7, 103.5, -131.8)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed in GerudoTrainingGround (-53.7, 103.5, -131.8)",
   "status": "unmapped",
   "strip_event": false
  },
  "1176975953041865014": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en GoronCity (-47.4, 113.7, -2.3)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in GoronCity (-47.4, 113.7, -2.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "1186167733408299582": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Purple en DesertColossus (-129.5, 77.0, -36.5)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Purple in DesertColossus (-129.5, 77.0, -36.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "11929552275106311978": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Purple en KakarikoVillage (5.6, 130.2, 41.4)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Purple in KakarikoVillage (5.6, 130.2, 41.4)",
   "status": "unmapped",
   "strip_event": false
  },
  "12042193296697281461": {
   "location": "Spirit Temple Near Four Armos Chest",
   "needs_event_patch": false,
-  "note": "manual: llave lado adulto, alta, junto a los invisibles del pasillo",
+  "note": "manual: adult-side key, high up, next to the invisible chests in the corridor",
   "status": "manual",
   "strip_event": false
  },
  "12083259659219538030": {
   "location": "Fire Temple Megaton Hammer Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Hammer en FireTemple (-31.8, 196.1, -12.7)",
+  "note": "auto: Obj_TBox_A_02 Item_Hammer in FireTemple (-31.8, 196.1, -12.7)",
   "status": "auto",
   "strip_event": true
  },
  "12114077686306649660": {
   "location": "Market Treasure Chest Game Room 2 Bottom",
   "needs_event_patch": false,
-  "note": "manual: fallo, x=-86",
+  "note": "manual: losing chest, x=-86",
   "status": "manual",
   "strip_event": false
  },
  "12161709650443144121": {
   "location": "Dodongos Cavern Bomb Bag Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small en DodongoCavern (39.0, 115.7, -23.0); fija: fuera de su cofre las bombas no se pueden lanzar (TestLote5)",
+  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small in DodongoCavern (39.0, 115.7, -23.0); fixed: bombs cannot be thrown outside their chest (TestBatch5)",
   "status": "auto",
   "strip_event": false
  },
  "12253889300578348965": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en DodongoCavern (-49.0, 116.0, -63.9)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in DodongoCavern (-49.0, 116.0, -63.9)",
   "status": "unmapped",
   "strip_event": false
  },
  "12343753510713797715": {
   "location": "GF Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Obj_Heart_Piece en GerudoFortress (29.0, 131.5, -93.7)",
+  "note": "auto: Obj_TBox_A_02 Obj_Heart_Piece in GerudoFortress (29.0, 131.5, -93.7)",
   "status": "auto",
   "strip_event": false
  },
  "12345747231768877602": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_GlassTruth_A_01 Item_ScrubBusinessSeed en ShadowTemple (128.0, 52.0, 10.5)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_GlassTruth_A_01 Item_ScrubBusinessSeed in ShadowTemple (128.0, 52.0, 10.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "12567412825200613393": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (48.5, 147.0, -43.4); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (48.5, 147.0, -43.4); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "12763522142548402103": {
   "location": "Market Treasure Chest Game Room 3 Top",
   "needs_event_patch": false,
-  "note": "manual: llave, x=-97",
+  "note": "manual: key, x=-97",
   "status": "manual",
   "strip_event": false
  },
  "12786193094758345086": {
   "location": "KF Midos Bottom Right Chest",
   "needs_event_patch": false,
-  "note": "manual: casa de Mido, el restante (en N64 tenía un corazón)",
+  "note": "manual: Mido's house, the remaining one (on N64 it had a heart)",
   "status": "manual",
   "strip_event": false
  },
  "12889104996486369065": {
   "location": "Deku Tree Basement Chest",
   "needs_event_patch": false,
-  "note": "manual: palos, y=79: sótano",
+  "note": "manual: sticks, y=79: basement",
   "status": "manual",
   "strip_event": false
  },
  "12902291359202819102": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en KakarikoVillage (-41.7, 79.7, 11.4)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in KakarikoVillage (-41.7, 79.7, 11.4)",
   "status": "unmapped",
   "strip_event": false
  },
  "12909857529499414969": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_BombBundle_Small en SpiritTemple (43.4, 119.2, -47.5); candidatos: Spirit Temple Topmost Chest; cofres del grupo: 12909857529499414969(43.4, 119.2, -47.5), 13828480906010430010(-25.4, 158.2, -51.3)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_BombBundle_Small in SpiritTemple (43.4, 119.2, -47.5); candidates: Spirit Temple Topmost Chest; group chests: 12909857529499414969(43.4, 119.2, -47.5), 13828480906010430010(-25.4, 158.2, -51.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "12945617941305968586": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (-17.1, 147.0, -31.1); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (-17.1, 147.0, -31.1); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "12988877782812797760": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en BottomOfTheWell (19.9, 97.8, -18.6)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in BottomOfTheWell (19.9, 97.8, -18.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "13027331340815880287": {
   "location": "Deku Tree Slingshot Room Side Chest",
   "needs_event_patch": false,
-  "note": "manual: nueces, y=116, sobre la sala de la resortera (y=112)",
+  "note": "manual: nuts, y=116, above the slingshot room (y=112)",
   "status": "manual",
   "strip_event": false
  },
  "13080955777249750889": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Purple en KakarikoVillage (5.6, 130.2, 41.4)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Purple in KakarikoVillage (5.6, 130.2, 41.4)",
   "status": "unmapped",
   "strip_event": false
  },
  "13501407288943710656": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en GerudoTrainingGround (-50.3, 98.1, -15.6); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in GerudoTrainingGround (-50.3, 98.1, -15.6); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "13528903653876646082": {
   "location": "Shadow Temple Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Map en ShadowTemple (2.6, 90.5, -26.2)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Map in ShadowTemple (2.6, 90.5, -26.2)",
   "status": "auto",
   "strip_event": false
  },
  "13542013937093159888": {
   "location": "Ice Cavern Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en IceCavern (90.2, 104.5, 2.9)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in IceCavern (90.2, 104.5, 2.9)",
   "status": "auto",
   "strip_event": false
  },
  "13612880783193811229": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en GerudoValley (-33.7, 102.2, 22.1)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in GerudoValley (-33.7, 102.2, 22.1)",
   "status": "unmapped",
   "strip_event": false
  },
  "13633455645485504369": {
   "location": "Market Treasure Chest Game Room 4 Bottom",
   "needs_event_patch": false,
-  "note": "manual: fallo, x=-108",
+  "note": "manual: losing chest, x=-108",
   "status": "manual",
   "strip_event": false
  },
  "13828480906010430010": {
   "location": "Spirit Temple Topmost Chest",
   "needs_event_patch": false,
-  "note": "manual: bombas, el cofre más alto (y=158)",
+  "note": "manual: bombs, the highest chest (y=158)",
   "status": "manual",
   "strip_event": false
  },
  "13852283723126411131": {
   "location": "Spirit Temple Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Map en SpiritTemple (0.0, 114.2, -57.6)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Map in SpiritTemple (0.0, 114.2, -57.6)",
   "status": "auto",
   "strip_event": false
  },
  "14040210993541550542": {
   "location": "Spirit Temple Hallway Right Invisible Chest",
   "needs_event_patch": false,
-  "note": "manual: par de cofres invisibles (mismos requisitos)",
+  "note": "manual: pair of invisible chests (same requirements)",
   "status": "manual",
   "strip_event": false
  },
  "14046623154429024571": {
   "location": "Ganons Castle Light Trial First Right Chest",
   "needs_event_patch": false,
-  "note": "manual: grupo de la prueba de la luz; mismos requisitos",
+  "note": "manual: Light Trial group; same requirements",
   "status": "manual",
   "strip_event": false
  },
  "14060099092170010696": {
   "location": "Fire Temple Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey en FireTemple (-5.1, 100.9, -8.7)",
+  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey in FireTemple (-5.1, 100.9, -8.7)",
   "status": "auto",
   "strip_event": false
  },
  "14404733996390762670": {
   "location": "Ganons Castle Spirit Trial Crystal Switch Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01 Item_BombchuBundle_Small en InsideGanonCastle (56.4, 99.5, -15.2)",
+  "note": "auto: Obj_TBox_A_01 Item_BombchuBundle_Small in InsideGanonCastle (56.4, 99.5, -15.2)",
   "status": "auto",
   "strip_event": false
  },
  "14535080241831873137": {
   "location": "Shadow Temple Hover Boots Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_HoverBoot en ShadowTemple (-72.6, 90.5, -10.1); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_HoverBoot in ShadowTemple (-72.6, 90.5, -10.1); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "14647422914070455120": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en GoronCity (-47.4, 113.7, -5.2)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in GoronCity (-47.4, 113.7, -5.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "14776684749746592758": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en ForestTemple (0.0, 105.8, -62.8); candidatos: Forest Temple First Room Chest; Forest Temple First Stalfos Chest; Forest Temple Floormaster Chest; Forest Temple Red Poe Chest; Forest Temple Well Chest; cofres del grupo: 1171460703078800858(-9.9, 117.5, 64.4), 3433400840978782007(-17.1, 114.8, -63.6), 6449977980406424425(16.4, 88.0, -42.6), 7535137041266964235(-70.2, 107.1, -26.5), 14776684749746592758(0.0, 105.8, -62.8)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in ForestTemple (0.0, 105.8, -62.8); candidates: Forest Temple First Room Chest; Forest Temple First Stalfos Chest; Forest Temple Floormaster Chest; Forest Temple Red Poe Chest; Forest Temple Well Chest; group chests: 1171460703078800858(-9.9, 117.5, 64.4), 3433400840978782007(-17.1, 114.8, -63.6), 6449977980406424425(16.4, 88.0, -42.6), 7535137041266964235(-70.2, 107.1, -26.5), 14776684749746592758(0.0, 105.8, -62.8)",
   "status": "unmapped",
   "strip_event": false
  },
  "14818888396401495482": {
   "location": "KF Storms Grotto Chest",
   "needs_event_patch": false,
-  "note": "manual: bajo tierra (y=104 < casas 112), ambas edades; la gruta exige Canción de la Tormenta: etiqueta conservadora",
+  "note": "manual: underground (y=104 < houses 112), both ages; the grotto requires the Song of Storms: conservative label",
   "status": "manual",
   "strip_event": false
  },
  "14911602953212243797": {
   "location": "Bottom of the Well Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en BottomOfTheWell (-12.4, 100.1, -11.0)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in BottomOfTheWell (-12.4, 100.1, -11.0)",
   "status": "auto",
   "strip_event": false
  },
  "14933854942830098290": {
   "location": "Jabu Jabus Belly Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en InsideJabuJabuBelly (37.7, 77.6, -57.1)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in InsideJabuJabuBelly (37.7, 77.6, -57.1)",
   "status": "auto",
   "strip_event": false
  },
  "14962432460641118089": {
   "location": "Ganons Castle Light Trial Second Right Chest",
   "needs_event_patch": false,
-  "note": "manual: grupo de la prueba de la luz; mismos requisitos",
+  "note": "manual: Light Trial group; same requirements",
   "status": "manual",
   "strip_event": false
  },
  "1501288453962537671": {
   "location": "Spirit Temple Child Climb North Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01_NoBake Item_BombchuBundle_Small en SpiritTemple (-39.2, 119.2, -39.6)",
+  "note": "auto: Obj_TBox_A_01_NoBake Item_BombchuBundle_Small in SpiritTemple (-39.2, 119.2, -39.6)",
   "status": "auto",
   "strip_event": false
  },
  "15055117029957340138": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Purple en ZoraFountain (33.0, 108.5, 1.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Purple in ZoraFountain (33.0, 108.5, 1.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "15073195886628236505": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en FireTemple (31.7, 194.4, -8.5)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in FireTemple (31.7, 194.4, -8.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "15320975652699461295": {
   "location": "Ganons Castle Light Trial Invisible Enemies Chest",
   "needs_event_patch": false,
-  "note": "manual: llave en cofre invisible del grupo de la prueba de la luz",
+  "note": "manual: key in an invisible chest of the Light Trial group",
   "status": "manual",
   "strip_event": false
  },
  "15633505270333176438": {
   "location": "Spirit Temple Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass en SpiritTemple (13.0, 104.8, -63.7)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass in SpiritTemple (13.0, 104.8, -63.7)",
   "status": "auto",
   "strip_event": false
  },
  "15659683110284072977": {
   "location": "Market Treasure Chest Game Room 5 Bottom",
   "needs_event_patch": false,
-  "note": "manual: fallo, x=-119",
+  "note": "manual: losing chest, x=-119",
   "status": "manual",
   "strip_event": false
  },
  "15856256242099990922": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_02 Obj_Heart_Piece en GerudoValley (-9.5, 90.4, 35.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_02 Obj_Heart_Piece in GerudoValley (-9.5, 90.4, 35.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "15858708076894317041": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "15920957434854338961": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Purple en ForestTemple (-52.8, 115.0, 4.2)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Purple in ForestTemple (-52.8, 115.0, 4.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "16041366920820397198": {
   "location": "Graveyard Dampe Race Hookshot Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Hookshot en Graveyard (-6.0, 82.5, 77.7); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Hookshot in Graveyard (-6.0, 82.5, 77.7); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "16272168033146555902": {
   "location": "Spirit Temple Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey en SpiritTemple (19.8, 151.0, -65.1)",
+  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey in SpiritTemple (19.8, 151.0, -65.1)",
   "status": "auto",
   "strip_event": false
  },
  "16384925224245172970": {
   "location": "Water Temple Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en WaterTemple (36.8, 119.5, -4.5)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in WaterTemple (36.8, 119.5, -4.5)",
   "status": "auto",
   "strip_event": false
  },
  "16424266294822218796": {
   "location": "Water Temple Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en WaterTemple (-68.3, 104.3, 20.1)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in WaterTemple (-68.3, 104.3, 20.1)",
   "status": "auto",
   "strip_event": false
  },
  "16490222392193949581": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en WaterTemple (56.9, 118.4, -28.1); candidatos: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; cofres del grupo: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in WaterTemple (56.9, 118.4, -28.1); candidates: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; group chests: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "16619432200060282313": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en GerudoFortress (15.0, 89.2, -67.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in GerudoFortress (15.0, 89.2, -67.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "16654774376625985726": {
   "location": "Bottom of the Well Lens of Truth Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_GlassTruth en BottomOfTheWell (-0.0, 92.4, -110.3)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_GlassTruth in BottomOfTheWell (-0.0, 92.4, -110.3)",
   "status": "auto",
   "strip_event": true
  },
  "16713240760352215634": {
   "location": "Fire Temple Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en FireTemple (34.1, 147.1, -5.7)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in FireTemple (34.1, 147.1, -5.7)",
   "status": "auto",
   "strip_event": false
  },
  "16757992849254467386": {
   "location": "KF Kokiri Sword Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Sword_Kokiri en KokiriForest (-82.6, 122.3, 33.0); el evento Get_StoneOfForest_GetSword da la espada (lote 1); se quita el evento (lote 3)",
+  "note": "auto: Obj_TBox_A_02 Item_Sword_Kokiri in KokiriForest (-82.6, 122.3, 33.0); the Get_StoneOfForest_GetSword event gives the sword (batch 1); the event is removed (batch 3)",
   "status": "auto",
   "strip_event": true
  },
  "16785682308850448108": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (77.4, 141.1, 0.2); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (77.4, 141.1, 0.2); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "16881481538337649070": {
   "location": "Market Treasure Chest Game Reward",
   "needs_event_patch": false,
-  "note": "auto: Obj_HrlCity_Shop_TBox_A_02 Obj_Heart_Piece en Market (-131.6, 97.9, 12.7)",
+  "note": "auto: Obj_HrlCity_Shop_TBox_A_02 Obj_Heart_Piece in Market (-131.6, 97.9, 12.7)",
   "status": "auto",
   "strip_event": false
  },
  "169081039115821925": {
   "location": "Shadow Temple After Wind Hidden Chest",
   "needs_event_patch": false,
-  "note": "manual: llave en cofre invisible, mismo grupo y=52 que el de rupia verde",
+  "note": "manual: key in an invisible chest, same y=52 group as the green rupee one",
   "status": "manual",
   "strip_event": false
  },
  "16912540161937823130": {
   "location": "Graveyard Shield Grave Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_06 TBox_Shield_Hylian en Graveyard (38.3, 86.3, 11.2)",
+  "note": "auto: Obj_TBox_A_06 TBox_Shield_Hylian in Graveyard (38.3, 86.3, 11.2)",
   "status": "auto",
   "strip_event": false
  },
  "16913531450403950487": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake TBox_ArrowBundle_Medium en InsideGanonCastle (25.3, 103.0, 23.7); candidatos: Ganons Castle Light Trial Second Right Chest; Ganons Castle Spirit Trial Invisible Chest; cofres del grupo: 18277713685010400796(12.6, 103.9, -65.9), 16913531450403950487(25.3, 103.0, 23.7)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake TBox_ArrowBundle_Medium in InsideGanonCastle (25.3, 103.0, 23.7); candidates: Ganons Castle Light Trial Second Right Chest; Ganons Castle Spirit Trial Invisible Chest; group chests: 18277713685010400796(12.6, 103.9, -65.9), 16913531450403950487(25.3, 103.0, 23.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "17001858340376096722": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en FireTemple (33.1, 194.4, -9.9)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in FireTemple (33.1, 194.4, -9.9)",
   "status": "unmapped",
   "strip_event": false
  },
  "17023457248274633121": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_Rupee_Red en HyruleField (-297.4, 131.3, 558.1); candidatos: HF Southeast Grotto Chest; cofres del grupo: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_Rupee_Red in HyruleField (-297.4, 131.3, 558.1); candidates: HF Southeast Grotto Chest; group chests: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
   "status": "unmapped",
   "strip_event": false
  },
  "1705064956286753527": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (39.4, 105.3, 51.2); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (39.4, 105.3, 51.2); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "17092385671602176550": {
   "location": "Ganons Tower Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03_NoBake Item_Dungeon_BossKey en InsideGanonCastle (0.1, 149.7, -24.7)",
+  "note": "auto: Obj_TBox_A_03_NoBake Item_Dungeon_BossKey in InsideGanonCastle (0.1, 149.7, -24.7)",
   "status": "auto",
   "strip_event": false
  },
  "1733372171176975157": {
   "location": "Shadow Temple Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass en ShadowTemple (84.1, 87.3, 22.9)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass in ShadowTemple (84.1, 87.3, 22.9)",
   "status": "auto",
   "strip_event": false
  },
  "17407066694905911064": {
   "location": "Spirit Temple Sun Block Room Chest",
   "needs_event_patch": false,
-  "note": "manual: llave lado niño (-x), alta",
+  "note": "manual: child-side key (-x), high up",
   "status": "manual",
   "strip_event": false
  },
  "17445672702269453589": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en HyruleField (-151.9, 162.0, 265.3)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in HyruleField (-151.9, 162.0, 265.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "17479747339356189279": {
   "location": "LW Near Shortcuts Grotto Chest",
   "needs_event_patch": false,
-  "note": "manual: único cofre de los Bosques Perdidos (N64 tiene uno solo)",
+  "note": "manual: the only chest in the Lost Woods (N64 has just one)",
   "status": "manual",
   "strip_event": false
  },
  "17531994809974271603": {
   "location": "Dodongos Cavern Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en DodongoCavern (-49.0, 103.6, 7.5)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in DodongoCavern (-49.0, 103.6, 7.5)",
   "status": "auto",
   "strip_event": false
  },
  "1764383515296652106": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en SacredForestMeadow (12.1, 96.0, -73.8)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in SacredForestMeadow (12.1, 96.0, -73.8)",
   "status": "unmapped",
   "strip_event": false
  },
  "17657623307936361670": {
   "location": "Ganons Castle Shadow Trial Golden Gauntlets Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Gauntlet_Gold en InsideGanonCastle (48.3, 104.0, -105.3)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Gauntlet_Gold in InsideGanonCastle (48.3, 104.0, -105.3)",
   "status": "auto",
   "strip_event": true
  },
  "17750686910716887133": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Green en GerudoValley (-47.3, 84.0, -46.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Green in GerudoValley (-47.3, 84.0, -46.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "1775586642693927992": {
   "location": "Market Treasure Chest Game Room 1 Top",
   "needs_event_patch": false,
-  "note": "manual: llave, x=-75",
+  "note": "manual: key, x=-75",
   "status": "manual",
   "strip_event": false
  },
  "17902550525792072472": {
   "location": "Shadow Temple Invisible Floormaster Chest",
   "needs_event_patch": false,
-  "note": "manual: llave junto a la gran llave (y=41, zona final)",
+  "note": "manual: key next to the Boss Key (y=41, final area)",
   "status": "manual",
   "strip_event": false
  },
  "18059711820131847165": {
   "location": "Water Temple Longshot Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Longshot en WaterTemple (-77.9, 126.6, -99.2)",
+  "note": "auto: Obj_TBox_A_02 Item_Longshot in WaterTemple (-77.9, 126.6, -99.2)",
   "status": "auto",
   "strip_event": true
  },
  "18099019250896853049": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en WaterTemple (43.8, 100.0, -4.5); candidatos: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; cofres del grupo: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in WaterTemple (43.8, 100.0, -4.5); candidates: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; group chests: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "18239509117326156183": {
   "location": "Market Treasure Chest Game Room 5 Top",
   "needs_event_patch": false,
-  "note": "manual: llave (OpenLastHit), x=-119",
+  "note": "manual: key (OpenLastHit), x=-119",
   "status": "manual",
   "strip_event": false
  },
  "18277713685010400796": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_ArrowBundle_Medium en InsideGanonCastle (12.6, 103.9, -65.9); candidatos: Ganons Castle Light Trial Second Right Chest; Ganons Castle Spirit Trial Invisible Chest; cofres del grupo: 18277713685010400796(12.6, 103.9, -65.9), 16913531450403950487(25.3, 103.0, 23.7)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_ArrowBundle_Medium in InsideGanonCastle (12.6, 103.9, -65.9); candidates: Ganons Castle Light Trial Second Right Chest; Ganons Castle Spirit Trial Invisible Chest; group chests: 18277713685010400796(12.6, 103.9, -65.9), 16913531450403950487(25.3, 103.0, 23.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "18413589940135955604": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_GlassTruth_A_01 TBox_Rupee_Red en GerudoValley (-43.3, 84.0, -46.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_GlassTruth_A_01 TBox_Rupee_Red in GerudoValley (-43.3, 84.0, -46.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "1883068192328530224": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (22.8, 98.0, -45.6); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (22.8, 98.0, -45.6); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "1941083939696166170": {
   "location": "Gerudo Training Ground Maze Path Final Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Arrow_Ice en GerudoTrainingGround (-1.9, 98.0, -48.0)",
+  "note": "auto: Obj_TBox_A_02 Item_Arrow_Ice in GerudoTrainingGround (-1.9, 98.0, -48.0)",
   "status": "auto",
   "strip_event": true
  },
  "196331300747102419": {
   "location": "Gerudo Training Ground Maze Right Central Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01 Item_BombchuBundle_Small en GerudoTrainingGround (5.5, 98.0, -45.5)",
+  "note": "auto: Obj_TBox_A_01 Item_BombchuBundle_Small in GerudoTrainingGround (5.5, 98.0, -45.5)",
   "status": "auto",
   "strip_event": false
  },
  "2203243501006528435": {
   "location": "Spirit Temple Statue Room Hand Chest",
   "needs_event_patch": false,
-  "note": "manual: llave junto al mapa (sala de la estatua)",
+  "note": "manual: key next to the map (statue room)",
   "status": "manual",
   "strip_event": false
  },
  "234006393181394602": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Red en Graveyard (-6.0, 82.5, 77.6)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Red in Graveyard (-6.0, 82.5, 77.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "2436665354602612279": {
   "location": "Gerudo Training Ground Lobby Left Chest",
   "needs_event_patch": false,
-  "note": "manual: rupia azul junto a la entrada (z=-11)",
+  "note": "manual: blue rupee next to the entrance (z=-11)",
   "status": "manual",
   "strip_event": false
  },
  "2490063409521505179": {
   "location": "Spirit Temple Silver Gauntlets Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02 Item_Gauntlet_Silver en DesertColossus (-168.6, 113.2, 29.5); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02 Item_Gauntlet_Silver in DesertColossus (-168.6, 113.2, 29.5); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "2503861086004941173": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en WaterTemple (-44.0, 102.3, -19.5); candidatos: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; cofres del grupo: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in WaterTemple (-44.0, 102.3, -19.5); candidates: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; group chests: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "2854211238375368215": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "2967378296224661060": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_memo11 Obj_Heart_Piece en HyruleField (-213.3, 133.5, 138.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_memo11 Obj_Heart_Piece in HyruleField (-213.3, 133.5, 138.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "3130048366421939233": {
   "location": "ZD Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Obj_Heart_Piece en ZoraDomain (28.8, 100.4, -4.9)",
+  "note": "auto: Obj_TBox_A_02_NoBake Obj_Heart_Piece in ZoraDomain (28.8, 100.4, -4.9)",
   "status": "auto",
   "strip_event": false
  },
  "3174893090599461927": {
   "location": "Forest Temple Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en ForestTemple (38.8, 101.4, -35.7)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in ForestTemple (38.8, 101.4, -35.7)",
   "status": "auto",
   "strip_event": false
  },
  "3433400840978782007": {
   "location": "Forest Temple Red Poe Chest",
   "needs_event_patch": false,
-  "note": "manual: llave simétrica a la brújula (Poe azul) respecto al arco",
+  "note": "manual: key symmetric to the compass (Blue Poe) with respect to the bow",
   "status": "manual",
   "strip_event": false
  },
  "3510516276638146208": {
   "location": "Jabu Jabus Belly Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass en InsideJabuJabuBelly (25.5, 92.3, -175.9)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass in InsideJabuJabuBelly (25.5, 92.3, -175.9)",
   "status": "auto",
   "strip_event": false
  },
  "3522439980243161940": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "3609242017501283521": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en InsideJabuJabuBelly (-34.2, 82.5, -52.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in InsideJabuJabuBelly (-34.2, 82.5, -52.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "3688520809244472975": {
   "location": "Fire Temple Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en FireTemple (58.2, 147.1, 40.6)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in FireTemple (58.2, 147.1, 40.6)",
   "status": "auto",
   "strip_event": false
  },
  "3693930347660122883": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en WaterTemple (-1.2, 112.0, -51.8); candidatos: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; cofres del grupo: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in WaterTemple (-1.2, 112.0, -51.8); candidates: Water Temple Central Bow Target Chest; Water Temple Central Pillar Chest; Water Temple Cracked Wall Chest; Water Temple Dragon Chest; Water Temple River Chest; Water Temple Torches Chest; group chests: 2503861086004941173(-44.0, 102.3, -19.5), 3693930347660122883(-1.2, 112.0, -51.8), 16490222392193949581(56.9, 118.4, -28.1), 18099019250896853049(43.8, 100.0, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "3717705376223508790": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en GerudoTrainingGround (78.5, 94.0, -43.9); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in GerudoTrainingGround (78.5, 94.0, -43.9); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "3718790579351798247": {
   "location": "Shadow Temple Invisible Blades Invisible Chest",
   "needs_event_patch": false,
-  "note": "manual: el invisible (GlassTruth) del par",
+  "note": "manual: the invisible one (GlassTruth) of the pair",
   "status": "manual",
   "strip_event": false
  },
  "3750231902048775592": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_BombBundle_Small en GerudoTrainingGround (-39.5, 103.5, -130.8)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_BombBundle_Small in GerudoTrainingGround (-39.5, 103.5, -130.8)",
   "status": "unmapped",
   "strip_event": false
  },
  "3870071239709713434": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_Rupee_Purple en GoronCity (-43.2, 113.7, -8.4); candidatos: GC Maze Center Chest; GC Maze Right Chest; cofres del grupo: 3870071239709713434(-43.2, 113.7, -8.4), 10944569637726152230(-52.2, 94.8, 26.3)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_Rupee_Purple in GoronCity (-43.2, 113.7, -8.4); candidates: GC Maze Center Chest; GC Maze Right Chest; group chests: 3870071239709713434(-43.2, 113.7, -8.4), 10944569637726152230(-52.2, 94.8, 26.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "3949488292768750868": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (34.2, 105.3, -46.5); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (34.2, 105.3, -46.5); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "4128092231168513176": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en IceCavern (-53.1, 107.2, -34.2)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in IceCavern (-53.1, 107.2, -34.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "4277978357934400600": {
   "location": "Spirit Temple Early Adult Right Chest",
   "needs_event_patch": false,
-  "note": "manual: llave lado adulto (+x), nivel bajo",
+  "note": "manual: adult-side key (+x), low level",
   "status": "manual",
   "strip_event": false
  },
  "4320448574091221496": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (-1.8, 105.0, -37.9); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (-1.8, 105.0, -37.9); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "4322670163630771947": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Blue en Graveyard (-6.0, 82.5, 77.6)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Blue in Graveyard (-6.0, 82.5, 77.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "4349272251343787229": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Purple en KokiriForest (-132.2, 123.9, -16.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Purple in KokiriForest (-132.2, 123.9, -16.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "4372363658229299619": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (43.3, 98.4, -82.4); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (43.3, 98.4, -82.4); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "4402942101476009858": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en GoronCity (-48.4, 113.7, 2.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in GoronCity (-48.4, 113.7, 2.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "4519534997122863169": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake TBox_Rupee_Blue en GerudoTrainingGround (-55.1, 104.0, -90.3); candidatos: Gerudo Training Ground Heavy Block Second Chest; Gerudo Training Ground Lobby Left Chest; cofres del grupo: 2436665354602612279(4.1, 99.5, -11.4), 4519534997122863169(-55.1, 104.0, -90.3)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake TBox_Rupee_Blue in GerudoTrainingGround (-55.1, 104.0, -90.3); candidates: Gerudo Training Ground Heavy Block Second Chest; Gerudo Training Ground Lobby Left Chest; group chests: 2436665354602612279(4.1, 99.5, -11.4), 4519534997122863169(-55.1, 104.0, -90.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "4529748032854378492": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "4555665598794293658": {
   "location": "KF Midos Top Right Chest",
   "needs_event_patch": false,
-  "note": "manual: casa de Mido, fila z=-41 (dos azules), x menor; misma región y requisitos",
+  "note": "manual: Mido's house, row z=-41 (two blue ones), lower x; same region and requirements",
   "status": "manual",
   "strip_event": false
  },
  "4709724720801091788": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en GerudoTrainingGround (44.4, 98.7, -5.4); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in GerudoTrainingGround (44.4, 98.7, -5.4); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "4733634471038136588": {
   "location": "Ganons Castle Light Trial Third Right Chest",
   "needs_event_patch": false,
-  "note": "manual: grupo de la prueba de la luz; mismos requisitos",
+  "note": "manual: Light Trial group; same requirements",
   "status": "manual",
   "strip_event": false
  },
  "5306318520835485827": {
   "location": "Forest Temple Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03_NoBake Item_Dungeon_BossKey en ForestTemple (-49.5, 129.5, -63.7)",
+  "note": "auto: Obj_TBox_A_03_NoBake Item_Dungeon_BossKey in ForestTemple (-49.5, 129.5, -63.7)",
   "status": "auto",
   "strip_event": false
  },
  "5309180490719879013": {
   "location": "Spirit Temple Child Bridge Chest",
   "needs_event_patch": false,
-  "note": "manual: escudo Deku en el lado niño (-x) a nivel de la entrada (y=105)",
+  "note": "manual: Deku Shield on the child side (-x) at entrance level (y=105)",
   "status": "manual",
   "strip_event": false
  },
  "5329807728555596183": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_GlassTruth_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (-42.1, 104.2, -137.7); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_GlassTruth_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (-42.1, 104.2, -137.7); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "5350594583391365806": {
   "location": "Market Treasure Chest Game Room 2 Top",
   "needs_event_patch": false,
-  "note": "manual: llave, x=-86",
+  "note": "manual: key, x=-86",
   "status": "manual",
   "strip_event": false
  },
  "5429815628949128345": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en BottomOfTheWell (-0.2, 96.2, -5.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in BottomOfTheWell (-0.2, 96.2, -5.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "5527401621172639818": {
   "location": "Jabu Jabus Belly Boomerang Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Boomerang en InsideJabuJabuBelly (-31.3, 92.4, -131.9); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Boomerang in InsideJabuJabuBelly (-31.3, 92.4, -131.9); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "5534919361313859554": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_02_NoBake Obj_Heart_Piece en Graveyard (-6.0, 82.5, 77.7); candidatos: Graveyard Heart Piece Grave Chest; cofres del grupo: 5534919361313859554(-6.0, 82.5, 77.7), 9622128545943056087(21.4, 85.8, 39.3)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_02_NoBake Obj_Heart_Piece in Graveyard (-6.0, 82.5, 77.7); candidates: Graveyard Heart Piece Grave Chest; group chests: 5534919361313859554(-6.0, 82.5, 77.7), 9622128545943056087(21.4, 85.8, 39.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "5634724236470386190": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (-39.2, 105.0, 24.6); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (-39.2, 105.0, 24.6); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "566103236844767323": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "5681107746948738726": {
   "location": "Shadow Temple After Wind Enemy Chest",
   "needs_event_patch": false,
-  "note": "manual: rupia junto a la llave oculta (misma z)",
+  "note": "manual: rupee next to the hidden key (same z)",
   "status": "manual",
   "strip_event": false
  },
  "5703423643219134246": {
   "location": "Spirit Temple Child Early Torches Chest",
   "needs_event_patch": false,
-  "note": "manual: llave lado niño, nivel de entrada",
+  "note": "manual: child-side key, entrance level",
   "status": "manual",
   "strip_event": false
  },
  "5755485285664292988": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Purple en HyruleField (152.2, 136.0, 16.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Purple in HyruleField (152.2, 136.0, 16.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "5781953901224064730": {
   "location": "Shadow Temple Falling Spikes Switch Chest",
   "needs_event_patch": false,
-  "note": "manual: única llave restante",
+  "note": "manual: the only remaining key",
   "status": "manual",
   "strip_event": false
  },
  "6064359710907908886": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en BottomOfTheWell (0.0, 102.2, -100.5)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in BottomOfTheWell (0.0, 102.2, -100.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "6205043616869463865": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_GlassTruth_A_01 TBox_Rupee_Red en GerudoValley (-43.3, 84.0, -46.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_GlassTruth_A_01 TBox_Rupee_Red in GerudoValley (-43.3, 84.0, -46.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "631709185320708287": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en BottomOfTheWell (12.0, 100.0, -11.1)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in BottomOfTheWell (12.0, 100.0, -11.1)",
   "status": "unmapped",
   "strip_event": false
  },
  "6449977980406424425": {
   "location": "Forest Temple Well Chest",
   "needs_event_patch": false,
-  "note": "manual: llave en el lado este (+x) y muy baja (y=88): fondo del pozo",
+  "note": "manual: key on the east side (+x) and very low (y=88): bottom of the well",
   "status": "manual",
   "strip_event": false
  },
  "6463521162691873710": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en GerudoValley (31.2, -22.6, 37.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in GerudoValley (31.2, -22.6, 37.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "6478285350658826847": {
   "location": "Market Treasure Chest Game Room 4 Top",
   "needs_event_patch": false,
-  "note": "manual: llave, x=-108",
+  "note": "manual: key, x=-108",
   "status": "manual",
   "strip_event": false
  },
  "6781536951709667179": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_HrlCity_Shop_TBox_A_02 TBox_Rupee_Red en Market (-131.6, 97.9, 12.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_HrlCity_Shop_TBox_A_02 TBox_Rupee_Red in Market (-131.6, 97.9, 12.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "6859289214373847284": {
   "location": "Ice Cavern Iron Boots Chest",
   "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_HeavyBoot en IceCavern (-46.2, 109.7, 42.5); evento con efectos extra: necesita parche, se queda vanilla",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_HeavyBoot in IceCavern (-46.2, 109.7, 42.5); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
  },
  "6897789835137994741": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake TBox_Rupee_Red en GerudoTrainingGround (-42.2, 104.2, -123.6); candidatos: Gerudo Training Ground Maze Path Second Chest; cofres del grupo: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake TBox_Rupee_Red in GerudoTrainingGround (-42.2, 104.2, -123.6); candidates: Gerudo Training Ground Maze Path Second Chest; group chests: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "6900843020594897860": {
   "location": "HF Southeast Grotto Chest",
   "needs_event_patch": false,
-  "note": "manual: rojo = Rupees (20); y=98 muy por debajo del campo (131-162): gruta; ambas edades",
+  "note": "manual: red = Rupees (20); y=98 far below the field (131-162): grotto; both ages",
   "status": "manual",
   "strip_event": false
  },
  "6948525240950728236": {
   "location": "Forest Temple Blue Poe Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass en ForestTemple (17.1, 114.8, -63.6)",
+  "note": "auto: Obj_TBox_A_02_NoBake Item_Dungeon_Compass in ForestTemple (17.1, 114.8, -63.6)",
   "status": "auto",
   "strip_event": false
  },
  "7234638808238324101": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "7346745174625046398": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "7390716194495618474": {
   "location": "Market Treasure Chest Game Room 1 Bottom",
   "needs_event_patch": false,
-  "note": "manual: fallo, x=-75",
+  "note": "manual: losing chest, x=-75",
   "status": "manual",
   "strip_event": false
  },
  "7458365564915336038": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "7461796063704896255": {
   "location": "Ganons Castle Light Trial Second Left Chest",
   "needs_event_patch": false,
-  "note": "manual: grupo de la prueba de la luz; mismos requisitos",
+  "note": "manual: Light Trial group; same requirements",
   "status": "manual",
   "strip_event": false
  },
  "7524527082521156886": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_06 TBox_Shield_Deku en DodongoCavern (-20.8, 113.3, -36.5); candidatos: Dodongos Cavern End of Bridge Chest; cofres del grupo: 7524527082521156886(-20.8, 113.3, -36.5), 11582649900854566065(43.0, 113.2, -8.7)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_06 TBox_Shield_Deku in DodongoCavern (-20.8, 113.3, -36.5); candidates: Dodongos Cavern End of Bridge Chest; group chests: 7524527082521156886(-20.8, 113.3, -36.5), 11582649900854566065(43.0, 113.2, -8.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "7535137041266964235": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey en ForestTemple (-70.2, 107.1, -26.5); candidatos: Forest Temple First Room Chest; Forest Temple First Stalfos Chest; Forest Temple Floormaster Chest; Forest Temple Red Poe Chest; Forest Temple Well Chest; cofres del grupo: 1171460703078800858(-9.9, 117.5, 64.4), 3433400840978782007(-17.1, 114.8, -63.6), 6449977980406424425(16.4, 88.0, -42.6), 7535137041266964235(-70.2, 107.1, -26.5), 14776684749746592758(0.0, 105.8, -62.8)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01_NoBake Item_Dungeon_SmallKey in ForestTemple (-70.2, 107.1, -26.5); candidates: Forest Temple First Room Chest; Forest Temple First Stalfos Chest; Forest Temple Floormaster Chest; Forest Temple Red Poe Chest; Forest Temple Well Chest; group chests: 1171460703078800858(-9.9, 117.5, 64.4), 3433400840978782007(-17.1, 114.8, -63.6), 6449977980406424425(16.4, 88.0, -42.6), 7535137041266964235(-70.2, 107.1, -26.5), 14776684749746592758(0.0, 105.8, -62.8)",
   "status": "unmapped",
   "strip_event": false
  },
  "7589985979641292928": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "7764016096998075927": {
   "location": "Dodongos Cavern Bomb Flower Platform Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01_NoBake TBox_Rupee_Red en DodongoCavern (83.0, 100.6, -55.6)",
+  "note": "auto: Obj_TBox_A_01_NoBake TBox_Rupee_Red in DodongoCavern (83.0, 100.6, -55.6)",
   "status": "auto",
   "strip_event": false
  },
  "7899179288432849355": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed en InsideGanonCastle (-38.0, 104.0, 13.3)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed in InsideGanonCastle (-38.0, 104.0, 13.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "7995233962349162969": {
   "location": "SFM Wolfos Grotto Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_01_NoBake TBox_Rupee_Purple en SacredForestMeadow (-3.7, 82.3, 67.2)",
+  "note": "auto: Obj_TBox_A_01_NoBake TBox_Rupee_Purple in SacredForestMeadow (-3.7, 82.3, 67.2)",
   "status": "auto",
   "strip_event": false
  },
  "8186301369655588602": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_Rupee_Red en GerudoTrainingGround (-13.2, 98.0, -60.5); candidatos: Gerudo Training Ground Maze Path Second Chest; cofres del grupo: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_Rupee_Red in GerudoTrainingGround (-13.2, 98.0, -60.5); candidates: Gerudo Training Ground Maze Path Second Chest; group chests: 6897789835137994741(-42.2, 104.2, -123.6), 8186301369655588602(-13.2, 98.0, -60.5), 10743352138513225188(-9.0, 98.0, -60.0), 11683433230229591151(10.2, 98.0, -50.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "821372075822700622": {
   "location": "Deku Tree Slingshot Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Range_SlingShot en InsideTheDekuTree (-54.4, 112.0, 12.2)",
+  "note": "auto: Obj_TBox_A_02 Item_Range_SlingShot in InsideTheDekuTree (-54.4, 112.0, 12.2)",
   "status": "auto",
   "strip_event": true
  },
  "8291119063305855945": {
   "location": "Dodongos Cavern Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en DodongoCavern (-26.5, 100.3, -38.0)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in DodongoCavern (-26.5, 100.3, -38.0)",
   "status": "auto",
   "strip_event": false
  },
  "8397646530660039355": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en BottomOfTheWell (10.6, 100.0, -4.5); candidatos: Bottom of the Well Front Left Fake Wall Chest; Bottom of the Well Right Bottom Fake Wall Chest; cofres del grupo: 8397646530660039355(10.6, 100.0, -4.5)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in BottomOfTheWell (10.6, 100.0, -4.5); candidates: Bottom of the Well Front Left Fake Wall Chest; Bottom of the Well Right Bottom Fake Wall Chest; group chests: 8397646530660039355(10.6, 100.0, -4.5)",
   "status": "unmapped",
   "strip_event": false
  },
  "850464708089653824": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed en DodongoCavern (92.5, 115.0, -50.3)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed in DodongoCavern (92.5, 115.0, -50.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "8579518566955184384": {
   "location": "Deku Tree Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en InsideTheDekuTree (6.5, 108.4, 7.2)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in InsideTheDekuTree (6.5, 108.4, 7.2)",
   "status": "auto",
   "strip_event": false
  },
  "8607798771661947511": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Blue en DodongoCavern (-30.1, 100.0, -8.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Blue in DodongoCavern (-30.1, 100.0, -8.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "862385681502746018": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Purple en FireTemple (31.4, 194.4, -10.2)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Purple in FireTemple (31.4, 194.4, -10.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "874970148260328653": {
   "location": "Bottom of the Well Fire Keese Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_06 TBox_Shield_Deku en BottomOfTheWell (33.9, 100.0, -22.5)",
+  "note": "auto: Obj_TBox_A_06 TBox_Shield_Deku in BottomOfTheWell (33.9, 100.0, -22.5)",
   "status": "auto",
   "strip_event": false
  },
  "8757492004108970488": {
   "location": "Fire Temple Flare Dancer Chest",
   "needs_event_patch": false,
-  "note": "manual: planta baja junto a la gran llave (misma región Lower Locked Door)",
+  "note": "manual: ground floor next to the Boss Key (same Lower Locked Door region)",
   "status": "manual",
   "strip_event": false
  },
  "8825521833684392638": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed en HountedWasteland (16.0, 87.7, -98.3)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake Item_ScrubBusinessSeed in HountedWasteland (16.0, 87.7, -98.3)",
   "status": "unmapped",
   "strip_event": false
  },
  "8838426083116998768": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en ZoraRiver (-16.7, 74.9, 29.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in ZoraRiver (-16.7, 74.9, 29.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "8858270325665149688": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en ShadowTemple (21.1, 56.4, 98.4)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in ShadowTemple (21.1, 56.4, 98.4)",
   "status": "unmapped",
   "strip_event": false
  },
  "8975637636514249074": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 TBox_Rupee_Red en BottomOfTheWell (-11.0, 100.0, -5.4)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 TBox_Rupee_Red in BottomOfTheWell (-11.0, 100.0, -5.4)",
   "status": "unmapped",
   "strip_event": false
  },
  "9038700938965170329": {
   "location": "Forest Temple Basement Chest",
   "needs_event_patch": false,
-  "note": "manual: flechas, y=61: muy por debajo del resto (sótano)",
+  "note": "manual: arrows, y=61: far below the rest (basement)",
   "status": "manual",
   "strip_event": false
  },
  "9128916506605227251": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Purple en DeathMountainCrater (-66.8, 70.4, 4.7)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Purple in DeathMountainCrater (-66.8, 70.4, 4.7)",
   "status": "unmapped",
   "strip_event": false
  },
  "9143177002861777924": {
   "location": "Spirit Temple Hallway Left Invisible Chest",
   "needs_event_patch": false,
-  "note": "manual: par de cofres invisibles (mismos requisitos)",
+  "note": "manual: pair of invisible chests (same requirements)",
   "status": "manual",
   "strip_event": false
  },
  "9159710900681116662": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01_NoBake TBox_Rupee_Green en GoronCity (-52.2, 94.8, 32.0)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01_NoBake TBox_Rupee_Green in GoronCity (-52.2, 94.8, 32.0)",
   "status": "unmapped",
   "strip_event": false
  },
  "9221365632831348137": {
   "location": "Shadow Temple Boss Key Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey en ShadowTemple (-173.2, 41.4, -69.1)",
+  "note": "auto: Obj_TBox_A_03 Item_Dungeon_BossKey in ShadowTemple (-173.2, 41.4, -69.1)",
   "status": "auto",
   "strip_event": false
  },
  "9284193025315608699": {
   "location": "Deku Tree Compass Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass en InsideTheDekuTree (-48.3, 120.4, 0.0)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Compass in InsideTheDekuTree (-48.3, 120.4, 0.0)",
   "status": "auto",
   "strip_event": false
  },
  "9466613428674883506": {
   "location": "Bottom of the Well Map Chest",
   "needs_event_patch": false,
-  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map en BottomOfTheWell (18.3, 87.4, 1.2)",
+  "note": "auto: Obj_TBox_A_02 Item_Dungeon_Map in BottomOfTheWell (18.3, 87.4, 1.2)",
   "status": "auto",
   "strip_event": false
  },
  "9591654059707200528": {
   "location": "Market Treasure Chest Game Room 3 Bottom",
   "needs_event_patch": false,
-  "note": "manual: fallo, x=-97",
+  "note": "manual: losing chest, x=-97",
   "status": "manual",
   "strip_event": false
  },
  "9622128545943056087": {
   "location": "Graveyard Heart Piece Grave Chest",
   "needs_event_patch": false,
-  "note": "manual: pieza de corazón sin evento de la carrera de Dampé; ambas edades",
+  "note": "manual: Piece of Heart without the Dampe race event; both ages",
   "status": "manual",
   "strip_event": false
  },
  "9634924691849556346": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en FireTemple (46.6, 150.5, 33.4); candidatos: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; cofres del grupo: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in FireTemple (46.6, 150.5, 33.4); candidates: Fire Temple Big Lava Room Blocked Door Chest; Fire Temple Big Lava Room Lower Open Door Chest; Fire Temple Boulder Maze Lower Chest; Fire Temple Boulder Maze Shortcut Chest; Fire Temple Boulder Maze Side Room Chest; Fire Temple Boulder Maze Upper Chest; Fire Temple Highest Goron Chest; Fire Temple Near Boss Chest; group chests: 1705064956286753527(39.4, 105.3, 51.2), 3949488292768750868(34.2, 105.3, -46.5), 5634724236470386190(-39.2, 105.0, 24.6), 9634924691849556346(46.6, 150.5, 33.4), 10521366928524045067(-37.8, 145.2, -0.6), 12567412825200613393(48.5, 147.0, -43.4), 12945617941305968586(-17.1, 147.0, -31.1), 16785682308850448108(77.4, 141.1, 0.2)",
   "status": "unmapped",
   "strip_event": false
  },
  "9725242744547055868": {
   "location": "KF Midos Top Left Chest",
   "needs_event_patch": false,
-  "note": "manual: casa de Mido, fila z=-41 (dos azules), x mayor; misma región y requisitos que los otros 3",
+  "note": "manual: Mido's house, row z=-41 (two blue ones), higher x; same region and requirements as the other 3",
   "status": "manual",
   "strip_event": false
  },
  "9809508929088891725": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; sin candidato por contenido; Obj_TBox_A_01 Item_ScrubBusinessSeed en DeathMountainTrail (-29.8, 120.3, 45.6)",
+  "note": "manual: reviewed, no safe mapping; no candidate by content; Obj_TBox_A_01 Item_ScrubBusinessSeed in DeathMountainTrail (-29.8, 120.3, 45.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "9852624243105848451": {
   "location": "Shadow Temple Spike Walls Left Chest",
   "needs_event_patch": false,
-  "note": "manual: tarro de magia junto a la gran llave (zona final; exige Fuego de Din)",
+  "note": "manual: magic jar next to the Boss Key (final area; requires Din's Fire)",
   "status": "manual",
   "strip_event": false
  },
  "9891111455604007674": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 TBox_Rupee_Red en HyruleField (84.4, 152.6, 45.4); candidatos: HF Southeast Grotto Chest; cofres del grupo: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 TBox_Rupee_Red in HyruleField (84.4, 152.6, 45.4); candidates: HF Southeast Grotto Chest; group chests: 1163740567397714729(-5.7, 146.2, 406.9), 9891111455604007674(84.4, 152.6, 45.4), 17023457248274633121(-297.4, 131.3, 558.1), 6900843020594897860(-214.9, 98.0, 449.1)",
   "status": "unmapped",
   "strip_event": false
  },
  "9911316961118170383": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; ambiguo; Obj_TBox_A_01 Item_Dungeon_SmallKey en GerudoTrainingGround (-1.5, 105.0, -48.0); candidatos: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; cofres del grupo: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
+  "note": "manual: reviewed, no safe mapping; ambiguous; Obj_TBox_A_01 Item_Dungeon_SmallKey in GerudoTrainingGround (-1.5, 105.0, -48.0); candidates: Gerudo Training Ground Beamos Chest; Gerudo Training Ground Eye Statue Chest; Gerudo Training Ground Hammer Room Switch Chest; Gerudo Training Ground Heavy Block Third Chest; Gerudo Training Ground Hidden Ceiling Chest; Gerudo Training Ground Near Scarecrow Chest; Gerudo Training Ground Stalfos Chest; Gerudo Training Ground Underwater Silver Rupee Chest; group chests: 1883068192328530224(22.8, 98.0, -45.6), 3717705376223508790(78.5, 94.0, -43.9), 4320448574091221496(-1.8, 105.0, -37.9), 4372363658229299619(43.3, 98.4, -82.4), 4709724720801091788(44.4, 98.7, -5.4), 5329807728555596183(-42.1, 104.2, -137.7), 9911316961118170383(-1.5, 105.0, -48.0), 11563468890171962383(-2.3, 96.3, -77.3), 13501407288943710656(-50.3, 98.1, -15.6)",
   "status": "unmapped",
   "strip_event": false
  },
  "9947351236862205040": {
   "location": null,
   "needs_event_patch": false,
-  "note": "manual: revisado, sin asociación segura; zona sin equivalente en OoTR; Obj_TBox_A_01 TBox_Rupee_Gold en DreamWorld (0.0, 0.2, -6.5)",
+  "note": "manual: reviewed, no safe mapping; area with no OoTR equivalent; Obj_TBox_A_01 TBox_Rupee_Gold in DreamWorld (0.0, 0.2, -6.5)",
   "status": "unmapped",
   "strip_event": false
  }

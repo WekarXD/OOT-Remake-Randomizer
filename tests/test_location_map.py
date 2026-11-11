@@ -26,33 +26,33 @@ KEY_ITEM_LOCATIONS = {
     17657623307936361670: 'Ganons Castle Shadow Trial Golden Gauntlets Chest',
 }
 
-# Resultados de la PUERTA (docs/test-batch-1.md, apartado Resultados):
-# - TestLote1: el cofre de la Espada Kokiri dio la rupia verde, pero su evento
-#   Get_StoneOfForest_GetSword siguió dando la espada.
-# - TestLote3: quitando GetEventName a ese cofre dio el Bumerán y no la espada.
-# Por eso, los cofres de objeto clave cuyo evento solo entrega el objeto pierden
-# el evento (STRIP_EVENT_HASHES). Los que tienen un evento con más efectos
-# (canción, sabio, Ruto, carrera de Dampé) necesitan un parche de evento y se
-# quedan vanilla (EVENT_PATCH_HASHES).
+# GATE results (docs/test-batch-1.md, Results section):
+# - TestBatch1: the Kokiri Sword chest gave the green rupee, but its event
+#   Get_StoneOfForest_GetSword still gave the sword.
+# - TestBatch3: removing GetEventName from that chest gave the Boomerang and not the sword.
+# So key item chests whose event only hands over the item lose
+# the event (STRIP_EVENT_HASHES). Those with an event with more effects
+# (song, sage, Ruto, Dampe race) need an event patch and stay
+# vanilla (EVENT_PATCH_HASHES).
 STRIP_EVENT_HASHES: set[int] = {
-    16757992849254467386,  # Espada Kokiri
-    821372075822700622,    # Resortera
-    11082303891540711688,  # Arco
-    12083259659219538030,  # Martillo
-    16654774376625985726,  # Lente de la Verdad
-    1941083939696166170,   # Flechas de hielo
-    17657623307936361670,  # Guanteletes de oro
-    18059711820131847165,  # Gancho largo
+    16757992849254467386,  # Kokiri Sword
+    821372075822700622,    # Slingshot
+    11082303891540711688,  # Bow
+    12083259659219538030,  # Hammer
+    16654774376625985726,  # Lens of Truth
+    1941083939696166170,   # Ice Arrows
+    17657623307936361670,  # Golden Gauntlets
+    18059711820131847165,  # Longshot
 }
 EVENT_PATCH_HASHES: set[int] = {
-    6859289214373847284,   # Botas de hierro (SageOfWater_MelodyGet_Water)
-    2490063409521505179,   # Guanteletes de plata
-    10012167258643363548,  # Escudo espejo
-    14535080241831873137,  # Botas levitadoras
-    16041366920820397198,  # Gancho (carrera de Dampé)
-    5527401621172639818,   # Bumerán (Ruto)
-    # Bolsa de bombas: fuera de su cofre las bombas no se pueden lanzar
-    # (TestLote5, ni siquiera con su evento original). Fija por ahora.
+    6859289214373847284,   # Iron Boots (SageOfWater_MelodyGet_Water)
+    2490063409521505179,   # Silver Gauntlets
+    10012167258643363548,  # Mirror Shield
+    14535080241831873137,  # Hover Boots
+    16041366920820397198,  # Hookshot (Dampe race)
+    5527401621172639818,   # Boomerang (Ruto)
+    # Bomb Bag: outside its chest the bombs cannot be thrown
+    # (TestBatch5, not even with its original event). Fixed for now.
     12161709650443144121,
 }
 
@@ -121,8 +121,8 @@ class ItemsTest(unittest.TestCase):
         self.assertEqual(len(items.KEY_ITEMS), 15)
         self.assertEqual(items.KEY_ITEMS['Item_Longshot'], 'Progressive Hookshot')
         self.assertEqual(items.KEY_ITEMS['Item_BombBag_Small'], 'Bomb Bag')
-        self.assertEqual(set(items.LABELS_ES), set(items.KEY_ITEMS))
-        self.assertEqual(items.LABELS_ES['Item_GlassTruth'], 'Lente de la Verdad')
+        self.assertEqual(set(items.LABELS), set(items.KEY_ITEMS))
+        self.assertEqual(items.LABELS['Item_GlassTruth'], 'Lens of Truth')
 
     def test_item_level(self):
         self.assertEqual(items.ITEM_LEVEL['Item_Longshot'], ('Progressive Hookshot', 2))

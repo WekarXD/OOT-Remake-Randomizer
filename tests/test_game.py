@@ -12,7 +12,7 @@ GS_FIXTURE = Path(__file__).parent / 'fixtures' / 'skulltulas.json'
 SWORD_HASH = 16757992849254467386
 
 
-@unittest.skipUnless(NUP, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP, 'OOT_NUP not set')
 class TestGameData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -40,7 +40,7 @@ class TestGameData(unittest.TestCase):
         self.assertEqual(load_chests_fixture(FIXTURE), self.chests)
 
 
-@unittest.skipUnless(NUP, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP, 'OOT_NUP not set')
 class TestGameSkulltulas(unittest.TestCase):
     def test_skulltulas_match_fixture(self):
         with NupArchive(NUP) as nup:

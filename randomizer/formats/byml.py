@@ -22,7 +22,7 @@ def _strtab(d, off):
 
 def load(d):
     if d[:2] != b'YB':
-        raise ValueError('No es un archivo BYML válido.')
+        raise ValueError('Not a valid BYML file.')
     ver, ko, so, ro = struct.unpack_from('<HIII', d, 2)
     keys = _strtab(d, ko) if ko else []
     strs = _strtab(d, so) if so else []

@@ -27,19 +27,19 @@ def _hashes(root: Path) -> dict[str, str]:
 
 class SeedNameTest(unittest.TestCase):
     def test_safe_seed_name(self):
-        self.assertEqual(safe_seed_name('Mi semilla ñ/1'), 'Mi-semilla-n-1')
+        self.assertEqual(safe_seed_name('My seed é/1'), 'My-seed-e-1')
         with self.assertRaises(ValueError):
             safe_seed_name('///')
         self.assertEqual(len(safe_seed_name('a' * 60)), 40)
 
 
-@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
 class RealTests(unittest.TestCase):
     def test_failed_generation_leaves_nothing(self):
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.fill.World.can_beat', return_value=False):
                 with self.assertRaises(GenerationError):
-                    generate(NUP_PATH, out, Settings(seed='fallo'))
+                    generate(NUP_PATH, out, Settings(seed='fail'))
             self.assertEqual(os.listdir(out), [])
 
     def test_existing_dir_not_overwritten(self):
@@ -61,25 +61,25 @@ class RealTests(unittest.TestCase):
             return real_rename(self, target)
 
         with tempfile.TemporaryDirectory() as out:
-            s = Settings(seed='atomico')
+            s = Settings(seed='atomic')
             r = generate(NUP_PATH, out, s)
             before = _hashes(Path(r.mod_dir))
             with mock.patch.object(Path, 'rename', flaky):
                 with self.assertRaises(OSError):
                     generate(NUP_PATH, out, s, overwrite=True)
             self.assertEqual(_hashes(Path(r.mod_dir)), before)
-            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomico'])
-            # Y un overwrite normal funciona y no deja .old.
+            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomic'])
+            # And a normal overwrite works and leaves no .old.
             generate(NUP_PATH, out, s, overwrite=True)
             self.assertEqual(_hashes(Path(r.mod_dir)), before)
-            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomico'])
+            self.assertEqual(sorted(os.listdir(out)), ['Rando_atomic'])
 
     def test_wrong_title_id(self):
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.generate.TITLE_ID', 1):
                 with self.assertRaises(GenerationError) as cm:
                     generate(NUP_PATH, out, Settings(seed='t'))
-            self.assertIn('no es Ocarina of Time', str(cm.exception))
+            self.assertIn('is not Ocarina of Time', str(cm.exception))
             self.assertEqual(os.listdir(out), [])
 
     def test_vanilla_mode_no_changes(self):
@@ -95,24 +95,24 @@ class RealTests(unittest.TestCase):
 
     def test_generate_skip_cutscenes(self):
         with tempfile.TemporaryDirectory() as out:
-            r = generate(NUP_PATH, out, Settings(seed='cine', skip_cutscenes=True))
+            r = generate(NUP_PATH, out, Settings(seed='cutscene', skip_cutscenes=True))
             self.assertIn('Event/EventSetting/EventSettingComponentList/'
                           'Dm_Kokiri_0000.engine__event__EventSettingComponentList.bgyml',
                           r.changed_files)
             self.assertTrue(any(f.startswith('Event/EventFlow/') and f.endswith('.bfevfl.zs')
                                 for f in r.changed_files))
             text = Path(r.spoiler_txt).read_text(encoding='utf-8')
-            self.assertIn('Saltar cinemáticas: Sí', text)
+            self.assertIn('Skip cutscenes: Yes', text)
 
     def test_cutscene_errors_wrapped(self):
         from randomizer.formats.bfevfl import BfevflError
-        for exc in (ValueError('crece'), BfevflError('roto')):
+        for exc in (ValueError('grows'), BfevflError('broken')):
             with tempfile.TemporaryDirectory() as out:
                 with mock.patch('randomizer.generate.build_cutscene_files',
                                 side_effect=exc):
                     with self.assertRaises(GenerationError) as cm:
-                        generate(NUP_PATH, out, Settings(seed='cine', skip_cutscenes=True))
-                self.assertIn('No se pudieron preparar las cinemáticas', str(cm.exception))
+                        generate(NUP_PATH, out, Settings(seed='cutscene', skip_cutscenes=True))
+                self.assertIn('Could not prepare the cutscenes', str(cm.exception))
                 self.assertEqual(os.listdir(out), [])
 
     def test_vanilla_with_skip_cutscenes(self):
@@ -126,14 +126,14 @@ class RealTests(unittest.TestCase):
 
     def test_spoiler_excluded_reasons(self):
         with tempfile.TemporaryDirectory() as out:
-            r = generate(NUP_PATH, out, Settings(seed='razon'))
+            r = generate(NUP_PATH, out, Settings(seed='reason'))
             data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
             reasons = {x['reason'] for x in data['excluded']}
-            self.assertTrue({'tienda', 'objeto de mazmorra'} <= reasons)
+            self.assertTrue({'shop', 'dungeon item'} <= reasons)
 
     def test_generate_byte_identical(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
-            s = Settings(seed='igual')
+            s = Settings(seed='same')
             ra = generate(NUP_PATH, a, s)
             rb = generate(NUP_PATH, b, s)
             ha, hb = _hashes(Path(ra.mod_dir)), _hashes(Path(rb.mod_dir))
@@ -179,7 +179,7 @@ class RealTests(unittest.TestCase):
                         self.assertEqual(dyn.get('GetEventName'), orig_event[h])
                         kept_event += 1
             self.assertGreater(kept_event, 0)
-            # Todas las copias de cada cofre cambiado están en un mapa escrito.
+            # All copies of each changed chest are in a written map.
             written = set(files)
             for c in chests:
                 if c.hash in changed:
@@ -244,11 +244,11 @@ class RealTests(unittest.TestCase):
 
     def test_spoiler_sections(self):
         with tempfile.TemporaryDirectory() as out:
-            res = generate(NUP_PATH, out, Settings(seed='texto'))
+            res = generate(NUP_PATH, out, Settings(seed='text'))
             text = Path(res.spoiler_txt).read_text(encoding='utf-8')
-            for sec in ('Semilla', 'Ajustes', 'Versión del randomizer',
-                        'Versión del juego', 'Objetos clave', 'Todos los cofres',
-                        'Excluidos / sin asociar'):
+            for sec in ('Seed', 'Settings', 'Randomizer version',
+                        'Game version', 'Key items', 'All chests',
+                        'Excluded / unmapped'):
                 self.assertIn(sec, text)
             self.assertFalse((Path(res.mod_dir) / 'romfs' / 'spoiler.txt').exists())
 
@@ -263,7 +263,7 @@ class RealTests(unittest.TestCase):
                              sorted(r['location'] for r in data['skulltulas']))
             text = Path(ra.spoiler_txt).read_text(encoding='utf-8')
             self.assertIn('Skulltulas', text)
-            self.assertIn('Fichas de Skulltula (Tokensanity): Todas', text)
+            self.assertIn('Gold Skulltula Tokens (Tokensanity): All Tokens', text)
             root = Path(ra.mod_dir) / 'romfs'
             used = set()
             with NupArchive(NUP_PATH) as nup:
@@ -325,7 +325,7 @@ class SpoilerGsKeyItemsTest(unittest.TestCase):
         self.assertEqual(rows[0]['location'], gs_map[s.hash].location)
 
     def test_token_label_everywhere(self):
-        self.assertEqual(spoiler._label('Obj_Token_Gold'), 'Ficha de Skulltula dorada')
+        self.assertEqual(spoiler._label('Obj_Token_Gold'), 'Gold Skulltula Token')
 
     def test_off_has_no_gs_key_items(self):
         s, _m, d = self._build('off')
@@ -340,15 +340,15 @@ class SpoilerTextTest(unittest.TestCase):
              'chests': [], 'excluded': [], 'stripped_event_sites': []}
         if mode != 'off':
             d['settings']['tokensanity'] = mode
-            d['skulltulas'] = [{'hash': '5', 'zone': 'Kokiri', 'location': 'GS Casa',
+            d['skulltulas'] = [{'hash': '5', 'zone': 'Kokiri', 'location': 'GS House',
                                 'placed': 'Obj_Token_Gold',
-                                'label': 'Ficha de Skulltula dorada'}]
+                                'label': 'Gold Skulltula Token'}]
         return d
 
     def test_to_text_tokensanity(self):
         text = spoiler.to_text(self._data('dungeons'))
-        self.assertIn('Fichas de Skulltula (Tokensanity): Solo mazmorras', text)
-        self.assertIn('\nSkulltulas\n  GS Casa (Kokiri): Ficha de Skulltula dorada', text)
+        self.assertIn('Gold Skulltula Tokens (Tokensanity): Dungeons Only', text)
+        self.assertIn('\nSkulltulas\n  GS House (Kokiri): Gold Skulltula Token', text)
 
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))

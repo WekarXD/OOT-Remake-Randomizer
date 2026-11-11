@@ -1,15 +1,15 @@
-"""Genera el borrador de randomizer/data/location_map.json.
+"""Generates the draft of randomizer/data/location_map.json.
 
-Uso: python tools/draft_location_map.py <nup>
-     python tools/draft_location_map.py --fixture tests/fixtures/chests.json
+Usage: python tools/draft_location_map.py <nup>
+       python tools/draft_location_map.py --fixture tests/fixtures/chests.json
 
-Asocia cada cofre (Hash) a una ubicación de OoTR por (zona -> prefijo OoTR,
-contenido original -> objeto vanilla). Candidato único -> 'auto'. Varios o
-ninguno -> location null, status 'unmapped' y una nota con los candidatos y
-las posiciones, para resolver a mano.
+Maps each chest (Hash) to an OoTR location by (zone -> OoTR prefix,
+original content -> vanilla item). Single candidate -> 'auto'. Several or
+none -> location null, status 'unmapped' and a note with the candidates and
+the positions, to be resolved by hand.
 
-Nunca sobrescribe entradas revisadas a mano: status 'manual', o 'unmapped'
-con una nota que empieza por 'manual:'. Conserva siempre needs_event_patch y
+Never overwrites hand-reviewed entries: status 'manual', or 'unmapped'
+with a note that starts with 'manual:'. Always keeps needs_event_patch and
 strip_event.
 """
 import json
@@ -114,21 +114,21 @@ def draft(chests, ootr: dict, existing: dict) -> dict:
                      'needs_event_patch': bool(old.get('needs_event_patch', False)),
                      'strip_event': bool(old.get('strip_event', False)),
                      'note': ''}
-            where = f'{c.gyaml} {drop} en {zone} {fmt_pos(c.pos)}'
+            where = f'{c.gyaml} {drop} in {zone} {fmt_pos(c.pos)}'
             if prefixes is None:
-                entry['note'] = f'zona sin equivalente en OoTR; {where}'
+                entry['note'] = f'area with no OoTR equivalent; {where}'
             elif len(group) == 1 and len(cands) == 1:
                 note = f'auto: {where}'
                 if old.get('status') == 'auto' and old.get('location') == cands[0]:
-                    note = old['note']  # conserva lo añadido a mano a la nota
+                    note = old['note']  # keep what was added by hand to the note
                 entry.update(location=cands[0], status='auto', note=note)
                 used.add(cands[0])
             elif not cands:
-                entry['note'] = f'sin candidato por contenido; {where}'
+                entry['note'] = f'no candidate by content; {where}'
             else:
                 others = ', '.join(f'{o.hash}{fmt_pos(o.pos)}' for o in group)
-                entry['note'] = (f'ambiguo; {where}; candidatos: {"; ".join(cands)}'
-                                 f'; cofres del grupo: {others}')
+                entry['note'] = (f'ambiguous; {where}; candidates: {"; ".join(cands)}'
+                                 f'; group chests: {others}')
             out[key] = entry
     return out
 
@@ -158,7 +158,7 @@ def main(argv):
     counts = defaultdict(int)
     for e in data.values():
         counts[e['status']] += 1
-    print(f'{len(data)} cofres -> {MAP_PATH}: {dict(sorted(counts.items()))}')
+    print(f'{len(data)} chests -> {MAP_PATH}: {dict(sorted(counts.items()))}')
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ def _original(chests) -> dict[int, str]:
 
 
 def _eligible_hashes(chests, loc_map) -> list[int]:
-    """Rederivación independiente de los sitios elegibles (ver el brief)."""
+    """Independent re-derivation of the eligible sites (see the brief)."""
     shop = {c.hash for c in chests if 'HrlCity_Shop' in c.gyaml}
     orig = _original(chests)
     out = []
@@ -125,8 +125,8 @@ class FillTest(unittest.TestCase):
         for actor in sorted(items.NON_EXCLUDABLE):
             with self.assertRaises(FillError) as cm:
                 self._place(seed='A', excluded_items=frozenset({actor}))
-            self.assertIn('No se puede excluir', str(cm.exception))
-            self.assertIn('la lógica necesita moverlo', str(cm.exception))
+            self.assertIn('Cannot exclude', str(cm.exception))
+            self.assertIn('the logic needs to move it', str(cm.exception))
 
     def test_no_key_items_in_guarded_zones(self):
         zone = {c.hash: c.banc.split('/')[1] for c in self.chests}
@@ -135,7 +135,7 @@ class FillTest(unittest.TestCase):
             result = self._place(seed=f'zona{i}')
             for h, drop in result.items():
                 if zone[h] in NO_KEY_TARGET_ZONES and drop in items.KEY_ITEMS:
-                    # solo puede quedar el objeto original (sitio no elegible)
+                    # only the original item can remain (ineligible site)
                     self.assertEqual(drop, self.orig[h], (i, h))
 
     def test_unknown_mode_raises(self):
@@ -199,7 +199,7 @@ class TokensanityTest(unittest.TestCase):
         r = self.P('F', 'all', forbidden)
         for h in self._gs('all'):
             self.assertNotIn(r[h], forbidden)
-        # Los contenidos prohibidos siguen en el reparto (en cofres).
+        # Forbidden contents are still in the fill (in chests).
         self.assertEqual(Counter(r.values()),
                          Counter(self.orig.values()) + Counter({TOKEN: 100}))
 
@@ -278,7 +278,7 @@ class WorldOwnedTest(unittest.TestCase):
         self.assertNotIn('Deku Tree Queen Gohma Heart', w.reachable_locations(fixed))
         self.assertIn('Deku Tree Queen Gohma Heart',
                       w.reachable_locations(fixed, owned=['Item_Range_SlingShot']))
-        # El parámetro no deja estado residual.
+        # The parameter leaves no residual state.
         self.assertNotIn('Deku Tree Queen Gohma Heart', w.reachable_locations(fixed))
 
     def test_owned_in_can_beat(self):

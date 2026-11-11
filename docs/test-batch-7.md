@@ -1,34 +1,33 @@
-# Lote de prueba 7: Saria te da el Bumerán en vez de la Ocarina
+# Test batch 7: Saria gives you the Boomerang instead of the Ocarina
 
-Objetivo: comprobar que se puede cambiar el regalo de un personaje en una escena. Saria te da la Ocarina de las Hadas al despedirte de ella en el puente; en este lote te dará el **Bumerán** (`Item_Boomerang`, se puede usar de niño).
+Goal: check that a character's gift can be changed in a scene. Saria gives you the Fairy Ocarina when you say goodbye to her on the bridge; in this batch she will give you the **Boomerang** (`Item_Boomerang`, usable as a child).
 
-Si funciona, se podrán repartir también otros regalos de personajes (ocarinas, Tarjeta Gerudo, etc.).
+If it works, other character gifts (ocarinas, Gerudo Card, etc.) can be placed too.
 
-## Preparar
+## Setup
 
-- [ ] Desactiva cualquier otro mod `Rando_*`, `TestLote*` y `TestEscenas*`: solo debe estar este.
-- [ ] Copia `test-mod/0400486024DEC000/TestLote7` a `load/0400486024DEC000/` en Lichii.
-- [ ] Empieza una **partida nueva**.
+- [ ] Disable any other `Rando_*`, `TestBatch*` and `TestScenes*` mod: only this one should be active.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch7` to `load/0400486024DEC000/` in Lichii.
+- [ ] Start a **new game**.
 
-## Qué cambia
+## What changes
 
-Solo la escena en la que Saria te da la Ocarina de las Hadas. Se da cuando sales del Bosque Kokiri por primera vez (después del Árbol Deku), en el puente.
+Only the scene in which Saria gives you the Fairy Ocarina. It happens when you leave Kokiri Forest for the first time (after the Deku Tree), on the bridge.
 
-Aviso: sin la Ocarina no puedes tocar canciones hasta que consigas la Ocarina del Tiempo más adelante. Para esta prueba da igual: solo queremos ver el regalo.
+Warning: without the Ocarina you cannot play songs until you get the Ocarina of Time later on. For this test it does not matter: we only want to see the gift.
 
-## Comprobar
+## Check
 
-- [ ] Haz el Árbol Deku (o lo mínimo para poder salir del bosque) y sal del Bosque Kokiri por el puente.
-- [ ] Despídete de Saria en el puente.
-- [ ] ¿Recibes el **Bumerán** en vez de la Ocarina? ______
-- [ ] ¿El Bumerán sale en el inventario y se puede lanzar? ______
-- [ ] ¿La escena termina bien, sin cuelgue ni pantalla negra? ______
-- [ ] ¿La Ocarina de las Hadas **no** aparece? (es lo esperado) ______
-- [ ] Si algo ha fallado (otro objeto, nada, cuelgue), apunta qué. ______
+- [ ] Do the Deku Tree (or the minimum needed to leave the forest) and leave Kokiri Forest by the bridge.
+- [ ] Say goodbye to Saria on the bridge.
+- [ ] Do you receive the **Boomerang** instead of the Ocarina? ______
+- [ ] Does the Boomerang show in the inventory and can it be thrown? ______
+- [ ] Does the scene end properly, with no hang or black screen? ______
+- [ ] Does the Fairy Ocarina **not** appear? (this is expected) ______
+- [ ] If anything failed (another item, nothing, a hang), note what. ______
 
-## Resultados
+## Results
 
-Resultado en el juego (2026-11-10): **funciona.** Saria entrega el Bumerán en vez de la Ocarina de las Hadas; sale en el inventario y se puede lanzar de niño. La escena termina bien.
+In-game result (2026-11-10): **works.** Saria hands over the Boomerang instead of the Fairy Ocarina; it shows in the inventory and can be thrown as a child. The scene ends properly.
 
-Conclusión: cambiar el parámetro de texto de una escena de regalo sirve para entregar otro objeto clave (`Item_*`). La fase A queda superada.
-
+Conclusion: changing the text parameter of a gift scene works to hand over another key item (`Item_*`). Phase A is passed.

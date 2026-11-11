@@ -1,6 +1,6 @@
-"""Tabla de objetos: actores del remake -> objetos de OoTR."""
+"""Item table: remake actors -> OoTR items."""
 
-# Actor del remake -> objeto de OoTR.
+# Remake actor -> OoTR item.
 KEY_ITEMS: dict[str, str] = {
     'Item_Sword_Kokiri': 'Kokiri Sword',
     'Item_Range_SlingShot': 'Slingshot',
@@ -19,12 +19,12 @@ KEY_ITEMS: dict[str, str] = {
     'Item_BombBag_Small': 'Bomb Bag',
 }
 
-# La lógica necesita estos objetos para moverse: excluirlos nunca da una
-# partida completable.
+# The logic needs these items to progress: excluding them never gives a
+# beatable game.
 NON_EXCLUDABLE = frozenset({'Item_Longshot', 'Item_Gauntlet_Gold'})
 
-# Nivel de los objetos progresivos. El nivel 1 de fuerza (brazalete Goron)
-# es fijo, de evento.
+# Level of the progressive items. Strength level 1 (Goron's Bracelet)
+# is fixed, from an event.
 ITEM_LEVEL: dict[str, tuple[str, int]] = {
     'Item_Hookshot': ('Progressive Hookshot', 1),
     'Item_Longshot': ('Progressive Hookshot', 2),
@@ -32,25 +32,25 @@ ITEM_LEVEL: dict[str, tuple[str, int]] = {
     'Item_Gauntlet_Gold': ('Progressive Strength Upgrade', 3),
 }
 
-LABELS_ES: dict[str, str] = {
-    'Item_Sword_Kokiri': 'Espada Kokiri',
-    'Item_Range_SlingShot': 'Resortera',
-    'Item_Boomerang': 'Bumerán',
-    'Item_Range_Bow': 'Arco',
-    'Item_Hookshot': 'Gancho',
-    'Item_Longshot': 'Gancho largo',
-    'Item_Hammer': 'Martillo',
-    'Item_HeavyBoot': 'Botas de hierro',
-    'Item_HoverBoot': 'Botas levitadoras',
-    'Item_Gauntlet_Silver': 'Guanteletes de plata',
-    'Item_Gauntlet_Gold': 'Guanteletes de oro',
-    'Item_GlassTruth': 'Lente de la Verdad',
-    'Item_Shield_Mirror': 'Escudo espejo',
-    'Item_Arrow_Ice': 'Flechas de hielo',
-    'Item_BombBag_Small': 'Bolsa de bombas',
+LABELS: dict[str, str] = {
+    'Item_Sword_Kokiri': 'Kokiri Sword',
+    'Item_Range_SlingShot': 'Fairy Slingshot',
+    'Item_Boomerang': 'Boomerang',
+    'Item_Range_Bow': 'Fairy Bow',
+    'Item_Hookshot': 'Hookshot',
+    'Item_Longshot': 'Longshot',
+    'Item_Hammer': 'Megaton Hammer',
+    'Item_HeavyBoot': 'Iron Boots',
+    'Item_HoverBoot': 'Hover Boots',
+    'Item_Gauntlet_Silver': 'Silver Gauntlets',
+    'Item_Gauntlet_Gold': 'Golden Gauntlets',
+    'Item_GlassTruth': 'Lens of Truth',
+    'Item_Shield_Mirror': 'Mirror Shield',
+    'Item_Arrow_Ice': 'Ice Arrows',
+    'Item_BombBag_Small': 'Bomb Bag',
 }
 
-# Actor del remake -> ubicación vanilla de OoTR donde está ese objeto.
+# Remake actor -> vanilla OoTR location where that item is.
 KEY_ITEM_HOME: dict[str, str] = {
     'Item_Sword_Kokiri': 'KF Kokiri Sword Chest',
     'Item_Range_SlingShot': 'Deku Tree Slingshot Chest',
@@ -69,11 +69,11 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Item_BombBag_Small': 'Dodongos Cavern Bomb Bag Chest',
 }
 
-# Objetos de mazmorra (y llaves del minijuego): se quedan siempre vanilla.
+# Dungeon items (and minigame keys): always stay vanilla.
 DUNGEON_ITEM_PREFIXES = ('Item_Dungeon_', 'Obj_MiniGame_SmallKey', 'Obj_Dungeon_SmallKey_')
 
-# Contenido del remake -> objeto vanilla de OoTR (o familia, ver
-# content_matches), para asociar cofres por contenido.
+# Remake content -> vanilla OoTR item (or family, see
+# content_matches), to map chests by content.
 RUPEES: dict[str, str] = {
     'Green': 'Rupee (1)', 'Blue': 'Rupees (5)', 'Red': 'Rupees (20)',
     'Purple': 'Rupees (50)', 'Gold': 'Rupees (200)',
@@ -99,7 +99,7 @@ FAMILIES: dict[str, str] = {
 
 
 def content_matches(drop: str, vanilla: str) -> bool:
-    """¿El contenido `drop` del remake equivale al objeto vanilla de OoTR?"""
+    """Does the remake content `drop` correspond to the vanilla OoTR item?"""
     if drop in KEY_ITEMS:
         return KEY_ITEMS[drop] == vanilla
     for prefix in ('TBox_Rupee_', 'Obj_Rupee_'):

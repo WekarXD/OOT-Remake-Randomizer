@@ -8,7 +8,7 @@ from randomizer.nup import NupArchive, NupError
 
 
 def build_minimal_nup(path):
-    content = b'hola'
+    content = b'data'
     pool = b'romfshello.bin'
     # string pool: 'romfs' @0 len5, 'hello.bin' @5 len9
     pk = struct.pack('<QIIIIBBHI', 0x0400486024DEC000, 0, 0xFFFFFFFF, 1, 131072, 1, 1, 0, 0)
@@ -46,16 +46,16 @@ class NupTests(unittest.TestCase):
                 fh.write(b'hello')
             with self.assertRaises(NupError) as cm:
                 NupArchive(p)
-            self.assertIn('no es un archivo .nup', str(cm.exception))
+            self.assertIn('is not a .nup file', str(cm.exception))
 
     def test_minimal_synthetic_nup(self):
         with tempfile.TemporaryDirectory() as d:
-            sub = os.path.join(d, 'juego [x] y espacios')
+            sub = os.path.join(d, 'game [x] and spaces')
             os.makedirs(sub)
             p = os.path.join(sub, 'g.nup')
             build_minimal_nup(p)
             with NupArchive(p) as a:
-                self.assertEqual(a.read('hello.bin'), b'hola')
+                self.assertEqual(a.read('hello.bin'), b'data')
                 self.assertTrue(a.has('hello.bin'))
                 self.assertFalse(a.has('nope'))
                 self.assertEqual(a.list(''), ['hello.bin'])
@@ -73,7 +73,7 @@ class NupTests(unittest.TestCase):
             with self.assertRaises(NupError):
                 NupArchive(p)
 
-    @unittest.skipUnless(os.environ.get('OOT_NUP'), 'OOT_NUP no definido')
+    @unittest.skipUnless(os.environ.get('OOT_NUP'), 'OOT_NUP not set')
     def test_real_game(self):
         with NupArchive(os.environ['OOT_NUP']) as a:
             self.assertEqual(a.title_id, 0x0400486024DEC000)

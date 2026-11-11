@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,78 +8,78 @@
 </head>
 <body>
 <main>
-<h1>Randomizer de Ocarina of Time</h1>
-<div class="tabs" role="tablist" aria-label="Secciones">
+<h1>Ocarina of Time Randomizer</h1>
+<div class="tabs" role="tablist" aria-label="Sections">
   <button role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true">General</button>
-  <button role="tab" id="tab-objetos" aria-controls="panel-objetos" aria-selected="false" tabindex="-1">Objetos</button>
-  <button role="tab" id="tab-logica" aria-controls="panel-logica" aria-selected="false" tabindex="-1">Lógica</button>
+  <button role="tab" id="tab-items" aria-controls="panel-items" aria-selected="false" tabindex="-1">Items</button>
+  <button role="tab" id="tab-logic" aria-controls="panel-logic" aria-selected="false" tabindex="-1">Logic</button>
   <button role="tab" id="tab-spoiler" aria-controls="panel-spoiler" aria-selected="false" tabindex="-1">Spoiler</button>
 </div>
 
 <section role="tabpanel" id="panel-general" aria-labelledby="tab-general">
-  <label for="nup">Ruta del juego (.nup)</label>
+  <label for="nup">Game path (.nup)</label>
   <input type="text" id="nup" autocomplete="off" spellcheck="false">
   <div id="nup-status" class="status" aria-live="polite"></div>
 
-  <label for="outdir">Carpeta de salida (carpeta de mods de Lichii para este juego)</label>
+  <label for="outdir">Output folder (the Lichii mods folder for this game)</label>
   <input type="text" id="outdir" autocomplete="off" spellcheck="false">
 
-  <label for="seed">Semilla</label>
+  <label for="seed">Seed</label>
   <div class="row">
     <input type="text" id="seed" autocomplete="off" spellcheck="false">
-    <button type="button" id="dice" title="Semilla aleatoria" aria-label="Generar semilla aleatoria">🎲</button>
+    <button type="button" id="dice" title="Random seed" aria-label="Generate random seed">🎲</button>
   </div>
 
-  <label class="check"><input type="checkbox" id="skip-cutscenes"> Saltar cinemáticas</label>
+  <label class="check"><input type="checkbox" id="skip-cutscenes"> Skip cutscenes</label>
 
-  <button type="button" id="generate" class="primary">Generar</button>
+  <button type="button" id="generate" class="primary">Generate</button>
   <div id="result" class="status" aria-live="polite"></div>
 </section>
 
-<section role="tabpanel" id="panel-objetos" aria-labelledby="tab-objetos" hidden>
-  <label for="mode">Objetos clave</label>
+<section role="tabpanel" id="panel-items" aria-labelledby="tab-items" hidden>
+  <label for="mode">Key items</label>
   <select id="mode">
     <option value="vanilla">Vanilla</option>
-    <option value="any_chest" selected>Cualquier cofre</option>
+    <option value="any_chest" selected>Any chest</option>
   </select>
 
   <fieldset>
-    <legend>Excluir objetos</legend>
+    <legend>Exclude items</legend>
     <div id="items"></div>
-    <p class="hint">Algunos objetos clave están fijos en esta versión porque su cofre tiene un evento de historia.</p>
+    <p class="hint">Some key items are fixed in this version because their chest has a story event.</p>
   </fieldset>
 
   <fieldset>
     <legend>Shuffle</legend>
-    <label for="tokensanity">Fichas de Skulltula (Tokensanity)</label>
+    <label for="tokensanity">Gold Skulltula Tokens (Tokensanity)</label>
     <select id="tokensanity">
-      <option value="off" selected>Desactivado</option>
-      <option value="dungeons">Solo mazmorras</option>
-      <option value="overworld">Solo mundo exterior</option>
-      <option value="all">Todas</option>
+      <option value="off" selected>Off</option>
+      <option value="dungeons">Dungeons Only</option>
+      <option value="overworld">Overworld Only</option>
+      <option value="all">All Tokens</option>
     </select>
-    <p class="hint">Las Skulltulas doradas elegidas pueden soltar cualquier objeto, y sus fichas se reparten por cofres y otras Skulltulas.</p>
+    <p class="hint">The selected Gold Skulltulas can drop any item, and their tokens are distributed among chests and other Skulltulas.</p>
   </fieldset>
 
-  <p class="hint">Los cofres del minijuego de la Plaza del Mercado y los que tienen llaves, mapas o brújulas no reciben objetos clave en esta versión.</p>
+  <p class="hint">The Market Treasure Chest Game chests and those holding keys, maps or compasses do not receive key items in this version.</p>
 
   <div class="soon">
-    <label class="check disabled"><input type="checkbox" disabled> Llaves pequeñas <span>(próximamente)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Mapas y brújulas <span>(próximamente)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Canciones <span>(próximamente)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Objetos de NPCs <span>(próximamente)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Rupias y consumibles <span>(próximamente)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Small keys <span>(coming soon)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Maps and compasses <span>(coming soon)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Songs <span>(coming soon)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> NPC items <span>(coming soon)</span></label>
+    <label class="check disabled"><input type="checkbox" disabled> Rupees and consumables <span>(coming soon)</span></label>
   </div>
 </section>
 
-<section role="tabpanel" id="panel-logica" aria-labelledby="tab-logica" hidden>
-  <label class="check"><input type="checkbox" checked disabled> Sin glitches</label>
-  <p class="hint">Toda semilla generada se puede completar.</p>
+<section role="tabpanel" id="panel-logic" aria-labelledby="tab-logic" hidden>
+  <label class="check"><input type="checkbox" checked disabled> No glitches</label>
+  <p class="hint">Every generated seed is beatable.</p>
 </section>
 
 <section role="tabpanel" id="panel-spoiler" aria-labelledby="tab-spoiler" hidden>
-  <label class="check"><input type="checkbox" id="spoiler" checked> Generar registro de spoilers</label>
-  <p><a href="#" id="spoiler-link" hidden>Ver registro</a></p>
+  <label class="check"><input type="checkbox" id="spoiler" checked> Generate spoiler log</label>
+  <p><a href="#" id="spoiler-link" hidden>View log</a></p>
   <pre id="spoiler-text" tabindex="0" hidden></pre>
 </section>
 </main>

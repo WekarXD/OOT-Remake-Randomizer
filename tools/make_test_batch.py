@@ -1,6 +1,6 @@
-"""Genera los mods de prueba TestLote1 y TestLote2 (R1-R3).
-Uso: python -I tools/make_test_batch.py <nup> <files.tsv> <out_dir>
-Solo lee el .nup; escribe en <out_dir>/0400486024DEC000/<Mod>/romfs/...
+"""Generates the test mods TestBatch1 and TestBatch2 (R1-R3).
+Usage: python -I tools/make_test_batch.py <nup> <files.tsv> <out_dir>
+Only reads the .nup; writes to <out_dir>/0400486024DEC000/<Mod>/romfs/...
 """
 import os, shutil, struct, sys, zlib
 from compression import zstd
@@ -14,10 +14,10 @@ CHILD = 'Banc/KokiriForest/KokiriForest_Child_Dynamic.bcett.byml'
 ADULT = 'Banc/KokiriForest/KokiriForest_Adult_Dynamic.bcett.byml'
 ICE = 'Banc/IceCavern/IceCavern_Static.bcett.byml'
 
-# mod -> banc -> [(hash, original, nuevo)]
+# mod -> banc -> [(hash, original, new)]
 KOKIRI_SWORD = (16757992849254467386, 'Item_Sword_Kokiri', 'TBox_Rupee_Green')
 MODS = {
-    'TestLote1': {
+    'TestBatch1': {
         CHILD: [
             KOKIRI_SWORD,
             (10831981390482426294, 'TBox_Rupee_Green', 'Item_Longshot'),
@@ -27,7 +27,7 @@ MODS = {
         ],
         ADULT: [KOKIRI_SWORD],
     },
-    'TestLote2': {
+    'TestBatch2': {
         ICE: [(6859289214373847284, 'Item_HeavyBoot', 'TBox_Rupee_Blue')],
     },
 }
@@ -48,7 +48,7 @@ def rstb_find(rs, path):
         else:
             hi = mid
     if lo >= cc or struct.unpack_from('<I', rs, 22 + 8 * lo)[0] != crc:
-        raise SystemExit(f'FALLO: {path} no esta en la RSTB')
+        raise SystemExit(f'FAIL: {path} is not in the RSTB')
     return 22 + 8 * lo + 4
 
 
@@ -66,9 +66,9 @@ def build(nup, tsv, out):
     _, rc = peek.nup_read(nup, tsv, RSTB + '.zs')
     rstb_raw = zstd.decompress(rc)
 
-    applied = {}  # (hash, nuevo) -> veces aplicado en total
+    applied = {}  # (hash, new) -> times applied in total
     for mod, bancs in MODS.items():
-        rs = bytearray(rstb_raw)  # una RSTB por mod
+        rs = bytearray(rstb_raw)  # one RSTB per mod
         for banc, changes in bancs.items():
             _, comp = peek.nup_read(nup, tsv, banc + '.zs')
             raw = zstd.decompress(comp, zstd_dict=dic)
@@ -79,7 +79,7 @@ def build(nup, tsv, out):
                     if a.get('Hash') == h:
                         cur = a['Dynamic'].get('Drop__DropActor')
                         if cur != orig:
-                            raise SystemExit(f'FALLO: {banc} {h}: original {cur!r}, esperado {orig!r}')
+                            raise SystemExit(f'FAIL: {banc} {h}: original {cur!r}, expected {orig!r}')
                         a['Dynamic']['Drop__DropActor'] = new
                         done.append((h, new))
                         applied[(h, new)] = applied.get((h, new), 0) + 1
@@ -90,14 +90,14 @@ def build(nup, tsv, out):
                 assert hits and all(a['Dynamic']['Drop__DropActor'] == new for a in hits), (banc, h)
                 print('OK', h, new, f'({banc})')
             if not done:
-                print('(sin cambios aplicables en', banc + ')')
+                print('(no applicable changes in', banc + ')')
                 continue
             newcomp = zstd.compress(newraw, level=19, zstd_dict=dic)
             assert zstd.decompress(newcomp, zstd_dict=dic) == newraw
             off = rstb_find(rs, banc)
             old = struct.unpack_from('<I', rs, off)[0]
             if old != rstb_size(len(raw)):
-                raise SystemExit(f'FALLO: RSTB {banc}: {old} != formula {rstb_size(len(raw))}')
+                raise SystemExit(f'FAIL: RSTB {banc}: {old} != formula {rstb_size(len(raw))}')
             struct.pack_into('<I', rs, off, rstb_size(len(newraw)))
             print('RSTB', banc, old, '->', rstb_size(len(newraw)))
             write(out, mod, banc + '.zs', newcomp)
@@ -107,8 +107,8 @@ def build(nup, tsv, out):
         for changes in bancs.values():
             for h, _, new in changes:
                 if not applied.get((h, new)):
-                    raise SystemExit(f'FALLO: el cambio {h} -> {new} no se aplico en ningun mapa')
-    print('Todos los cambios aplicados al menos una vez.')
+                    raise SystemExit(f'FAIL: the change {h} -> {new} was not applied in any map')
+    print('All changes applied at least once.')
 
 
 def main():

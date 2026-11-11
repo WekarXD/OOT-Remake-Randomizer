@@ -1,45 +1,45 @@
-# Lote de prueba 10: actores nuevos registrados
+# Test batch 10: registered new actors
 
-Es igual que el lote 9, pero ahora los actores nuevos están **dados de alta** en el registro de actores del juego (`RSDB/ActorInfo` y `RSDB/GameActorInfo`). En el lote 9 no lo estaban, y por eso no aparecía nada.
+Same as batch 9, but now the new actors are **registered** in the game's actor registry (`RSDB/ActorInfo` and `RSDB/GameActorInfo`). In batch 9 they were not, which is why nothing appeared.
 
-Cada actor nuevo es una copia de un objeto de suelo que ya funciona al soltarlo, pero que al cogerlo da un objeto clave.
+Each new actor is a copy of a ground object that already works when dropped, but that gives a key item when picked up.
 
-## Preparar
+## Setup
 
-- [ ] Quita `TestLote9` de Lichii y desactiva cualquier otro mod `Rando_*`, `TestLote*` y `TestEscenas*`.
-- [ ] Copia `test-mod/0400486024DEC000/TestLote10` a `load/0400486024DEC000/`.
-- [ ] Empieza una **partida nueva** y ve al Árbol Deku.
+- [ ] Remove `TestBatch9` from Lichii and disable any other `Rando_*`, `TestBatch*` and `TestScenes*` mod.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch10` to `load/0400486024DEC000/`.
+- [ ] Start a **new game** and go to the Deku Tree.
 
-## Qué cambia
+## What changes
 
-| Skulltula | Sala | Debería soltar | Copia de |
+| Skulltula | Room | Should drop | Copy of |
 |---|---|---|---|
-| A | Sala de la brújula (piso de arriba) | **Resortera** | Rupia roja (se coge al pasar por encima) |
-| B | Sótano, la de la rupia roja del lote 6 | **Bumerán** | Carta de Ruto, pero con la forma de coger de la pieza de corazón |
-| C | Sótano, la de la pieza de corazón del lote 6 | **Gancho** | Pieza de corazón (se coge con el botón de acción) |
-| D | Sala del fondo del sótano | Su ficha normal | Sin cambios (control) |
+| A | Compass room (upper floor) | **Slingshot** | Red rupee (picked up by walking over it) |
+| B | Basement, the red rupee one from batch 6 | **Boomerang** | Ruto's letter, but with the piece of heart's pickup method |
+| C | Basement, the piece of heart one from batch 6 | **Hookshot** | Piece of heart (picked up with the action button) |
+| D | Back room of the basement | Its normal token | Unchanged (control) |
 
-Nota sobre A: si ya tienes la Resortera del cofre, fíjate al menos en si aparece algo y si sale el mensaje de "has conseguido". Si puedes, mata a la Skulltula A antes de abrir el cofre de la Resortera.
+Note on A: if you already have the Slingshot from the chest, at least look for whether anything appears and whether the "you got it" message shows. If you can, kill Skulltula A before opening the Slingshot chest.
 
-## Comprobar
+## Check
 
-- [ ] **A:** ¿Aparece algo? ¿Qué aspecto tiene? ¿Cae al suelo o flota? ¿Se coge? ¿Sale la Resortera en el inventario? ______
-- [ ] **B:** ¿Aparece algo? ¿Cae o flota? ¿Se coge? ¿Sale el Bumerán y se puede lanzar? ______
-- [ ] **C:** ¿Aparece algo? ¿Cae o flota? ¿Se coge? ¿Sale el Gancho en el inventario? ______
-- [ ] **D:** ¿Ficha normal? ______
-- [ ] ¿Se ha colgado el juego o ha salido una pantalla negra? ¿Cuándo? Si el juego no arranca o se cuelga al entrar al Árbol Deku, apúntalo también. ______
+- [ ] **A:** Does anything appear? What does it look like? Does it fall to the ground or float? Can it be picked up? Does the Slingshot show in the inventory? ______
+- [ ] **B:** Does anything appear? Does it fall or float? Can it be picked up? Does the Boomerang show up and can it be thrown? ______
+- [ ] **C:** Does anything appear? Does it fall or float? Can it be picked up? Does the Hookshot show in the inventory? ______
+- [ ] **D:** Normal token? ______
+- [ ] Did the game hang or show a black screen? When? If the game does not start or hangs when entering the Deku Tree, note that too. ______
 
-## Resultados
+## Results
 
-Resultados en el juego (2026-11-10). Para llegar a la primera Skulltula hubo que coger antes la Resortera, porque las colisiones del remake obligan a matar a las Skulltulas del camino.
+In-game results (2026-11-10). To reach the first Skulltula, the Slingshot had to be picked up first, because the remake's collisions force you to kill the Skulltulas on the way.
 
-- **A (copia de la rupia roja → Resortera): funciona.** Cae al suelo y se coge, pero con el botón A, no al pasar por encima. Cogerla teniéndola ya no da problemas. **Ojo:** como ya se tenía la Resortera del cofre, no queda claro que esta copia la diera. Se repite en el lote 13 (C) con la Bolsa de bombas.
-- **B (copia de la carta → Bumerán):** se queda flotando y no se coge al pasar por encima. Por dónde se quedó, no se pudo coger.
-- **C (copia de la pieza de corazón → Gancho):** se queda flotando con el brillo y la zona de recogida de la pieza de corazón. No se coge al pasar por encima.
-- **D: ficha normal.** El juego no se colgó.
+- **A (copy of the red rupee -> Slingshot): works.** It falls to the ground and can be picked up, but with the A button, not by walking over it. Picking it up while already owning it causes no problems. **Note:** since the Slingshot from the chest was already owned, it is unclear that this copy gave it. Repeated in batch 13 (C) with the Bomb Bag.
+- **B (copy of the letter -> Boomerang):** it stays floating and cannot be picked up by walking over it. Because of where it ended up, it could not be picked up.
+- **C (copy of the piece of heart -> Hookshot):** it stays floating with the piece of heart's glow and pickup zone. It cannot be picked up by walking over it.
+- **D: normal token.** The game did not hang.
 
-Conclusiones:
+Conclusions:
 
-- Un actor nuevo dado de alta en el registro aparece y entrega el objeto clave de su fila (`ActorName`).
-- Lo de cogerlo al pasar por encima depende de `DefaultAutoGet` en el `PouchContentParam`. Los objetos clave no lo tienen, y por eso hacía falta el botón A.
-- Lo que quiere el usuario es que el objeto se quede flotando donde estaba la Skulltula y se coja al pasar por encima, con el Gancho o con el Bumerán. Eso es justo lo que hace la ficha dorada (`Obj_Token_Gold`), así que el lote 11 usa la ficha como base.
+- A new actor registered in the registry appears and hands over the key item from its row (`ActorName`).
+- Whether it is picked up by walking over it depends on `DefaultAutoGet` in the `PouchContentParam`. Key items do not have it, which is why the A button was needed.
+- What the user wants is for the item to stay floating where the Skulltula was and be picked up by walking over it, with the Hookshot or the Boomerang. That is exactly what the gold token (`Obj_Token_Gold`) does, so batch 11 uses the token as a base.

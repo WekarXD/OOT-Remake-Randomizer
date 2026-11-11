@@ -79,7 +79,7 @@ class RstbTests(unittest.TestCase):
 
 class SarcWriteTests(unittest.TestCase):
     def test_sarc_write_roundtrip_synthetic(self):
-        files = {'b/x.bin': b'' * 5, 'a.txt': b'hola', 'c': b''}
+        files = {'b/x.bin': b'' * 5, 'a.txt': b'data', 'c': b''}
         self.assertEqual(sarc.read(sarc.write(files)), files)
 
     def test_sarc_write_node_order(self):
@@ -88,7 +88,7 @@ class SarcWriteTests(unittest.TestCase):
         self.assertEqual(hashes, sorted(hashes))
 
 
-@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
 class RealTests(unittest.TestCase):
     def test_real_all_banc_roundtrip(self):
         from randomizer.nup import NupArchive

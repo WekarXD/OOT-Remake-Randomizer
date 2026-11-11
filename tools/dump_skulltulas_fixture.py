@@ -1,4 +1,4 @@
-"""Genera tests/fixtures/skulltulas.json desde el .nup real (OOT_NUP)."""
+"""Generates tests/fixtures/skulltulas.json from the real .nup (OOT_NUP)."""
 import json
 import os
 import sys
@@ -14,7 +14,7 @@ from randomizer.nup import NupArchive  # noqa: E402
 def main():
     nup_path = os.environ.get('OOT_NUP')
     if not nup_path:
-        sys.exit('Defina la variable de entorno OOT_NUP.')
+        sys.exit('Set the OOT_NUP environment variable.')
     out = ROOT / 'tests' / 'fixtures' / 'skulltulas.json'
     with NupArchive(nup_path) as nup:
         rows = skulltulas_to_json(GameData(nup).skulltulas())

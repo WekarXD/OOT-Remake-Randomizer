@@ -15,10 +15,10 @@ def main():
     try:
         server = make_server(args.port, config.DEFAULT_PATH)
     except OSError:
-        print(f'El puerto {args.port} está ocupado; usa --port', file=sys.stderr)
+        print(f'Port {args.port} is in use; pass --port', file=sys.stderr)
         sys.exit(1)
     url = f'http://127.0.0.1:{server.server_address[1]}/'
-    print(f'Servidor en {url} (Ctrl+C para salir)')
+    print(f'Server at {url} (Ctrl+C to quit)')
     if not args.no_browser:
         webbrowser.open(url)
     try:

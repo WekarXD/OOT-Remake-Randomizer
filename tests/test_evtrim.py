@@ -74,7 +74,7 @@ class TrimTests(unittest.TestCase):
         removed, rt = compute_trim(ev, {0, 1, 2, 3}, roots={0})
         self.assertNotIn(0, removed)
         self.assertIn(1, removed)
-        # 2 no es raíz: puede desaparecer entero.
+        # 2 is not a root: it can disappear entirely.
         self.assertEqual(rt[2], END)
 
     def test_root_to_kept_still_removed(self):
@@ -83,7 +83,7 @@ class TrimTests(unittest.TestCase):
         self.assertEqual((removed, rt), ({0}, {0: 1}))
 
     def test_fixed_point_switch_and_fork(self):
-        # Un switch dentro de una rama de fork: ambas reglas interactúan.
+        # A switch inside a fork branch: both rules interact.
         ev = [Event(index=0, kind=FORK, forks=[1], join=4),
               Event(index=1, kind=SWITCH, cases=[2, 3]),
               act(2, END), act(3, END),

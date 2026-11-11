@@ -1,76 +1,75 @@
-# Pruebas de saltar escenas
+# Cutscene skipping tests
 
-Objetivo: comprobar en el juego que se pueden saltar las escenas de historia sin romper nada. Hay tres tandas, y cada una incluye todo lo de la anterior.
+Goal: check in-game that story cutscenes can be skipped without breaking anything. There are three rounds, and each includes everything from the previous one.
 
-## Antes de empezar
+## Before you start
 
-- Copia la carpeta de la tanda desde `test-mod/0400486024DEC000/` (`TestEscenas1`, `TestEscenas2` o `TestEscenas3`) a la carpeta `load/0400486024DEC000/` de Lichii.
-- Deja **solo un mod de prueba o de randomizador activo a la vez**. Quita o desactiva los demás (TestLote, RandoTest, etc.) antes de probar.
-- Empieza siempre una **partida nueva**.
-- **Las notas importan más que las casillas.** Si algo falla, apunta dónde y qué viste.
+- Copy the round's folder from `test-mod/0400486024DEC000/` (`TestScenes1`, `TestScenes2` or `TestScenes3`) to Lichii's `load/0400486024DEC000/` folder.
+- Keep **only one test or randomizer mod active at a time**. Remove or disable the others (TestBatch, RandoTest, etc.) before testing.
+- Always start a **new game**.
+- **The notes matter more than the checkboxes.** If something fails, note where and what you saw.
 
-## Tanda 1: TestEscenas1 (solo la introducción)
+## Round 1: TestScenes1 (the intro only)
 
-- [ ] Al empezar la partida nueva, la introducción se puede saltar con el botón.
-- [ ] Después de saltarla aparecen Navi y Saria como siempre.
-- [ ] Consigo la espada y el escudo, y puedo entrar al Árbol Deku.
+- [ ] When starting the new game, the intro can be skipped with the button.
+- [ ] After skipping it, Navi and Saria appear as usual.
+- [ ] I get the sword and the shield, and I can enter the Deku Tree.
 
-Notas: ______
+Notes: ______
 
-## Tanda 2: TestEscenas2 (todas las escenas)
+## Round 2: TestScenes2 (all cutscenes)
 
-Desactiva TestEscenas1 y activa TestEscenas2. Otra vez partida nueva.
+Disable TestScenes1 and enable TestScenes2. New game again.
 
-- [ ] Las escenas del Árbol Deku, hasta recibir la Esmeralda Kokiri, salen sin los diálogos de historia.
-- [ ] Recibo la Esmeralda Kokiri.
-- [ ] La charla con Zelda en el jardín del castillo es más corta. Solo siguen saliendo sus animaciones grabadas, el menú en el que eliges qué preguntarle y sus preguntas. Las escenas de alrededor (hasta la Canción de Zelda) también son más cortas.
-- [ ] Recibo la Carta de Zelda.
-- [ ] Aprendo la Canción de Zelda.
-- [ ] Al terminar cada tramo me quedo en el mismo sitio donde acababa antes.
+- [ ] The Deku Tree cutscenes, up to receiving the Kokiri Emerald, appear without the story dialogue.
+- [ ] I receive the Kokiri Emerald.
+- [ ] The talk with Zelda in the castle garden is shorter. Only her recorded animations, the menu where you choose what to ask her and her questions still appear. The surrounding cutscenes (up to Zelda's Lullaby) are also shorter.
+- [ ] I receive Zelda's Letter.
+- [ ] I learn Zelda's Lullaby.
+- [ ] At the end of each stretch I stay in the same place where I used to end up.
 
-Además, durante toda la prueba fíjate en esto:
+Also, throughout the whole test watch for the following:
 
-- [ ] **Cuelgues:** el juego no se congela ni se queda atascado en ninguna escena. Si pasa, apunta en qué escena o lugar.
-- [ ] **Escenas sin terminar:** ¿Alguna escena se quedó sin terminar o con la pantalla en negro? Si pasa, apunta cuál y dónde.
-- [ ] **Textos que desaparecen:** no falta ningún texto que debería salir (carteles, avisos del sistema, explicaciones de controles). Si falta alguno, apunta cuál y dónde.
+- [ ] **Hangs:** the game does not freeze or get stuck in any cutscene. If it happens, note in which cutscene or place.
+- [ ] **Unfinished cutscenes:** did any cutscene end up unfinished or with a black screen? If so, note which and where.
+- [ ] **Disappearing texts:** no text that should appear is missing (signs, system notices, control explanations). If any is missing, note which and where.
 
-Notas: ______
+Notes: ______
 
-## Tanda 3: TestEscenas3 (todas las escenas y las conversaciones forzadas)
+## Round 3: TestScenes3 (all cutscenes and forced conversations)
 
-Desactiva TestEscenas2 y deja **solo TestEscenas3** activo. Partida nueva otra vez.
+Disable TestScenes2 and leave **only TestScenes3** active. New game again.
 
-- [ ] **Mido:** al hablar con él no sale su texto de bloqueo, pero sigue sin dejarme pasar hasta que tengo la espada y el escudo.
-- [ ] **Kokiri de la salida del bosque:** al chocar o hablar con él mientras bloquea ya no sale ninguna línea de texto (ronda 2b), pero sigue sin dejarme pasar hasta que termino el Árbol Deku. El globo pequeño que suelta al acercarte a la salida sigue saliendo: no se puede quitar con este método.
-- [ ] **Deku del Árbol Deku que da la clave del orden:** su conversación vuelve a salir entera (ronda 2), y también la de sus hermanos y la de golpearlos.
-- [ ] **Fijar el blanco:** el tutorial de los Kokiri sobre fijar el blanco ya no sale.
-- [ ] Llego al Árbol Deku y lo termino.
-- [ ] Llego al Castillo de Hyrule (Zelda) sin problemas.
-- [ ] **Zelda en el jardín:** la primera vez que la ves, la escena sale **entera**, como en el juego original (ronda 2b: recortada dejaba a Link congelado). Si vuelves a hablar con ella (pulsando A), esa charla es más corta. Sigo recibiendo la Carta de Zelda y aprendiendo la Canción de Zelda.
-- [ ] **Escenas que dejaban a Link congelado** (ronda 2b): ahora se ven enteras, con su texto, como en el juego original. Ninguna escena deja a Link quieto esperando sin texto. Son 12 escenas del Bosque Kokiri, el Árbol Deku, el Campo de Hyrule, el Castillo, el Rancho Lon Lon y Kakariko, entre ellas la muerte del Árbol Deku y Zelda en el jardín (flujos `Dm_Kokiri_0060/0130/0145/0155`, `Dm_Deku_0003`, `Dm_HrlField_0020`, `Dm_HrlCastle_0000/0020/0035/0050`, `Dm_LonLon_0020`, `Dm_Kakariko_0010`).
-- [ ] Llego a Kakariko sin problemas.
+- [ ] **Mido:** when talking to him his blocking text does not appear, but he still does not let me pass until I have the sword and the shield.
+- [ ] **Kokiri at the forest exit:** when bumping into or talking to him while he blocks the way, no line of text appears (round 2b), but he still does not let me pass until I finish the Deku Tree. The small speech bubble he gives when you approach the exit still appears: it cannot be removed with this method.
+- [ ] **Deku Scrub in the Deku Tree who gives the order clue:** his full conversation comes back (round 2), and also his siblings' and the one for hitting them.
+- [ ] **Z-targeting:** the Kokiri's Z-targeting tutorial no longer appears.
+- [ ] I reach the Deku Tree and finish it.
+- [ ] I reach Hyrule Castle (Zelda) without problems.
+- [ ] **Zelda in the garden:** the first time you see her, the cutscene plays **in full**, as in the original game (round 2b: trimmed, it left Link frozen). If you talk to her again (pressing A), that conversation is shorter. I still receive Zelda's Letter and learn Zelda's Lullaby.
+- [ ] **Cutscenes that left Link frozen** (round 2b): now they play in full, with their text, as in the original game. No cutscene leaves Link standing still waiting with no text. There are 12 cutscenes in Kokiri Forest, the Deku Tree, Hyrule Field, the Castle, Lon Lon Ranch and Kakariko, among them the death of the Deku Tree and Zelda in the garden (flows `Dm_Kokiri_0060/0130/0145/0155`, `Dm_Deku_0003`, `Dm_HrlField_0020`, `Dm_HrlCastle_0000/0020/0035/0050`, `Dm_LonLon_0020`, `Dm_Kakariko_0010`).
+- [ ] I reach Kakariko without problems.
 
-Cosas que **siguen saliendo** (es normal, no son fallos):
+Things that **still appear** (this is normal, not failures):
 
-- **El Gran Árbol Deku** sigue hablando en su primera charla, en la conversación larga y en su muerte (ronda 2b). Cada una de sus líneas va en paralelo con una animación; quitarla dejaría vacía esa parte de la escena, y el juego original nunca lo hace, así que no se toca. Su muerte ahora se ve entera.
-- El aviso de Navi para "fijar el blanco" seguirá apareciendo. No se puede quitar con este método. Solo debe desaparecer el tutorial de los Kokiri.
-- Las pistas de juego se quedan: los Dekus que dan claves, los avisos de Navi en mazmorras y el altar del Templo del Tiempo (ronda 2).
+- **The Great Deku Tree** still speaks in his first talk, in the long conversation and in his death (round 2b). Each of his lines runs in parallel with an animation; removing it would leave that part of the cutscene empty, and the original game never does that, so it is left alone. His death now plays in full.
+- Navi's "Z-target" prompt will still appear. It cannot be removed with this method. Only the Kokiri's tutorial should disappear.
+- Gameplay hints stay: the Deku Scrubs that give clues, Navi's notices in dungeons and the Temple of Time altar (round 2).
 
-Avisos que ahora se recortan **en todo el juego**, no solo de niño. Apunta si alguno se comporta raro:
+Notices that are now trimmed **across the whole game**, not just as a child. Note if any behaves strangely:
 
-- [ ] Los sitios de tierra para plantar semillas mágicas (judías mágicas).
-- [ ] El recordatorio de Navi sobre las Skulltulas doradas.
-- [ ] Los soldados que te paran en Kakariko.
+- [ ] The soft soil spots for planting magic beans.
+- [ ] Navi's reminder about Gold Skulltulas.
+- [ ] The guards that stop you in Kakariko.
 
-Y, como en la tanda 2:
+And, as in round 2:
 
-- [ ] **Cuelgues:** el juego no se congela ni se queda atascado en ninguna escena. Si pasa, apunta dónde.
-- [ ] **Pantallas negras:** ninguna escena se queda sin terminar o con la pantalla en negro. Si pasa, apunta cuál y dónde.
-- [ ] **Objetos que faltan:** recibo todo lo que debería (Esmeralda Kokiri, Carta de Zelda, Canción de Zelda, espada, escudo...). Si falta algo, apunta qué y dónde.
-- [ ] **Textos que desaparecen:** no falta ningún texto que debería salir (carteles, avisos del sistema, explicaciones de controles). Si falta alguno, apunta cuál y dónde.
-- [ ] **Conversaciones forzadas que siguen saliendo:** apunta cuáles salen todavía y en qué lugar.
+- [ ] **Hangs:** the game does not freeze or get stuck in any cutscene. If it happens, note where.
+- [ ] **Black screens:** no cutscene ends up unfinished or with a black screen. If it happens, note which and where.
+- [ ] **Missing items:** I receive everything I should (Kokiri Emerald, Zelda's Letter, Zelda's Lullaby, sword, shield...). If something is missing, note what and where.
+- [ ] **Disappearing texts:** no text that should appear is missing (signs, system notices, control explanations). If any is missing, note which and where.
+- [ ] **Forced conversations that still appear:** note which still appear and where.
 
-Notas: ______
+Notes: ______
 
-## Resultados
-
+## Results

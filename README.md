@@ -1,68 +1,68 @@
 # Randomizer OOT Remake
 
-Randomizador local en Python para el remake de Ocarina of Time de Switch 2 (motor de TotK), pensado para jugarse en el emulador Lichii. Es una aplicacion web que corre en tu equipo y genera un mod que cambia de sitio los objetos clave.
+A local Python randomizer for the Switch 2 remake of Ocarina of Time (TotK engine), meant to be played in the Lichii emulator. It is a web application that runs on your machine and generates a mod that moves key items around.
 
-No incluye ningun archivo del juego: hace falta tu propio volcado.
+It includes no game files: you need your own dump.
 
-## Requisitos
+## Requirements
 
-- Python 3.14 o superior (usa `compression.zstd` de la biblioteca estandar).
-- Tu propio volcado del juego en formato `.nup`, version 1.1.1 (v131072).
-- El emulador Lichii.
+- Python 3.14 or later (uses `compression.zstd` from the standard library).
+- Your own dump of the game in `.nup` format, version 1.1.1 (v131072).
+- The Lichii emulator.
 
-## Uso
+## Usage
 
 ```
 python -m randomizer
 ```
 
-Abre el navegador con la interfaz. Opciones: `--port <numero>` (por defecto 8765) y `--no-browser` (no abre el navegador). Elige el `.nup`, la semilla y los ajustes, y pulsa generar. El mod se crea en una carpeta `Rando_<semilla>`.
+This opens the interface in your browser. Options: `--port <number>` (default 8765) and `--no-browser` (do not open the browser). Choose the `.nup`, the seed and the settings, then click generate. The mod is created in a `Rando_<seed>` folder.
 
-- **Saltar cinemáticas**: quita los pasos visuales de las cinemáticas en la fase 1 (el resto del juego no cambia).
-- **Fichas de Skulltula (Tokensanity)**: Desactivado, Solo mazmorras, Solo mundo exterior o Todas. Las Skulltulas doradas de esa zona entran en el reparto: pueden soltar objetos clave (que se quedan flotando y se recogen al pasar o con el Gancho o el Bumerán) u objetos menores, y sus fichas se reparten por cofres y Skulltulas. Las 27 Skulltulas que aún no están identificadas con seguridad no reciben objetos clave.
+- **Skip cutscenes**: removes the visual steps of the cutscenes in phase 1 (the rest of the game is unchanged).
+- **Gold Skulltula Tokens (Tokensanity)**: Off, Dungeons Only, Overworld Only or All Tokens. The Gold Skulltulas in that area join the fill: they can drop key items (which stay floating and are picked up by walking over them or with the Hookshot or Boomerang) or minor items, and their tokens are spread across chests and Skulltulas. The 27 Skulltulas that are not yet identified with certainty do not receive key items.
 
-Código fuente: https://github.com/WekarXD/OOT-Remake-Randomizer
+Source code: https://github.com/WekarXD/OOT-Remake-Randomizer
 
-## Instalar el mod en Lichii
+## Installing the mod in Lichii
 
-1. Copia la carpeta `Rando_<semilla>` (con su `romfs`) a `load/0400486024DEC000/Rando_<semilla>/romfs/...` dentro de los datos de Lichii. Si Lichii ofrece una opción para abrir la carpeta de mods del juego (clic derecho sobre el juego), úsala; si no, busca la carpeta load/0400486024DEC000/ dentro de la carpeta de datos de Lichii (su ubicación depende de tu instalación).
-2. Deja activo **un solo** mod `Rando_*` a la vez; quita o desactiva los demas.
-3. Empieza una partida nueva (una partida ya guardada no refleja el cambio).
+1. Copy the `Rando_<seed>` folder (with its `romfs`) to `load/0400486024DEC000/Rando_<seed>/romfs/...` inside Lichii's data folder. If Lichii offers an option to open the game's mod folder (right-click the game), use it; otherwise look for the load/0400486024DEC000/ folder inside Lichii's data folder (its location depends on your installation).
+2. Keep **only one** `Rando_*` mod active at a time; remove or disable the others.
+3. Start a new game (an existing save will not reflect the change).
 
-Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
+To play it following a checklist, see `docs/acceptance.md`.
 
-## Limitaciones de la v1
+## v1 limitations
 
-- **Se mueven 8 objetos clave:** Espada Kokiri, Resortera, Arco, Martillo, Lente de la Verdad, Flechas de hielo, Guanteletes de oro y Gancho largo.
-- **Se quedan en su sitio 7:** Bumerán, Gancho, Botas de hierro, Botas levitadoras, Guanteletes de plata y Escudo espejo, porque sus cofres llevan eventos de historia, y la Bolsa de bombas, porque fuera de su cofre las bombas no se pueden lanzar (se investiga).
-- Solo 104 de los 203 cofres estan asociados con la logica; el resto conserva su contenido original.
-- Llaves, mapas, brujulas, canciones y objetos de PNJ no se randomizan.
-- La imagen y el texto del cofre pueden seguir mostrando el objeto original (aceptado en la v1); lo que recibes es el objeto nuevo.
-- Las Flechas de hielo tambien desbloquean el medidor de magia.
-- Los objetos clave no se colocan en el Templo del Agua, el Templo del Fuego, el Pozo ni el Centro de Entrenamiento Gerudo en esta versión.
-- La logica es la de OoTR sin glitches, con algunas reglas propias del remake donde este es más estricto (`REMAKE_RULES` en `randomizer/logic/world.py`; por ejemplo, el piso de la sala de la brújula del Árbol Deku pide un arma a distancia).
+- **8 key items are moved:** Kokiri Sword, Slingshot, Bow, Megaton Hammer, Lens of Truth, Ice Arrows, Golden Gauntlets and Longshot.
+- **7 stay in place:** Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield, because their chests carry story events, and the Bomb Bag, because bombs cannot be thrown outside its own chest (under investigation).
+- Only 104 of the 203 chests are mapped to the logic; the rest keep their original contents.
+- Keys, maps, compasses, songs and NPC items are not randomized.
+- The chest image and text may still show the original item (accepted in v1); what you receive is the new item.
+- Ice Arrows also unlock the magic meter.
+- Key items are not placed in the Water Temple, the Fire Temple, the Well or the Gerudo Training Ground in this version.
+- The logic is OoTR's glitchless logic, with some remake-specific rules where the remake is stricter (`REMAKE_RULES` in `randomizer/logic/world.py`; for example, the upper floor of the Deku Tree compass room requires a ranged weapon).
 
 ## Tests
 
 ```
 REM cmd:
-set OOT_NUP=C:\ruta\al\juego.nup
+set OOT_NUP=C:\path\to\game.nup
 # PowerShell:
-$env:OOT_NUP="C:\ruta\al\juego.nup"
+$env:OOT_NUP="C:\path\to\game.nup"
 python -m unittest
 ```
 
-Con `OOT_NUP` definido no se salta ningun test. Hay un fallo esperado documentado: `test_vanilla_is_beatable`, porque la logica sin glitches de OoTR no puede demostrar superable la distribucion de llaves totalmente original; no es un error.
+With `OOT_NUP` set, no test is skipped. There is one documented expected failure: `test_vanilla_is_beatable`, because OoTR's glitchless logic cannot prove the fully vanilla key distribution beatable; it is not a bug.
 
-## Lote de mods de prueba
+## Test mod batch
 
 ```
-python -I spikes/nuplist.py "<juego.nup>" output/files.tsv
-python -I tools/make_test_batch.py "<juego.nup>" output/files.tsv test-mod
+python -I spikes/nuplist.py "<game.nup>" output/files.tsv
+python -I tools/make_test_batch.py "<game.nup>" output/files.tsv test-mod
 ```
 
-Crea `test-mod/0400486024DEC000/TestLote1` y `TestLote2`. Instrucciones: `docs/test-batch-1.md`.
+Creates `test-mod/0400486024DEC000/TestBatch1` and `TestBatch2`. Instructions: `docs/test-batch-1.md`.
 
-## Atribucion y licencia
+## Attribution and license
 
-La logica de ubicaciones y objetos procede del Ocarina of Time Randomizer (OoTR), commit 526b4c8, y se usa bajo GPL-3.0. Este proyecto se distribuye bajo GPL-3.0 (ver LICENSE).
+The location and item logic comes from the Ocarina of Time Randomizer (OoTR), commit 526b4c8, and is used under GPL-3.0. This project is distributed under GPL-3.0 (see LICENSE).

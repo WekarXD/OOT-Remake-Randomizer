@@ -1,7 +1,7 @@
-"""Genera mods de prueba con solo los archivos de escenas (sin bancs ni RSTB).
-Uso: python -I tools/make_cutscene_batch.py <nup> <out_dir> --only intro|flows|all
-Solo lee el .nup; escribe en <out_dir>/romfs/...  Si <out_dir> ya existe y no
-esta vacio, se reemplaza de forma atomica (se construye en <out_dir>.tmp).
+"""Generates test mods with only the scene files (no bancs or RSTB).
+Usage: python -I tools/make_cutscene_batch.py <nup> <out_dir> --only intro|flows|all
+Only reads the .nup; writes to <out_dir>/romfs/...  If <out_dir> already exists and is not
+empty, it is replaced atomically (built in <out_dir>.tmp).
 """
 import argparse
 import os
@@ -26,17 +26,17 @@ def select(files: dict, only: str) -> dict:
 
 
 def _inside(path, d):
-    """True si `path` es `d` o esta dentro de `d` (d es igual o ancestro de path)."""
+    """True if `path` is `d` or is inside `d` (d is equal to or an ancestor of path)."""
     path, d = os.path.normcase(os.path.abspath(path)), os.path.normcase(os.path.abspath(d))
     return path == d or path.startswith(d.rstrip(os.sep) + os.sep)
 
 
 def _check_replaceable(d):
-    """Solo se reemplaza un directorio inexistente, vacio o con solo `romfs`."""
+    """Only a nonexistent directory, an empty one, or one with only `romfs` is replaced."""
     if not os.path.exists(d):
         return
     if not os.path.isdir(d) or set(os.listdir(d)) - {'romfs'}:
-        raise SystemExit(f'FALLO: {d} no esta vacio ni es una tanda anterior (solo romfs); no se toca')
+        raise SystemExit(f'FAIL: {d} is not empty nor a previous batch (romfs only); not touching it')
 
 
 def main():
@@ -50,7 +50,7 @@ def main():
         game = GameData(nup)
         files = select(build_cutscene_files(game), a.only)
     if not files:
-        raise SystemExit('FALLO: no hay archivos para escribir')
+        raise SystemExit('FAIL: no files to write')
 
     out = os.path.abspath(a.out_dir)
     tmp = out + '.tmp'
@@ -58,7 +58,7 @@ def main():
     cwd = os.getcwd()
     for guard in (cwd, os.path.abspath(a.nup)):
         if _inside(guard, out):
-            raise SystemExit(f'FALLO: {out} es igual a un directorio que contiene {guard}')
+            raise SystemExit(f'FAIL: {out} is equal to a directory that contains {guard}')
     for d in (out, tmp, old):
         _check_replaceable(d)
     shutil.rmtree(tmp) if os.path.isdir(tmp) else None
@@ -81,10 +81,10 @@ def main():
     except BaseException:
         if had_old:
             os.rename(old, out)
-        raise SystemExit(f'FALLO: no se pudo colocar {out}; se restauro el anterior')
+        raise SystemExit(f'FAIL: could not place {out}; the previous one was restored')
     if had_old:
         shutil.rmtree(old)
-    print(f'{len(files)} archivos en {out}')
+    print(f'{len(files)} files in {out}')
 
 
 if __name__ == '__main__':

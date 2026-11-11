@@ -1,4 +1,4 @@
-"""Orquestador: .nup + ajustes -> mod con spoiler."""
+"""Orchestrator: .nup + settings -> mod with spoiler log."""
 import dataclasses
 import json
 import re
@@ -41,7 +41,7 @@ def safe_seed_name(seed: str) -> str:
     text = re.sub(r'[^A-Za-z0-9_-]', '-', text)
     text = re.sub(r'-+', '-', text).strip('-')[:40].strip('-')
     if not text:
-        raise ValueError('La semilla no contiene caracteres válidos para un nombre de carpeta.')
+        raise ValueError('The seed has no characters that are valid in a folder name.')
     return text
 
 
@@ -61,7 +61,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
     mod_dir = Path(out_dir) / f'Rando_{name}'
     tmp_dir = mod_dir.with_name(mod_dir.name + '.tmp')
     if mod_dir.exists() and not overwrite:
-        raise GenerationError(f'Ya existe la carpeta "{mod_dir}".', exists=True,
+        raise GenerationError(f'The folder "{mod_dir}" already exists.', exists=True,
                               mod_dir=str(mod_dir))
 
     txt_path = json_path = None
@@ -70,10 +70,10 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
             with NupArchive(nup_path) as nup:
                 if nup.title_id != TITLE_ID:
                     raise GenerationError(
-                        f'Este archivo no es Ocarina of Time ({TITLE_ID:016X}).')
+                        f'This file is not Ocarina of Time ({TITLE_ID:016X}).')
                 if nup.update_version != SUPPORTED_UPDATE_VERSION:
                     raise GenerationError(
-                        f'Versión del juego no soportada: {nup.update_version}')
+                        f'Unsupported game version: {nup.update_version}')
                 game = GameData(nup)
                 chests = game.chests()
                 loc_map = locations.load_map()
@@ -95,12 +95,12 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                         extras = build_cutscene_files(game)
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(
-                            f'No se pudieron preparar las cinemáticas: {e}') from e
+                            f'Could not prepare the cutscenes: {e}') from e
                 try:
                     changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras)
                 except ValueError as e:
                     raise GenerationError(
-                        f'No se pudieron preparar los envoltorios de objetos: {e}') from e
+                        f'Could not prepare the item wrappers: {e}') from e
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map)
@@ -114,7 +114,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
         except (NupError, FillError) as e:
             raise GenerationError(str(e)) from e
         if not changed and not settings.spoiler:
-            # Modo Vanilla sin spoiler: no hay nada que escribir.
+            # Vanilla mode without a spoiler log: nothing to write.
             shutil.rmtree(tmp_dir, ignore_errors=True)
             return GenerateResult(settings.seed, None, None, None, [])
         _swap_in(tmp_dir, mod_dir)
@@ -125,7 +125,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
 
 
 def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
-    """Contenidos de cofres elegibles que necesitan envoltorio y no se pueden envolver."""
+    """Contents of eligible chests that need a wrapper and cannot be wrapped."""
     original = {c.hash: c.drop for c in chests}
     rows = wrappers.pouch_rows(game)
     needing = {original[h] for h in _eligible(chests, loc_map, original)
@@ -134,7 +134,7 @@ def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
 
 
 def _swap_in(tmp_dir: Path, mod_dir: Path) -> None:
-    """tmp -> mod_dir sin perder el mod anterior si algo falla."""
+    """tmp -> mod_dir without losing the previous mod if something fails."""
     old = mod_dir.with_name(mod_dir.name + '.old')
     backed_up = False
     if mod_dir.exists():

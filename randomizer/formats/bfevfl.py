@@ -1,60 +1,59 @@
-"""Lector de BFEVFL (flujos de eventos), parcheador de punteros y de textos.
+"""BFEVFL (event flow) reader, with pointer and string patchers.
 
-Solo se leen las estructuras necesarias para recorrer el grafo de eventos,
-localizar cada u16 que referencia un índice de evento y leer los parámetros de
-las acciones. `patch_pointers` reescribe esos u16 sin cambiar la longitud;
-`set_string_param` reapunta un parámetro de texto y, si hace falta, añade una
-cadena al final del pool.
+Only the structures needed to walk the event graph are read: locating every
+u16 that references an event index and reading the actions' parameters.
+`patch_pointers` rewrites those u16s without changing the length;
+`set_string_param` repoints a string parameter and, if needed, appends a
+string to the end of the pool.
 
-Formato (little endian, offsets absolutos desde el inicio del archivo):
+Format (little endian, absolute offsets from the start of the file):
 
-Cabecera (0x00): magic `BFEVFL` + 2 bytes nulos, u32 versión (0x0400), u16 BOM `FF FE`,
-u8 alineación (3 = 8 bytes), u8 0; 0x10 u32 offset del nombre del archivo
-(apunta al pool); 0x14 u16 flag (0); 0x16 u16 primer bloque; 0x18 u32 offset
-de la tabla RELT; 0x1C u32 tamaño del archivo; 0x20 u16 nº de flowcharts
-(0 en los 261 archivos que solo tienen timeline); 0x28 u64 puntero a la lista
-de flowcharts.
+Header (0x00): magic `BFEVFL` + 2 null bytes, u32 version (0x0400), u16 BOM `FF FE`,
+u8 alignment (3 = 8 bytes), u8 0; 0x10 u32 offset of the file name
+(points into the pool); 0x14 u16 flag (0); 0x16 u16 first block; 0x18 u32 offset
+of the RELT table; 0x1C u32 file size; 0x20 u16 number of flowcharts
+(0 in the 261 files that only have a timeline); 0x28 u64 pointer to the list
+of flowcharts.
 
-Flowchart `EVFL`: +4 u32 distancia (desde el flowchart) al pool de cadenas;
-+0x30 u64 eventos. Eventos de 0x30 bytes, tipo en +8. Acción (0), switch (1)
-y subflujo (4) tienen en +0x10 un u64 al contenedor de parámetros (0 si no
-tienen); el fork (2) usa +0x10 para su lista de ramas.
+`EVFL` flowchart: +4 u32 distance (from the flowchart) to the string pool;
++0x30 u64 events. Events are 0x30 bytes, type at +8. Action (0), switch (1)
+and subflow (4) have a u64 at +0x10 pointing to the parameter container (0 if
+they have none); the fork (2) uses +0x10 for its list of branches.
 
-Contenedor de parámetros (tipo 1): u8 tipo, u8 0, u16 nº de elementos, u32 0,
-u64 diccionario `DIC ` con los nombres, y luego un u64 por elemento. El
-elemento j se llama como la entrada j+1 del diccionario (la 0 es la raíz).
-Cada elemento: u8 tipo, u8 0, u16 nº de valores, u32 0, u64 0, y los datos:
-  0 argumento: u64 -> cadena (nombre del argumento)
-  2 int: i32 (en 8 bytes)          3 bool: u32 (≠0; verdadero = 0x80000001)
-  4 float: f32 (en 8 bytes)        5 texto: u64 -> cadena
-  7/8/9 arrays de int/bool/float: n × 4 bytes (alineado a 8)
-  10 array de textos: n × u64 -> cadena
-  12 identificador de actor: u64 -> nombre, u64 -> subnombre
-En el juego solo aparecen los tipos 0, 2, 3, 4, 5, 9 y 12. La cadena de un
-parámetro de texto está justo detrás de su elemento (no en el pool) y ninguna
-la comparte otro parámetro; por eso `set_string_param` la sobrescribe en sitio
-cuando el texto nuevo cabe (el diseño del archivo queda idéntico).
+Parameter container (type 1): u8 type, u8 0, u16 number of items, u32 0,
+u64 `DIC ` dictionary with the names, then one u64 per item. Item j is named
+like entry j+1 of the dictionary (entry 0 is the root).
+Each item: u8 type, u8 0, u16 number of values, u32 0, u64 0, then the data:
+  0 argument: u64 -> string (argument name)
+  2 int: i32 (in 8 bytes)          3 bool: u32 (nonzero; true = 0x80000001)
+  4 float: f32 (in 8 bytes)        5 string: u64 -> string
+  7/8/9 int/bool/float arrays: n x 4 bytes (8-aligned)
+  10 string array: n x u64 -> string
+  12 actor identifier: u64 -> name, u64 -> subname
+Only types 0, 2, 3, 4, 5, 9 and 12 occur in the game. The string of a string
+parameter sits right after its item (not in the pool) and no other parameter
+shares it; that is why `set_string_param` overwrites it in place when the new
+text fits (the file layout stays identical).
 
-Cadena: u16 longitud, bytes UTF-8, NUL, relleno a 2 bytes.
+String: u16 length, UTF-8 bytes, NUL, padding to 2 bytes.
 
-Pool `STR `: cabecera de bloque de 0x10 (todo ceros), u32 nº de cadenas, la
-cadena vacía en +0x14 (no se cuenta) y desde +0x18 las demás, seguidas.
+`STR ` pool: 0x10-byte block header (all zeros), u32 number of strings, the
+empty string at +0x14 (not counted) and the rest from +0x18, back to back.
 
-Tabla `RELT` (al final del archivo, alineada a 8): `RELT`, u32 su propio
-offset, u32 nº de secciones (1), u32 0; sección de 0x18: u64 0, u32 0,
-u32 tamaño (= fin del pool), u32 primera entrada, u32 nº de entradas;
-entradas de 8 bytes: u32 offset y u32 máscara (bit i = hay un puntero en
-offset + 8·i). Todos los punteros están antes del pool, así que añadir una
-cadena al final del pool no mueve ninguno: solo hay que actualizar el nº de
-cadenas, el tamaño de la sección, el offset de la RELT (cabecera y propia
-tabla) y el tamaño del archivo.
+`RELT` table (at the end of the file, 8-aligned): `RELT`, u32 its own
+offset, u32 number of sections (1), u32 0; 0x18 section: u64 0, u32 0,
+u32 size (= end of the pool), u32 first entry, u32 number of entries;
+8-byte entries: u32 offset and u32 mask (bit i = there is a pointer at
+offset + 8*i). All pointers lie before the pool, so appending a string to the
+end of the pool moves none of them: only the string count, the section size,
+the RELT offset (header and the table's own) and the file size need updating.
 """
 import struct
 from dataclasses import dataclass, field
 
 END = 0xFFFF
 ACTION, SWITCH, FORK, JOIN, SUBFLOW = range(5)
-# Tipos de elemento de un contenedor de parámetros.
+# Item types of a parameter container.
 (ARG, CONTAINER, INT, BOOL, FLOAT, STRING, WSTRING, INT_ARRAY, BOOL_ARRAY,
  FLOAT_ARRAY, STRING_ARRAY, WSTRING_ARRAY, ACTOR_ID) = range(13)
 
@@ -82,7 +81,7 @@ class EventFlow:
         try:
             self._parse()
         except (struct.error, IndexError) as e:
-            raise BfevflError(f'BFEVFL inválido: {e}') from e
+            raise BfevflError(f'Invalid BFEVFL: {e}') from e
 
     def _u16(self, o):
         return struct.unpack_from('<H', self._d, o)[0]
@@ -104,13 +103,13 @@ class EventFlow:
         self._slots: list[tuple[int, int]] = []
         self.events: list[Event] = []
         self.entry_points: dict[str, int] = {}
-        self._params: dict[int, int] = {}  # evento -> contenedor de parámetros
+        self._params: dict[int, int] = {}  # event -> parameter container
         self._flowchart = None
         if self._u16(0x20) == 0:
-            return  # archivo sin flowchart (marcador vacío)
+            return  # file without a flowchart (empty marker)
         f = self._u64(self._u64(0x28))
         if d[f:f + 4] != b'EVFL':
-            raise BfevflError('Falta la cabecera EVFL.')
+            raise BfevflError('EVFL header missing.')
         n_actors, _, _, n_events, n_entries = (self._u16(f + 0x10 + 2 * i) for i in range(5))
         actors_p, events_p, dic_p, entries_p = (self._u64(f + 0x28 + 8 * i) for i in range(4))
 
@@ -145,7 +144,7 @@ class EventFlow:
                     ev.next = slot(e + 0xA)
                 else:
                     ev.query = queries[sub]
-                    cases_p = self._u64(e + 0x18)  # casos de 8 bytes: u32 valor, u16 evento
+                    cases_p = self._u64(e + 0x18)  # 8-byte cases: u32 value, u16 event
                     ev.cases = [slot(cases_p + 8 * k + 4)
                                 for k in range(self._u16(e + 0xA))]
             elif kind == FORK:
@@ -154,35 +153,35 @@ class EventFlow:
                 ev.join = slot(e + 0xC)
             elif kind in (JOIN, SUBFLOW):
                 ev.next = slot(e + 0xA)
-            # Tipos 5 y 6: marcadores solo con nombre/hash; sin punteros a eventos.
+            # Types 5 and 6: markers with only a name/hash; no event pointers.
             self.events.append(ev)
 
         n_dic = self._u32(dic_p + 4)
         names = [self._str(self._u64(dic_p + 8 + 0x10 * (i + 1) + 8)) for i in range(n_dic)]
         if n_dic != n_entries:
-            raise BfevflError('El diccionario y las entradas no coinciden.')
+            raise BfevflError('The dictionary and the entries do not match.')
         for i, name in enumerate(names):
             self.entry_points[name] = slot(entries_p + 0x20 * i + 0x1C)
 
     def pointer_slots(self) -> list[tuple[int, int]]:
-        """(desplazamiento, índice actual) de cada u16 que referencia un evento."""
+        """(offset, current index) of every u16 that references an event."""
         return list(self._slots)
 
     def _check_index(self, index):
         if not 0 <= index < len(self.events):
-            raise BfevflError(f'Evento fuera de rango: {index}')
+            raise BfevflError(f'Event out of range: {index}')
 
     def _items(self, index) -> list[tuple[str, int]]:
-        """(nombre, offset del elemento) de cada parámetro del evento."""
+        """(name, item offset) of each parameter of the event."""
         self._check_index(index)
         c = self._params.get(index)
         if c is None:
             return []
         if self._d[c] != CONTAINER:
-            raise BfevflError(f'Contenedor de parámetros inválido en el evento {index}.')
+            raise BfevflError(f'Invalid parameter container in event {index}.')
         n, dic = self._u16(c + 2), self._u64(c + 8)
         if self._u32(dic + 4) != n:
-            raise BfevflError(f'Diccionario de parámetros inválido en el evento {index}.')
+            raise BfevflError(f'Invalid parameter dictionary in event {index}.')
         return [(self._str(self._u64(dic + 8 + 0x10 * (j + 1) + 8)), self._u64(c + 0x10 + 8 * j))
                 for j in range(n)]
 
@@ -204,40 +203,40 @@ class EventFlow:
             return [self._str(self._u64(v + 8 * k)) for k in range(n)]
         if kind == ACTOR_ID:
             return (self._str(self._u64(v)), self._str(self._u64(v + 8)))
-        raise BfevflError(f'Tipo de parámetro no soportado: {kind}')
+        raise BfevflError(f'Unsupported parameter type: {kind}')
 
     def action_params(self, index: int) -> dict[str, object]:
-        """Parámetros de una acción, switch o subflujo ({} si no tiene).
+        """Parameters of an action, switch or subflow ({} if it has none).
 
-        Textos y argumentos como `str`; int, bool y float como tales; arrays
-        como listas; identificador de actor como (nombre, subnombre).
+        Strings and arguments as `str`; int, bool and float as themselves; arrays
+        as lists; actor identifier as (name, subname).
         """
         try:
             return {k: self._value(it) for k, it in self._items(index)}
         except (struct.error, IndexError) as e:
-            raise BfevflError(f'Parámetros inválidos en el evento {index}: {e}') from e
+            raise BfevflError(f'Invalid parameters in event {index}: {e}') from e
 
     def _string_slot(self, index, key) -> int:
-        """Offset del u64 que apunta a la cadena del parámetro de texto `key`."""
+        """Offset of the u64 that points to the string of the string parameter `key`."""
         for k, it in self._items(index):
             if k == key:
                 if self._d[it] != STRING:
-                    raise BfevflError(f'El parámetro {key!r} del evento {index} no es texto.')
+                    raise BfevflError(f'Parameter {key!r} of event {index} is not a string.')
                 return it + 0x10
-        raise BfevflError(f'El evento {index} no tiene el parámetro {key!r}.')
+        raise BfevflError(f'Event {index} has no parameter {key!r}.')
 
     def _string_slots(self) -> list[tuple[int, int]]:
-        """(evento, offset del puntero) de todos los parámetros de texto."""
+        """(event, pointer offset) of all string parameters."""
         return [(i, it + 0x10) for i in sorted(self._params)
                 for _, it in self._items(i) if self._d[it] == STRING]
 
     def _pool(self) -> tuple[int, int]:
-        """(inicio del pool, fin del pool alineado a 2)."""
+        """(start of the pool, end of the pool aligned to 2)."""
         if self._flowchart is None:
-            raise BfevflError('El archivo no tiene flowchart.')
+            raise BfevflError('The file has no flowchart.')
         p = self._flowchart + self._u32(self._flowchart + 4)
         if self._d[p:p + 4] != b'STR ':
-            raise BfevflError('Falta el pool de cadenas.')
+            raise BfevflError('String pool missing.')
         q = p + 0x18
         for _ in range(self._u32(p + 0x10)):
             q += 3 + self._u16(q)
@@ -245,7 +244,7 @@ class EventFlow:
         return p, q
 
     def _find_string(self, value: bytes) -> int | None:
-        """Una cadena ya existente con ese texto: primero el pool, luego parámetros."""
+        """An existing string with that text: the pool first, then parameters."""
         p, end = self._pool()
         q = p + 0x18
         while q < end:
@@ -262,24 +261,24 @@ class EventFlow:
 
 
 def set_string_param(data: bytes, event_index: int, key: str, value: str) -> bytes:
-    """Devuelve el archivo con el parámetro de texto `key` del evento cambiado.
+    """Return the file with the event's string parameter `key` changed.
 
-    Por orden: (1) si la cadena es la copia propia del parámetro (como en el
-    juego original), nadie más apunta a ella y el texto nuevo no es más largo,
-    se sobrescribe en sitio (longitud, bytes y ceros hasta el final del hueco
-    original); (2) si ya hay una cadena igual, se reapunta el parámetro a ella;
-    (3) si no, se añade al final del pool, se reapunta y se ajustan el nº de
-    cadenas, la RELT, el tamaño de su sección y el del archivo. Una cadena
-    compartida o del pool nunca se edita en sitio.
+    In order: (1) if the string is the parameter's own copy (as in the
+    original game), nobody else points to it and the new text is not longer,
+    it is overwritten in place (length, bytes and zeros up to the end of the
+    original gap); (2) if an identical string already exists, the parameter is
+    repointed to it; (3) otherwise it is appended to the end of the pool,
+    repointed, and the string count, the RELT, its section size and the file
+    size are adjusted. A shared or pool string is never edited in place.
     """
     flow = EventFlow(data)
     slot = flow._string_slot(event_index, key)
     raw = value.encode('utf-8')
     if len(raw) > 0xFFFF or b'\0' in raw:
-        raise BfevflError(f'Texto no válido: {value!r}')
-    # 1) En sitio: la copia propia del parámetro (justo detrás del elemento),
-    #    si nadie más la usa y el texto nuevo cabe. El archivo queda idéntico
-    #    salvo esos bytes: mismo tamaño, sin RSTB ni reapuntar.
+        raise BfevflError(f'Invalid text: {value!r}')
+    # 1) In place: the parameter's own copy (right after the item), if nobody
+    #    else uses it and the new text fits. The file stays identical except
+    #    for those bytes: same size, no RSTB update, no repointing.
     old = flow._u64(slot)
     old_len = flow._u16(old)
     sharers = [s for _, s in flow._string_slots() if flow._u64(s) == old]
@@ -289,7 +288,7 @@ def set_string_param(data: bytes, event_index: int, key: str, value: str) -> byt
         out = bytearray(data)
         out[old:storage_end] = (struct.pack('<H', len(raw)) + raw).ljust(storage_end - old, b'\0')
         return bytes(out)
-    # 2) Reapuntar a una cadena igual que ya exista.
+    # 2) Repoint to an identical string that already exists.
     target = flow._find_string(raw)
     if target is not None:
         out = bytearray(data)
@@ -300,7 +299,7 @@ def set_string_param(data: bytes, event_index: int, key: str, value: str) -> byt
     reloc = flow._u32(0x18)
     if (data[reloc:reloc + 4] != b'RELT' or reloc < end or any(data[end:reloc])
             or flow._u32(reloc + 0x10 + 0xC) != end):
-        raise BfevflError('Estructura inesperada entre el pool y la RELT.')
+        raise BfevflError('Unexpected structure between the pool and the RELT.')
     entry = struct.pack('<H', len(raw)) + raw + b'\0'
     entry += b'\0' * (len(entry) & 1)
     new_end = end + len(entry)
@@ -315,12 +314,12 @@ def set_string_param(data: bytes, event_index: int, key: str, value: str) -> byt
 
 
 def string_param_owners(data: bytes, event_index: int, key: str) -> list[int]:
-    """Eventos con algún parámetro de texto que apunta a la misma cadena.
+    """Events with a string parameter that points to the same string.
 
-    Incluye el propio evento. En el juego original cada parámetro de texto
-    tiene su propia copia, así que da [event_index]; tras reutilizar una cadena
-    puede dar más. `set_string_param` solo cambia el evento pedido, pero quien
-    editara la cadena en sitio cambiaría todos.
+    Includes the event itself. In the original game each string parameter has
+    its own copy, so this gives [event_index]; after a string is reused it can
+    give more. `set_string_param` only changes the requested event, but anyone
+    editing the string in place would change all of them.
     """
     flow = EventFlow(data)
     target = flow._u64(flow._string_slot(event_index, key))
@@ -328,10 +327,10 @@ def string_param_owners(data: bytes, event_index: int, key: str) -> list[int]:
 
 
 def patch_pointers(data: bytes, new_targets: dict[int, int]) -> bytes:
-    """Reescribe cada u16 en `desplazamiento` con su nuevo índice."""
+    """Rewrite each u16 at its offset with its new index."""
     out = bytearray(data)
     for off, idx in new_targets.items():
         if not 0 <= idx <= 0xFFFF:
-            raise ValueError(f'Índice fuera de rango: {idx}')
+            raise ValueError(f'Index out of range: {idx}')
         struct.pack_into('<H', out, off, idx)
     return bytes(out)

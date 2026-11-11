@@ -1,4 +1,4 @@
-"""Inventario de datos del juego: cofres y Skulltulas doradas de los mapas Banc."""
+"""Game data inventory: chests and Gold Skulltulas from the Banc maps."""
 import json
 from dataclasses import dataclass
 
@@ -20,7 +20,7 @@ class ChestActor:
 class SkulltulaActor:
     banc: str
     hash: int
-    # Claves de Dynamic cuyo valor es verdadero, ordenadas.
+    # Dynamic keys whose value is true, sorted.
     flags: tuple[str, ...]
     pos: tuple[float, float, float]
 

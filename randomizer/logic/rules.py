@@ -1,32 +1,33 @@
-"""Compilador de reglas de OoTR (cadenas de los World/*.json) a funciones Python.
+"""Compiler of OoTR rules (strings from the World/*.json) into Python functions.
 
-Reproduce la semántica de `RuleParser.py` de OoTR (solo como referencia; no se
-importa ni ejecuta código de OoTR): la regla se parsea con
-`ast.parse(text, mode='eval')`, se expanden los alias de `LogicHelpers.json`
-(con sustitución textual de parámetros, como OoTR), los ajustes se pliegan
-como constantes en tiempo de compilación y el resultado es
-`fn(state, age) -> bool`, con `age` en ('child', 'adult').
+Reproduces the semantics of OoTR's `RuleParser.py` (as a reference only; no
+OoTR code is imported or executed): the rule is parsed with
+`ast.parse(text, mode='eval')`, the `LogicHelpers.json` aliases are expanded
+(with textual parameter substitution, like OoTR), settings are folded in as
+compile-time constants, and the result is `fn(state, age) -> bool`, with `age`
+in ('child', 'adult').
 
-Diferencias con OoTR (todas en dirección conservadora o indiferentes en vanilla):
+Differences from OoTR (all conservative or irrelevant in vanilla):
 
-- Todo identificador desconocido lanza `RuleError` al compilar. OoTR trata
-  cualquier nombre en mayúscula desconocido como un evento; aquí un evento
-  solo es válido si lo define algún `"events"` de los World/*.json (o es un
-  subevento de `here()`/`at()`).
-- `at_day`, `at_night`, `at_dampe_time`: verdaderos para una edad si esa edad
-  ha alcanzado alguna región con `"time_passes": true` (`state.tod`). OoTR sin
-  barajado de entradas los trata como `True` constante, así que esto es más
-  estricto. `provides_time` (salas de jefes, tumba de Dampé) se ignora.
-- `has_all_notes_for_song(song)`: no tenemos las notas de las canciones; exige
-  los cinco botones de ocarina (más estricto). Con
-  `shuffle_individual_ocarina_notes = false` la llamada se pliega y no aparece.
-- `has_soul(x)` es siempre verdadero (igual que OoTR).
-- `region_has_shortcuts(r)` se resuelve al compilar con `dungeon_shortcuts`.
-- Objetos progresivos con nivel en `items.ITEM_LEVEL` (gancho y fuerza),
-  modelo "directo" del remake: `items[nombre]` guarda el nivel máximo. El
-  objeto OoTR genérico (`'Progressive Hookshot'`, `'Progressive Strength
-  Upgrade'`, p. ej. el brazalete Goron vanilla) cuenta como nivel 1 y nunca
-  sube de nivel a lo ya conseguido (OoTR sumaría; esto nunca da más).
+- Any unknown identifier raises `RuleError` at compile time. OoTR treats any
+  unknown capitalized name as an event; here an event is only valid if some
+  `"events"` entry in the World/*.json defines it (or it is a sub-event of
+  `here()`/`at()`).
+- `at_day`, `at_night`, `at_dampe_time`: true for an age if that age has
+  reached some region with `"time_passes": true` (`state.tod`). OoTR without
+  entrance shuffle treats them as a constant `True`, so this is stricter.
+  `provides_time` (boss rooms, Dampe's grave) is ignored.
+- `has_all_notes_for_song(song)`: we do not have the songs' notes; it requires
+  all five ocarina buttons (stricter). With
+  `shuffle_individual_ocarina_notes = false` the call is folded away and does
+  not appear.
+- `has_soul(x)` is always true (same as OoTR).
+- `region_has_shortcuts(r)` is resolved at compile time with `dungeon_shortcuts`.
+- Progressive items with a level in `items.ITEM_LEVEL` (hookshot and strength),
+  the remake's "direct" model: `items[name]` holds the maximum level. The
+  generic OoTR item (`'Progressive Hookshot'`, `'Progressive Strength
+  Upgrade'`, e.g. the vanilla Goron's Bracelet) counts as level 1 and never
+  raises the level already obtained (OoTR would add; this never gives more).
 """
 from __future__ import annotations
 
@@ -44,7 +45,7 @@ from randomizer.logic import ootr_data
 
 
 class RuleError(Exception):
-    """Regla de OoTR que no se puede compilar."""
+    """An OoTR rule that cannot be compiled."""
 
 
 AGES = ('child', 'adult')
@@ -53,7 +54,7 @@ _ESCAPE = re.compile(r"['()\[\]-]")
 
 
 def escape_name(name: str) -> str:
-    """Igual que `RulesCommon.escape_name` de OoTR."""
+    """Same as OoTR's `RulesCommon.escape_name`."""
     return _ESCAPE.sub('', name.replace(' ', '_'))
 
 
@@ -70,7 +71,7 @@ STONES = tuple(sorted(n for n, e in ITEM_TABLE.items() if e.get('stone')))
 OCARINA_BUTTONS = tuple(sorted(n for n, e in ITEM_TABLE.items() if e.get('ocarina_button')))
 ALIASES: dict[str, tuple[str, int]] = {
     n: (e['alias'][0], e['alias'][1]) for n, e in ITEM_TABLE.items() if 'alias' in e}
-# Objetos progresivos con nivel en el remake (modelo directo).
+# Progressive items with a level in the remake (direct model).
 LEVELED: frozenset[str] = frozenset(name for name, _ in remake_items.ITEM_LEVEL.values())
 
 
@@ -90,21 +91,21 @@ def region_dungeons() -> dict[str, str | None]:
 
 
 class State:
-    """Objetos y eventos conseguidos (compartidos por niño y adulto)."""
+    """Items and events obtained (shared by child and adult)."""
 
     __slots__ = ('items', 'events', 'tod')
 
     def __init__(self) -> None:
         self.items: Counter[str] = Counter()
         self.events: set[str] = set()
-        # Edades que han alcanzado una región donde pasa el tiempo.
+        # Ages that have reached a region where time passes.
         self.tod: set[str] = set()
 
     def has(self, item: str, n: int = 1) -> bool:
         return self.items[item] >= n or (n <= 1 and item in self.events)
 
     def collect(self, item: str) -> None:
-        """Recoge un objeto OoTR o un actor del remake de `items.KEY_ITEMS`."""
+        """Collect an OoTR item or a remake actor from `items.KEY_ITEMS`."""
         if item in remake_items.ITEM_LEVEL:
             name, level = remake_items.ITEM_LEVEL[item]
             if self.items[name] < level:
@@ -123,7 +124,7 @@ class State:
             self.items[alias[0]] += alias[1]
         self.items[item] += 1
 
-    # Funciones de estado usadas por las reglas (equivalentes a State.py).
+    # State functions used by the rules (equivalent to State.py).
     def has_bottle(self) -> bool:
         return any(self.has(b) for b in BOTTLES) or self.items['Rutos Letter'] >= 2
 
@@ -163,7 +164,7 @@ class _Const:
 
 
 class Compiler:
-    """Compila reglas compartiendo caché, alias y subeventos de here()/at()."""
+    """Compiles rules, sharing cache, aliases and here()/at() sub-events."""
 
     def __init__(self, helpers: dict[str, str], settings: dict,
                  events: frozenset[str] | set[str] | None = None) -> None:
@@ -180,12 +181,12 @@ class Compiler:
         self.escaped_events: dict[str, str] = {escape_name(e): e for e in known}
         self.event_names: frozenset[str] = frozenset(known)
         self.cache: dict[str, Callable[[State, str], bool]] = {}
-        # Nombres de objeto OoTR que alguna regla consulta.
+        # OoTR item names that some rule queries.
         self.referenced: set[str] = set()
         self._subrule_keys: dict[tuple[str, str], str] = {}
         self._subrule_count: Counter[str] = Counter()
         self._pending: list[tuple[str, ast.expr, str]] = []
-        # (región, evento, regla) de los subeventos ya compilados.
+        # (region, event, rule) of the sub-events already compiled.
         self.subrules: list[tuple[str, str, Callable[[State, str], bool]]] = []
         self._region: str | None = None
         self._depth = 0
@@ -241,7 +242,7 @@ class Compiler:
             self._depth -= 1
 
     def _has_code(self, name: str, count: int = 1):
-        """Código que comprueba un objeto o evento por su nombre OoTR."""
+        """Code that checks an item or event by its OoTR name."""
         if count <= 0:
             return _Const(True)
         parts = []
@@ -388,8 +389,8 @@ class Compiler:
         if op_type not in _CMP_OPS:
             raise RuleError(f'unsupported comparison {ast.unparse(node)}')
         left, right = node.left, node.comparators[0]
-        # Atajo de OoTR para can_use(): `item == Bow` con dos nombres que no
-        # son ajustes se decide comparando los identificadores.
+        # OoTR shortcut for can_use(): `item == Bow` with two names that are
+        # not settings is decided by comparing the identifiers.
         if (op_type in (ast.Eq, ast.NotEq) and isinstance(left, ast.Name)
                 and isinstance(right, ast.Name) and left.id not in self.settings
                 and right.id not in self.settings):
@@ -412,9 +413,9 @@ class Compiler:
         except ValueError:
             raise RuleError(f'unsupported expression {ast.unparse(node)}') from None
 
-    # ---- llamadas --------------------------------------------------------
+    # ---- calls -----------------------------------------------------------
     def _call_args(self, node: ast.Call) -> list:
-        """Argumentos de una función de estado, resueltos como OoTR."""
+        """Arguments of a state function, resolved like OoTR."""
         out = []
         for arg in node.args:
             if isinstance(arg, ast.Name):
@@ -507,7 +508,7 @@ class Compiler:
         return self._distinct(OCARINA_BUTTONS, n)
 
     def _fn_has_all_notes_for_song(self, song):
-        # Sin tabla de notas: exige todos los botones (conservador).
+        # No note table: require all the buttons (conservative).
         if song == 'Scarecrow Song' and self.settings.get('scarecrow_behavior') == 'free':
             return _Const(True)
         need = 2 if song == 'Scarecrow Song' else len(OCARINA_BUTTONS)
@@ -538,6 +539,6 @@ class Compiler:
 
 def compile_rule(text: str, helpers: dict[str, str], settings: dict,
                  region: str | None = None) -> Callable[[State, str], bool]:
-    """Compila una regla suelta. Los subeventos de here()/at() quedan sin
-    evaluar (siempre falsos fuera de un World): usar `World` para eso."""
+    """Compile a standalone rule. here()/at() sub-events are left
+    unevaluated (always false outside a World): use `World` for those."""
     return Compiler(helpers, settings).compile(text, region)

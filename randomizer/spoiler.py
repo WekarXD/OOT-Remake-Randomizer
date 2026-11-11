@@ -1,20 +1,20 @@
-"""Spoiler: JSON y texto en español."""
+"""Spoiler log: JSON and text."""
 from . import RANDO_VERSION
 from .fill import TOKEN
-from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS_ES
+from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS
 
-TOKEN_LABEL = 'Ficha de Skulltula dorada'
+TOKEN_LABEL = 'Gold Skulltula Token'
 
 
 def _label(drop: str) -> str:
     if drop == TOKEN:
         return TOKEN_LABEL
-    return LABELS_ES.get(drop, drop)
+    return LABELS.get(drop, drop)
 
 
-MODE_LABELS = {'any_chest': 'Cualquier cofre', 'vanilla': 'Vanilla'}
-TOKENSANITY_LABELS = {'off': 'Desactivado', 'dungeons': 'Solo mazmorras',
-                      'overworld': 'Solo mundo exterior', 'all': 'Todas'}
+MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
+TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
+                      'overworld': 'Overworld Only', 'all': 'All Tokens'}
 
 
 def _zone(banc: str) -> str:
@@ -45,13 +45,13 @@ def build(settings, placement, chests, loc_map, game_version,
         all_chests.append(row)
         reason = None
         if h in shop:
-            reason = 'tienda'
+            reason = 'shop'
         elif original[h].startswith(DUNGEON_ITEM_PREFIXES):
-            reason = 'objeto de mazmorra'
+            reason = 'dungeon item'
         elif e is None:
-            reason = 'sin asociar'
+            reason = 'unmapped'
         elif e.needs_event_patch:
-            reason = 'evento de historia'
+            reason = 'story event'
         if reason:
             excluded.append({**row, 'reason': reason})
         if placed in KEY_ITEMS and e is not None and not e.needs_event_patch:
@@ -106,27 +106,27 @@ def _skulltula_rows(placement, skulltulas, gs_map) -> list[dict]:
 
 def to_text(d: dict) -> str:
     s = d['settings']
-    excl = ', '.join(_label(i) for i in s['excluded_items']) or 'ninguno'
-    lines = ['Semilla', f'  {d["seed"]}', '', 'Ajustes',
-             f'  Modo de objetos clave: {MODE_LABELS.get(s["key_items_mode"], s["key_items_mode"])}',
-             f'  Objetos excluidos: {excl}',
-             f'  Saltar cinemáticas: {"Sí" if s.get("skip_cutscenes") else "No"}']
+    excl = ', '.join(_label(i) for i in s['excluded_items']) or 'none'
+    lines = ['Seed', f'  {d["seed"]}', '', 'Settings',
+             f'  Key item mode: {MODE_LABELS.get(s["key_items_mode"], s["key_items_mode"])}',
+             f'  Excluded items: {excl}',
+             f'  Skip cutscenes: {"Yes" if s.get("skip_cutscenes") else "No"}']
     if 'tokensanity' in s:
-        lines.append('  Fichas de Skulltula (Tokensanity): '
+        lines.append('  Gold Skulltula Tokens (Tokensanity): '
                      f'{TOKENSANITY_LABELS.get(s["tokensanity"], s["tokensanity"])}')
-    lines += ['', 'Versión del randomizer', f'  {d["randomizer_version"]}', '',
-             'Versión del juego', f'  {d["game_version"]}', '', 'Objetos clave']
+    lines += ['', 'Randomizer version', f'  {d["randomizer_version"]}', '',
+             'Game version', f'  {d["game_version"]}', '', 'Key items']
     for k in d['key_items']:
         lines.append(f'  {k["label"]}: {k["location"]} ({k["zone"]})')
-    lines += ['', 'Todos los cofres']
+    lines += ['', 'All chests']
     for r in d['chests']:
         mark = '*' if r['changed'] else ' '
-        loc = r['location'] or 'sin asociar'
+        loc = r['location'] or 'unmapped'
         lines.append(f' {mark} {r["zone"]} {r["hash"]} [{loc}]: '
                      f'{_label(r["original"])} -> {_label(r["placed"])}')
-    lines += ['', 'Excluidos / sin asociar']
+    lines += ['', 'Excluded / unmapped']
     for r in d['excluded']:
-        loc = r['location'] or 'sin asociar'
+        loc = r['location'] or 'unmapped'
         lines.append(f'  {r["zone"]} {r["hash"]} [{loc}]: {_label(r["original"])}'
                      f' ({r["reason"]})')
     if 'skulltulas' in d:

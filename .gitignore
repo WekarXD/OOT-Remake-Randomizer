@@ -12,3 +12,6 @@ __pycache__/
 
 # Local Claude Code settings
 .claude/
+
+# Local Spanish notes and test guides (never uploaded)
+local/

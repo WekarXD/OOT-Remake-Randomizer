@@ -1,4 +1,4 @@
-"""Escritura del mod: reescribe los mapas Banc con los cofres cambiados."""
+"""Mod writer: rewrites the Banc maps with the changed chests."""
 from pathlib import Path
 
 from .formats import byml
@@ -22,15 +22,15 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     chests = game.chests()
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
-    # Skulltulas cuyo contenido no es la ficha vanilla: reciben un drop.
-    # Solo se escanean si el reparto trae algún Hash que no es de cofre.
+    # Skulltulas whose content is not the vanilla token: they get a drop.
+    # They are only scanned if the placement has a Hash that is not a chest.
     skulls = game.skulltulas() if any(h not in original for h in placement) else []
     sk_hashes = {s.hash for s in skulls}
     sk_changed = {h: c for h, c in placement.items()
                   if h in sk_hashes and c != TOKEN}
     changed -= sk_hashes
-    # Sitios cambiados que pierden su GetEventName (evento que solo entrega
-    # el objeto original). Nunca se toca el evento de otros cofres.
+    # Changed sites that lose their GetEventName (an event that only hands
+    # over the original item). Other chests' events are never touched.
     strip = {h for h in changed if h in loc_map and loc_map[h].strip_event}
     bancs = sorted({c.banc for c in chests if c.hash in changed}
                    | {s.banc for s in skulls if s.hash in sk_changed})

@@ -1,125 +1,125 @@
-# Randomizer para The Legend of Zelda: Ocarina of Time (remake Switch 2) — Diseño v1
+# Randomizer for The Legend of Zelda: Ocarina of Time (Switch 2 remake) — Design v1
 
-Fecha: 2026-11-08 · Estado: borrador para aprobación
+Date: 2026-11-08 · Status: draft for approval
 
-## 1. Qué es y por qué
+## 1. What it is and why
 
-Un randomizer de objetos para el remake de Ocarina of Time de Switch 2, jugado en el emulador **Lichii**. Cambia qué objeto da cada cofre para que cada partida sea distinta. A la vez, un **motor de lógica garantiza que la partida se puede terminar** sin glitches.
+An item randomizer for the Switch 2 remake of Ocarina of Time, played in the **Lichii** emulator. It changes which item each chest gives so that every playthrough is different. At the same time, a **logic engine guarantees the game can be completed** without glitches.
 
-El usuario quiere jugar partidas randomizadas del remake al estilo de los randomizers clásicos de OoT (OoTR). Para el remake no existe ninguno.
+The user wants to play randomized runs of the remake in the style of the classic OoT randomizers (OoTR). None exists for the remake.
 
-**Cómo se usa:** una aplicación local con interfaz web. Eliges tu volcado del juego, ajustas qué se randomiza, pones o generas una semilla y pulsas **Generar**. Sale una carpeta de mod que Lichii carga, y un registro de spoilers.
+**How it is used:** a local application with a web interface. You pick your game dump, adjust what gets randomized, enter or generate a seed and press **Generate**. The output is a mod folder that Lichii loads, plus a spoiler log.
 
-## 2. Objetivos, no-objetivos y anti-objetivos
+## 2. Goals, non-goals and anti-goals
 
-**Objetivos v1**
-- Randomizar los **objetos clave que hoy están en cofres** (lista en §5.2) entre **cualquier cofre del juego**, incluidos los de rupias. Decisión del usuario.
-- Que la lógica garantice que toda semilla generada se puede completar sin glitches.
-- Reproducibilidad: la misma semilla, los mismos ajustes y la misma versión del randomizer dan exactamente el mismo resultado.
-- Registro de spoilers con dónde ha ido cada objeto.
-- Interfaz web local con pestañas, al estilo OoTR (maqueta "B" elegida por el usuario).
+**v1 goals**
+- Randomize the **key items that are currently in chests** (list in §5.2) among **any chest in the game**, including rupee chests. User decision.
+- Logic guarantees that every generated seed can be completed without glitches.
+- Reproducibility: the same seed, the same settings and the same randomizer version give exactly the same result.
+- Spoiler log showing where each item went.
+- Local web interface with tabs, in the style of OoTR (mockup "B", chosen by the user).
 
-**No-objetivos v1** (el usuario quiere ampliarlo más adelante; la arquitectura no debe impedirlo)
-- Objetos que se consiguen en eventos o de NPCs: ocarina, canciones, botellas, brazalete Goron, escamas, flechas de fuego y de luz, magia, medallones y piedras, piezas de corazón de minijuegos. Se quedan en su sitio de siempre.
-- Llaves pequeñas, gran llave, mapas y brújulas: se quedan donde están.
-- Vasijas, hierba, rocas, enemigos y otros sitios que sueltan algo pero no son cofres.
-- Randomizar entradas, pistas, multiworld, lógica con glitches, consola real, modificar o reempaquetar el `.nup`.
+**v1 non-goals** (the user wants to extend this later; the architecture must not prevent it)
+- Items obtained from events or NPCs: ocarina, songs, bottles, Goron bracelet, scales, Fire and Light Arrows, magic, medallions and stones, minigame Pieces of Heart. They stay in their usual place.
+- Small keys, boss keys, maps and compasses: they stay where they are.
+- Pots, grass, rocks, enemies and other places that drop something but are not chests.
+- Entrance randomization, hints, multiworld, logic with glitches, real console, modifying or repacking the `.nup`.
 
-**Anti-objetivos** (aunque "funcione", sería un fracaso)
-- Generar una semilla imposible de completar.
-- Modificar el `.nup` del usuario. Solo se lee.
-- Que la aplicación incluya o distribuya archivos del juego. Siempre se derivan del volcado propio del usuario en su máquina.
+**Anti-goals** (even if it "works", it would be a failure)
+- Generating a seed that cannot be completed.
+- Modifying the user's `.nup`. It is only read.
+- The application including or distributing game files. They are always derived from the user's own dump on their machine.
 
-## 3. Restricciones y hechos ya comprobados
+## 3. Constraints and already verified facts
 
-Comprobado con prototipos que funcionan, en `spikes/`, y **probado en Lichii por el usuario**:
+Verified with working prototypes in `spikes/` and **tested in Lichii by the user**:
 
-- **Entrada**: un único `.nup` (formato abierto de la comunidad, ver `a55uka/nup` SPEC.md). El del usuario es `The Legend of Zelda Ocarina of Time [0400486024DEC000][v131072].nup`, de ~25 GB. Contiene dos paquetes: el base (1.0.0) y la actualización v131072 (1.1.1), con los árboles RomFS completos. **Se usan siempre los archivos de la actualización** (`p1/` en `spikes/nuplist.py`). No está cifrado. Cada archivo está guardado en bruto o comprimido con zstd y se puede leer directamente por su offset, sin extraer los 24 GB.
-- **Motor**: es el mismo que Tears of the Kingdom, con los mismos formatos.
-- **Contenido de los cofres**: está en `romfs/Banc/<Zona>/*.bcett.byml.zs`. Son archivos BYML v7 comprimidos con zstd usando el diccionario `bcett.byml.zsdic`, que está dentro de `romfs/Pack/ZsDic.pack.zs` (un SARC comprimido con zstd sin diccionario). Cada cofre es un actor de `Actors[]` con:
-  - `Gyaml`: tipo de actor (`Obj_TBox_A_01`, `Obj_TBox_A_02_NoBake`...),
-  - `Hash`: identificador u64 del sitio,
-  - `Dynamic.Drop__DropActor`: **el objeto que da**, como texto (por ejemplo `Item_Hookshot` o `TBox_Rupee_Blue`),
-  - `Dynamic.GetEventName`: un evento opcional que se lanza al abrir el cofre.
-- **Escritura**: `spikes/byml.py` lee y escribe BYML conservando los tipos exactos. Los 160 mapas pasan la prueba de ida y vuelta sin diferencias. El archivo resultante se recomprime con el mismo diccionario.
-- **Tabla de tamaños**: si un mapa cambia de tamaño, hay que actualizar su entrada en `romfs/System/Resource/ResourceSizeTable.Product.111.Nin_Ounce_NVN2.rsizetable.zs`. Es un RESTBL v1 comprimido con zstd sin diccionario, con pares `crc32(ruta sin .zs)` y u32 ordenados, más una pequeña tabla de nombres. Para los mapas, el valor es `redondeo_arriba_32(tamaño_descomprimido) + 264`, una fórmula que coincide exactamente en los 160 mapas.
-- **Salida**: una carpeta LayeredFS `<NombreMod>/romfs/<misma ruta que en el juego>`, dentro de la carpeta de mods de Lichii `load/0400486024DEC000/`. Solo contiene los archivos modificados: los mapas tocados y la tabla de tamaños.
-- **Probado en el juego**:
-  1. Intercambiar el contenido de dos cofres del mismo mapa funciona.
-  2. Poner en un mapa un objeto que no tenía (el Gancho en un cofre azul de la casa de Mido) funciona, reescribiendo el mapa entero y actualizando la tabla de tamaños.
-- **Entorno**: Windows y Python 3.14, que trae `compression.zstd` de serie. En la sesión de diseño no se pudieron instalar paquetes de terceros con pip, pero el usuario sí puede.
+- **Input**: a single `.nup` (an open community format, see `a55uka/nup` SPEC.md). The user's is `The Legend of Zelda Ocarina of Time [0400486024DEC000][v131072].nup`, about 25 GB. It contains two packages: the base (1.0.0) and the v131072 update (1.1.1), each with a complete RomFS tree. **The update's files are always used** (`p1/` in `spikes/nuplist.py`). It is not encrypted. Each file is stored raw or compressed with zstd and can be read directly by its offset, without extracting the 24 GB.
+- **Engine**: it is the same as Tears of the Kingdom, with the same formats.
+- **Chest contents**: they are in `romfs/Banc/<Zone>/*.bcett.byml.zs`. These are BYML v7 files compressed with zstd using the dictionary `bcett.byml.zsdic`, which is inside `romfs/Pack/ZsDic.pack.zs` (a SARC compressed with zstd without a dictionary). Each chest is an entry of `Actors[]` with:
+  - `Gyaml`: actor type (`Obj_TBox_A_01`, `Obj_TBox_A_02_NoBake`...),
+  - `Hash`: u64 identifier of the location,
+  - `Dynamic.Drop__DropActor`: **the item it gives**, as text (for example `Item_Hookshot` or `TBox_Rupee_Blue`),
+  - `Dynamic.GetEventName`: an optional event that is triggered when the chest is opened.
+- **Writing**: `spikes/byml.py` reads and writes BYML preserving the exact types. All 160 maps pass the round-trip test with no differences. The resulting file is recompressed with the same dictionary.
+- **Size table**: if a map changes size, its entry must be updated in `romfs/System/Resource/ResourceSizeTable.Product.111.Nin_Ounce_NVN2.rsizetable.zs`. It is a RESTBL v1 compressed with zstd without a dictionary, with sorted pairs of `crc32(path without .zs)` and u32, plus a small name table. For maps, the value is `round_up_32(uncompressed_size) + 264`, a formula that matches exactly on all 160 maps.
+- **Output**: a LayeredFS folder `<ModName>/romfs/<same path as in the game>`, inside Lichii's mods folder `load/0400486024DEC000/`. It contains only the modified files: the touched maps and the size table.
+- **Tested in game**:
+  1. Swapping the contents of two chests in the same map works.
+  2. Putting an item into a map that did not have it (the Hookshot in a blue chest in Mido's house) works, by rewriting the whole map and updating the size table.
+- **Environment**: Windows and Python 3.14, which ships with `compression.zstd`. During the design session third-party packages could not be installed with pip, but the user can.
 
-## 4. Inventario de cofres (datos reales)
+## 4. Chest inventory (real data)
 
-- 238 actores de cofre con `Drop__DropActor` en los 160 mapas, que corresponden a **203 `Hash` distintos**. Un mismo cofre físico puede aparecer en varios archivos (por ejemplo en los mapas `*_Child_*` y `*_Adult_*`) con el **mismo `Hash`**. **Un sitio lógico es un `Hash`**, y todas sus copias deben recibir siempre el mismo objeto.
-- Tipos de cofre: `Obj_TBox_A_01` (+`_NoBake`, `_memo11`), `Obj_TBox_A_02` (+`_NoBake`), `Obj_TBox_A_03` (+`_NoBake`), `Obj_TBox_A_06`, `Obj_TBox_GlassTruth_A_01` (cofres invisibles) y `Obj_HrlCity_Shop_TBox_A_01/_02` (minijuego de los cofres en la Plaza del Mercado).
-- El volcado completo de lo que suelta cada cosa está en `spikes/drops.json`.
+- 238 chest actors with `Drop__DropActor` across the 160 maps, corresponding to **203 distinct `Hash` values**. The same physical chest can appear in several files (for example in the `*_Child_*` and `*_Adult_*` maps) with the **same `Hash`**. **A logical location is one `Hash`**, and all its copies must always receive the same item.
+- Chest types: `Obj_TBox_A_01` (+`_NoBake`, `_memo11`), `Obj_TBox_A_02` (+`_NoBake`), `Obj_TBox_A_03` (+`_NoBake`), `Obj_TBox_A_06`, `Obj_TBox_GlassTruth_A_01` (invisible chests) and `Obj_HrlCity_Shop_TBox_A_01/_02` (the chest minigame in Market Square).
+- The full dump of what each thing drops is in `spikes/drops.json`.
 
-## 5. Comportamiento v1
+## 5. v1 behaviour
 
-### 5.1 Sitios
-- **Sitios que pueden recibir objetos clave**: todos los cofres (un sitio por `Hash`), excepto:
-  - los cofres del minijuego de la Plaza del Mercado (`Obj_HrlCity_Shop_TBox_*`), *(decisión mía: su contenido depende del minijuego)*;
-  - los cofres cuyo contenido original es un objeto de mazmorra (`Item_Dungeon_SmallKey`, `Item_Dungeon_BossKey`, `Item_Dungeon_Map`, `Item_Dungeon_Compass`, `Obj_MiniGame_SmallKey`, `Obj_Dungeon_SmallKey_*`). *Decisión mía: esos objetos no se mueven en v1, así que su cofre tampoco se puede ocupar.*
-  - Si un sitio no se puede asociar con seguridad a una ubicación de la lógica (§6), queda fuera del reparto y conserva su contenido original.
-- Para el usuario, el resultado es "objetos clave en cualquier cofre, incluidos los de rupias". Las excepciones anteriores se indican en la interfaz y en el registro de spoilers.
+### 5.1 Locations
+- **Locations that can receive key items**: all chests (one location per `Hash`), except:
+  - the Market Square minigame chests (`Obj_HrlCity_Shop_TBox_*`), *(my decision: their content depends on the minigame)*;
+  - chests whose original content is a dungeon item (`Item_Dungeon_SmallKey`, `Item_Dungeon_BossKey`, `Item_Dungeon_Map`, `Item_Dungeon_Compass`, `Obj_MiniGame_SmallKey`, `Obj_Dungeon_SmallKey_*`). *My decision: those items do not move in v1, so their chest cannot be taken either.*
+  - If a location cannot be reliably mapped to a logic location (§6), it is left out of the fill and keeps its original content.
+- For the user, the result is "key items in any chest, including rupee chests". The exceptions above are indicated in the interface and in the spoiler log.
 
-### 5.2 Objetos clave del reparto
-Los que hoy están en cofres: `Item_Sword_Kokiri`, `Item_Range_SlingShot`, `Item_Boomerang`, `Item_Range_Bow`, `Item_Hookshot`, `Item_Longshot`, `Item_Hammer`, `Item_HeavyBoot`, `Item_HoverBoot`, `Item_Gauntlet_Silver`, `Item_Gauntlet_Gold`, `Item_GlassTruth`, `Item_Shield_Mirror`, `Item_Arrow_Ice` y `Item_BombBag_Small`. Son 15 sitios originales.
+### 5.2 Key items in the fill
+Those currently in chests: `Item_Sword_Kokiri`, `Item_Range_SlingShot`, `Item_Boomerang`, `Item_Range_Bow`, `Item_Hookshot`, `Item_Longshot`, `Item_Hammer`, `Item_HeavyBoot`, `Item_HoverBoot`, `Item_Gauntlet_Silver`, `Item_Gauntlet_Gold`, `Item_GlassTruth`, `Item_Shield_Mirror`, `Item_Arrow_Ice` and `Item_BombBag_Small`. That makes 15 original locations.
 
-### 5.3 Reparto
-- Los objetos clave se colocan con la lógica en cualquier sitio permitido.
-- **No se pierde ni se duplica nada**: el resto de contenidos de los sitios del reparto (rupias, munición, corazones, escudos, etc.) se mezcla en los huecos que quedan, incluidos los cofres que originalmente tenían objetos clave. El total de objetos del juego no cambia.
-- Pestaña Objetos: con "Excluir objetos", el usuario puede marcar objetos clave que se quedan en su cofre original.
+### 5.3 Fill
+- Key items are placed by the logic in any allowed location.
+- **Nothing is lost or duplicated**: the rest of the contents of the fill locations (rupees, ammo, hearts, shields, etc.) is shuffled into the remaining slots, including the chests that originally held key items. The total number of items in the game does not change.
+- Items tab: with "Excluded items", the user can mark key items that stay in their original chest.
 
-### 5.4 Lógica
-- Sin glitches. El resto del mundo se comporta como el juego original, con el bosque cerrado, la Puerta del Tiempo normal, las canciones en su sitio, etc. Los objetos de eventos son fijos y la lógica los trata como conseguidos en su sitio original, con sus requisitos.
-- El usuario confirma que **la forma de avanzar del remake es igual que la del original**. Por eso **la lógica parte de la de OoTR** (`OoTRandomizer/OoT-Randomizer`, archivos de regiones y reglas, Python, GPL-3.0), configurada para reproducir el juego original salvo los objetos clave en cofres.
-- Consecuencia de licencia: si se reutilizan sus archivos, este proyecto se publica como GPL-3.0.
-- Hay que tener en cuenta los objetos progresivos y los que dependen de otros: el Gancho largo y el Gancho, los Guanteletes de plata/oro y el brazalete Goron (que es fijo, de un evento), y la Bolsa de bombas como requisito de las bombas. Ver riesgo R2.
-- Toda semilla pasa una comprobación final: con el reparto generado, simular la partida desde el inicio y llegar a Ganon. Si falla, se reintenta con la misma semilla de forma determinista, o se aborta con un error claro.
+### 5.4 Logic
+- No glitches. The rest of the world behaves like the original game, with the forest closed, the normal Door of Time, songs in their places, etc. Event items are fixed and the logic treats them as obtained at their original location, with their requirements.
+- The user confirms that **the way to progress in the remake is the same as in the original**. Therefore **the logic starts from OoTR's** (`OoTRandomizer/OoT-Randomizer`, region and rule files, Python, GPL-3.0), configured to reproduce the original game except for key items in chests.
+- License consequence: if its files are reused, this project is published under GPL-3.0.
+- Progressive items and items that depend on others must be taken into account: the Longshot and the Hookshot, the Silver/Golden Gauntlets and the Goron bracelet (which is fixed, from an event), and the Bomb Bag as a requirement for bombs. See risk R2.
+- Every seed passes a final check: with the generated fill, simulate the game from the start and reach Ganon. If it fails, retry deterministically with the same seed, or abort with a clear error.
 
-### 5.5 Salida
-- La carpeta del mod se llama `Rando_<semilla>` y se escribe en la carpeta de salida elegida, por defecto la de mods de Lichii para este juego.
-- El registro de spoilers (legible, y también JSON) indica la semilla, los ajustes, la versión del randomizer, la versión del juego detectada y, para cada sitio, la ubicación de la lógica, el mapa y el objeto. Ahí se marca qué cofres no se pudieron asociar o se excluyeron.
-- Generar nunca toca el `.nup`. Si ya existe una carpeta con el mismo nombre, se pregunta antes de sobrescribirla.
+### 5.5 Output
+- The mod folder is named `Rando_<seed>` and is written to the chosen output folder, by default Lichii's mods folder for this game.
+- The spoiler log (human-readable, and also JSON) states the seed, the settings, the randomizer version, the detected game version and, for each location, the logic location, the map and the item. It marks which chests could not be mapped or were excluded.
+- Generating never touches the `.nup`. If a folder with the same name already exists, the user is asked before overwriting it.
 
-### 5.6 Interfaz (maqueta B, con pestañas)
-Es una aplicación local: el usuario la arranca y se abre en el navegador.
-- **General**: ruta del `.nup` (al elegirla, se valida y se muestra la versión del juego detectada; v1 solo admite la 1.1.1 / v131072), carpeta de salida, semilla con botón 🎲 y botón **Generar**.
-- **Objetos**: "Objetos clave" con las opciones *Vanilla* o *Cualquier cofre* (por defecto *Cualquier cofre*) y "Excluir objetos" como casillas. Las futuras categorías (llaves, mapas y brújulas, canciones...) aparecen en gris como "próximamente".
-- **Lógica**: "Sin glitches", fijo en v1 y solo informativo.
-- **Spoiler**: activar o desactivar el registro, y ver el último generado.
-- Al terminar: mensaje de éxito con la ruta del mod, enlace al registro y recordatorio de desactivar otros mods `Rando_*` del mismo juego, porque chocarían.
+### 5.6 Interface (mockup B, with tabs)
+It is a local application: the user starts it and it opens in the browser.
+- **General**: path to the `.nup` (when chosen, it is validated and the detected game version is shown; v1 only supports 1.1.1 / v131072), output folder, seed with a 🎲 button and the **Generate** button.
+- **Items**: "Key items" with the options *Vanilla* or *Any chest* (default *Any chest*) and "Excluded items" as checkboxes. Future categories (keys, maps and compasses, songs...) appear greyed out as "coming soon".
+- **Logic**: "No glitches", fixed in v1 and informational only.
+- **Spoiler**: enable or disable the log, and view the last one generated.
+- On completion: a success message with the mod path, a link to the log and a reminder to disable other `Rando_*` mods for the same game, because they would conflict.
 
-## 6. Asociar los cofres del remake con las ubicaciones de OoTR
+## 6. Mapping the remake's chests to OoTR locations
 
-Es la parte de datos más grande. Se hace una tabla versionada `Hash del remake → nombre de ubicación en OoTR` (por ejemplo `Deku Tree Slingshot Chest`) que se genera de forma semiautomática a partir del mapa (`Banc/<Zona>`), el contenido original, el `GetEventName` y la posición. Después se revisa a mano y los casos dudosos se marcan para comprobarlos jugando. Los cofres que no tengan equivalente en OoTR se tratan según §5.1.
+This is the largest data task. A versioned table `remake Hash → OoTR location name` (for example `Deku Tree Slingshot Chest`) is built semi-automatically from the map (`Banc/<Zone>`), the original content, the `GetEventName` and the position. It is then reviewed by hand and doubtful cases are marked to be checked by playing. Chests with no OoTR equivalent are handled as in §5.1.
 
-## 7. Riesgos técnicos (comprobar al principio de la construcción)
+## 7. Technical risks (check at the start of the build)
 
-- **R1. Eventos ligados a cofres.** **14 de los 15** cofres de objetos clave tienen un `GetEventName` de historia; el del Bumerán es el único que no. Algunos ejemplos: `SageOfWater_MelodyGet_Water` (Botas de hierro → Serenata del Agua), `SageOfSpirit_NaboorIsTakenAway` (Guanteletes de plata), `SageOfShdawo_GetHoverBoots`, `Get_StoneOfForest_GetSword`, `MiniGame_DampeRace_OpenGoalTBox`. Lo **esperado** es que el evento siga ligado al cofre (al sitio) y no al objeto. Hay que comprobar en el juego que (a) un cofre con evento da el objeto nuevo y no el original, y (b) el evento sigue haciendo lo suyo, como dar la canción o activar la historia.
-  - **Decisión del usuario:** si un evento entrega el objeto original por su cuenta, **se editan los archivos de eventos** (`Event/EventFlow/*.bfevfl.zs`) en la v1 para que den el objeto nuevo, en lugar de dejar ese cofre fijo. Eso añade a la v1 leer y escribir BFEVFL y actualizar sus entradas en la tabla de tamaños.
-  - **Decisión del usuario:** si solo falla lo visual (la escena o el texto muestran el objeto original pero recibes el nuevo), **se acepta en v1** y no hace falta arreglarlo ni excluir el sitio.
-- **R2. Objetos progresivos y requisitos previos.** Hay que comprobar qué pasa si se consigue el Gancho largo sin el Gancho, los Guanteletes de oro sin los de plata, o el Escudo espejo o las Flechas de hielo antes de tiempo. La lógica tiene que modelar lo que haga el juego realmente, o el reparto tiene que evitar esas situaciones.
-- **R3. Objetos de adulto en sitios de niño y al revés.** Lo resuelve la lógica de OoTR, pero conviene comprobar en el juego que un objeto de adulto conseguido de niño se guarda correctamente.
-- **R4. Mods de Lichii.** La ruta exacta de mods y si hace falta activarlos en "Add-Ons" se ha deducido, no está documentado. Funcionó copiando `<Mod>/romfs/...` en la carpeta de mods del juego.
+- **R1. Events tied to chests.** **14 of the 15** key item chests have a story `GetEventName`; the Boomerang's is the only one that does not. Some examples: `SageOfWater_MelodyGet_Water` (Iron Boots → Serenade of Water), `SageOfSpirit_NaboorIsTakenAway` (Silver Gauntlets), `SageOfShdawo_GetHoverBoots`, `Get_StoneOfForest_GetSword`, `MiniGame_DampeRace_OpenGoalTBox`. The **expected** behaviour is that the event stays tied to the chest (the location) and not to the item. It must be checked in game that (a) a chest with an event gives the new item and not the original one, and (b) the event still does its job, such as giving the song or advancing the story.
+  - **User decision:** if an event hands out the original item on its own, **the event files are edited** (`Event/EventFlow/*.bfevfl.zs`) in v1 so that they give the new item, instead of leaving that chest fixed. This adds to v1 reading and writing BFEVFL and updating their entries in the size table.
+  - **User decision:** if only the visuals fail (the scene or text shows the original item but you receive the new one), **it is accepted in v1** and there is no need to fix it or exclude the location.
+- **R2. Progressive items and prerequisites.** We need to check what happens if the Longshot is obtained without the Hookshot, the Golden Gauntlets without the Silver ones, or the Mirror Shield or Ice Arrows ahead of time. The logic has to model what the game actually does, or the fill has to avoid those situations.
+- **R3. Adult items in child locations and vice versa.** OoTR's logic handles this, but it should be checked in game that an adult item obtained as a child is saved correctly.
+- **R4. Lichii mods.** The exact mods path and whether they need to be enabled in "Add-Ons" were deduced, not documented. It worked by copying `<Mod>/romfs/...` into the game's mods folder.
 
-## 7b. Pruebas en el juego y público
+## 7b. In-game testing and audience
 
-- **Solo el usuario puede jugar en Lichii.** *Decisión mía:* el plan empieza con un **lote de mods de prueba pequeños y una lista de comprobación escrita** que cubren R1, R2 y R3 y los cofres dudosos de §6. Los resultados de ese lote deciden el alcance antes de cerrar la lógica y el reparto. Así se evitan muchas rondas de prueba de un solo cofre.
-- **Público (decisión del usuario):** primero es para uso personal; si llega a funcionar bien, posiblemente se publique. Para la v1 eso significa:
-  - se ejecuta desde el código con Python 3.14 y lo mínimo de dependencias externas, sin `.exe`;
-  - el código no tiene rutas fijas de la máquina del usuario y valida el `.nup` (versión y archivos necesarios) con errores claros;
-  - se prepara la licencia GPL-3.0 si se reutiliza la lógica de OoTR, con la atribución correspondiente;
-  - la tabla `Hash → ubicación` solo contiene identificadores y nombres, no recursos del juego, así que se puede distribuir.
+- **Only the user can play in Lichii.** *My decision:* the plan starts with a **batch of small test mods and a written checklist** that cover R1, R2 and R3 and the doubtful chests from §6. The results of that batch decide the scope before the logic and the fill are finalized. This avoids many rounds of testing a single chest.
+- **Audience (user decision):** it is for personal use first; if it ends up working well, it may be published. For v1 that means:
+  - it runs from source with Python 3.14 and as few external dependencies as possible, with no `.exe`;
+  - the code has no hardcoded paths from the user's machine and validates the `.nup` (version and required files) with clear errors;
+  - the GPL-3.0 license is prepared if OoTR's logic is reused, with the corresponding attribution;
+  - the `Hash → location` table contains only identifiers and names, not game assets, so it can be distributed.
 
-## 8. Cómo se comprueba que está hecho
-- Tests automáticos: el BYML pasa la prueba de ida y vuelta en los 160 mapas; la fórmula de la tabla de tamaños coincide; el generador es determinista (misma semilla, mismo resultado); y la comprobación de que la semilla se puede completar pasa en cientos de semillas.
-- El usuario juega una semilla completa en Lichii.
+## 8. How we know it is done
+- Automated tests: BYML passes the round trip on all 160 maps; the size table formula matches; the generator is deterministic (same seed, same result); and the check that the seed can be completed passes on hundreds of seeds.
+- The user plays a complete seed in Lichii.
 
-## 9. Lo que se deja a quien lo construya
-- La estructura del código, el servidor web local (librería estándar o una dependencia pequeña), el formato exacto del registro de spoilers y el diseño visual de las pestañas.
-- Cómo incorporar la lógica de OoTR (copiar sus datos o depender de ellos) y el algoritmo de reparto (por ejemplo "assumed fill", como OoTR).
-- El formato de la semilla.
-- Reutilizar o reescribir el código de `spikes/`. Funciona, pero se escribió como prototipo.
+## 9. Left to whoever builds it
+- The code structure, the local web server (standard library or a small dependency), the exact format of the spoiler log and the visual design of the tabs.
+- How to incorporate OoTR's logic (copy its data or depend on it) and the fill algorithm (for example "assumed fill", like OoTR).
+- The seed format.
+- Whether to reuse or rewrite the code in `spikes/`. It works, but it was written as a prototype.

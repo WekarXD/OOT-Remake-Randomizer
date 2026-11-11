@@ -25,7 +25,7 @@ class TestDropActor(unittest.TestCase):
         self.assertEqual(drop_actor('Item_Hookshot', rows), 'Obj_Rando_Item_Hookshot')
 
 
-@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
 class TestWrappers(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

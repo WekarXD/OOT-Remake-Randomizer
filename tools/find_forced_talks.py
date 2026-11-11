@@ -1,39 +1,39 @@
-"""Busca conversaciones forzadas (opción "Saltar cinemáticas", ampliación 1).
+"""Finds forced conversations (the "Skip cutscenes" option, extension 1).
 
-Uso: python -I tools/find_forced_talks.py <nup> [--zones Z1,Z2,...]
+Usage: python -I tools/find_forced_talks.py <nup> [--zones Z1,Z2,...]
 
-Solo lee el .nup. Imprime, por zona, los pares (flujo, entrada) candidatos,
-cómo se disparan y qué acciones quitaría el recorte de fase 1 si la entrada
-se listara sola en `story_flows`. La lista curada vive en
-`tools/build_cutscene_list.py` (FORCED_TALKS); esta herramienta no la escribe.
+Only reads the .nup. Prints, per zone, the candidate (flow, entry) pairs,
+how they are triggered, and which actions the phase 1 trim would remove if
+the entry were listed alone in `story_flows`. The curated list lives in
+`tools/build_cutscene_list.py` (FORCED_TALKS); this tool does not write it.
 
-Cómo se dispara un evento (investigado el 2026-11-09):
-- Cada evento con nombre es una fila de `RSDB/EventSetting.Product.*.rstbl`:
-  `__RowId` -> `FlowchartFileName` + `EntryPointName` + una lista de
-  componentes (`EventSettingComponentList`) que dice cómo arranca:
-  `NPCTalkNoPause`/`NPCTalk` = el jugador pulsa A ante un PNJ; `NPCNear` =
-  burbuja al acercarse (no para al jugador); `FlowchartEvent` y variantes =
-  evento lanzado por otro actor; `NaviHintEvent` = pista de Navi.
-- Los actores de los bancs (`Banc/<Zona>/*.bcett.byml.zs`) nombran filas en
-  sus parámetros `Dynamic`. El parámetro dice quién lo lanza:
-  - FORZADO: `RequestEventName` de `EventRequestActor` /
-    `EventProxyRequestActor` (activador de zona: salta al pisar un área o al
-    cumplirse una condición), `PlayerDiscoveredEventName` (un guardia te ve),
-    `JumpSlushTutorialEventName` (tutorial al golpear la roca).
-  - VOLUNTARIO: `TalkEventName` (hablar), `CheckEventName*` (abrir una
-    puerta), `EventNameFromInstanceParam` (leer un cartel), `DamageEventName`
-    (golpear al PNJ), `GetEventName` (cofre).
-  - ENTRADA DE ZONA: `InitEventName`/`FirstEventName`/`NextEventName`/
-    `AddEventName` (flujos `Dm_*`/`Goto_*`, ya tratados como historia).
-- PNJ que cortan el paso: su flujo usa la IA de bloqueo (`EventNpcBlocker*`)
-  y el motor lanza su entrada de charla cuando el jugador choca con ellos
-  (Mido antes de tener espada y escudo). Se buscan las entradas de los flujos
-  `Npc_*` de los actores de las zonas cuyo grafo usa esas acciones.
-- Filas que lanza el código del juego (sin referencia en los bancs), p. ej.
-  `NaviLockOnHint`/`NaviLockOnHintObject` -> `NaviHint:Hint_00`. Se listan en
-  ENGINE_ROWS para revisarlas igual.
-- Una entrada que también se usa de forma voluntaria (otra fila no forzada
-  apunta a ella) se marca SHARED y no se debe listar.
+How an event is triggered (investigated on 2026-11-09):
+- Each named event is a row of `RSDB/EventSetting.Product.*.rstbl`:
+  `__RowId` -> `FlowchartFileName` + `EntryPointName` + a component list
+  (`EventSettingComponentList`) that says how it starts:
+  `NPCTalkNoPause`/`NPCTalk` = the player presses A in front of an NPC; `NPCNear` =
+  bubble on approach (does not stop the player); `FlowchartEvent` and variants =
+  event launched by another actor; `NaviHintEvent` = Navi hint.
+- The actors of the bancs (`Banc/<Zone>/*.bcett.byml.zs`) name rows in
+  their `Dynamic` parameters. The parameter says who launches it:
+  - FORCED: `RequestEventName` of `EventRequestActor` /
+    `EventProxyRequestActor` (zone trigger: fires on stepping into an area or
+    when a condition is met), `PlayerDiscoveredEventName` (a guard sees you),
+    `JumpSlushTutorialEventName` (tutorial on hitting the rock).
+  - VOLUNTARY: `TalkEventName` (talking), `CheckEventName*` (opening a
+    door), `EventNameFromInstanceParam` (reading a sign), `DamageEventName`
+    (hitting the NPC), `GetEventName` (chest).
+  - ZONE ENTRANCE: `InitEventName`/`FirstEventName`/`NextEventName`/
+    `AddEventName` (`Dm_*`/`Goto_*` flows, already treated as story).
+- NPCs that block the way: their flow uses the blocking AI (`EventNpcBlocker*`)
+  and the engine launches their chat entry when the player bumps into them
+  (Mido before having the sword and shield). The entries of the `Npc_*` flows
+  of the zones' actors whose graph uses those actions are searched for.
+- Rows launched by the game's code (with no reference in the bancs), e.g.
+  `NaviLockOnHint`/`NaviLockOnHintObject` -> `NaviHint:Hint_00`. They are listed in
+  ENGINE_ROWS so they are reviewed all the same.
+- An entry that is also used voluntarily (another non-forced row
+  points to it) is marked SHARED and must not be listed.
 """
 import argparse
 import json
@@ -84,7 +84,7 @@ def _strings(obj, key=''):
 
 
 def banc_triggers(game, rows, zones):
-    """(zona, actor, parámetro, fila) de los bancs de infancia de las zonas."""
+    """(zone, actor, parameter, row) of the child bancs of the zones."""
     out = []
     for path in game.nup.list('Banc/'):
         parts = path.split('/')
@@ -102,7 +102,7 @@ def banc_triggers(game, rows, zones):
 
 
 def zone_npcs(game, zones):
-    """Zona -> nombres de actor `Npc_*` (sin adultos) de sus bancs."""
+    """Zone -> `Npc_*` actor names (no adults) from its bancs."""
     out = defaultdict(set)
     for path in game.nup.list('Banc/'):
         parts = path.split('/')
@@ -145,12 +145,12 @@ class Flows:
 
 
 def subflow_calls(raw: bytes, name: str, entry: str) -> list[str]:
-    """Subflujos ('flujo:entrada') que llama la entrada (sin seguirlos).
+    """Subflows ('flow:entry') called by the entry (without following them).
 
-    Sus diálogos solo se recortan si esa entrada también se lista.
+    Their dialogues are only trimmed if that entry is also listed.
     """
     fl = EventFlow(raw)
-    events_p = fl._u64(fl._u64(fl._u64(0x28)) + 0x30)  # tabla de eventos
+    events_p = fl._u64(fl._u64(fl._u64(0x28)) + 0x30)  # event table
     out = set()
     for i in reachable(fl.events, fl.entry_points[entry]):
         if fl.events[i].kind == SUBFLOW:
@@ -160,7 +160,7 @@ def subflow_calls(raw: bytes, name: str, entry: str) -> list[str]:
 
 
 def trim_effect(raw: bytes, entry: str, pairs) -> Counter:
-    """Acciones que desaparecen de la entrada al listarla sola."""
+    """Actions that disappear from the entry when it is listed alone."""
     new = trim_flow(raw, [entry], pairs)
     if new is None:
         return Counter()
@@ -176,12 +176,12 @@ def find(game, zones=CHILD_ZONES):
     policy = load_policy()
     pairs = active_actions(policy)
     flows = Flows(game)
-    by_target = defaultdict(set)  # (flujo, entrada) -> filas
+    by_target = defaultdict(set)  # (flow, entry) -> rows
     for rid, r in rows.items():
         if r.get('FlowchartFileName'):
             by_target[(_base(r['FlowchartFileName']), r.get('EntryPointName'))].add(rid)
 
-    cands = {}  # (flujo, entrada) -> {zonas, disparos}
+    cands = {}  # (flow, entry) -> {zones, triggers}
 
     def add(flow, entry, zone, how):
         c = cands.setdefault((flow, entry), {'zones': set(), 'how': set()})
@@ -260,9 +260,9 @@ def main(argv=None):
         for h in r['how']:
             print(f'    via {h}')
         if r['removed']:
-            print('    quita: ' + ', '.join(f'{k} x{n}' for k, n in r['removed'].items()))
+            print('    removes: ' + ', '.join(f'{k} x{n}' for k, n in r['removed'].items()))
         if r['calls']:
-            print('    llama: ' + ', '.join(r['calls']))
+            print('    calls: ' + ', '.join(r['calls']))
     return 0
 
 

@@ -2,603 +2,603 @@
  "10127391959410674946": {
   "dungeon": true,
   "location": "Spirit Temple GS Hall After Sun Block Room",
-  "note": "confianza media: sala 10, contigua a la del Sun Block Room Chest (sala 9); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-55.7, 136.6, -7.3)",
+  "note": "medium confidence: room 10, adjacent to the Sun Block Room Chest room (room 9); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-55.7, 136.6, -7.3)",
   "status": "guessed"
  },
  "10270336409167849808": {
   "dungeon": true,
   "location": "Shadow Temple GS Triple Giant Pot",
-  "note": "datos: sala 20 con tres Obj_ShadowTemple_SkullPot; ShadowTemple ShadowTemple_Static [AppearJumpSpeed,AppearMessageWarp,AppearPopOut,DefaultDungeonRoomIndex] (-212.3, 41.3, -37.4)",
+  "note": "data: room 20 with three Obj_ShadowTemple_SkullPot; ShadowTemple ShadowTemple_Static [AppearJumpSpeed,AppearMessageWarp,AppearPopOut,DefaultDungeonRoomIndex] (-212.3, 41.3, -37.4)",
   "status": "confirmed"
  },
  "10530233152473742636": {
   "dungeon": true,
   "location": "Spirit Temple GS Metal Fence",
-  "note": "datos: sala 4, la del Child Early Torches Chest, con rupias plateadas; SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-9.6, 107.4, -56.0)",
+  "note": "data: room 4, the Child Early Torches Chest room, with silver rupees; SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-9.6, 107.4, -56.0)",
   "status": "confirmed"
  },
  "10917372215719266172": {
   "dungeon": false,
   "location": "ZR GS Above Bridge",
-  "note": "requisitos idénticos con Near Raised Grottos (región Zora River, Gancho de noche); ZoraRiver ZoraRiver_Adult_Static [Nocturnal] (-35.0, 118.8, 12.5)",
+  "note": "identical requirements to Near Raised Grottos (Zora River region, Hookshot, at night); ZoraRiver ZoraRiver_Adult_Static [Nocturnal] (-35.0, 118.8, 12.5)",
   "status": "confirmed"
  },
  "10970805784153267902": {
   "dungeon": true,
   "location": "Forest Temple GS Level Island Courtyard",
-  "note": "confianza media: sala 12, al oeste (x=-38; el Red Poe Chest, oeste, tiene x<0): patio NO; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (-38.1, 112.9, -4.4)",
+  "note": "medium confidence: room 12, to the west (x=-38; the Red Poe Chest, west, has x<0): NW courtyard; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (-38.1, 112.9, -4.4)",
   "status": "guessed"
  },
  "11081821111317815057": {
   "dungeon": true,
   "location": "Forest Temple GS First Room",
-  "note": "datos: sala 0, la del First Room Chest; ForestTemple ForestTemple_Static [] (11.3, 119.8, 64.0)",
+  "note": "data: room 0, the First Room Chest room; ForestTemple ForestTemple_Static [] (11.3, 119.8, 64.0)",
   "status": "confirmed"
  },
  "11160993739666517210": {
   "dungeon": false,
   "location": "Colossus GS Hill",
-  "note": "confianza baja: por descarte; junto a un acantilado; DesertColossus DesertColossus_Adult_Static+DesertColossus_Child_Static [Nocturnal] (-73.9, 105.3, -5.7)",
+  "note": "low confidence: by elimination; next to a cliff; DesertColossus DesertColossus_Adult_Static+DesertColossus_Child_Static [Nocturnal] (-73.9, 105.3, -5.7)",
   "status": "guessed"
  },
  "11283202900158580106": {
   "dungeon": true,
   "location": "Jabu Jabus Belly GS Lobby Basement Upper",
-  "note": "requisitos idénticos con Lobby Basement Lower; sala 3, y=90.3; InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (-15.4, 90.3, -82.9)",
+  "note": "identical requirements to Lobby Basement Lower; room 3, y=90.3; InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (-15.4, 90.3, -82.9)",
   "status": "confirmed"
  },
  "11513774157335944149": {
   "dungeon": true,
   "location": "Jabu Jabus Belly GS Water Switch Room",
-  "note": "confianza media: sala 14 (la del Map Chest) con interruptores de pisar, abajo (y=81.7); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (17.4, 81.7, -59.3)",
+  "note": "medium confidence: room 14 (the Map Chest room) with floor switches, low (y=81.7); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (17.4, 81.7, -59.3)",
   "status": "guessed"
  },
  "11535915511003753934": {
   "dungeon": false,
   "location": "GV GS Pillar",
-  "note": "requisitos idénticos con Behind Tent; GerudoValley GerudoValley_Adult_Static [Nocturnal] (-34.5, 110.0, 10.3)",
+  "note": "identical requirements to Behind Tent; GerudoValley GerudoValley_Adult_Static [Nocturnal] (-34.5, 110.0, 10.3)",
   "status": "confirmed"
  },
  "11571778270592589517": {
   "dungeon": true,
   "location": "Water Temple GS Central Pillar",
-  "note": "datos: sala 1 en el centro de la sala principal (-4.5, -4.5), con la tablilla del pilar central y la plataforma flotante; arriba (y=126); WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (-1.2, 126.0, -7.9)",
+  "note": "data: room 1 in the center of the main room (-4.5, -4.5), with the central pillar tablet and the floating platform; high up (y=126); WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (-1.2, 126.0, -7.9)",
   "status": "confirmed"
  },
  "11629189455828560791": {
   "dungeon": false,
   "location": "Kak GS Near Gate Guard",
-  "note": "requisitos idénticos (las tres); la más cercana a la puerta de la montaña; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-75.0, 105.3, 2.2)",
+  "note": "identical requirements (all three); the closest to the mountain gate; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-75.0, 105.3, 2.2)",
   "status": "confirmed"
  },
  "1171854281537584829": {
   "dungeon": true,
   "location": "Dodongos Cavern GS Side Room Near Lower Lizalfos",
-  "note": "confianza media: sala 3, cuarto pequeño pegado a la sala 2 (lado derecho bajo, la del espantapájaros); DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (64.0, 98.5, 15.9)",
+  "note": "medium confidence: room 3, small room next to room 2 (low right side, the scarecrow one); DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (64.0, 98.5, 15.9)",
   "status": "guessed"
  },
  "12007978132755687032": {
   "dungeon": false,
   "location": "HF GS Near Kak Grotto",
-  "note": "confianza media: gruta con Skulltulas normales y zona de la Piedra de la agonía (gruta de las arañas); HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [] (-147.9, 129.9, 322.5)",
+  "note": "medium confidence: grotto with regular Skulltulas and the Stone of Agony area (spider grotto); HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [] (-147.9, 129.9, 322.5)",
   "status": "guessed"
  },
  "12165938013608963606": {
   "dungeon": true,
   "location": "Bottom of the Well GS East Inner Room",
-  "note": "requisitos idénticos (las tres); sala 4, x=2.6; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (2.6, 103.8, -30.5)",
+  "note": "identical requirements (all three); room 4, x=2.6; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (2.6, 103.8, -30.5)",
   "status": "confirmed"
  },
  "12370559827741970774": {
   "dungeon": false,
   "location": "ZR GS Tree",
   "no_key": true,
-  "note": "confianza media: por descarte. OJO: en el remake es de tierra blanda (IsMagicBeanSoil, Obj_SmallFarm), no de árbol; OoTR pide can_bonk; ZoraRiver ZoraRiver_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-54.6, 100.6, -11.9); no_key: en el remake sale de tierra blanda y OoTR pide can_bonk (árbol); no recibe objetos clave",
+  "note": "medium confidence: by elimination. NOTE: in the remake it is on soft soil (IsMagicBeanSoil, Obj_SmallFarm), not a tree; OoTR asks for can_bonk; ZoraRiver ZoraRiver_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-54.6, 100.6, -11.9); no_key: in the remake it spawns from soft soil and OoTR asks for can_bonk (tree); it does not receive key items",
   "status": "guessed"
  },
  "12751796212121957464": {
   "dungeon": true,
   "location": "Fire Temple GS Boulder Maze",
-  "note": "datos: sala 5, pegada a un muro agrietado (Obj_FireTemple_CrackWall a 1.8); la regla pide explosivos; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (59.0, 148.4, -30.0)",
+  "note": "data: room 5, next to a cracked wall (Obj_FireTemple_CrackWall at 1.8); the rule asks for explosives; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (59.0, 148.4, -30.0)",
   "status": "confirmed"
  },
  "12959656942046734931": {
   "dungeon": true,
   "location": "Spirit Temple GS Lobby",
-  "note": "confianza baja: sala 7, lado del adulto (x=14.7); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (14.7, 115.2, -68.8)",
+  "note": "low confidence: room 7, adult side (x=14.7); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (14.7, 115.2, -68.8)",
   "status": "guessed"
  },
  "13037049463363052038": {
   "dungeon": false,
   "location": "GF GS Archery Range",
-  "note": "datos: junto a las dianas del tiro con arco a caballo; GerudoFortress GerudoFortress_Adult_Static [Nocturnal] (181.7, 125.6, -88.6)",
+  "note": "data: next to the horseback archery targets; GerudoFortress GerudoFortress_Adult_Static [Nocturnal] (181.7, 125.6, -88.6)",
   "status": "confirmed"
  },
  "13584527502619061465": {
   "dungeon": false,
   "location": "GV GS Behind Tent",
-  "note": "requisitos idénticos con Pillar (región GV Fortress Side, Gancho de noche); GerudoValley GerudoValley_Adult_Static [Nocturnal] (-45.7, 106.2, -35.6)",
+  "note": "identical requirements to Pillar (GV Fortress Side region, Hookshot, at night); GerudoValley GerudoValley_Adult_Static [Nocturnal] (-45.7, 106.2, -35.6)",
   "status": "confirmed"
  },
  "13609975487234437568": {
   "dungeon": true,
   "location": "Deku Tree GS Compass Room",
-  "note": "juego: confirmada (lote 15); sala 3, planta alta; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-29.8, 121.0, 13.0)",
+  "note": "game: confirmed (batch 15); room 3, upper floor; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-29.8, 121.0, 13.0)",
   "status": "confirmed"
  },
  "13690401647626643497": {
   "dungeon": true,
   "location": "Dodongos Cavern GS Back Room",
-  "note": "datos: sala 20, detrás del muro agrietado de la sala 19 (misma z=-104.2), junto a la zona del jefe; Amos y Dodongos bebé; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (-48.8, 96.6, -104.2)",
+  "note": "data: room 20, behind the cracked wall of room 19 (same z=-104.2), next to the boss area; Armos and Baby Dodongos; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (-48.8, 96.6, -104.2)",
   "status": "confirmed"
  },
  "13852835165271311030": {
   "dungeon": true,
   "location": "Jabu Jabus Belly GS Lobby Basement Lower",
-  "note": "requisitos idénticos con Lobby Basement Upper (región Main, misma regla); sala 3, la más baja (y=88.4); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (-2.2, 88.4, -95.0)",
+  "note": "identical requirements to Lobby Basement Upper (Main region, same rule); room 3, the lowest (y=88.4); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (-2.2, 88.4, -95.0)",
   "status": "confirmed"
  },
  "13944703896577680014": {
   "dungeon": false,
   "location": "LH GS Lab Wall",
-  "note": "datos: nocturna de niño junto al acuario y al científico del laboratorio; HyruleField HyruleField_Child_Static [Nocturnal] (-178.3, 142.0, 426.4)",
+  "note": "data: child night-only, next to the aquarium and the lab scientist; HyruleField HyruleField_Child_Static [Nocturnal] (-178.3, 142.0, 426.4)",
   "status": "confirmed"
  },
  "14107117960174262321": {
   "dungeon": false,
   "location": "Kak GS House Under Construction",
-  "note": "requisitos idénticos (las tres); KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-60.7, 102.1, 59.5)",
+  "note": "identical requirements (all three); KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-60.7, 102.1, 59.5)",
   "status": "confirmed"
  },
  "14473218207379268379": {
   "dungeon": false,
   "location": "SFM GS",
-  "note": "auto: única de la zona; SacredForestMeadow SacredForestMeadow_Adult_Static [] (7.8, 107.4, 13.2)",
+  "note": "auto: the only one in the area; SacredForestMeadow SacredForestMeadow_Adult_Static [] (7.8, 107.4, 13.2)",
   "status": "confirmed"
  },
  "14706322686481615109": {
   "dungeon": true,
   "location": "Fire Temple GS Boss Key Loop",
-  "note": "datos: sala 18, entre la del Flare Dancer (3) y la del Boss Key Chest (17); pilares de martillo; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (11.2, 101.5, -43.2)",
+  "note": "data: room 18, between the Flare Dancer room (3) and the Boss Key Chest room (17); hammer pillars; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (11.2, 101.5, -43.2)",
   "status": "confirmed"
  },
  "14822647495538506998": {
   "dungeon": true,
   "location": "Ice Cavern GS Push Block Room",
-  "note": "confianza media: sala 8, la anterior a la de las Botas de hierro (10); IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (-18.1, 108.7, -16.6)",
+  "note": "medium confidence: room 8, the one before the Iron Boots room (10); IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (-18.1, 108.7, -16.6)",
   "status": "guessed"
  },
  "14910672274965350769": {
   "dungeon": false,
   "location": "Wasteland GS",
-  "note": "auto: única de la zona; HountedWasteland HountedWasteland_Adult_Static+HountedWasteland_Child_Static [] (16.0, 88.8, -99.8)",
+  "note": "auto: the only one in the area; HountedWasteland HountedWasteland_Adult_Static+HountedWasteland_Child_Static [] (16.0, 88.8, -99.8)",
   "status": "confirmed"
  },
  "15057756765324812936": {
   "dungeon": false,
   "location": "Colossus GS Tree",
-  "note": "confianza baja: cerca del templo y de un árbol seco (13); DesertColossus DesertColossus_Adult_Static+DesertColossus_Child_Static [Nocturnal] (-170.1, 101.8, -47.9)",
+  "note": "low confidence: near the temple and a dead tree (13); DesertColossus DesertColossus_Adult_Static+DesertColossus_Child_Static [Nocturnal] (-170.1, 101.8, -47.9)",
   "status": "guessed"
  },
  "15118290503807073158": {
   "dungeon": false,
   "location": "Kak GS Watchtower",
-  "note": "datos: en la escalera de la torre (Land_Kakariko_Tower y Ladder_A_05 en la misma x,z), 9 más arriba; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-48.1, 110.9, 18.4)",
+  "note": "data: on the tower ladder (Land_Kakariko_Tower and Ladder_A_05 at the same x,z), 9 higher; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-48.1, 110.9, 18.4)",
   "status": "confirmed"
  },
  "15148554628675590606": {
   "dungeon": true,
   "location": "Shadow Temple GS Falling Spikes Room",
-  "note": "datos: sala 11, la del Falling Spikes Switch Chest; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex,IsOverwriteAgonyStonePos] (33.4, 73.8, 86.2)",
+  "note": "data: room 11, the Falling Spikes Switch Chest room; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex,IsOverwriteAgonyStonePos] (33.4, 73.8, 86.2)",
   "status": "confirmed"
  },
  "15265071047503310220": {
   "dungeon": false,
   "location": "GV GS Small Bridge",
-  "note": "datos: la única nocturna solo de niño (bumerán); GerudoValley GerudoValley_Child_Static [Nocturnal] (50.8, 97.4, 5.1)",
+  "note": "data: the only child-only night one (Boomerang); GerudoValley GerudoValley_Child_Static [Nocturnal] (50.8, 97.4, 5.1)",
   "status": "confirmed"
  },
  "15314554401574296838": {
   "dungeon": false,
   "location": "Kak GS Skulltula House",
-  "note": "requisitos idénticos (House Under Construction, Near Gate Guard, Skulltula House: región Kakariko Village, niño de noche); telarañas y velas de la casa de las Skulltulas; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-29.1, 103.1, 60.5)",
+  "note": "identical requirements (House Under Construction, Near Gate Guard, Skulltula House: Kakariko Village region, child at night); cobwebs and candles of the Skulltula house; KakarikoVillage KakarikoVillage_Child_Static [Nocturnal] (-29.1, 103.1, 60.5)",
   "status": "confirmed"
  },
  "15506432733081566465": {
   "dungeon": true,
   "location": "Water Temple GS River",
-  "note": "datos: sala 21, en el río (RiverRail_WaterTemple, cintas transportadoras); WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (-54.5, 114.0, -59.3)",
+  "note": "data: room 21, in the river (RiverRail_WaterTemple, conveyor belts); WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (-54.5, 114.0, -59.3)",
   "status": "confirmed"
  },
  "15564367841356014861": {
   "dungeon": true,
   "location": "Shadow Temple GS Single Giant Pot",
-  "note": "datos: por descarte de las otras cuatro; sala 14; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (75.8, 53.4, 6.3)",
+  "note": "data: by elimination of the other four; room 14; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (75.8, 53.4, 6.3)",
   "status": "confirmed"
  },
  "15889002414176907668": {
   "dungeon": false,
   "location": "LLR GS House Window",
-  "note": "confianza media: nocturna de niño junto a la casa del rancho; HyruleField HyruleField_Child_Static [Nocturnal] (-63.2, 156.4, 212.4)",
+  "note": "medium confidence: child night-only, next to the ranch house; HyruleField HyruleField_Child_Static [Nocturnal] (-63.2, 156.4, 212.4)",
   "status": "guessed"
  },
  "15983944335296207002": {
   "dungeon": true,
   "location": "Jabu Jabus Belly GS Near Boss",
-  "note": "confianza media: sala 5, arriba (y=106.1), del lado de la sala del jefe (x>30); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (38.3, 106.1, -49.1)",
+  "note": "medium confidence: room 5, high up (y=106.1), on the boss room side (x>30); InsideJabuJabuBelly InsideJabuJabuBelly_Static [DefaultDungeonRoomIndex] (38.3, 106.1, -49.1)",
   "status": "guessed"
  },
  "16101480770659370603": {
   "dungeon": true,
   "location": "Deku Tree GS Basement Vines",
-  "note": "confianza media: sala 4, 8 más alta (y=86.9) junto al agua; la de las lianas pide proyectil; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (3.3, 86.9, 1.1)",
+  "note": "medium confidence: room 4, 8 higher (y=86.9) next to the water; the vines one asks for a projectile; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (3.3, 86.9, 1.1)",
   "status": "guessed"
  },
  "1612219105489330028": {
   "dungeon": true,
   "location": "Ice Cavern GS Heart Piece Room",
-  "note": "datos: sala 6, la del Compass Chest (en OoTR, misma sala que la pieza de corazón); IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (83.7, 108.3, -0.5)",
+  "note": "data: room 6, the Compass Chest room (in OoTR, same room as the Piece of Heart); IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (83.7, 108.3, -0.5)",
   "status": "confirmed"
  },
  "16157272130665282352": {
   "dungeon": true,
   "location": "Water Temple GS Behind Gate",
-  "note": "confianza media: sala 2 con 4 vasijas (OoTR: Behind Gate Pot 1-4), Spikes, interruptor de cristal y rejas; pero está bajo el pilar central; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (1.4, 95.2, 0.5)",
+  "note": "medium confidence: room 2 with 4 pots (OoTR: Behind Gate Pot 1-4), Spikes, crystal switch and bars; but it is under the central pillar; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (1.4, 95.2, 0.5)",
   "status": "guessed"
  },
  "16798263777516949500": {
   "dungeon": false,
   "location": "Graveyard GS Bean Patch",
-  "note": "datos: tierra blanda; Graveyard Graveyard_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-12.1, 103.4, -12.2)",
+  "note": "data: soft soil; Graveyard Graveyard_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-12.1, 103.4, -12.2)",
   "status": "confirmed"
  },
  "16933078188088206331": {
   "dungeon": true,
   "location": "Shadow Temple GS Invisible Blades Room",
-  "note": "datos: sala 31, la de los cofres Invisible Blades; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (179.8, 62.5, 96.9)",
+  "note": "data: room 31, the Invisible Blades chests room; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (179.8, 62.5, 96.9)",
   "status": "confirmed"
  },
  "17067594426901953848": {
   "dungeon": false,
   "location": "KF GS Know It All House",
-  "note": "juego: confirmada (lote 15); nocturna de niño; KokiriForest KokiriForest_Child_Static [Nocturnal] (-83.8, 117.9, -17.6)",
+  "note": "game: confirmed (batch 15); child night-only; KokiriForest KokiriForest_Child_Static [Nocturnal] (-83.8, 117.9, -17.6)",
   "status": "confirmed"
  },
  "17355397719442343054": {
   "dungeon": false,
   "location": "ZF GS Tree",
-  "note": "datos: árbol (aparece al golpearlo, Obj_Tree a 7.7); ZoraFountain ZoraFountain_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (49.3, 110.4, 32.0)",
+  "note": "data: tree (appears when hit, Obj_Tree at 7.7); ZoraFountain ZoraFountain_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (49.3, 110.4, 32.0)",
   "status": "confirmed"
  },
  "17425319789138387506": {
   "dungeon": false,
   "location": "DMT GS Bean Patch",
-  "note": "datos: tierra blanda; DeathMountainTrail DeathMountainTrail_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-45.5, 109.2, -20.2)",
+  "note": "data: soft soil; DeathMountainTrail DeathMountainTrail_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-45.5, 109.2, -20.2)",
   "status": "confirmed"
  },
  "17501688996789643983": {
   "dungeon": true,
   "location": "Deku Tree GS Basement Back Room",
-  "note": "juego: confirmada (lote 15); sala 11, sala del fondo del sótano; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-81.9, 86.7, -7.4)",
+  "note": "game: confirmed (batch 15); room 11, back room of the basement; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-81.9, 86.7, -7.4)",
   "status": "confirmed"
  },
  "17612196129225973969": {
   "dungeon": true,
   "location": "Forest Temple GS Lobby",
-  "note": "confianza media: sala 2, en el centro (x=8.8), la sala central tras la entrada; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (8.8, 109.6, -23.6)",
+  "note": "medium confidence: room 2, in the center (x=8.8), the central room after the entrance; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (8.8, 109.6, -23.6)",
   "status": "guessed"
  },
  "17669199296215821346": {
   "dungeon": false,
   "location": "DMT GS Above Dodongos Cavern",
-  "note": "datos: de adulto junto a la cueva de los Dodongos, el Goron y las flores bomba; DeathMountainTrail DeathMountainTrail_Adult_Static [] (-31.0, 125.1, -18.0)",
+  "note": "data: adult, next to Dodongo's Cavern, the Goron and the bomb flowers; DeathMountainTrail DeathMountainTrail_Adult_Static [] (-31.0, 125.1, -18.0)",
   "status": "confirmed"
  },
  "17796658857969527112": {
   "dungeon": false,
   "location": "LW GS Bean Patch Near Theater",
-  "note": "datos: tierra blanda junto a los Deku negociantes, debajo de Above Theater; LostWood LostWood_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil,IsOverwriteAgonyStonePos] (10.9, 99.8, -52.1)",
+  "note": "data: soft soil next to the Deku Scrubs, below Above Theater; LostWood LostWood_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil,IsOverwriteAgonyStonePos] (10.9, 99.8, -52.1)",
   "status": "confirmed"
  },
  "18075358844331090388": {
   "dungeon": true,
   "location": "Deku Tree GS Basement Gate",
-  "note": "confianza media: sala 4 (sótano) como Basement Vines, reglas distintas (Gate: adulto o ataque de niño; Vines: proyectil); esta está a ras de suelo (y=78.7) junto al Basement Chest, alcanzable cuerpo a cuerpo; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-18.1, 78.7, -13.0)",
+  "note": "medium confidence: room 4 (basement) like Basement Vines, different rules (Gate: adult or child attack; Vines: projectile); this one is at ground level (y=78.7) next to the Basement Chest, reachable in melee; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-18.1, 78.7, -13.0)",
   "status": "guessed"
  },
  "18139423190738716302": {
   "dungeon": false,
   "location": "GC GS Center Platform",
-  "note": "datos: la de adulto; GoronCity GoronCity_Adult_Static [] (0.5, 113.4, -1.2)",
+  "note": "data: the adult one; GoronCity GoronCity_Adult_Static [] (0.5, 113.4, -1.2)",
   "status": "confirmed"
  },
  "18219295034534354574": {
   "dungeon": false,
   "location": "DMC GS Crate",
-  "note": "datos: en una caja (Obj_BrokenBox); DeathMountainCrater DeathMountainCrater_Child_Static [AppearPlayerCheck,AppearPopOut] (-2.9, 128.2, 48.7)",
+  "note": "data: in a box (Obj_BrokenBox); DeathMountainCrater DeathMountainCrater_Child_Static [AppearPlayerCheck,AppearPopOut] (-2.9, 128.2, 48.7)",
   "status": "confirmed"
  },
  "186694424287048567": {
   "dungeon": true,
   "location": "Water Temple GS Near Boss Key Chest",
-  "note": "confianza media: sala 24, pegada a la del Boss Key Chest (15); roca rodante y cascada; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (18.6, 107.5, -65.7)",
+  "note": "medium confidence: room 24, next to the Boss Key Chest room (15); rolling boulder and waterfall; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex] (18.6, 107.5, -65.7)",
   "status": "guessed"
  },
  "2014780391754316762": {
   "dungeon": true,
   "location": "Forest Temple GS Raised Island Courtyard",
-  "note": "confianza media: sala 14 (la del Map Chest), al este (x=44): patio NE; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (44.3, 112.1, -38.2)",
+  "note": "medium confidence: room 14 (the Map Chest room), to the east (x=44): NE courtyard; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (44.3, 112.1, -38.2)",
   "status": "guessed"
  },
  "2177746409373494991": {
   "dungeon": false,
   "location": "LLR GS Rain Shed",
-  "note": "confianza baja: árbol que aparece al golpearlo, 110 al este del de Talon; por descarte; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (70.5, 167.4, 263.8)",
+  "note": "low confidence: tree that appears when hit, 110 east of Talon's; by elimination; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (70.5, 167.4, 263.8)",
   "status": "guessed"
  },
  "229475726653285413": {
   "dungeon": false,
   "location": "Graveyard GS Wall",
-  "note": "datos: la nocturna; Graveyard Graveyard_Adult_Static+Graveyard_Child_Static [Nocturnal] (-20.2, 104.3, 26.4)",
+  "note": "data: the night-only one; Graveyard Graveyard_Adult_Static+Graveyard_Child_Static [Nocturnal] (-20.2, 104.3, 26.4)",
   "status": "confirmed"
  },
  "234735562946824289": {
   "dungeon": false,
   "location": "Colossus GS Bean Patch",
-  "note": "datos: tierra blanda; DesertColossus DesertColossus_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-157.5, 95.7, 17.2)",
+  "note": "data: soft soil; DesertColossus DesertColossus_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-157.5, 95.7, 17.2)",
   "status": "confirmed"
  },
  "2504273934093629549": {
   "dungeon": false,
   "location": "HC GS Tree",
-  "note": "datos: árbol (aparece al golpearlo, Obj_Tree a 7.7); HyruleCastle HyruleCastle_Static [AppearJumpHight,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-12.4, 121.8, -94.9)",
+  "note": "data: tree (appears when hit, Obj_Tree at 7.7); HyruleCastle HyruleCastle_Static [AppearJumpHight,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-12.4, 121.8, -94.9)",
   "status": "confirmed"
  },
  "2730878115209290675": {
   "dungeon": false,
   "location": "LLR GS Back Wall",
-  "note": "confianza baja: nocturna en el rancho (ruinas, cajas, gatera, pieza de corazón); Back Wall o Rain Shed; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [Nocturnal] (-147.4, 159.2, 268.2)",
+  "note": "low confidence: night-only at the ranch (ruins, boxes, crawlspace, Piece of Heart); Back Wall or Rain Shed; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [Nocturnal] (-147.4, 159.2, 268.2)",
   "status": "guessed"
  },
  "3072474196008424241": {
   "dungeon": true,
   "location": "Forest Temple GS Basement",
-  "note": "datos: sala 27, la del Basement Chest; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (-3.4, 65.6, 17.2)",
+  "note": "data: room 27, the Basement Chest room; ForestTemple ForestTemple_Static [DefaultDungeonRoomIndex] (-3.4, 65.6, 17.2)",
   "status": "confirmed"
  },
  "3310819903461047792": {
   "dungeon": false,
   "location": "Kak GS Above Impas House",
-  "note": "datos: la única de adulto; KakarikoVillage KakarikoVillage_Adult_Alternative_Static+KakarikoVillage_Adult_Static [Nocturnal] (-38.7, 113.7, 115.5)",
+  "note": "data: the only adult one; KakarikoVillage KakarikoVillage_Adult_Alternative_Static+KakarikoVillage_Adult_Static [Nocturnal] (-38.7, 113.7, 115.5)",
   "status": "confirmed"
  },
  "341792603838029977": {
   "dungeon": false,
   "location": "LLR GS Tree",
-  "note": "datos: árbol (aparece al golpearlo, Obj_Tree a 7.7) junto a Talon, en el rancho; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [AppearJumpHight,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-39.6, 158.2, 200.7)",
+  "note": "data: tree (appears when hit, Obj_Tree at 7.7) next to Talon, at the ranch; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [AppearJumpHight,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-39.6, 158.2, 200.7)",
   "status": "confirmed"
  },
  "351345377871782696": {
   "dungeon": false,
   "location": "DMT GS Near Kak",
-  "note": "datos: la única de niño y adulto sin tierra blanda; junto a un WallCrack y rocas rompibles (can_blast_or_smash); DeathMountainTrail DeathMountainTrail_Adult_Static+DeathMountainTrail_Child_Static [] (-51.2, 102.8, 27.2)",
+  "note": "data: the only child-and-adult one without soft soil; next to a WallCrack and breakable rocks (can_blast_or_smash); DeathMountainTrail DeathMountainTrail_Adult_Static+DeathMountainTrail_Child_Static [] (-51.2, 102.8, 27.2)",
   "status": "confirmed"
  },
  "3889761319471426870": {
   "dungeon": true,
   "location": "Bottom of the Well GS Like Like Cage",
-  "note": "requisitos idénticos (las tres: región Behind Locked Doors, Boomerang); sala 7 junto al Like Like; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (32.0, 104.8, -14.9)",
+  "note": "identical requirements (all three: Behind Locked Doors region, Boomerang); room 7 next to the Like Like; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (32.0, 104.8, -14.9)",
   "status": "confirmed"
  },
  "4335656213162247230": {
   "dungeon": false,
   "location": "LW GS Above Theater",
-  "note": "datos: la única sin tierra blanda; 7 sobre la tierra blanda 17796658857969527112, junto a los Deku del teatro (OoTR: adulto con judía). Está también en el Banc de niño; LostWood LostWood_Adult_Static+LostWood_Child_Static [IsOverwriteAgonyStonePos] (14.5, 105.9, -56.4)",
+  "note": "data: the only one without soft soil; 7 above the soft soil 17796658857969527112, next to the theater Deku Scrubs (OoTR: adult with a bean). It is also in the child Banc; LostWood LostWood_Adult_Static+LostWood_Child_Static [IsOverwriteAgonyStonePos] (14.5, 105.9, -56.4)",
   "status": "confirmed"
  },
  "4399424945134189769": {
   "dungeon": true,
   "location": "Water Temple GS Falling Platform Room",
-  "note": "confianza baja: por descarte; sala 25 al este junto a un muro agrietado; no se reconoce la sala de las plataformas; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex,IsAgonyStoneDungeonRoomLimit] (35.1, 112.5, -9.5)",
+  "note": "low confidence: by elimination; room 25 to the east next to a cracked wall; the platforms room is not recognized; WaterTemple WaterTemple_Static [DefaultDungeonRoomIndex,IsAgonyStoneDungeonRoomLimit] (35.1, 112.5, -9.5)",
   "status": "guessed"
  },
  "4565265801822094851": {
   "dungeon": true,
   "location": "Dodongos Cavern GS Alcove Above Stairs",
-  "note": "confianza baja: por descarte; sala 18, hueco tras un WallCrack a la altura del puente (y=112), con dos Dodongos; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (21.5, 112.4, -55.9)",
+  "note": "low confidence: by elimination; room 18, alcove behind a WallCrack at bridge height (y=112), with two Dodongos; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (21.5, 112.4, -55.9)",
   "status": "guessed"
  },
  "5086449036385341804": {
   "dungeon": true,
   "location": "Spirit Temple GS Sun on Floor Room",
-  "note": "confianza baja: sala 7 (estatua) como la de Lobby; esta está en el lado del niño (x=-23; los cofres del niño tienen x<0); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-23.1, 129.7, -66.7)",
+  "note": "low confidence: room 7 (statue) like the Lobby one; this one is on the child side (x=-23; the child chests have x<0); SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (-23.1, 129.7, -66.7)",
   "status": "guessed"
  },
  "5556173334779815044": {
   "dungeon": true,
   "location": "Fire Temple GS Scarecrow Climb",
-  "note": "requisitos idénticos con Scarecrow Top (región Boulder Maze Upper, misma regla); sala 7, y=189 sobre el espantapájaros (y=157), junto a pared trepable; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (40.0, 189.1, -19.8)",
+  "note": "identical requirements to Scarecrow Top (Boulder Maze Upper region, same rule); room 7, y=189 above the scarecrow (y=157), next to a climbable wall; FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (40.0, 189.1, -19.8)",
   "status": "confirmed"
  },
  "5626064870824758772": {
   "dungeon": false,
   "location": "OGC GS",
-  "note": "auto: única de la zona; GanonCastle GanonCastle_Static [] (78.4, 94.1, 328.4)",
+  "note": "auto: the only one in the area; GanonCastle GanonCastle_Static [] (78.4, 94.1, 328.4)",
   "status": "confirmed"
  },
  "569390966671955163": {
   "dungeon": false,
   "location": "GC GS Boulder Maze",
-  "note": "datos: de niño, en una caja entre rocas; GoronCity GoronCity_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut] (-48.2, 113.7, -7.8)",
+  "note": "data: child, in a box among rocks; GoronCity GoronCity_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut] (-48.2, 113.7, -7.8)",
   "status": "confirmed"
  },
  "6397182598322965076": {
   "dungeon": false,
   "location": "DMC GS Bean Patch",
-  "note": "datos: tierra blanda; DeathMountainCrater DeathMountainCrater_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (3.8, 111.2, -0.8)",
+  "note": "data: soft soil; DeathMountainCrater DeathMountainCrater_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (3.8, 111.2, -0.8)",
   "status": "confirmed"
  },
  "6789992996625105554": {
   "dungeon": true,
   "location": "Fire Temple GS Song of Time Room",
-  "note": "datos: sala 19, a 10 de los bloques de la Canción del tiempo (sala 1); FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (67.7, 115.3, -47.0)",
+  "note": "data: room 19, 10 from the Song of Time blocks (room 1); FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (67.7, 115.3, -47.0)",
   "status": "confirmed"
  },
  "7014193622407727514": {
   "dungeon": false,
   "location": "LH GS Bean Patch",
-  "note": "datos: la única tierra blanda de la zona, junto a la puerta del laboratorio; HyruleField HyruleField_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-167.7, 137.9, 413.5)",
+  "note": "data: the only soft soil in the area, next to the lab door; HyruleField HyruleField_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-167.7, 137.9, 413.5)",
   "status": "confirmed"
  },
  "7116603238806634901": {
   "dungeon": false,
   "location": "KF GS House of Twins",
-  "note": "datos: la única de adulto; KokiriForest KokiriForest_Adult_Static [Nocturnal] (18.0, 117.2, 18.9)",
+  "note": "data: the only adult one; KokiriForest KokiriForest_Adult_Static [Nocturnal] (18.0, 117.2, 18.9)",
   "status": "confirmed"
  },
  "7152962033963346563": {
   "dungeon": false,
   "location": "ZF GS Above the Log",
-  "note": "datos: la única nocturna solo de niño (Above the Log pide bumerán, de niño); ZoraFountain ZoraFountain_Child_Static [Nocturnal] (14.0, 107.8, 22.8)",
+  "note": "data: the only child-only night one (Above the Log asks for the Boomerang, as a child); ZoraFountain ZoraFountain_Child_Static [Nocturnal] (14.0, 107.8, 22.8)",
   "status": "confirmed"
  },
  "7165255787572043804": {
   "dungeon": true,
   "location": "Ice Cavern GS Spinning Scythe Room",
-  "note": "confianza media: sala 3, la primera parte de la caverna; rupias plateadas cerca; IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (-1.4, 107.2, -6.2)",
+  "note": "medium confidence: room 3, the first part of the cavern; silver rupees nearby; IceCavern IceCavern_Static [DefaultDungeonRoomIndex] (-1.4, 107.2, -6.2)",
   "status": "guessed"
  },
  "7388645484070660331": {
   "dungeon": false,
   "location": "LH GS Lab Crate",
-  "note": "datos: de adulto, en una caja bajo el agua (IsWaterDepthJumpOut) dentro del laboratorio; HyruleField HyruleField_Adult_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsWaterDepthJumpOut] (-175.1, 128.5, 415.6)",
+  "note": "data: adult, in a box underwater (IsWaterDepthJumpOut) inside the lab; HyruleField HyruleField_Adult_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsWaterDepthJumpOut] (-175.1, 128.5, 415.6)",
   "status": "confirmed"
  },
  "7460556442932201772": {
   "dungeon": true,
   "location": "Bottom of the Well GS West Inner Room",
-  "note": "requisitos idénticos (las tres); sala 5, x=-8.2; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (-8.2, 103.8, -31.9)",
+  "note": "identical requirements (all three); room 5, x=-8.2; BottomOfTheWell BottomOfTheWell_Static [DefaultDungeonRoomIndex] (-8.2, 103.8, -31.9)",
   "status": "confirmed"
  },
  "7677963516305772491": {
   "dungeon": false,
   "location": "Kak GS Tree",
-  "note": "datos: árbol (aparece al golpearlo, Obj_Tree a 7.7); KakarikoVillage KakarikoVillage_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-73.6, 104.5, 43.5)",
+  "note": "data: tree (appears when hit, Obj_Tree at 7.7); KakarikoVillage KakarikoVillage_Child_Static [AppearJumpHight,AppearJumpSpeed,AppearPlayerCheck,AppearPopOut,AppearWarpRotOffset] (-73.6, 104.5, 43.5)",
   "status": "confirmed"
  },
  "789492162651991711": {
   "dungeon": false,
   "location": "LH GS Tree",
-  "note": "confianza media: nocturna de adulto con punto de gancho (FldObj_AirWall_Hookshot), cerca de las Piedras chismosas del lago; HyruleField HyruleField_Adult_Static [Nocturnal] (-197.0, 150.3, 517.4)",
+  "note": "medium confidence: adult night-only with a Hookshot point (FldObj_AirWall_Hookshot), near the lake's Gossip Stones; HyruleField HyruleField_Adult_Static [Nocturnal] (-197.0, 150.3, 517.4)",
   "status": "guessed"
  },
  "8120267919866495114": {
   "dungeon": true,
   "location": "Spirit Temple GS Boulder Room",
-  "note": "datos: sala 15 con bloque de la Canción del tiempo y roca rodante; SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (39.0, 104.2, -62.9)",
+  "note": "data: room 15 with a Song of Time block and a rolling boulder; SpiritTemple SpiritTemple_Static [DefaultDungeonRoomIndex] (39.0, 104.2, -62.9)",
   "status": "confirmed"
  },
  "832677387023638406": {
   "dungeon": false,
   "location": "DMT GS Falling Rocks Path",
-  "note": "datos: de adulto en lo alto (y=187) junto a rocas del cráter: cumbre; DeathMountainTrail DeathMountainTrail_Adult_Static [] (3.2, 187.3, -111.3)",
+  "note": "data: adult, high up (y=187) next to crater rocks: summit; DeathMountainTrail DeathMountainTrail_Adult_Static [] (3.2, 187.3, -111.3)",
   "status": "confirmed"
  },
  "8326970197618554626": {
   "dungeon": false,
   "location": "GV GS Bean Patch",
-  "note": "datos: tierra blanda; GerudoValley GerudoValley_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-11.0, 48.0, 2.4)",
+  "note": "data: soft soil; GerudoValley GerudoValley_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (-11.0, 48.0, 2.4)",
   "status": "confirmed"
  },
  "8470399761714006011": {
   "dungeon": true,
   "location": "Dodongos Cavern GS Vines Above Stairs",
-  "note": "datos: sala 10 con la escalera rota (Obj_DodongoCave_BrokenStair) y una Skullwalltula (lianas) a 2.2; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (-48.4, 120.3, -40.1)",
+  "note": "data: room 10 with the broken staircase (Obj_DodongoCave_BrokenStair) and a Skullwalltula (vines) at 2.2; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (-48.4, 120.3, -40.1)",
   "status": "confirmed"
  },
  "8655370827943125875": {
   "dungeon": false,
   "location": "LH GS Small Island",
-  "note": "confianza baja: por descarte; junto a acantilados del lago y una gatera; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [] (-295.6, 132.0, 597.8)",
+  "note": "low confidence: by elimination; next to the lake's cliffs and a crawlspace; HyruleField HyruleField_Adult_Static+HyruleField_Child_Static [] (-295.6, 132.0, 597.8)",
   "status": "guessed"
  },
  "8695975724114049706": {
   "dungeon": false,
   "location": "ZR GS Ladder",
-  "note": "datos: nocturna de niño junto a pared trepable; ZoraRiver ZoraRiver_Child_Static [Nocturnal] (112.6, 111.8, -48.8)",
+  "note": "data: child night-only, next to a climbable wall; ZoraRiver ZoraRiver_Child_Static [Nocturnal] (112.6, 111.8, -48.8)",
   "status": "confirmed"
  },
  "8823884712433934372": {
   "dungeon": true,
   "location": "Shadow Temple GS Near Ship",
-  "note": "datos: sala 17, la del barco (PaddleShip) y Pierre; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (104.6, 52.0, -39.8)",
+  "note": "data: room 17, the ship room (PaddleShip) and Pierre; ShadowTemple ShadowTemple_Static [DefaultDungeonRoomIndex] (104.6, 52.0, -39.8)",
   "status": "confirmed"
  },
  "8942465719711548237": {
   "dungeon": false,
   "location": "Market GS Guard House",
-  "note": "auto: única de la zona; Market Market_Child_Static [AppearPopOut] (17.4, 102.1, 58.4)",
+  "note": "auto: the only one in the area; Market Market_Child_Static [AppearPopOut] (17.4, 102.1, 58.4)",
   "status": "confirmed"
  },
  "9047381233010434881": {
   "dungeon": false,
   "location": "HF GS Cow Grotto",
   "no_key": true,
-  "note": "confianza media: gruta con Piedra chismosa y hada. OJO: en el remake solo está en el Banc de adulto y OoTR la permite de niño (fuego + bumerán); HyruleField HyruleField_Adult_Static [AppearPopOut,IsAgonyStoneBoxConnect] (56.5, 126.3, 342.6); no_key: el remake la tiene solo en el Banc de adulto y OoTR la da por alcanzable de niño (fuego + bumerán); no recibe objetos clave",
+  "note": "medium confidence: grotto with a Gossip Stone and a fairy. NOTE: in the remake it is only in the adult Banc and OoTR allows it as a child (fire + Boomerang); HyruleField HyruleField_Adult_Static [AppearPopOut,IsAgonyStoneBoxConnect] (56.5, 126.3, 342.6); no_key: the remake has it only in the adult Banc and OoTR considers it reachable as a child (fire + Boomerang); it does not receive key items",
   "status": "guessed"
  },
  "9162653017526462607": {
   "dungeon": false,
   "location": "HC GS Storms Grotto",
-  "note": "datos: gruta con Skullwalltula y muro agrietado; HyruleCastle HyruleCastle_Static [] (39.0, 101.1, -116.1)",
+  "note": "data: grotto with a Skullwalltula and a cracked wall; HyruleCastle HyruleCastle_Static [] (39.0, 101.1, -116.1)",
   "status": "confirmed"
  },
  "9172014785497046138": {
   "dungeon": true,
   "location": "Fire Temple GS Scarecrow Top",
-  "note": "requisitos idénticos con Scarecrow Climb; sala 8, junto a los cofres de arriba (y=194); FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (36.6, 187.7, -5.2)",
+  "note": "identical requirements to Scarecrow Climb; room 8, next to the upper chests (y=194); FireTemple FireTemple_Static [DefaultDungeonRoomIndex] (36.6, 187.7, -5.2)",
   "status": "confirmed"
  },
  "9333354743976439033": {
   "dungeon": false,
   "location": "LW GS Bean Patch Near Bridge",
-  "note": "datos: la otra tierra blanda, junto al túnel de madera; LostWood LostWood_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-33.2, 100.2, 31.4)",
+  "note": "data: the other soft soil, next to the wooden tunnel; LostWood LostWood_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-33.2, 100.2, 31.4)",
   "status": "confirmed"
  },
  "9362225887419425752": {
   "dungeon": false,
   "location": "GF GS Top Floor",
-  "note": "datos: en lo alto de la fortaleza, a la altura del GF Chest; GerudoFortress GerudoFortress_Adult_Static [Nocturnal] (55.3, 131.9, -70.2)",
+  "note": "data: at the top of the fortress, at the height of the GF Chest; GerudoFortress GerudoFortress_Adult_Static [Nocturnal] (55.3, 131.9, -70.2)",
   "status": "confirmed"
  },
  "9450239379321634455": {
   "dungeon": false,
   "location": "ZR GS Near Raised Grottos",
-  "note": "requisitos idénticos con Above Bridge; ZoraRiver ZoraRiver_Adult_Static [Nocturnal] (76.3, 126.8, -46.4)",
+  "note": "identical requirements to Above Bridge; ZoraRiver ZoraRiver_Adult_Static [Nocturnal] (76.3, 126.8, -46.4)",
   "status": "confirmed"
  },
  "9537398183107003742": {
   "dungeon": false,
   "location": "ZF GS Hidden Cave",
-  "note": "datos: la de las dos edades, arriba (y=133); Hidden Cave pide Gancho (adulto); ZoraFountain ZoraFountain_Adult_Static+ZoraFountain_Child_Static [Nocturnal] (80.0, 133.4, 12.9)",
+  "note": "data: the both-ages one, high up (y=133); Hidden Cave asks for the Hookshot (adult); ZoraFountain ZoraFountain_Adult_Static+ZoraFountain_Child_Static [Nocturnal] (80.0, 133.4, 12.9)",
   "status": "confirmed"
  },
  "9600417828645642589": {
   "dungeon": false,
   "location": "ZD GS Frozen Waterfall",
-  "note": "auto: única de la zona; ZoraDomain ZoraDomain_Adult_Alternative_Static+ZoraDomain_Adult_Static [] (17.3, 115.5, 2.7)",
+  "note": "auto: the only one in the area; ZoraDomain ZoraDomain_Adult_Alternative_Static+ZoraDomain_Adult_Static [] (17.3, 115.5, 2.7)",
   "status": "confirmed"
  },
  "960362013021648957": {
   "dungeon": true,
   "location": "Dodongos Cavern GS Scarecrow",
-  "note": "datos: sala 2 con Pierre (espantapájaros) a 5.7; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (58.2, 104.5, -19.9)",
+  "note": "data: room 2 with Pierre (scarecrow) at 5.7; DodongoCavern DodongoCavern_Static [DefaultDungeonRoomIndex] (58.2, 104.5, -19.9)",
   "status": "confirmed"
  },
  "9623998892552467148": {
   "dungeon": false,
   "location": "KF GS Bean Patch",
-  "note": "juego: confirmada (lote 15); tierra blanda; KokiriForest KokiriForest_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (8.2, 112.6, -23.3)",
+  "note": "game: confirmed (batch 15); soft soil; KokiriForest KokiriForest_Child_Static [AppearPlayerCheck,AppearPopOut,IsMagicBeanSoil] (8.2, 112.6, -23.3)",
   "status": "confirmed"
  }
 }

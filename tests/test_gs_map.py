@@ -8,7 +8,7 @@ from randomizer.logic.world import World, load_vanilla_settings
 
 FIX = Path(__file__).parent / 'fixtures' / 'skulltulas.json'
 
-# Confirmadas en el juego (lote 15).
+# Confirmed in game (batch 15).
 IN_GAME = {
     17067594426901953848: 'KF GS Know It All House',
     9623998892552467148: 'KF GS Bean Patch',
@@ -30,7 +30,7 @@ class GsMapTest(unittest.TestCase):
         names = {loc for _, loc, _ in w._all_locations}
         gs = {n for n, v in w.locations.items()
               if v['vanilla_item'] == 'Gold Skulltula Token' and n in names}
-        self.assertEqual({e.location for e in m.values()}, gs)  # 100 distintas, biyección
+        self.assertEqual({e.location for e in m.values()}, gs)  # 100 distinct, bijection
         self.assertEqual(len(m), 100)
         self.assertEqual(sum(e.dungeon for e in m.values()), 44)
         self.assertTrue(all(e.status in ('confirmed', 'guessed') for e in m.values()))
@@ -41,8 +41,8 @@ class GsMapTest(unittest.TestCase):
             self.assertEqual(self.map[h].status, 'confirmed', h)
 
     def test_no_key_where_remake_contradicts_ootr(self):
-        # Cow Grotto: solo en el Banc de adulto, OoTR la permite de niño.
-        # ZR Tree: tierra blanda en el remake, OoTR pide can_bonk.
+        # Cow Grotto: only in the adult Banc, OoTR allows it as a child.
+        # ZR Tree: soft soil in the remake, OoTR asks for can_bonk.
         got = {h for h, e in self.map.items() if e.no_key}
         self.assertEqual(got, {9047381233010434881, 12370559827741970774})
 

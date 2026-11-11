@@ -1,44 +1,44 @@
-# Lote de prueba 9: objetos clave dentro de un objeto "de suelo"
+# Test batch 9: key items inside a "ground" object
 
-Objetivo: que una Skulltula dorada (y luego jarrones, rupias, etc.) pueda soltar un objeto clave **y que se pueda coger**.
+Goal: a Gold Skulltula (and later pots, rupees, etc.) can drop a key item **and it can be picked up**.
 
-En el lote 6 el Gancho se veía pero no se podía coger. El motivo es que los objetos clave (`Item_*`) son solo un modelo para las escenas y no tienen la parte que permite recogerlos.
+In batch 6 the Hookshot was visible but could not be picked up. The reason is that key items (`Item_*`) are only a model for scenes and lack the part that allows picking them up.
 
-Los objetos del suelo (`Obj_*`) sí la tienen, y algunos ya "envuelven" un objeto clave. Por ejemplo, la carta de Ruto del lago es un `Obj_Bottle_Letter` que, al cogerlo, te da el objeto `Item_Bottle_Letter`.
+Ground objects (`Obj_*`) do have it, and some already "wrap" a key item. For example, Ruto's letter at the lake is an `Obj_Bottle_Letter` that, when picked up, gives you the `Item_Bottle_Letter` item.
 
-En este lote se prueban tres formas de hacerlo. Dos de ellas son actores **nuevos**, creados copiando uno del juego y cambiando el objeto que dan.
+This batch tests three ways of doing it. Two of them are **new** actors, created by copying one from the game and changing the item they give.
 
-## Preparar
+## Setup
 
-- [ ] Desactiva cualquier otro mod `Rando_*`, `TestLote*` y `TestEscenas*`.
-- [ ] Copia `test-mod/0400486024DEC000/TestLote9` a `load/0400486024DEC000/` en Lichii.
-- [ ] Empieza una **partida nueva** y ve al Árbol Deku. Son las mismas Skulltulas del lote 6.
+- [ ] Disable any other `Rando_*`, `TestBatch*` and `TestScenes*` mod.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch9` to `load/0400486024DEC000/` in Lichii.
+- [ ] Start a **new game** and go to the Deku Tree. They are the same Skulltulas as in batch 6.
 
-## Qué cambia
+## What changes
 
-| Skulltula | Sala (la del lote 6) | Debería soltar | Cómo |
+| Skulltula | Room (the one from batch 6) | Should drop | How |
 |---|---|---|---|
-| A | Sala de la brújula (piso de arriba) | **Carta de Ruto** (botella con carta) | El objeto del juego tal cual (`Obj_Bottle_Letter`) |
-| B | Sótano, la que soltó la rupia roja | **Bumerán** | Actor nuevo: copia de la carta de Ruto que da el Bumerán |
-| C | Sótano, la que soltó la pieza de corazón | **Gancho** | Actor nuevo: copia de la pieza de corazón que da el Gancho |
-| D | Sala del fondo del sótano | Su ficha normal | Sin cambios (control) |
+| A | Compass room (upper floor) | **Ruto's Letter** (bottle with letter) | The game's object as is (`Obj_Bottle_Letter`) |
+| B | Basement, the one that dropped the red rupee | **Boomerang** | New actor: copy of Ruto's letter that gives the Boomerang |
+| C | Basement, the one that dropped the piece of heart | **Hookshot** | New actor: copy of the piece of heart that gives the Hookshot |
+| D | Back room of the basement | Its normal token | Unchanged (control) |
 
-## Comprobar
+## Check
 
-Para cada una, apunta qué se ve al morir y si se puede coger. Puede que haga falta el botón de acción, como con la pieza de corazón.
+For each one, note what is visible on death and whether it can be picked up. The action button may be needed, as with the piece of heart.
 
-- [ ] **A:** ¿Aparece la botella con la carta? ¿Se puede coger? ¿Sale en el inventario? ______
-- [ ] **B:** ¿Aparece algo? ¿Qué aspecto tiene? ¿Se puede coger? ¿Sale el Bumerán en el inventario y se puede lanzar? ______
-- [ ] **C:** ¿Aparece algo? ¿Qué aspecto tiene? ¿Se puede coger? ¿Sale el Gancho en el inventario? (de niño no se puede usar; basta con que aparezca) ______
-- [ ] **D:** ¿Ficha normal? ______
-- [ ] ¿Se ha colgado el juego o ha salido una pantalla negra en algún momento? ¿Cuándo? ______
+- [ ] **A:** Does the bottle with the letter appear? Can it be picked up? Does it show in the inventory? ______
+- [ ] **B:** Does anything appear? What does it look like? Can it be picked up? Does the Boomerang show in the inventory and can it be thrown? ______
+- [ ] **C:** Does anything appear? What does it look like? Can it be picked up? Does the Hookshot show in the inventory? (it cannot be used as a child; it is enough that it appears) ______
+- [ ] **D:** Normal token? ______
+- [ ] Did the game hang or show a black screen at any point? When? ______
 
-## Resultados
+## Results
 
-Resultados en el juego (2026-11-10):
+In-game results (2026-11-10):
 
-- **A (carta de Ruto, `Obj_Bottle_Letter`): la da**, pero se queda flotando donde estaba la Skulltula y no cae al suelo. Si la Skulltula está alta, no se podría coger. Es por su comportamiento (flota como en el agua), así que no sirve de base.
-- **B y C (actores nuevos): no aparece nada.**
-- **D: ficha normal.**
+- **A (Ruto's letter, `Obj_Bottle_Letter`): it gives it**, but it stays floating where the Skulltula was and does not fall to the ground. If the Skulltula is high up, it could not be picked up. This is due to its behavior (it floats as if in water), so it is not useful as a base.
+- **B and C (new actors): nothing appears.**
+- **D: normal token.**
 
-Causa de B y C: el juego tiene un registro de actores (`RSDB/ActorInfo` y `RSDB/GameActorInfo`), y los actores nuevos no estaban dados de alta. Ese registro es también lo que hace que la carta funcione: su fila dice `ActorName: Item_Bottle_Letter`, es decir, "al cogerme, soy la carta". Se prueba en el lote 10.
+Cause of B and C: the game has an actor registry (`RSDB/ActorInfo` and `RSDB/GameActorInfo`), and the new actors had not been registered. That registry is also what makes the letter work: its row says `ActorName: Item_Bottle_Letter`, that is, "when picked up, I am the letter". This is tested in batch 10.

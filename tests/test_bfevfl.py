@@ -16,7 +16,7 @@ def _load(nup, codec, name):
     return codec.decompress(path, nup.read(path))
 
 
-@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
 class BfevflTests(unittest.TestCase):
     def test_parse_get_stone_of_fire(self):
         with NupArchive(NUP_PATH) as nup:
@@ -45,7 +45,7 @@ class BfevflTests(unittest.TestCase):
                 for off, idx in flow.pointer_slots():
                     self.assertTrue(idx < n or idx == 0xFFFF, (p, off, idx))
                 for i in range(n):
-                    flow.action_params(i)  # todos los contenedores se leen
+                    flow.action_params(i)  # all containers are read
 
     def test_patch_roundtrip(self):
         with NupArchive(NUP_PATH) as nup:
@@ -63,12 +63,12 @@ class BfevflTests(unittest.TestCase):
             self.assertEqual(a, new if o == off else b)
 
 
-# Claves encontradas en Dm_Kokiri_0155: el evento 51 (acción) y el 52 (subflujo)
-# llevan la ocarina de Saria en parámetros de texto con nombres distintos.
+# Keys found in Dm_Kokiri_0155: event 51 (action) and event 52 (subflow)
+# carry Saria's ocarina in string parameters with different names.
 GIFT_FLOW = 'Dm_Kokiri_0155.bfevfl.zs'
 GIFT_KEYS = {51: 'Actor', 52: 'ActorName'}
 GIFT_ITEM = 'Item_Ocarina_Fairy'
-LONG_VALUE = 'Item_Ocarina_Fairy_Longer_Test'  # no cabe y no existe
+LONG_VALUE = 'Item_Ocarina_Fairy_Longer_Test'  # does not fit and does not exist
 
 
 def _all_params(flow):
@@ -81,11 +81,11 @@ def _assert_valid(test, data):
     test.assertEqual(data[reloc:reloc + 4], b'RELT')
     test.assertEqual(struct.unpack_from('<I', data, reloc + 4)[0], reloc)
     flow = EventFlow(data)
-    _all_params(flow)  # se puede leer entero
+    _all_params(flow)  # it can be read entirely
     return flow
 
 
-@unittest.skipUnless(NUP_PATH, 'OOT_NUP no definido')
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
 class StringParamTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -119,7 +119,7 @@ class StringParamTests(unittest.TestCase):
             self.assertEqual(flow.entry_points, self.flow.entry_points)
 
     def test_inplace_when_fits(self):
-        # Vanilla: cada texto es una copia propia justo detrás de su parámetro.
+        # Vanilla: each string is its own copy right after its parameter.
         for ev, key in GIFT_KEYS.items():
             slot = self.flow._string_slot(ev, key)
             s = struct.unpack_from('<Q', self.data, slot)[0]
@@ -136,9 +136,9 @@ class StringParamTests(unittest.TestCase):
             self.assertEqual(string_param_owners(new, ev, key), [ev])
 
     def test_reuse_existing_string(self):
-        # No caben en los 18 bytes de 'Item_Ocarina_Fairy': se reapunta.
-        # 'Dm_Item_Ocarina_Fairy_Saria' está en el pool; 'C02-Player_Child-A-0'
-        # solo en el parámetro ASCommand del evento 0.
+        # They do not fit in the 18 bytes of 'Item_Ocarina_Fairy': it is repointed.
+        # 'Dm_Item_Ocarina_Fairy_Saria' is in the pool; 'C02-Player_Child-A-0'
+        # only in the ASCommand parameter of event 0.
         slot = self.flow._string_slot(52, 'ActorName')
         for value in ('Dm_Item_Ocarina_Fairy_Saria', 'C02-Player_Child-A-0'):
             new = set_string_param(self.data, 52, 'ActorName', value)
@@ -154,7 +154,7 @@ class StringParamTests(unittest.TestCase):
         self.assertEqual(len(flow.events), len(self.flow.events))
         self.assertEqual(flow.pointer_slots(), self.flow.pointer_slots())
         self.assertEqual(flow.action_params(51)['Actor'], LONG_VALUE)
-        # Una segunda vez ya reutiliza la cadena añadida.
+        # A second time it already reuses the added string.
         again = set_string_param(new, 52, 'ActorName', LONG_VALUE)
         self.assertEqual(len(again), len(new))
         self.assertEqual(EventFlow(again).action_params(52)['ActorName'], LONG_VALUE)
@@ -165,7 +165,7 @@ class StringParamTests(unittest.TestCase):
         shared = set_string_param(self.data, 52, 'ActorName', 'C02-Player_Child-A-0')
         self.assertEqual(string_param_owners(shared, 52, 'ActorName'), [0, 52])
         self.assertEqual(string_param_owners(shared, 0, 'ASCommand'), [0, 52])
-        # La cadena compartida no se edita en sitio aunque el texto quepa.
+        # The shared string is not edited in place even if the text fits.
         changed = set_string_param(shared, 52, 'ActorName', 'Item_Hookshot')
         flow = _assert_valid(self, changed)
         self.assertEqual(flow.action_params(52)['ActorName'], 'Item_Hookshot')
@@ -175,7 +175,7 @@ class StringParamTests(unittest.TestCase):
     def test_coexists_with_trim(self):
         off, idx = self.flow.pointer_slots()[0]
         trim = {off: 0xFFFF if idx != 0xFFFF else 0}
-        for value in ('Item_Hookshot', LONG_VALUE):  # en sitio y ampliando
+        for value in ('Item_Hookshot', LONG_VALUE):  # in place and growing
             a = set_string_param(patch_pointers(self.data, trim), 51, 'Actor', value)
             b = patch_pointers(set_string_param(self.data, 51, 'Actor', value), trim)
             self.assertEqual(a, b)
@@ -185,9 +185,9 @@ class StringParamTests(unittest.TestCase):
 
     def test_errors(self):
         with self.assertRaises(BfevflError):
-            set_string_param(self.data, 51, 'Num', 'x')  # no es texto
+            set_string_param(self.data, 51, 'Num', 'x')  # not a string
         with self.assertRaises(BfevflError):
-            set_string_param(self.data, 51, 'NoExiste', 'x')
+            set_string_param(self.data, 51, 'NoSuchKey', 'x')
         with self.assertRaises(BfevflError):
             set_string_param(self.data, len(self.flow.events), 'Actor', 'x')
         with self.assertRaises(BfevflError):

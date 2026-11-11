@@ -1,47 +1,47 @@
-# Prueba de aceptacion
+# Acceptance test
 
-Semilla: **ACEPTACION1**. La carpeta `output/acceptance/Rando_ACEPTACION1` solo existe en el equipo donde se genero; si no la tienes, genera la tuya con `python -m randomizer`. Deja marcado "Generar registro de spoilers" (y "Saltar cinemáticas") y usa el `spoiler.txt` de tu semilla (con otra semilla los objetos cambian de sitio; adapta las tablas de abajo a tu spoiler).
+Seed: **ACEPTACION1**. The folder `output/acceptance/Rando_ACEPTACION1` only exists on the machine where it was generated; if you do not have it, generate your own with `python -m randomizer`. Leave "Generate spoiler log" checked (and "Skip cutscenes") and use the `spoiler.txt` of your seed (with a different seed the items are in different places; adapt the tables below to your spoiler).
 
-La semilla ACEPTACION1 se regeneró después de la revisión final: la misma semilla da la misma colocación con o sin spoiler. Se volvió a regenerar al dejar fija la Bolsa de bombas (TestLote5: fuera de su cofre original las bombas no se pueden lanzar); ahora está siempre en su cofre de la Caverna de los Dodongos.
+The ACEPTACION1 seed was regenerated after the final review: the same seed gives the same placement with or without a spoiler. It was regenerated again when the Bomb Bag was pinned in place (TestBatch5: outside its original chest, bombs cannot be thrown); it is now always in its Dodongo's Cavern chest.
 
-También se regeneró con **Saltar cinemáticas** activado (los objetos no cambian de sitio). Si generas la tuya, marca esa casilla en la pestaña General. La primera charla con Zelda en el jardín es igual que antes: ya estaba recortada, pero siguen saliendo sus tres animaciones grabadas, el menú en el que eliges qué preguntarle y su pregunta de sí o no. Lo nuevo es que, si vuelves a hablar con ella (pulsando A), esa charla es más corta. Las demás conversaciones que eliges tú y el aviso de Navi de fijar el blanco siguen saliendo.
+It was also regenerated with **Skip cutscenes** enabled (the items do not change places). If you generate your own, check that box in the General tab. The first talk with Zelda in the garden is the same as before: it was already trimmed, but her three recorded animations, the menu where you choose what to ask her and her yes/no question still appear. What is new is that if you talk to her again (pressing A), that conversation is shorter. The other conversations you choose yourself and Navi's Z-targeting prompt still appear.
 
-## Preparar
+## Setup
 
-- [ ] Quita o desactiva cualquier otro mod `Rando_*`, los TestLote y los TestEscenas.
-- [ ] Copia `Rando_ACEPTACION1` a `load/0400486024DEC000/` (carpeta de mods de Lichii).
-- [ ] Empieza una **partida nueva**.
+- [ ] Remove or disable any other `Rando_*` mod, the TestBatch mods and the TestScenes mods.
+- [ ] Copy `Rando_ACEPTACION1` to `load/0400486024DEC000/` (Lichii's mod folder).
+- [ ] Start a **new game**.
 
-## Comprobar 4 objetos clave (segun el spoiler)
+## Check 4 key items (according to the spoiler)
 
-Spoiler de ACEPTACION1:
+ACEPTACION1 spoiler:
 
-| Objeto | Donde esta | Visto |
+| Item | Where it is | Seen |
 |---|---|---|
-| Espada Kokiri | Casa de Mido, cofre de abajo a la izquierda | [ ] OK  [ ] FALLO |
-| Lente de la Verdad | Casa de Mido, cofre de arriba a la izquierda | [ ] OK  [ ] FALLO |
-| Gancho largo | Bosque Kokiri, el cofre de la Espada Kokiri (pasadizo) | [ ] OK  [ ] FALLO |
-| Resortera | Árbol Deku, el cofre grande de la sala de la Resortera (sitio original) | [ ] OK  [ ] FALLO |
+| Kokiri Sword | Mido's house, bottom-left chest | [ ] OK  [ ] FAIL |
+| Lens of Truth | Mido's house, top-left chest | [ ] OK  [ ] FAIL |
+| Longshot | Kokiri Forest, the Kokiri Sword chest (passage) | [ ] OK  [ ] FAIL |
+| Slingshot | Deku Tree, the big chest in the Slingshot room (original location) | [ ] OK  [ ] FAIL |
 
-Si no está donde se indica, anota dónde lo encontraste.
+If it is not where indicated, note where you found it.
 
-En cada caso confirma que recibes el objeto indicado, que aparece en el menu y que se puede usar. Ten en cuenta que la imagen o el texto del cofre puede mostrar el objeto original; vale lo que recibes.
+In each case confirm that you receive the indicated item, that it appears in the menu and that it can be used. Keep in mind that the chest image or text may show the original item; what you receive is what counts.
 
-## Guanteletes de oro
+## Golden Gauntlets
 
-En esta semilla los Guanteletes de oro están en el Templo de las Sombras, sala de las guadañas invisibles, cofre visible. La logica supone que los Guanteletes de oro, sin los de plata, bastan para levantar los pilares y bloques grandes que piden fuerza de oro.
+In this seed the Golden Gauntlets are in the Shadow Temple, in the invisible scythe room, in the visible chest. The logic assumes that the Golden Gauntlets, without the Silver Gauntlets, are enough to lift the pillars and large blocks that require gold-gauntlet strength.
 
-- [ ] Con los Guanteletes de oro (sin los de plata), levanto cualquier roca o columna que en el juego original exija los Guanteletes de oro. Anota cual probaste y donde: ______
+- [ ] With the Golden Gauntlets (without the Silver Gauntlets), I can lift any rock or pillar that requires the Golden Gauntlets in the original game. Note which one you tried and where: ______
 
-## Jugar hasta Ganon
+## Play through to Ganon
 
-- [ ] Juego la partida siguiendo la logica y llego hasta Ganon sin quedarme bloqueado.
+- [ ] I play the game following the logic and reach Ganon without getting stuck.
 
-## Problemas encontrados
+## Problems found
 
-Anota cada problema con la semilla y el lugar exacto. Si puedes, guarda el `spoiler.txt`.
+Note each problem with the seed and the exact location. If you can, keep the `spoiler.txt`.
 
-| Semilla | Donde | Que pasa | Objeto esperado / recibido |
+| Seed | Where | What happens | Expected / received item |
 |---|---|---|---|
 | | | | |
 | | | | |

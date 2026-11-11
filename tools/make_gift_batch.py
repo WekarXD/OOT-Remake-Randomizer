@@ -1,10 +1,10 @@
-"""Lote de prueba 7: Saria entrega el Bumerán en vez de la Ocarina de las Hadas.
-Uso: python -I tools/make_gift_batch.py <nup> <out_dir>
-Solo lee el .nup; escribe en <out_dir>/romfs/...  Si <out_dir> ya existe y no
-esta vacio, se reemplaza de forma atomica (se construye en <out_dir>.tmp).
-Cambia 'Item_Ocarina_Fairy' por 'Item_Boomerang' en los eventos 51 (Actor) y
-52 (ActorName) de Dm_Kokiri_0155. Si el archivo cambia de tamano, escribe
-tambien la RSTB.
+"""Test batch 7: Saria gives the Boomerang instead of the Fairy Ocarina.
+Usage: python -I tools/make_gift_batch.py <nup> <out_dir>
+Only reads the .nup; writes to <out_dir>/romfs/...  If <out_dir> already exists and is not
+empty, it is replaced atomically (built in <out_dir>.tmp).
+Changes 'Item_Ocarina_Fairy' to 'Item_Boomerang' in events 51 (Actor) and
+52 (ActorName) of Dm_Kokiri_0155. If the file changes size, it also writes
+the RSTB.
 """
 import argparse
 import os
@@ -25,17 +25,17 @@ EDITS = ((51, 'Actor'), (52, 'ActorName'))
 
 
 def build(nup):
-    """Devuelve (archivos {ruta_romfs: bytes}, datos originales, datos nuevos)."""
+    """Returns (files {romfs_path: bytes}, original data, new data)."""
     codec = ZsCodec.from_archive(nup)
     raw = codec.decompress(FLOW_ZS, nup.read(FLOW_ZS))
     flow = EventFlow(raw)
     allowed = {i for i, _ in EDITS}
     for i, key in EDITS:
         if flow.action_params(i).get(key) != OLD:
-            raise SystemExit(f'FALLO: el evento {i} no tiene {key}={OLD!r}')
+            raise SystemExit(f'FAIL: event {i} does not have {key}={OLD!r}')
         owners = string_param_owners(raw, i, key)
         if set(owners) - allowed:
-            raise SystemExit(f'FALLO: el texto del evento {i} ({key}) lo comparten otros eventos: {owners}')
+            raise SystemExit(f'FAIL: the string of event {i} ({key}) is shared by other events: {owners}')
     new = raw
     for i, key in EDITS:
         new = set_string_param(new, i, key, NEW)
@@ -44,7 +44,7 @@ def build(nup):
         rstb = Rstb.load(codec.decompress(RSTB_PATH, nup.read(RSTB_PATH)))
         orig = rstb.get(FLOW)
         if orig is None:
-            raise SystemExit(f'FALLO: la RSTB no tiene {FLOW}')
+            raise SystemExit(f'FAIL: the RSTB does not have {FLOW}')
         delta = (len(new) - len(raw) + 0xFF) & ~0xFF
         rstb.set(FLOW, orig + delta + 0x1000)
         files[RSTB_PATH] = codec.compress(RSTB_PATH, rstb.dump())
@@ -61,23 +61,23 @@ def verify(raw, new):
         elif i == 52:
             assert pa.get('ActorName') == OLD and pb.get('ActorName') == NEW and                 {k: v for k, v in pa.items() if k != 'ActorName'} == {k: v for k, v in pb.items() if k != 'ActorName'}, i
         else:
-            assert pa == pb, f'cambio inesperado en el evento {i}'
+            assert pa == pb, f'unexpected change in event {i}'
     for x, y in zip(a.events, b.events):
         assert (x.kind, x.next, x.cases, x.forks, x.join, x.actor, x.action) ==             (y.kind, y.next, y.cases, y.forks, y.join, y.actor, y.action)
 
 
 def _inside(path, d):
-    """True si `path` es `d` o esta dentro de `d` (d es igual o ancestro de path)."""
+    """True if `path` is `d` or is inside `d` (d is equal to or an ancestor of path)."""
     path, d = os.path.normcase(os.path.abspath(path)), os.path.normcase(os.path.abspath(d))
     return path == d or path.startswith(d.rstrip(os.sep) + os.sep)
 
 
 def _check_replaceable(d):
-    """Solo se reemplaza un directorio inexistente, vacio o con solo `romfs`."""
+    """Only a nonexistent directory, an empty one, or one with only `romfs` is replaced."""
     if not os.path.exists(d):
         return
     if not os.path.isdir(d) or set(os.listdir(d)) - {'romfs'}:
-        raise SystemExit(f'FALLO: {d} no esta vacio ni es una tanda anterior (solo romfs); no se toca')
+        raise SystemExit(f'FAIL: {d} is not empty nor a previous batch (romfs only); not touching it')
 
 
 def main():
@@ -96,7 +96,7 @@ def main():
     cwd = os.getcwd()
     for guard in (cwd, os.path.abspath(a.nup)):
         if _inside(guard, out):
-            raise SystemExit(f'FALLO: {out} es igual a un directorio que contiene {guard}')
+            raise SystemExit(f'FAIL: {out} is equal to a directory that contains {guard}')
     for d in (out, tmp, old):
         _check_replaceable(d)
     shutil.rmtree(tmp) if os.path.isdir(tmp) else None
@@ -119,10 +119,10 @@ def main():
     except BaseException:
         if had_old:
             os.rename(old, out)
-        raise SystemExit(f'FALLO: no se pudo colocar {out}; se restauro el anterior')
+        raise SystemExit(f'FAIL: could not place {out}; the previous one was restored')
     if had_old:
         shutil.rmtree(old)
-    print(f'tamano {"cambiado" if len(new) != len(raw) else "igual"} ({len(raw)} -> {len(new)}); {len(files)} archivos en {out}')
+    print(f'size {"changed" if len(new) != len(raw) else "same"} ({len(raw)} -> {len(new)}); {len(files)} files in {out}')
 
 
 if __name__ == '__main__':

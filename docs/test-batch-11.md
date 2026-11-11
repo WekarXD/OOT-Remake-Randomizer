@@ -1,41 +1,41 @@
-# Lote de prueba 11: objetos clave con el comportamiento de la ficha dorada
+# Test batch 11: key items with the gold token's behavior
 
-Lo que se busca es que el objeto se quede flotando donde estaba la Skulltula y que se pueda coger al pasar por encima, con el Gancho o con el Bumerán, igual que una ficha.
+The goal is for the item to stay floating where the Skulltula was and to be picked up by walking over it, with the Hookshot or the Boomerang, just like a token.
 
-Cada actor nuevo es una copia de la **ficha dorada** (`Obj_Token_Gold`) con el modelo y la identidad de un objeto clave. Además lleva activada la recogida automática (`DefaultAutoGet`), que los objetos clave no traen.
+Each new actor is a copy of the **gold token** (`Obj_Token_Gold`) with the model and identity of a key item. It also has automatic pickup (`DefaultAutoGet`) enabled, which key items do not come with.
 
-## Preparar
+## Setup
 
-- [ ] Quita `TestLote10` y cualquier otro mod `Rando_*`, `TestLote*` y `TestEscenas*`.
-- [ ] Copia `test-mod/0400486024DEC000/TestLote11` a `load/0400486024DEC000/`.
-- [ ] Empieza una **partida nueva** y ve al Árbol Deku. Son las mismas Skulltulas de los lotes 9 y 10.
+- [ ] Remove `TestBatch10` and any other `Rando_*`, `TestBatch*` and `TestScenes*` mod.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch11` to `load/0400486024DEC000/`.
+- [ ] Start a **new game** and go to the Deku Tree. They are the same Skulltulas as in batches 9 and 10.
 
-## Qué cambia
+## What changes
 
-| Skulltula | Sala | Debería soltar |
+| Skulltula | Room | Should drop |
 |---|---|---|
-| A | Sala de la brújula (piso de arriba) | **Bumerán** |
-| B | Sótano (la que soltó el Bumerán en el lote 10) | **Gancho** |
-| C | Sótano (la que soltó el Gancho en el lote 10) | **Bolsa de bombas** |
-| D | Sala del fondo del sótano | Su ficha normal (control) |
+| A | Compass room (upper floor) | **Boomerang** |
+| B | Basement (the one that dropped the Boomerang in batch 10) | **Hookshot** |
+| C | Basement (the one that dropped the Hookshot in batch 10) | **Bomb Bag** |
+| D | Back room of the basement | Its normal token (control) |
 
-Si puedes, coge el objeto de A, B o C de formas distintas: uno pasando por encima, otro con el Bumerán cuando lo tengas, y otro con el botón A.
+If you can, pick up the item from A, B or C in different ways: one by walking over it, one with the Boomerang once you have it, and one with the A button.
 
-## Comprobar
+## Check
 
-- [ ] **A:** ¿Aparece el Bumerán? ¿Flota donde estaba la Skulltula? ¿Se coge al pasar por encima? ¿Sale en el inventario y se puede lanzar? ______
-- [ ] **B:** ¿Aparece el Gancho? ¿Flota? ¿Cómo lo has cogido? ¿Sale en el inventario? ______
-- [ ] **C:** ¿Aparece la Bolsa de bombas? ¿Flota? ¿Cómo la has cogido? ¿Puedes llevar bombas? ______
-- [ ] ¿Alguno se ha cogido con el Bumerán desde lejos? ______
-- [ ] ¿El contador de fichas ha subido al coger A, B o C? Debería subir solo con D. ______
-- [ ] **D:** ¿Ficha normal? ______
-- [ ] ¿Se ha colgado el juego o ha salido una pantalla negra? ¿Cuándo? ______
+- [ ] **A:** Does the Boomerang appear? Does it float where the Skulltula was? Is it picked up by walking over it? Does it show in the inventory and can it be thrown? ______
+- [ ] **B:** Does the Hookshot appear? Does it float? How did you pick it up? Does it show in the inventory? ______
+- [ ] **C:** Does the Bomb Bag appear? Does it float? How did you pick it up? Can you carry bombs? ______
+- [ ] Was any picked up with the Boomerang from a distance? ______
+- [ ] Did the token counter go up when picking up A, B or C? It should only go up with D. ______
+- [ ] **D:** Normal token? ______
+- [ ] Did the game hang or show a black screen? When? ______
 
-## Resultados
+## Results
 
-Resultados en el juego (2026-11-10):
+In-game results (2026-11-10):
 
-- **A (Bumerán), B (Gancho) y C (Bolsa de bombas): aparecen, flotan como una ficha, con su brillo, y se cogen.** Pero el objeto **no llega al inventario** y no se puede usar.
-- **D: ficha normal.**
+- **A (Boomerang), B (Hookshot) and C (Bomb Bag): they appear, float like a token, with its glow, and can be picked up.** But the item **does not reach the inventory** and cannot be used.
+- **D: normal token.**
 
-Causa: al cogerla, la ficha ejecuta su propio "final", que suma una ficha, en vez del final genérico de los objetos del suelo, que mete el objeto en el inventario. En los archivos son el `DeathRef` (`Item_Token_Gold`, frente a `DropItem`) y el comportamiento (`AIInfoRef`). La rupia del lote 10 usaba el genérico, y por eso daba la Resortera. Se prueba en el lote 12.
+Cause: when picked up, the token runs its own "ending", which adds a token, instead of the generic ground-object ending, which puts the item in the inventory. In the files these are the `DeathRef` (`Item_Token_Gold`, versus `DropItem`) and the behavior (`AIInfoRef`). The rupee in batch 10 used the generic one, which is why it gave the Slingshot. This is tested in batch 12.

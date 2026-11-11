@@ -1,16 +1,16 @@
-"""Genera el borrador de randomizer/data/gs_map.json (Skulltulas doradas).
+"""Generates the draft of randomizer/data/gs_map.json (Gold Skulltulas).
 
-Uso: python tools/draft_gs_map.py <nup>
-     python tools/draft_gs_map.py --fixture tests/fixtures/skulltulas.json
+Usage: python tools/draft_gs_map.py <nup>
+       python tools/draft_gs_map.py --fixture tests/fixtures/skulltulas.json
 
-Agrupa las Skulltulas (Hash) por zona (segundo segmento de la ruta del Banc)
-y las cruza con las 100 ubicaciones 'Gold Skulltula Token' de OoTR (sin MQ)
-por el prefijo del nombre. Una zona con una sola Skulltula y una sola
-candidata se asocia sola ('confirmed'). El resto queda con location null,
-status 'guessed' y una nota con los datos y las candidatas, para repasar a
-mano zona por zona.
+Groups the Skulltulas (Hash) by zone (second segment of the Banc path)
+and matches them with the 100 'Gold Skulltula Token' locations of OoTR (no MQ)
+by name prefix. A zone with a single Skulltula and a single
+candidate is mapped automatically ('confirmed'). The rest is left with location null,
+status 'guessed' and a note with the data and the candidates, to be reviewed
+by hand zone by zone.
 
-Nunca sobrescribe una entrada que ya tenga location: esas son las revisadas.
+Never overwrites an entry that already has a location: those are the reviewed ones.
 """
 import json
 import sys
@@ -25,7 +25,7 @@ from randomizer.locations import GS_MAP_PATH  # noqa: E402
 
 TOKEN = 'Gold Skulltula Token'
 
-# Zona del remake -> prefijos de los nombres de OoTR ('<prefijo> GS ...').
+# Remake zone -> prefixes of the OoTR names ('<prefix> GS ...').
 ZONE_PREFIXES: dict[str, tuple[str, ...]] = {
     'KokiriForest': ('KF',),
     'LostWood': ('LW',),
@@ -70,7 +70,7 @@ def zone_of(banc: str) -> str:
 
 
 def gs_locations() -> list[str]:
-    """Las 100 ubicaciones de Skulltula de OoTR que existen en el mundo vanilla."""
+    """The 100 OoTR Skulltula locations that exist in the vanilla world."""
     from randomizer.logic.world import World, load_vanilla_settings
     w = World(load_vanilla_settings())
     names = {loc for _, loc, _ in w._all_locations}
@@ -83,7 +83,7 @@ def fmt_pos(pos) -> str:
 
 
 def describe(placements) -> str:
-    """Bancs, flags y posición de todas las colocaciones de un Hash."""
+    """Bancs, flags and position of all the placements of a Hash."""
     bancs = sorted(p.banc.rsplit('/', 1)[1].split('.')[0] for p in placements)
     flags = sorted({f.removeprefix('Enemy_Skulltula_Gold_')
                     for p in placements for f in p.flags})
@@ -103,7 +103,7 @@ def draft(skulltulas, locations: list[str], existing: dict) -> dict:
         prefixes = ZONE_PREFIXES[zone]
         cands = [n for n in locations if n.split(' GS')[0] in prefixes]
         if len(cands) != len(hashes):
-            raise ValueError(f'{zone}: {len(hashes)} Skulltulas, {len(cands)} en OoTR')
+            raise ValueError(f'{zone}: {len(hashes)} Skulltulas, {len(cands)} in OoTR')
         dungeon = zone in DUNGEON_ZONES
         for h in sorted(hashes):
             old = existing.get(str(h))
@@ -113,10 +113,10 @@ def draft(skulltulas, locations: list[str], existing: dict) -> dict:
             where = f'{zone} {describe(by_hash[h])}'
             if len(cands) == 1:
                 entry = {'location': cands[0], 'status': 'confirmed',
-                         'note': f'auto: única de la zona; {where}'}
+                         'note': f'auto: the only one in the area; {where}'}
             else:
                 entry = {'location': None, 'status': 'guessed',
-                         'note': f'pendiente; {where}; candidatas: {"; ".join(cands)}'}
+                         'note': f'pending; {where}; candidates: {"; ".join(cands)}'}
             out[str(h)] = dict(entry, dungeon=dungeon)
     return out
 
@@ -145,7 +145,7 @@ def main(argv):
     write_map(data)
     counts = defaultdict(int)
     for e in data.values():
-        counts['pendiente' if e['location'] is None else e['status']] += 1
+        counts['pending' if e['location'] is None else e['status']] += 1
     print(f'{len(data)} Skulltulas -> {GS_MAP_PATH}: {dict(sorted(counts.items()))}')
 
 

@@ -91,9 +91,9 @@ class StateTest(unittest.TestCase):
             State().collect('Not An Item')
 
 
-# Vanilla con cuatro objetos clave intercambiados: la lógica de llaves de OoTR
-# (peor caso) no da por bueno el reparto vanilla del Templo del Agua ni del
-# Espíritu, pero sí este, así que sirve de base para los casos negativos.
+# Vanilla with four key items swapped: OoTR's key logic (worst case) does not
+# accept the vanilla placement of the Water Temple or the Spirit Temple, but
+# it does accept this one, so it serves as a base for the negative cases.
 LOGIC_BASELINE_SWAPS = {
     'Graveyard Dampe Race Hookshot Chest': 'Item_Longshot',
     'Water Temple Longshot Chest': 'Item_Hookshot',
@@ -111,10 +111,10 @@ def _baseline_fixed():
 class ReachabilityTest(unittest.TestCase):
     @unittest.expectedFailure
     def test_vanilla_is_beatable(self):
-        # Falla por diseño de OoTR: su lógica de llaves cuenta el peor orden de
-        # apertura de puertas, y con las llaves y objetos en su sitio vanilla
-        # exige 5 llaves del Agua antes del Gancho largo (solo hay 4 sin él) y
-        # 3 del Espíritu de niño para los Guanteletes de plata (solo hay 2).
+        # Fails by OoTR's design: its key logic counts the worst door-opening
+        # order, and with the keys and items in their vanilla spots it
+        # requires 5 Water Temple keys before the Longshot (only 4 without it) and
+        # 3 Spirit Temple keys as a child for the Silver Gauntlets (only 2).
         # Ver test_vanilla_blocked_only_by_key_logic.
         w = _vanilla_world()
         self.assertTrue(w.can_beat(w.vanilla_fixed()))
@@ -159,9 +159,9 @@ class ReachabilityTest(unittest.TestCase):
             self.assertIn(spot, spots, (region, kind))
 
     def test_deku_upper_floor_needs_ranged_weapon(self):
-        # Remake: para subir al piso de la sala de la brújula hay que matar
-        # las Skulltulas de las enredaderas (lote 17: Resortera en el cofre
-        # lateral de la sala de la brújula dejaba la partida bloqueada).
+        # Remake: to climb to the floor of the compass room you have to kill
+        # the vine Skulltulas (batch 17: the Slingshot in the side chest
+        # of the compass room left the game softlocked).
         w = _vanilla_world()
         fixed = w.vanilla_fixed()
         fixed['Deku Tree Slingshot Chest'], fixed['Deku Tree Compass Room Side Chest'] = (

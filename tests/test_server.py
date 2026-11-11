@@ -53,7 +53,7 @@ class ServerTest(unittest.TestCase):
     def test_validate_bad_path(self):
         status, d = self.jreq('/api/validate', {'nup_path': str(self.tmp / 'nope.nup')})
         self.assertFalse(d['ok'])
-        self.assertTrue(d['error'].startswith('El archivo no existe'))
+        self.assertTrue(d['error'].startswith('The file does not exist'))
 
     def test_generate_exists_flag(self):
         with mock.patch('randomizer.web.server.generate',
@@ -94,8 +94,8 @@ class ServerTest(unittest.TestCase):
             status, d = self.jreq('/api/generate',
                                   self.gen_body(excluded_items=['Item_Longshot']))
         self.assertEqual(status, 400)
-        self.assertEqual(d['error'], 'No se puede excluir Gancho largo: la lógica necesita '
-                         'moverlo para que la partida sea completable.')
+        self.assertEqual(d['error'], 'Cannot exclude Longshot: the logic needs to '
+                         'move it for the game to be beatable.')
         g.assert_not_called()
 
     def test_generate_drops_non_movable_from_excluded(self):
@@ -117,7 +117,7 @@ class ServerTest(unittest.TestCase):
             for bad in ('si', 1, None):
                 status, d = self.jreq('/api/generate', self.gen_body(skip_cutscenes=bad))
                 self.assertEqual(status, 400, bad)
-                self.assertEqual(d['error'], 'skip_cutscenes debe ser true o false')
+                self.assertEqual(d['error'], 'skip_cutscenes must be true or false')
         g.assert_not_called()
 
     def test_tokensanity_invalid(self):
@@ -125,7 +125,7 @@ class ServerTest(unittest.TestCase):
             for bad in ('todo', 1, None, ['all']):
                 status, d = self.jreq('/api/generate', self.gen_body(tokensanity=bad))
                 self.assertEqual(status, 400, bad)
-                self.assertEqual(d['error'], 'Valor de Tokensanity no válido.')
+                self.assertEqual(d['error'], 'Invalid Tokensanity value.')
         g.assert_not_called()
 
     def test_tokensanity_valid_reaches_settings_and_config(self):
@@ -178,9 +178,9 @@ class ServerTest(unittest.TestCase):
             release.set()
             t.join(10)
         self.assertEqual(status, 409)
-        self.assertEqual(d, {'ok': False, 'error': 'Ya hay una generación en curso.'})
+        self.assertEqual(d, {'ok': False, 'error': 'A generation is already in progress.'})
         self.assertTrue(results[0][1]['ok'])
-        # El cerrojo se libera.
+        # The lock is released.
         res = GenerateResult('s', 'mod', None, None, [])
         with mock.patch('randomizer.web.server.generate', return_value=res):
             self.assertTrue(self.jreq('/api/generate', self.gen_body())[1]['ok'])
@@ -189,7 +189,7 @@ class ServerTest(unittest.TestCase):
         with mock.patch('randomizer.web.server.generate', side_effect=RuntimeError('boom')):
             status, d = self.jreq('/api/generate', self.gen_body())
         self.assertEqual(status, 500)
-        self.assertEqual(d['error'], 'Error interno: RuntimeError')
+        self.assertEqual(d['error'], 'Internal error: RuntimeError')
 
     def test_body_too_large(self):
         status, _, _ = self.req('/api/validate', raw=b'x' * (1024 * 1024 + 1))
@@ -203,13 +203,13 @@ class ServerTest(unittest.TestCase):
         out = self.tmp / 'out'
         (out / 'Rando_x').mkdir(parents=True)
         f = out / 'Rando_x' / 'spoiler.txt'
-        f.write_text('hola ñ', encoding='utf-8')
-        other = out / 'Rando_x' / 'otro.txt'
+        f.write_text('hello é', encoding='utf-8')
+        other = out / 'Rando_x' / 'other.txt'
         other.write_text('no', encoding='utf-8')
         config.save(self.cfg, {'out_dir': str(out)})
         status, headers, data = self.req('/api/spoiler?path=' + urllib.request.quote(str(f)))
         self.assertEqual(status, 200)
-        self.assertEqual(data.decode('utf-8'), 'hola ñ')
+        self.assertEqual(data.decode('utf-8'), 'hello é')
         self.assertIn('text/plain; charset=utf-8', headers['Content-Type'])
         status, _, _ = self.req('/api/spoiler?path=' + urllib.request.quote(str(other)))
         self.assertEqual(status, 403)
@@ -280,7 +280,7 @@ class ServerTest(unittest.TestCase):
         st, d = self.jreq('/api/validate', {'nup_path': 'C:\\a\x00b'})
         self.assertEqual(st, 200)
         self.assertFalse(d['ok'])
-        self.assertTrue(d['error'].startswith('El archivo no existe'))
+        self.assertTrue(d['error'].startswith('The file does not exist'))
 
     def test_validate_non_nup_file(self):
         f = self.tmp / 'x.nup'
@@ -306,7 +306,7 @@ class ServerTest(unittest.TestCase):
         status, headers, data = self.req('/')
         self.assertEqual(status, 200)
         html = data.decode('utf-8')
-        for tab in ('General', 'Objetos', 'Lógica', 'Spoiler'):
+        for tab in ('General', 'Items', 'Logic', 'Spoiler'):
             self.assertIn(tab, html)
 
 

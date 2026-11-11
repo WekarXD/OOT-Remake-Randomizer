@@ -1,7 +1,7 @@
-"""Envoltorios de objetos para las Skulltulas doradas.
+"""Item wrappers for the Gold Skulltulas.
 
-Un envoltorio es un clon de Obj_Token_Gold que lleva la identidad de otro
-contenido: un pack de actor nuevo más una fila en tres tablas RSDB y en la RSTB.
+A wrapper is a clone of Obj_Token_Gold that carries the identity of other
+content: a new actor pack plus a row in three RSDB tables and in the RSTB.
 """
 import copy
 from collections.abc import Iterable
@@ -48,7 +48,7 @@ def pouch_rows(game) -> frozenset:
 
 
 def drop_actor(content: str, rows: frozenset) -> str:
-    """Actor que se suelta en el mundo para un contenido de cofre."""
+    """Actor dropped in the world for a chest content."""
     if content.startswith('Obj_') and content in rows:
         return content
     for prefix in ('TBox_', 'Tbox_'):
@@ -97,7 +97,7 @@ def _clone_pack(game, token_pack: dict, content: str) -> bytes:
 
 
 def build_wrapper_files(game, contents: Iterable[str], rstb: Rstb) -> dict:
-    """Genera los packs y tablas RSDB de los envoltorios; modifica `rstb`."""
+    """Generate the wrapper packs and RSDB tables; modifies `rstb`."""
     rows = pouch_rows(game)
     needed = sorted({c for c in contents
                      if drop_actor(c, rows).startswith(WRAPPER_PREFIX)})
@@ -105,7 +105,7 @@ def build_wrapper_files(game, contents: Iterable[str], rstb: Rstb) -> dict:
         return {}
     for c in needed:
         if not can_wrap(game, c):
-            raise ValueError(f'No se puede crear un envoltorio para {c}')
+            raise ValueError(f'Cannot create a wrapper for {c}')
     out = {}
     token_pack = _load_pack(game, TOKEN)
     for c in needed:

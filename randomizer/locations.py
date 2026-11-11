@@ -1,4 +1,4 @@
-"""Asociaciones del remake (Hash) -> ubicación de OoTR: cofres y Skulltulas doradas."""
+"""Remake (Hash) -> OoTR location mappings: chests and Gold Skulltulas."""
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -13,7 +13,7 @@ class LocationEntry:
     location: str | None
     status: str
     needs_event_patch: bool
-    # True: el cofre pierde su GetEventName (evento que solo entrega el objeto).
+    # True: the chest loses its GetEventName (an event that only hands over the item).
     strip_event: bool = False
 
 
@@ -31,12 +31,12 @@ class GsEntry:
     hash: int
     location: str
     dungeon: bool
-    # 'confirmed': comprobada en el juego, determinada por los datos o con
-    # requisitos idénticos a la otra candidata. 'guessed': falta comprobarla.
+    # 'confirmed': checked in game, determined by the data, or with
+    # requirements identical to the other candidate. 'guessed': still to be checked.
     status: str
     note: str
-    # True: el comportamiento del remake contradice la lógica de OoTR; no
-    # recibe objetos clave.
+    # True: the remake's behaviour contradicts OoTR's logic; it does not
+    # receive key items.
     no_key: bool = False
 
 

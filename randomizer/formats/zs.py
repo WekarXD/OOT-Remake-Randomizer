@@ -1,4 +1,4 @@
-"""Compresión zstd con los diccionarios de TotK (Pack/ZsDic.pack.zs)."""
+"""zstd compression with the TotK dictionaries (Pack/ZsDic.pack.zs)."""
 from compression import zstd
 
 from . import sarc
@@ -27,7 +27,7 @@ class ZsCodec:
         try:
             return self._dicts[name]
         except KeyError:
-            raise ValueError(f'Falta el diccionario zstd "{name}".') from None
+            raise ValueError(f'Missing zstd dictionary "{name}".') from None
 
     def decompress(self, romfs_path: str, data: bytes) -> bytes:
         d = self._dict_for(romfs_path)

@@ -1,4 +1,4 @@
-"""Configuración del usuario (user_config.json en la raíz del proyecto)."""
+"""User configuration (user_config.json in the project root)."""
 import json
 import os
 import tempfile

@@ -1,4 +1,4 @@
-"""Tabla de tamaños de recursos (RESTBL)."""
+"""Resource size table (RESTBL)."""
 import struct
 import zlib
 
@@ -10,13 +10,13 @@ def banc_rstb_size(n: int) -> int:
 class Rstb:
     def __init__(self, header, crcs, names):
         self._header = header          # (version, name_block_size)
-        self._crcs = crcs              # list [crc, size] ordenada por crc
+        self._crcs = crcs              # list [crc, size] sorted by crc
         self._names = names            # list [name, size]
 
     @classmethod
     def load(cls, data: bytes) -> 'Rstb':
         if data[:6] != b'RESTBL':
-            raise ValueError('No es una tabla RESTBL válida.')
+            raise ValueError('Not a valid RESTBL table.')
         ver, nbs, cc, nc = struct.unpack_from('<IIII', data, 6)
         pos = 22
         crcs = [list(struct.unpack_from('<II', data, pos + 8 * i)) for i in range(cc)]
@@ -65,7 +65,7 @@ class Rstb:
             else:
                 hi = mid
         if lo < len(self._crcs) and self._crcs[lo][0] == crc:
-            raise ValueError(f'{path} ya existe en la RSTB')
+            raise ValueError(f'{path} already exists in the RSTB')
         self._crcs.insert(lo, [crc, size])
 
     def dump(self) -> bytes:

@@ -1,42 +1,42 @@
-"""Búsqueda de alcanzabilidad sobre la lógica glitchless de OoTR.
+"""Reachability search over OoTR's glitchless logic.
 
-`World(settings)` compila una vez todas las reglas de los World/*.json
-vendorizados (sin MQ) y responde, para un reparto `fixed` (ubicación OoTR ->
-objeto OoTR o actor del remake), qué ubicaciones se alcanzan y si se puede
-ganar. Imita `Search.py` de OoTR: niño y adulto empiezan en `Root`, cada edad
-expande sus regiones por las salidas cuya regla cumple, y las ubicaciones y
-eventos se recogen con un `State` compartido hasta llegar a un punto fijo.
+`World(settings)` compiles once all the rules of the vendored World/*.json
+(no MQ) and answers, for a placement `fixed` (OoTR location -> OoTR item or
+remake actor), which locations are reachable and whether the game can be
+beaten. It mimics OoTR's `Search.py`: child and adult start at `Root`, each
+age expands its regions through the exits whose rule is met, and locations
+and events are collected with a shared `State` until a fixed point is reached.
 
-Simplificaciones (todas conservadoras: la lógica puede creer inalcanzable algo
-que sí lo es, nunca al revés):
+Simplifications (all conservative: the logic may consider something
+unreachable that is reachable, never the reverse):
 
-- Hora del día: `at_day`, `at_night` y `at_dampe_time` valen para una edad si
-  esa edad alcanza alguna región con `"time_passes": true` (OoTR sin barajar
-  entradas los da por buenos siempre). `provides_time` no se usa.
-- `has_all_notes_for_song` exige los cinco botones de ocarina (no aplica en
-  vanilla: `shuffle_individual_ocarina_notes = false`).
-- Objetos progresivos con nivel (gancho, fuerza): modelo directo del remake,
-  se guarda el nivel máximo; el objeto OoTR genérico cuenta como nivel 1 (ver
-  `rules.State.collect`).
-- `vanilla_settings.json`: `open_door_of_time` vale `"stones_oot_sot"` y no
-  `false`, porque en este commit de OoTR el ajuste es una cadena; es el valor
-  que reproduce el juego original (3 piedras + Ocarina del Tiempo + Canción
-  del Tiempo) y el más restrictivo. El fichero incluye también valores que en
-  OoTR calcula `World` y que tapan al ajuste (`keysanity`,
+- Time of day: `at_day`, `at_night` and `at_dampe_time` hold for an age if
+  that age reaches some region with `"time_passes": true` (OoTR without
+  entrance shuffle always treats them as true). `provides_time` is not used.
+- `has_all_notes_for_song` requires all five ocarina buttons (does not apply
+  in vanilla: `shuffle_individual_ocarina_notes = false`).
+- Progressive items with a level (hookshot, strength): the remake's direct
+  model, the maximum level is kept; the generic OoTR item counts as level 1
+  (see `rules.State.collect`).
+- `vanilla_settings.json`: `open_door_of_time` is `"stones_oot_sot"` and not
+  `false`, because in this OoTR commit the setting is a string; it is the
+  value that reproduces the original game (3 stones + Ocarina of Time + Song
+  of Time) and the most restrictive. The file also includes values that OoTR
+  computes in `World` and that override the setting (`keysanity`,
   `shuffle_silver_rupees`, `entrance_shuffle`, `skipped_trials`,
   `selected_adult_trade_item`, `disable_trade_revert`...).
-- Estado inicial como `ItemPool.py` de OoTR: con estos ajustes, los cinco
-  botones de ocarina y una llave del Templo del Fuego regalada (OoTR la da
-  porque asume que el jugador no la gasta en la puerta baja con el diseño
-  vanilla de llaves; vanilla tiene ese riesgo de bloqueo, OoTR lo ignora).
-- Lógica de llaves: la de OoTR (peor orden de apertura de puertas). Con
-  llaves y objetos clave en su sitio vanilla, OoTR NO da el juego por
-  ganable (Templo del Agua pide 5 llaves antes del Gancho largo y solo hay 4;
-  el Espíritu pide 3 de niño para los Guanteletes de plata y hay 2), aunque
-  el juego real sí lo es. Es más estricto, así que se deja tal cual.
-- Los objetos sin efecto en ninguna regla no se recogen durante la búsqueda
-  (no cambian el resultado); `reachable_locations` evalúa todas las
-  ubicaciones al final con el estado del punto fijo.
+- Starting state like OoTR's `ItemPool.py`: with these settings, the five
+  ocarina buttons and a gifted Fire Temple key (OoTR gives it because it
+  assumes the player does not spend it on the lower door with the vanilla key
+  design; vanilla has that softlock risk, OoTR ignores it).
+- Key logic: OoTR's (worst door-opening order). With keys and key items in
+  their vanilla spots, OoTR does NOT consider the game beatable (the Water
+  Temple asks for 5 keys before the Longshot and there are only 4; the Spirit
+  Temple asks for 3 as a child for the Silver Gauntlets and there are 2),
+  although the real game is. It is stricter, so it is left as is.
+- Items with no effect in any rule are not collected during the search (they
+  do not change the result); `reachable_locations` evaluates all the
+  locations at the end with the fixed-point state.
 """
 from __future__ import annotations
 
@@ -54,11 +54,11 @@ SETTINGS_PATH = Path(__file__).resolve().parent / 'vanilla_settings.json'
 Rule = Callable[[State, str], bool]
 
 
-# Reglas propias del remake que endurecen las de OoTR, por
-# (región, tipo, sitio). `{orig}` es la regla original de OoTR.
-# - Árbol Deku: para subir al piso de la sala de la brújula hay que matar las
-#   Skulltulas de las enredaderas con un arma a distancia (lote 17). El sótano
-#   se abre saltando desde ese piso sobre la telaraña.
+# Remake-specific rules that tighten OoTR's, keyed by
+# (region, kind, spot). `{orig}` is OoTR's original rule.
+# - Deku Tree: to climb to the floor of the compass room you have to kill the
+#   vine Skulltulas with a ranged weapon (batch 17). The basement is
+#   opened by jumping from that floor onto the web.
 _DEKU_UPPER = 'can_use(Slingshot) or can_use(Bow) or can_use(Hookshot)'
 REMAKE_RULES: dict[tuple[str, str, str], str] = {
     ('Deku Tree Lobby', 'locations', 'Deku Tree Compass Chest'): _DEKU_UPPER,
@@ -109,7 +109,7 @@ class World:
                         rule = _remake_rule(name, kind, spot, rule)
                         target.append((spot, compiler.compile(rule, region=name)))
                 if 'savewarp' in data:
-                    # Como OoTR: salida sin condición hacia el destino del savewarp.
+                    # Like OoTR: unconditional exit to the savewarp destination.
                     region.exits.append((data['savewarp'].split(' -> ')[1], _true))
                 self.regions[name] = region
         compiler.compile_pending_subrules()
@@ -127,7 +127,7 @@ class World:
             n for n, v in self.locations.items() if v['vanilla_item'] == 'Triforce')
         self._referenced = frozenset(compiler.referenced)
         self._relevant_cache: dict[str, bool] = {}
-        # (región, ubicación, regla) de todas las ubicaciones del mundo.
+        # (region, location, rule) of all the locations in the world.
         self._all_locations = [(r.name, loc, fn) for r in self.regions.values()
                                for loc, fn in r.locations]
         self._events = [(r.name, ev, fn) for r in self.regions.values()
@@ -138,15 +138,15 @@ class World:
 
     @staticmethod
     def _starting_items(settings: dict) -> list[str]:
-        """Objetos que OoTR mete en el estado inicial (ItemPool.py) con estos ajustes."""
+        """Items that OoTR puts in the starting state (ItemPool.py) with these settings."""
         start = []
         if not settings['shuffle_individual_ocarina_notes']:
             start += list(OCARINA_BUTTONS)
         if settings['scarecrow_behavior'] == 'free':
             start.append('Scarecrow Song')
         if not settings['keysanity']:
-            # OoTR no sabe modelar la llave vanilla de la puerta baja del Templo
-            # del Fuego y regala una llave (asume que no se gasta en esa puerta).
+            # OoTR cannot model the vanilla key of the Fire Temple's lower door
+            # and gifts a key (assuming it is not spent on that door).
             start.append('Small Key (Fire Temple)')
         return start
 
@@ -160,8 +160,8 @@ class World:
 
     def reachable_locations(self, fixed: dict[str, str],
                             owned: Iterable[str] = ()) -> set[str]:
-        """Ubicaciones alcanzables. `owned`: objetos extra que se dan por
-        tenidos desde el principio (para el *assumed fill*)."""
+        """Reachable locations. `owned`: extra items assumed to be owned
+        from the start (for the *assumed fill*)."""
         state, reached, _ = self._search(fixed, stop_at_win=False, owned=owned)
         return {loc for region, loc, fn in self._all_locations
                 if self._ok(fn, state, reached, region)}

@@ -1,136 +1,136 @@
-# Tokensanity (Skulltulas doradas en el reparto): diseño
+# Tokensanity (Gold Skulltulas in the fill): design
 
-Estado: borrador para aprobación. Forma parte del proyecto 2, las opciones "Shuffle" de OoTR para objetos por el mundo. Rama: `feat/v1`, o una rama nueva desde ella, a criterio de quien lo construya.
+Status: draft for approval. Part of project 2, the OoTR "Shuffle" options for items across the world. Branch: `feat/v1`, or a new branch from it, at the builder's discretion.
 
-## 1. Qué es y por qué
+## 1. What it is and why
 
-El usuario quiere la opción **Tokensanity** del generador de OoTR. En OoTR, cada Skulltula dorada que entra en el reparto deja de soltar siempre su ficha y se convierte en un sitio donde puede aparecer cualquier objeto. Sus fichas van al montón de objetos que se reparten.
+The user wants the **Tokensanity** option from the OoTR generator. In OoTR, each Gold Skulltula that enters the fill no longer always drops its token and becomes a location where any item can appear. Their tokens go into the pool of items being distributed.
 
-Hasta ahora no se podía hacer, porque los objetos clave (`Item_*`) soltados por el mundo no se pueden coger (lote 6). Los lotes 9 a 14 encontraron la forma de conseguirlo. El lote 14 se probó en Lichii el 2026-11-10 (`docs/test-batch-14.md`): una Skulltula suelta un **actor envoltorio** que es una copia de la ficha dorada con la identidad de un objeto clave. Flota donde estaba la Skulltula, se coge al pasar por encima o con el Bumerán o el Gancho, y el objeto llega al inventario y se puede usar.
+Until now this could not be done, because key items (`Item_*`) dropped by the world cannot be picked up (batch 6). Batches 9 to 14 found a way to achieve it. Batch 14 was tested in Lichii on 2026-11-10 (`docs/test-batch-14.md`): a Skulltula drops a **wrapper actor** that is a copy of the Gold Skulltula Token with the identity of a key item. It floats where the Skulltula was, is picked up by walking over it or with the Boomerang or the Hookshot, and the item reaches the inventory and can be used.
 
-## 2. Objetivos, no-objetivos y anti-objetivos
+## 2. Goals, non-goals and anti-goals
 
-**Objetivos**
+**Goals**
 
-- Un selector **Tokensanity** en la sección "Shuffle" de la página, con los valores de OoTR:
+- A **Tokensanity** selector in the "Shuffle" section of the page, with the OoTR values:
 
-  | Valor (OoTR) | En la página | Qué Skulltulas entran |
+  | Value (OoTR) | On the page | Which Skulltulas enter |
   |---|---|---|
-  | `off` | Desactivado (por defecto) | Ninguna |
-  | `dungeons` | Solo mazmorras | Las 44 de mazmorras |
-  | `overworld` | Solo mundo exterior | Las 56 de fuera |
-  | `all` | Todas | Las 100 |
+  | `off` | Off (default) | None |
+  | `dungeons` | Dungeons Only | The 44 in dungeons |
+  | `overworld` | Overworld Only | The 56 outside |
+  | `all` | All Tokens | All 100 |
 
-- Una Skulltula que entra en el reparto puede contener cualquier objeto del montón: un objeto clave, el contenido de un cofre (rupias, munición, corazones…) o una ficha.
-- Las fichas de esas Skulltulas entran en el montón y pueden acabar en un cofre o en otra Skulltula. El total de fichas en la partida sigue siendo 100.
-- La lógica de OoTR, que ya está en el repositorio, recibe `tokensanity` con el valor elegido y garantiza que la semilla se puede completar. Eso incluye lo que hace falta para llegar a cada Skulltula y cuántas fichas piden las recompensas de la Casa de las Skulltulas.
-- El registro de la partida tiene una sección "Skulltulas" con lo que hay en cada una.
-- La misma semilla con los mismos ajustes da siempre el mismo mod.
+- A Skulltula that enters the fill can contain any item from the pool: a key item, the contents of a chest (rupees, ammo, hearts…) or a token.
+- The tokens of those Skulltulas go into the pool and can end up in a chest or in another Skulltula. The total number of tokens in the game remains 100.
+- OoTR's logic, already in the repository, receives `tokensanity` with the chosen value and guarantees the seed can be completed. That includes what is needed to reach each Skulltula and how many tokens the Skulltula House rewards require.
+- The spoiler log has a "Skulltulas" section with what is in each one.
+- The same seed with the same settings always gives the same mod.
 
-**No-objetivos**
+**Non-goals**
 
-- Jarrones, cajas, colmenas, rupias sueltas y demás objetos del mundo. Van después, con su propio diseño. Lo que se construya aquí (envoltorios, registros) debería poder reutilizarse.
-- Cambiar el aspecto del envoltorio. El objeto se ve con su modelo y con el brillo dorado de la ficha. Esto lo decidí yo: el usuario lo vio en el lote 14 y no lo pidió cambiar.
-- Las opciones de OoTR que dependen de fichas, como el puente o el castillo de Ganon por fichas. No existen hoy en el randomizer.
+- Pots, crates, beehives, loose rupees and other world objects. They come later, with their own design. What is built here (wrappers, logs) should be reusable.
+- Changing the wrapper's appearance. The item is seen with its model and with the token's golden glow. I decided this: the user saw it in batch 14 and did not ask to change it.
+- OoTR options that depend on tokens, such as the token-based Ganon's bridge or castle. They do not exist in the randomizer today.
 
-**Anti-objetivos**
+**Anti-goals**
 
-- Una partida bloqueada porque una Skulltula no suelta nada, suelta algo que no se puede coger o vuelve a soltarlo cada vez que entras.
-- Que con Tokensanity en `off` cambie algún archivo del mod respecto a hoy.
-- Escribir en el `.nup` o meter archivos del juego en el repositorio.
+- A game blocked because a Skulltula drops nothing, drops something that cannot be picked up, or drops it again every time you enter.
+- Any mod file changing compared to today when Tokensanity is `off`.
+- Writing to the `.nup` or putting game files in the repository.
 
-## 3. Hechos (exploración del 2026-11-10)
+## 3. Facts (exploration of 2026-11-10)
 
-- **Hay 100 Skulltulas doradas.** Son actores `Enemy_Skulltula_Gold` en los Banc `*_Static.bcett.byml.zs`, con 100 `Hash` distintos repartidos en 114 colocaciones.
-  - **Hay 14 Hash que aparecen en dos Banc,** por ejemplo la versión de niño y la de adulto, o el mapa "Alternative" de Kakariko o del Dominio Zora. Al cambiar una Skulltula hay que cambiar todas sus copias, igual que con los cofres.
-  - **El número por zona coincide con OoTR.** Mazmorras: Árbol Deku 4, Dodongo 5, Jabu-Jabu 4, Bosque 5, Fuego 5, Agua 5, Sombras 5, Espíritu 5, Pozo 3 y Caverna de Hielo 3. Exterior: 56. El remake junta zonas: el Banc `HyruleField` (11) contiene también las del Lago Hylia y el Rancho Lon Lon.
-  - **Datos que ayudan a identificarlas** (claves de `Dynamic`): `Enemy_Skulltula_Gold_Nocturnal` (30), `Enemy_Skulltula_Gold_IsMagicBeanSoil` (10), `DefaultDungeonRoomIndex` (44, en mazmorras) y otras de cómo aparecen.
-- **La ficha se cambia con `Dynamic.Drop__DropActor`** en el actor de la Skulltula. Ninguna Skulltula lo trae puesto: sin él suelta su ficha. Confirmado en el Árbol Deku en los lotes 6 y 9 a 14. Los `Obj_*` normales también funcionan, como la rupia roja y la pieza de corazón del lote 6.
-- **Receta del envoltorio que funciona (lote 14).** El script de prueba es `lote14.py`, en el scratchpad.
-  1. **Pack.** `Pack/Actor/<Nuevo>.pack.zs` es una copia del pack de `Obj_Token_Gold`. En su ActorParam se sustituyen `ActorNameRef`, `ModelInfoRef`, `AnimationRef`, `GameParameterTableRef` y `PouchContentRef` por los del pack del objeto, y se añaden los archivos del pack del objeto que falten (fuera de `Actor/`). El `PouchContentParam` es una copia del del objeto con `DefaultAutoGet: True` (eso hace que se coja al pasar por encima), con nombre propio.
-  2. **RSTB.** Una entrada nueva `[crc32(ruta sin .zs), tamaño + 0x1000]`, insertada en orden.
-  3. **`RSDB/ActorInfo`.** Fila copia de la de `Obj_Token_Gold` con:
-     - `__RowId` nuevo;
-     - `ActorName` igual al `ActorName` de la fila del objeto, o el nombre del objeto si no tiene;
-     - el modelo del objeto (`FmdbName`, `ModelProjectName`, `AnimationResources`, `ModelAabbMax/Min`);
-     - montones al máximo de los dos + 0x10000.
-  4. **`RSDB/GameActorInfo`.** Fila del token, más `ModelVariationAnims` del objeto.
-  5. **`RSDB/PouchActorInfo`.** Fila copia de la del objeto con el `__RowId` nuevo. **Sin esta fila el objeto se coge, pero no llega al inventario** (lotes 11 a 13).
-  6. **Orden.** Las tres tablas RSDB van ordenadas por `__RowId`. Su RSTB es tamaño nuevo + (RSTB original − tamaño original) + 0x1000.
-  7. **Formato.** El pack se escribe con un escritor SARC: alineación de archivos 8 y de datos 0x20. Está probado en el scratchpad (`sarcw.py`); hoy el repositorio solo lee SARC.
-- **Bolsa de bombas.** Fuera de su cofre original da la bolsa y 20 bombas, pero no se pueden lanzar (problema conocido del v1, commit 2ad8165). Por eso sigue fija en su cofre y no entra en el reparto.
-- **OoTR.** Los ajustes vendidos tienen `tokensanity: "off"` y `gold_skulls_ignore_daytime: false`. Las ubicaciones se llaman "`<zona> GS <sitio>`" (por ejemplo "Kak GS Tree"). Las MQ no aplican, porque el remake no tiene Master Quest.
-- **Cómo se cuentan las fichas.** En `RSDB/PouchActorInfo`, `Obj_Token_Gold` e `Item_Token_Gold` son un objeto acumulable del inventario (`PouchStockable`, `FixedMaxNum: 100`). Es decir, el contador es global y no son marcas por Skulltula. Las recompensas de la Casa de las Skulltulas piden en la lógica `(Gold_Skulltula_Token, N)` (`World/Overworld.json`). Falta confirmar en el juego que una ficha fuera de su sitio suma (§4).
-- **Una Skulltula que está en dos Banc** (niño y adulto) es la misma ubicación de OoTR. La lógica de OoTR ya dice con qué edad, hora y objeto se llega a cada una. Igual que con los cofres, se acepta esa lógica para el remake.
+- **There are 100 Gold Skulltulas.** They are `Enemy_Skulltula_Gold` actors in the `*_Static.bcett.byml.zs` Banc files, with 100 distinct `Hash` values spread across 114 placements.
+  - **14 Hash values appear in two Banc files,** for example the child and adult versions, or the "Alternative" map of Kakariko or Zora's Domain. When changing a Skulltula, all its copies must be changed, as with chests.
+  - **The count per zone matches OoTR.** Dungeons: Deku Tree 4, Dodongo 5, Jabu-Jabu 4, Forest 5, Fire 5, Water 5, Shadow 5, Spirit 5, Well 3 and Ice Cavern 3. Overworld: 56. The remake merges zones: the `HyruleField` Banc (11) also contains those of Lake Hylia and Lon Lon Ranch.
+  - **Data that helps identify them** (`Dynamic` keys): `Enemy_Skulltula_Gold_Nocturnal` (30), `Enemy_Skulltula_Gold_IsMagicBeanSoil` (10), `DefaultDungeonRoomIndex` (44, in dungeons) and others about how they appear.
+- **The token is changed with `Dynamic.Drop__DropActor`** on the Skulltula actor. No Skulltula has it set: without it, it drops its token. Confirmed in the Deku Tree in batches 6 and 9 to 14. Regular `Obj_*` also work, such as the red rupee and the Piece of Heart from batch 6.
+- **Recipe for the wrapper that works (batch 14).** The test script is `lote14.py`, in the scratchpad.
+  1. **Pack.** `Pack/Actor/<New>.pack.zs` is a copy of the `Obj_Token_Gold` pack. In its ActorParam, `ActorNameRef`, `ModelInfoRef`, `AnimationRef`, `GameParameterTableRef` and `PouchContentRef` are replaced with those from the item's pack, and the item pack's missing files (outside `Actor/`) are added. The `PouchContentParam` is a copy of the item's with `DefaultAutoGet: True` (that makes it get picked up when walked over), with its own name.
+  2. **RSTB.** A new entry `[crc32(path without .zs), size + 0x1000]`, inserted in order.
+  3. **`RSDB/ActorInfo`.** A row copied from the `Obj_Token_Gold` one with:
+     - a new `__RowId`;
+     - `ActorName` equal to the `ActorName` of the item's row, or the item's name if it has none;
+     - the item's model (`FmdbName`, `ModelProjectName`, `AnimationResources`, `ModelAabbMax/Min`);
+     - heaps at the maximum of the two + 0x10000.
+  4. **`RSDB/GameActorInfo`.** The token's row, plus the item's `ModelVariationAnims`.
+  5. **`RSDB/PouchActorInfo`.** A row copied from the item's with the new `__RowId`. **Without this row the item can be picked up, but does not reach the inventory** (batches 11 to 13).
+  6. **Order.** The three RSDB tables are sorted by `__RowId`. Their RSTB is new size + (original RSTB − original size) + 0x1000.
+  7. **Format.** The pack is written with a SARC writer: file alignment 8 and data alignment 0x20. It is tested in the scratchpad (`sarcw.py`); today the repository only reads SARC.
+- **Bomb Bag.** Outside its original chest it gives the bag and 20 bombs, but they cannot be thrown (known v1 problem, commit 2ad8165). That is why it stays fixed in its chest and does not enter the fill.
+- **OoTR.** The vendored settings have `tokensanity: "off"` and `gold_skulls_ignore_daytime: false`. Locations are named "`<zone> GS <place>`" (for example "Kak GS Tree"). MQ does not apply, because the remake has no Master Quest.
+- **How tokens are counted.** In `RSDB/PouchActorInfo`, `Obj_Token_Gold` and `Item_Token_Gold` are a stackable inventory item (`PouchStockable`, `FixedMaxNum: 100`). That is, the counter is global and there are no per-Skulltula marks. The Skulltula House rewards require `(Gold_Skulltula_Token, N)` in the logic (`World/Overworld.json`). It remains to be confirmed in game that a token away from its place counts (§4).
+- **A Skulltula that is in two Banc files** (child and adult) is the same OoTR location. OoTR's logic already says with which age, time and item each one is reached. As with chests, that logic is accepted for the remake.
 
-## 4. Lo que falta por saber (se prueba en el juego al empezar)
+## 4. What remains to be known (tested in game at the start)
 
-**Resuelto en el lote 15 (2026-11-11, `docs/test-batch-15.md`).**
+**Resolved in batch 15 (2026-11-11, `docs/test-batch-15.md`).**
 
-- 1 y 3: las fichas valen en cofres (`Obj_Token_Gold` o `Item_Token_Gold`) y como suelta explícita, y el contador sube.
-- 2: tras recoger lo que suelta, la Skulltula no vuelve.
-- 4: la nocturna funciona; la de tierra blanda queda sin probar.
-- 5: si no se recoge el objeto, la Skulltula vuelve y lo suelta otra vez, así que no se pierde.
-- 6: probados el Bumerán, el Gancho, las Botas de hierro, los Guanteletes de plata, el Martillo y el Escudo espejo.
+- 1 and 3: tokens work in chests (`Obj_Token_Gold` or `Item_Token_Gold`) and as an explicit drop, and the counter goes up.
+- 2: after picking up what it drops, the Skulltula does not come back.
+- 4: the nocturnal one works; the soft-soil one remains untested.
+- 5: if the item is not picked up, the Skulltula comes back and drops it again, so it is not lost.
+- 6: the Boomerang, Hookshot, Iron Boots, Silver Gauntlets, Hammer and Mirror Shield were tested.
 
-El texto original sigue a continuación.
+The original text follows.
 
-1. **Una ficha que sale de un cofre** (`Drop__DropActor: Obj_Token_Gold` en un cofre): ¿aparece, se coge y sube el contador? La ficha tiene un dato `GoldTokenGmdHash` que podría ligarla a su Skulltula.
-2. **Una Skulltula que suelta otra cosa** (envoltorio, rupia): ¿se queda como "cogida" al salir y volver a entrar, y al cargar la partida, o vuelve a aparecer y a soltar el objeto? Si vuelve a aparecer y el objeto se puede coger otra vez, no bloquea la partida, pero hay que saberlo.
-3. **Una ficha que sale de otra Skulltula:** ¿cuenta bien?
-4. **Una Skulltula nocturna y una de tierra blanda** que sueltan un envoltorio: ¿se comportan igual que las del Árbol Deku?
-5. **Salir sin coger lo que suelta:** si matas la Skulltula y sales sin coger el objeto, ¿sigue ahí al volver o se pierde? Si se pierde, un objeto clave en una Skulltula se podría perder para siempre.
-6. **Envoltorios de todos los objetos clave que se reparten** (`KEY_ITEMS`, unos 14 sin la Bolsa de bombas): ¿aparecen y llegan al inventario? Solo se han probado el Bumerán y el Gancho. Las canciones y los objetos de misión no se reparten, así que no hacen falta.
+1. **A token coming out of a chest** (`Drop__DropActor: Obj_Token_Gold` in a chest): does it appear, can it be picked up and does the counter go up? The token has a `GoldTokenGmdHash` field that could tie it to its Skulltula.
+2. **A Skulltula that drops something else** (wrapper, rupee): does it stay "collected" on leaving and re-entering, and on loading the game, or does it reappear and drop the item again? If it reappears and the item can be picked up again, it does not block the game, but this needs to be known.
+3. **A token coming out of another Skulltula:** does it count properly?
+4. **A nocturnal Skulltula and a soft-soil one** that drop a wrapper: do they behave the same as those in the Deku Tree?
+5. **Leaving without picking up what it drops:** if you kill the Skulltula and leave without picking up the item, is it still there on return or is it lost? If it is lost, a key item in a Skulltula could be lost forever.
+6. **Wrappers for all the key items in the fill** (`KEY_ITEMS`, about 14 without the Bomb Bag): do they appear and reach the inventory? Only the Boomerang and the Hookshot have been tested. Songs and quest items are not distributed, so they are not needed.
 
-Si una ficha no se puede poner en un cofre (punto 1), hay dos salidas: que las fichas solo vayan a Skulltulas, o hacer un envoltorio también para la ficha. Lo decide quien construya, según el resultado, y lo apunta.
+If a token cannot be put in a chest (point 1), there are two ways out: tokens only go to Skulltulas, or a wrapper is also made for the token. Whoever builds it decides, depending on the result, and notes it down.
 
-Si en el punto 2 la Skulltula vuelve a aparecer y suelta el objeto otra vez, eso no bloquea la partida, pero choca con un anti-objetivo. En ese caso se para y se pregunta al usuario. Si en el punto 5 el objeto se pierde, también se para y se pregunta, porque podría hacer falta excluir los objetos clave de las Skulltulas.
+If in point 2 the Skulltula reappears and drops the item again, that does not block the game, but it clashes with an anti-goal. In that case, stop and ask the user. If in point 5 the item is lost, also stop and ask, because key items might have to be excluded from Skulltulas.
 
-## 5. Comportamiento
+## 5. Behaviour
 
-### 5.1 Identificar las Skulltulas
+### 5.1 Identifying the Skulltulas
 
-- Un archivo de datos versionado (`randomizer/data/gs_map.json`, como `location_map.json` para los cofres) asocia cada `Hash` con su ubicación de OoTR, sabiendo si es de mazmorra o de exterior y su estado (`confirmed` o `guessed`).
-- Se construye zona por zona: el número cuadra, y dentro de cada zona se distinguen por nocturna, tierra blanda, sala de mazmorra y posición. Las que no se puedan distinguir se comprueban en el juego con un lote de prueba. Por ejemplo, cada Skulltula dudosa suelta un objeto distinto y reconocible.
-- Una Skulltula sin asociar no entra en el reparto aunque la opción esté encendida, y conserva su ficha.
+- A versioned data file (`randomizer/data/gs_map.json`, like `location_map.json` for chests) maps each `Hash` to its OoTR location, noting whether it is a dungeon or overworld one and its status (`confirmed` or `guessed`).
+- It is built zone by zone: the count matches, and within each zone they are told apart by nocturnal, soft soil, dungeon room and position. Those that cannot be told apart are checked in game with a test batch. For example, each doubtful Skulltula drops a different, recognizable item.
+- An unmapped Skulltula does not enter the fill even if the option is on, and keeps its token.
 
-### 5.2 Reparto
+### 5.2 Fill
 
-- El reparto, que hoy es solo de cofres, pasa a manejar sitios de varios tipos: cofre y Skulltula. Para los cofres no cambia nada. La fase B de los regalos (plan en `docs/superpowers/plans/2026-11-10-regalos-fase-b.md`) añade otro tipo de sitio, así que quien construya debería generalizarlo una sola vez para los tres.
-- Con Tokensanity encendido, las Skulltulas elegidas son sitios libres más. Sus fichas (`Obj_Token_Gold`) entran en el montón de contenido que se baraja, junto al resto del contenido de los cofres.
-- Los objetos clave se colocan con el mismo *assumed fill* de hoy, que ya admite cualquier sitio alcanzable. También aplica la regla de no poner objetos clave en las zonas de `NO_KEY_TARGET_ZONES` (Agua, Fuego, Pozo, Centro de Entrenamiento).
-- La lógica de OoTR se carga con `tokensanity` igual al valor elegido. Las ubicaciones GS que no entran (por la opción o por no estar asociadas) conservan su ficha original en `fixed`, y la lógica las cuenta para las recompensas de la casa.
-- **Fichas en la lógica** (lo decidí yo). Hoy el contenido que no es clave se reparte a ciegas. Las fichas, en cambio, se colocan en `fixed` como `Gold Skulltula Token`, para que la lógica las cuente. Hay dos casos:
-  - **Ninguna recompensa de la casa tiene un objeto clave** (hoy es así, sin la fase B de los regalos): las fichas no son necesarias para completar. Basta con colocarlas en los sitios libres que quedan y validar con `can_beat`.
-  - **La fase B pone objetos clave en las recompensas:** las fichas pasan a ser progresión. Se colocan con *assumed fill* después de los objetos clave, para que al colocar cada objeto clave se den por tenidas.
-- `tokensanity` forma parte de la clave del RNG, porque cambia el reparto. Con `off`, el resultado tiene que ser idéntico al de hoy.
+- The fill, which today is chests only, now handles locations of several types: chest and Skulltula. Nothing changes for chests. Phase B of the gifts (plan in `docs/superpowers/plans/2026-11-10-gifts-phase-b.md`) adds another type of location, so whoever builds it should generalize it once for all three.
+- With Tokensanity on, the chosen Skulltulas are additional free locations. Their tokens (`Obj_Token_Gold`) go into the pool of content that is shuffled, along with the rest of the chest contents.
+- Key items are placed with the same *assumed fill* as today, which already admits any reachable location. The rule of not putting key items in the `NO_KEY_TARGET_ZONES` zones (Water, Fire, Well, Training Grounds) also applies.
+- OoTR's logic is loaded with `tokensanity` equal to the chosen value. The GS locations that do not enter (because of the option or because they are unmapped) keep their original token in `fixed`, and the logic counts them for the house rewards.
+- **Tokens in the logic** (I decided this). Today non-key content is distributed blindly. Tokens, however, are placed in `fixed` as `Gold Skulltula Token`, so that the logic counts them. There are two cases:
+  - **No house reward holds a key item** (as it is today, without gifts phase B): tokens are not needed to complete the game. It is enough to place them in the remaining free locations and validate with `can_beat`.
+  - **Phase B puts key items in the rewards:** tokens become progression. They are placed with *assumed fill* after the key items, so that each key item is placed assuming they are held.
+- `tokensanity` is part of the RNG key, because it changes the fill. With `off`, the result must be identical to today's.
 
-### 5.3 Qué suelta cada Skulltula
+### 5.3 What each Skulltula drops
 
-- Un contenido que ya es un actor de suelo con fila en `PouchActorInfo` (`Obj_Rupee_*`, `Obj_Heart_Piece`, `Obj_Token_Gold`, etc.) se pone tal cual en `Drop__DropActor`.
-- Cualquier otro, objetos clave y lo que no se pueda soltar directamente, recibe un **envoltorio** generado al montar el mod con la receta del §3: uno por objeto distinto, con nombre fijo `Obj_Rando_<Objeto>`. Como mucho son unas pocas decenas, así que no se espera ningún problema de límites. Quien construya decide qué contenidos de cofre necesitan envoltorio, mirando si tienen fila en `PouchActorInfo` y si son `Obj_*`.
-- Los envoltorios, sus filas RSDB y sus entradas RSTB solo se escriben si alguna Skulltula los usa. Con `off` no se toca ningún RSDB.
-- Un cofre que recibe una ficha usa `Obj_Token_Gold`, o lo que diga la prueba del §4.
+- Content that is already a ground actor with a row in `PouchActorInfo` (`Obj_Rupee_*`, `Obj_Heart_Piece`, `Obj_Token_Gold`, etc.) is put as is in `Drop__DropActor`.
+- Any other, key items and whatever cannot be dropped directly, receives a **wrapper** generated when assembling the mod with the recipe from §3: one per distinct item, with the fixed name `Obj_Rando_<Item>`. There are at most a few dozen, so no limit problems are expected. Whoever builds it decides which chest contents need a wrapper, by looking at whether they have a row in `PouchActorInfo` and whether they are `Obj_*`.
+- The wrappers, their RSDB rows and their RSTB entries are only written if some Skulltula uses them. With `off`, no RSDB is touched.
+- A chest that receives a token uses `Obj_Token_Gold`, or whatever the §4 test says.
 
-### 5.4 Página y registro
+### 5.4 Page and spoiler log
 
-- En la sección "Shuffle" de la pestaña Objetos: selector "Fichas de Skulltula (Tokensanity)" con los cuatro valores del §2, desactivado por defecto. Si la fase B de los regalos aún no ha creado la sección, se crea aquí.
-- El registro añade una sección "Skulltulas" que lista cada ubicación GS que entra, con su contenido en español. Las fichas que acaban en cofres salen en la sección de cofres de siempre.
+- In the "Shuffle" section of the Items tab: a "Gold Skulltula Tokens (Tokensanity)" selector with the four values from §2, off by default. If gifts phase B has not yet created the section, it is created here.
+- The log adds a "Skulltulas" section listing each GS location that enters, with its content in English. Tokens that end up in chests appear in the usual chest section.
 
-## 6. Fases (cada una con su prueba en Lichii)
+## 6. Phases (each with its Lichii test)
 
-1. **Prueba de lo pendiente del §4,** con un lote de prueba hecho a mano como los anteriores. Si algo bloquea la partida, se para y se replantea.
-2. **Asociación de las 100 Skulltulas** (`gs_map.json`), con su lote de comprobación para las dudosas.
-3. **Construcción.** Incluye:
-   - escritor SARC con tests de ida y vuelta;
-   - generador de envoltorios y filas RSDB/RSTB;
-   - reparto con sitios Skulltula;
-   - opción en la página;
-   - registro;
-   - una semilla de prueba con Tokensanity en `all` que el usuario juega en parte.
+1. **Test of what is pending in §4,** with a hand-made test batch like the previous ones. If anything blocks the game, stop and rethink.
+2. **Mapping the 100 Skulltulas** (`gs_map.json`), with its verification batch for the doubtful ones.
+3. **Build.** Includes:
+   - SARC writer with round-trip tests;
+   - wrapper generator and RSDB/RSTB rows;
+   - fill with Skulltula locations;
+   - option on the page;
+   - spoiler log;
+   - a test seed with Tokensanity set to `all` that the user plays part of.
 
-## 7. Hecho cuando
+## 7. Done when
 
-- La opción existe en la página y se refleja en el registro.
-- Las fases 1 a 3 tienen su lote superado en Lichii.
-- Los tests pasan, incluido que con `off` el mod generado es idéntico al de antes.
+- The option exists on the page and is reflected in the spoiler log.
+- Phases 1 to 3 have their batch passed in Lichii.
+- The tests pass, including that with `off` the generated mod is identical to the previous one.
