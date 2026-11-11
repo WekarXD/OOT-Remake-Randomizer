@@ -4,11 +4,13 @@ from collections import Counter
 from pathlib import Path
 
 from randomizer import items, locations
-from randomizer.fill import NO_KEY_TARGET_ZONES, FillError, Settings, place
-from randomizer.game import load_chests_fixture
+from randomizer.fill import (NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN, FillError, Settings,
+                              gs_sites, place)
+from randomizer.game import load_chests_fixture, load_skulltulas_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
 FIXTURE = Path(__file__).parent / 'fixtures' / 'chests.json'
+GS_FIXTURE = Path(__file__).parent / 'fixtures' / 'skulltulas.json'
 HOOKSHOT_HASH = 16041366920820397198
 
 
@@ -139,6 +141,117 @@ class FillTest(unittest.TestCase):
     def test_unknown_mode_raises(self):
         with self.assertRaises(FillError):
             self._place(seed='ABC', key_items_mode='nope')
+
+
+def _gs_data():
+    if not hasattr(_gs_data, 'cached'):
+        _gs_data.cached = (load_skulltulas_fixture(GS_FIXTURE), locations.load_gs_map())
+    return _gs_data.cached
+
+
+class TokensanityTest(unittest.TestCase):
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+        self.skulltulas, self.gs_map = _gs_data()
+        self.orig = _original(self.chests)
+
+    def _place(self, **kw):
+        return place(self.chests, self.loc_map, self.world, Settings(**kw))
+
+    def P(self, seed, mode, forbidden=frozenset()):
+        return place(self.chests, self.loc_map, self.world,
+                     Settings(seed=seed, tokensanity=mode), self.skulltulas,
+                     self.gs_map, forbidden)
+
+    def _gs(self, mode):
+        return gs_sites(self.skulltulas, self.gs_map, mode)
+
+    def test_tokensanity_off_identical(self):
+        self.assertEqual(self._place(seed='ABC'), self.P('ABC', 'off'))
+
+    def test_tokensanity_all_places_gs(self):
+        r = self.P('T', 'all')
+        gs = self._gs('all')
+        self.assertEqual(len(gs), 100)
+        self.assertTrue(set(gs) <= set(r))
+        self.assertEqual(set(r), set(self.orig) | set(gs))
+        self.assertEqual(sum(1 for v in r.values() if v == TOKEN), 100)
+        self.assertTrue(any(r[h] != TOKEN for h in gs))
+        self.assertTrue(any(v == TOKEN for h, v in r.items() if h not in gs))
+        expected = Counter(self.orig.values()) + Counter({TOKEN: 100})
+        self.assertEqual(Counter(r.values()), expected)
+
+    def test_tokensanity_modes_counts(self):
+        self.assertEqual(len(self._gs('dungeons')), 44)
+        self.assertEqual(len(self._gs('overworld')), 56)
+        self.assertEqual(self._gs('off'), [])
+        self.assertEqual(self._gs('all'), sorted(set(self._gs('all'))))
+
+    def test_tokensanity_dungeons_only_dungeon_sites(self):
+        r = self.P('D', 'dungeons')
+        self.assertEqual(set(r), set(self.orig) | set(self._gs('dungeons')))
+
+    def test_tokensanity_seed_differs_by_mode(self):
+        self.assertNotEqual(self.P('S', 'all'), self.P('S', 'dungeons'))
+
+    def test_tokensanity_forbidden_never_on_gs(self):
+        forbidden = frozenset({'Item_ScrubBusinessSeed', 'TBox_DekuNutBundle'})
+        r = self.P('F', 'all', forbidden)
+        for h in self._gs('all'):
+            self.assertNotIn(r[h], forbidden)
+        # Los contenidos prohibidos siguen en el reparto (en cofres).
+        self.assertEqual(Counter(r.values()),
+                         Counter(self.orig.values()) + Counter({TOKEN: 100}))
+
+    def test_tokensanity_not_enough_allowed_raises(self):
+        allowed_none = frozenset(self.orig.values()) | {TOKEN}
+        with self.assertRaises(FillError) as cm:
+            self.P('F', 'all', allowed_none)
+        self.assertIn('Skulltulas', str(cm.exception))
+
+    def test_tokensanity_no_key_in_forbidden_zones(self):
+        zone = {s.hash: s.banc.split('/')[1] for s in self.skulltulas}
+        guarded = {h for h in self._gs('all') if zone[h] in NO_KEY_TARGET_ZONES}
+        self.assertTrue(guarded)
+        for i in range(5):
+            r = self.P(f'Z{i}', 'all')
+            for h in guarded:
+                self.assertNotIn(r[h], items.KEY_ITEMS, (i, h))
+
+    def test_tokensanity_no_key_gs_map_flag(self):
+        flagged = {h for h, e in self.gs_map.items() if e.no_key}
+        self.assertTrue(flagged)
+        for i in range(5):
+            r = self.P(f'K{i}', 'all')
+            for h in flagged:
+                self.assertNotIn(r[h], items.KEY_ITEMS, (i, h))
+
+    def test_tokensanity_completable(self):
+        gs = self._gs('all')
+        for i in range(5):
+            r = self.P(f'C{i}', 'all')
+            fixed = self.world.vanilla_fixed()
+            sites = ([(h, self.loc_map[h].location)
+                      for h in _eligible_hashes(self.chests, self.loc_map)]
+                     + [(h, self.gs_map[h].location) for h in gs])
+            for h, loc in sites:
+                drop = r[h]
+                if drop in items.KEY_ITEMS:
+                    fixed[loc] = drop
+                elif drop == TOKEN:
+                    fixed[loc] = OOTR_TOKEN
+                else:
+                    fixed[loc] = 'Rupees (5)'
+            self.assertTrue(self.world.can_beat(fixed), f'C{i}')
+
+    def test_tokensanity_world_not_mutated(self):
+        before = self.world.vanilla_fixed()
+        self.P('W', 'all')
+        self.assertEqual(self.world.vanilla_fixed(), before)
+
+    def test_tokensanity_invalid_mode(self):
+        with self.assertRaises(FillError):
+            self.P('x', 'mucho')
 
 
 class WorldOwnedTest(unittest.TestCase):
