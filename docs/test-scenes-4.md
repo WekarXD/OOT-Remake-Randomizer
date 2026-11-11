@@ -7,16 +7,18 @@ Goal: check in-game that four cutscenes can be reduced to their effects only (it
 - Copy `test-mod/0400486024DEC000/TestScenes4` to Lichii's `load/0400486024DEC000/` folder.
 - Keep **only this mod active**. Disable every other `Rando_*`, `TestBatch*` and `TestScenes*` mod.
 - Start a **new game** with "Skip cutscenes" **off**: the mod carries the four scenes itself.
-- The scenes play from vanilla save progress. In a new game you reach them in this order:
-  1. Saria's ocarina scene, when you leave Kokiri Forest by the bridge after the Deku Tree.
-  2. Hyrule Castle: Zelda in the garden (the letter), then Zelda's Lullaby.
+- The scenes play from vanilla save progress. In a new game the play order is:
+  1. New game, then scene 2 (Kokiri Forest with Saria, Mido and Navi) when Link leaves his house.
+  2. Finish the Deku Tree, then leave the forest by the bridge: scene 1 (Saria's Ocarina).
+  3. Hyrule Castle garden: scene 3 (Zelda, the letter).
+  4. Zelda's Lullaby: scene 4.
 
 ## What should happen
 
 | Scene | Expected |
 | --- | --- |
 | Saria gives the Fairy Ocarina (`Dm_Kokiri_0155`) | You get the Fairy Ocarina, with no scene and no item window. |
-| The Deku Tree's death (`Dm_Kokiri_0060`) | No scene. Link is not frozen and can move right away. |
+| Kokiri Forest scene with Saria, Mido and Navi (`Dm_Kokiri_0060`), most likely right after the intro when Link comes out of his house (one of the scenes that used to leave Link frozen) | No scene. Link is not frozen and can move right away. |
 | Zelda in the castle garden (`Dm_HrlCastle_0050`) | You get Zelda's Letter, with no scene. |
 | Zelda's Lullaby (`Dm_MelodyGet_Zelda`) | You learn the song with no play-along. The "You got" window may still show (spec section 8.7). |
 
@@ -24,7 +26,8 @@ Goal: check in-game that four cutscenes can be reduced to their effects only (it
 
 - [ ] Saria: Fairy Ocarina in the inventory? ______
 - [ ] Saria: no scene and no item window? ______
-- [ ] Deku Tree: no scene, Link free to move? ______
+- [ ] Kokiri Forest scene (scene 2): no scene, Link free to move? ______
+- [ ] When exactly did scene 2 play, and did anything it should have given or set fail (Navi joining, Mido blocking the way)? ______
 - [ ] Garden: Zelda's Letter in the inventory? ______
 - [ ] Lullaby: song learned (shows in the ocarina menu, plays)? ______
 - [ ] Does the "You got" window show for the Ocarina? ______

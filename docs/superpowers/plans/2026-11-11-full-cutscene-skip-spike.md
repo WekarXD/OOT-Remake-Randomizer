@@ -173,7 +173,7 @@
   - setup: only this mod enabled; new game with "Skip cutscenes" off, since the mod carries the four scenes itself;
   - what should happen in each scene:
     - Saria: Fairy Ocarina received, no scene and no item window;
-    - the Deku Tree's death: no scene, and Link is not frozen;
+    - the Kokiri Forest scene with Saria, Mido and Navi (`Dm_Kokiri_0060`, a `FROZEN_LINK` scene): no scene, and Link is not frozen;
     - Zelda in the garden: Zelda's Letter received;
     - Zelda's Lullaby: song learned with no play-along; the "You got" window may still show, see spec §8.7;
   - the checks: freeze, missing item, song or flag, wrong position, black screen;

@@ -286,7 +286,7 @@ class SpikeScenesTests(unittest.TestCase):
                 for i in no:
                     self.assertNotIn(i, after)
 
-    def _fade_paths(self, flow, entry_events, fade_kind, start):
+    def _fade_paths(self, flow, start):
         """Yields lists of events on each path from `start` (switch cases and subflows followed)."""
         events, entries = flow.events, flow.entry_points
 
@@ -323,7 +323,7 @@ class SpikeScenesTests(unittest.TestCase):
                 self.assertIsNone(rw.error, rw.detail)
                 new = EventFlow(apply_rewrite(data, flow, rw))
                 # fade-outs of the original that some later fade-in follows
-                orig_paths = list(self._fade_paths(flow, None, None, flow.entry_points['EntryPoint0']))
+                orig_paths = list(self._fade_paths(flow, flow.entry_points['EntryPoint0']))
 
                 def fades(ev):
                     return ev.kind == ACTION and ev.action
@@ -334,7 +334,7 @@ class SpikeScenesTests(unittest.TestCase):
                         if fades(flow.events[i]) == 'EventEventFadeOut' and any(
                                 fades(flow.events[j]) == 'EventEventFadeIn' for j in path[n + 1:]):
                             guarded.add(i)
-                for path in self._fade_paths(new, None, None, new.entry_points['EntryPoint0']):
+                for path in self._fade_paths(new, new.entry_points['EntryPoint0']):
                     for n, i in enumerate(path):
                         if fades(new.events[i]) == 'EventEventFadeOut' and i in guarded:
                             self.assertTrue(
