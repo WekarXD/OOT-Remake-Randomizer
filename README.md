@@ -19,6 +19,9 @@ python -m randomizer
 Abre el navegador con la interfaz. Opciones: `--port <numero>` (por defecto 8765) y `--no-browser` (no abre el navegador). Elige el `.nup`, la semilla y los ajustes, y pulsa generar. El mod se crea en una carpeta `Rando_<semilla>`.
 
 - **Saltar cinemáticas**: quita los pasos visuales de las cinemáticas en la fase 1 (el resto del juego no cambia).
+- **Fichas de Skulltula (Tokensanity)**: Desactivado, Solo mazmorras, Solo mundo exterior o Todas. Las Skulltulas doradas de esa zona entran en el reparto: pueden soltar objetos clave (que se quedan flotando y se recogen al pasar o con el Gancho o el Bumerán) u objetos menores, y sus fichas se reparten por cofres y Skulltulas. Las 27 Skulltulas que aún no están identificadas con seguridad no reciben objetos clave.
+
+Código fuente: https://github.com/WekarXD/OOT-Remake-Randomizer
 
 ## Instalar el mod en Lichii
 
