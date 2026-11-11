@@ -1,6 +1,6 @@
 """Spoiler log: JSON and text."""
 from . import RANDO_VERSION
-from .fill import TOKEN
+from .fill import TOKEN, filler_sites
 from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS
 
 TOKEN_LABEL = 'Gold Skulltula Token'
@@ -30,6 +30,8 @@ def build(settings, placement, chests, loc_map, game_version,
         original.setdefault(c.hash, c.drop)
         site.setdefault(c.hash, c)
     shop = {c.hash for c in chests if 'HrlCity_Shop' in c.gyaml}
+    # Unmapped chests that take part in the fill with minor items.
+    filler = set(filler_sites(chests, loc_map)) if settings.key_items_mode != 'vanilla' else set()
 
     all_chests, key_items, excluded, stripped = [], [], [], []
     for h in sorted(site):
@@ -48,9 +50,9 @@ def build(settings, placement, chests, loc_map, game_version,
             reason = 'shop'
         elif original[h].startswith(DUNGEON_ITEM_PREFIXES):
             reason = 'dungeon item'
-        elif e is None:
+        elif e is None and h not in filler:
             reason = 'unmapped'
-        elif e.needs_event_patch:
+        elif e is not None and e.needs_event_patch:
             reason = 'story event'
         if reason:
             excluded.append({**row, 'reason': reason})

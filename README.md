@@ -33,7 +33,7 @@ To play it following a checklist, see `docs/acceptance.md`.
 
 - **8 key items are moved:** Kokiri Sword, Slingshot, Bow, Megaton Hammer, Lens of Truth, Ice Arrows, Golden Gauntlets and Longshot.
 - **7 stay in place:** Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield, because their chests carry story events, and the Bomb Bag, because bombs cannot be thrown outside its own chest (under investigation).
-- Only 104 of the 203 chests are mapped to the logic; the rest keep their original contents.
+- 104 of the 203 chests are mapped to OoTR locations and can hold anything. Another 61 have no OoTR equivalent (most are new in the remake) and take part in the fill with minor items only. The remaining 38 keep their original contents: small keys, the remake-only dream area, and a few event or shop chests.
 - Keys, maps, compasses, songs and NPC items are not randomized.
 - The chest image and text may still show the original item (accepted in v1); what you receive is the new item.
 - Ice Arrows also unlock the magic meter.

@@ -108,6 +108,34 @@ def _eligible(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     return out
 
 
+# Zones whose unmapped chests stay vanilla: the remake-only dream area may
+# not be revisitable, so nothing is moved there.
+FILLER_SKIP_ZONES = frozenset({'DreamWorld'})
+
+
+def filler_sites(chests: list[ChestActor], loc_map: dict[int, LocationEntry]) -> list[int]:
+    """Unmapped chests (no OoTR location) that still take part in the fill,
+    with minor items only: the logic does not know what reaching them needs,
+    so they never receive key items or ammo. Left out: shop chests, chests
+    with an event, dungeon items and the zones in FILLER_SKIP_ZONES."""
+    original = _original_drops(chests)
+    skip = set()
+    for c in chests:
+        zone = c.banc.split('/')[1] if c.banc.count('/') >= 2 else ''
+        if 'HrlCity_Shop' in c.gyaml or c.event or zone in FILLER_SKIP_ZONES:
+            skip.add(c.hash)
+    out = []
+    for h in sorted(original):
+        entry = loc_map.get(h)
+        if entry is None or entry.status != 'unmapped' or h in skip:
+            continue
+        drop = original[h]
+        if drop.startswith(DUNGEON_ITEM_PREFIXES) or drop in KEY_ITEMS:
+            continue
+        out.append(h)
+    return out
+
+
 def gs_sites(skulltulas: list[SkulltulaActor], gs_map: dict[int, GsEntry] | None,
              mode: str) -> list[int]:
     """Hashes of the Skulltulas that are sites under this tokensanity mode,
@@ -130,6 +158,8 @@ def _fixed(world_base: dict[str, str], site_loc: dict[int, str],
     (`world_base`) and the key items and tokens already placed on top."""
     fixed = dict(world_base)
     for h in sorted(placed):
+        if h not in site_loc:
+            continue  # filler site: unknown to the logic
         drop = placed[h]
         if drop in KEY_ITEMS:
             fixed[site_loc[h]] = drop
@@ -179,8 +209,8 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
             without = {loc: FILLER if item == container else item
                        for loc, item in fixed_now.items()}
             reach = world.reachable_locations(without, owned=tokens)
-            gated[container] = [h for h in open_sites
-                                if h not in gs and site_loc[h] not in reach]
+            gated[container] = [h for h in open_sites if h not in gs
+                                and h in site_loc and site_loc[h] not in reach]
         for drop in ammo:
             candidates = [h for h in gated[AMMO_CONTAINER[drop]] if h not in placed]
             if not candidates:
@@ -233,7 +263,8 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         return dict(original)
 
     chest_sites = _eligible(chests, loc_map, original)
-    eligible = sorted(chest_sites + gs)
+    filler = filler_sites(chests, loc_map)
+    eligible = sorted(chest_sites + gs + filler)
     site_loc = {h: loc_map[h].location for h in chest_sites}
     site_loc.update((h, gs_map[h].location) for h in gs)
     moving = [h for h in eligible if original[h] in KEY_ITEMS
@@ -243,9 +274,11 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
                        if banc.split('/')[1:2] and banc.split('/')[1] in NO_KEY_TARGET_ZONES)
     no_key |= frozenset(h for h in gs
                         if gs_map[h].no_key or gs_map[h].status == 'guessed')
+    no_key |= frozenset(filler)
     base = world.vanilla_fixed()
     for h in eligible:
-        base[site_loc[h]] = FILLER
+        if h in site_loc:
+            base[site_loc[h]] = FILLER
 
     for attempt in range(MAX_ATTEMPTS + 1):
         result = _attempt(_rng(settings, attempt), original, eligible, moving,

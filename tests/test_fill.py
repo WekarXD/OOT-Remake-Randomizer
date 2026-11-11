@@ -5,7 +5,7 @@ from pathlib import Path
 
 from randomizer import items, locations
 from randomizer.fill import (AMMO_CONTAINER, NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN,
-                              FillError, Settings, gs_sites, place)
+                              FillError, Settings, filler_sites, gs_sites, place)
 from randomizer.game import load_chests_fixture, load_skulltulas_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
@@ -109,9 +109,49 @@ class FillTest(unittest.TestCase):
     def test_ineligible_sites_untouched(self):
         result = self._place(seed='ABC')
         eligible = set(_eligible_hashes(self.chests, self.loc_map))
+        eligible |= set(filler_sites(self.chests, self.loc_map))
         for h in self.orig:
             if h not in eligible:
                 self.assertEqual(result[h], self.orig[h], h)
+
+    def test_filler_sites_selection(self):
+        filler = set(filler_sites(self.chests, self.loc_map))
+        self.assertGreater(len(filler), 50)
+        by_hash = {}
+        for c in self.chests:
+            by_hash.setdefault(c.hash, []).append(c)
+        for h in filler:
+            self.assertEqual(self.loc_map[h].status, 'unmapped')
+            self.assertFalse(self.orig[h].startswith(items.DUNGEON_ITEM_PREFIXES))
+            for c in by_hash[h]:
+                self.assertIsNone(c.event)
+                self.assertNotIn('HrlCity_Shop', c.gyaml)
+                self.assertNotIn('/DreamWorld/', c.banc)
+        dream = {c.hash for c in self.chests if '/DreamWorld/' in c.banc}
+        self.assertTrue(dream)
+        result = self._place(seed='ABC')
+        for h in dream:
+            self.assertEqual(result[h], self.orig[h])
+
+    def test_filler_sites_get_minor_items_only(self):
+        filler = filler_sites(self.chests, self.loc_map)
+        moved = 0
+        for seed in ('F1', 'F2', 'F3'):
+            r = self._place(seed=seed)
+            for h in filler:
+                self.assertNotIn(r[h], items.KEY_ITEMS, (seed, h))
+                self.assertNotIn(r[h], AMMO_CONTAINER, (seed, h))
+                moved += r[h] != self.orig[h]
+        self.assertGreater(moved, 0)
+
+    def test_filler_ammo_moves_to_gated_chests(self):
+        # The ammo that sat in unmapped chests now joins the fill, which only
+        # places it where its container is required.
+        filler = filler_sites(self.chests, self.loc_map)
+        ammo = [h for h in filler if self.orig[h] in AMMO_CONTAINER]
+        self.assertTrue(ammo)
+        r = self._place(seed='ABC')
+        self.assertEqual(Counter(r.values()), Counter(self.orig.values()))
 
     def test_spoiler_toggle_does_not_change_placement(self):
         self.assertEqual(self._place(seed='X', spoiler=True),
