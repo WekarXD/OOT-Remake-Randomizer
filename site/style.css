@@ -41,3 +41,10 @@ fieldset { border: 1px solid var(--border); border-radius: 6px; margin: 16px 0 0
 .disabled, .soon { color: var(--muted); }
 .soon { margin-top: 16px; }
 pre { background: var(--bg); border: 1px solid var(--border); padding: 12px; overflow: auto; max-height: 60vh; white-space: pre-wrap; overflow-wrap: anywhere; }
+.intro { margin: 0 0 8px; }
+#engine { margin: 0 0 12px; }
+input[type="file"] { width: 100%; padding: 8px; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 6px; }
+code { font-size: .92em; overflow-wrap: anywhere; }
+a { color: var(--focus); }
+ol { padding-left: 1.3em; }

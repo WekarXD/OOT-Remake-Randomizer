@@ -19,7 +19,7 @@ Pending work, most important first within each section.
 
 ## To build
 
-- **Browser generator on GitHub Pages:** choose the `.nup`, choose the settings, download a `.zip` with the `Rando_<seed>` mod and its spoiler log inside. Runs the existing Python generator in Pyodide 314 (Python 3.14); the `.nup` is read locally in pieces and never uploaded. Remove the local app (`python -m randomizer`) once it works. Design in progress.
+- **Browser generator on GitHub Pages:** built (`site/`, `randomizer/browser.py`); confirm a full generation in the browser with a real `.nup`.
 - **NPC gifts:** phase B (plan written), then phases C and D.
 - **OoTR generator options:** Open Forest / Kakariko / Door of Time / Zora's Fountain / Gerudo Fortress, and the timesavers (skip child stealth, free Rauru reward, skip tower escape, skip Epona race, minigame phases, fast chests, fast bunny hood, plant beans, Ruto on F1, fast shadow boat, free scarecrow, cucco/poe counts, ...).
 - **Key items in the Water Temple, Fire Temple, Bottom of the Well and Gerudo Training Ground:** the small-key layout in the remake differs from the N64, so the logic is not reliable there yet.

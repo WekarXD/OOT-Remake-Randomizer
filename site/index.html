@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Randomizer OoT</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>OoT Remake Randomizer</title>
+<meta name="description" content="Item randomizer for the Switch 2 remake of Ocarina of Time. Runs in your browser; your game file never leaves your computer.">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-<h1>Ocarina of Time Randomizer</h1>
+<h1>Ocarina of Time Remake Randomizer</h1>
+<p class="intro">Choose your own dump of the game, pick the settings and download the mod as a <code>.zip</code>. Everything runs in your browser: the game file is never uploaded.</p>
+<div id="engine" class="status" aria-live="polite">Starting…</div>
+
 <div class="tabs" role="tablist" aria-label="Sections">
   <button role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true">General</button>
   <button role="tab" id="tab-items" aria-controls="panel-items" aria-selected="false" tabindex="-1">Items</button>
   <button role="tab" id="tab-logic" aria-controls="panel-logic" aria-selected="false" tabindex="-1">Logic</button>
-  <button role="tab" id="tab-spoiler" aria-controls="panel-spoiler" aria-selected="false" tabindex="-1">Spoiler</button>
+  <button role="tab" id="tab-help" aria-controls="panel-help" aria-selected="false" tabindex="-1">Install</button>
 </div>
 
 <section role="tabpanel" id="panel-general" aria-labelledby="tab-general">
-  <label for="nup">Game path (.nup)</label>
-  <input type="text" id="nup" autocomplete="off" spellcheck="false">
+  <label for="nup">Game file (.nup, version 1.1.1)</label>
+  <input type="file" id="nup" accept=".nup">
   <div id="nup-status" class="status" aria-live="polite"></div>
-
-  <label for="outdir">Output folder (the Lichii mods folder for this game)</label>
-  <input type="text" id="outdir" autocomplete="off" spellcheck="false">
 
   <label for="seed">Seed</label>
   <div class="row">
@@ -31,8 +32,9 @@
   </div>
 
   <label class="check"><input type="checkbox" id="skip-cutscenes"> Skip cutscenes</label>
+  <label class="check"><input type="checkbox" id="spoiler" checked> Include the spoiler log in the zip</label>
 
-  <button type="button" id="generate" class="primary">Generate</button>
+  <button type="button" id="generate" class="primary" disabled>Generate and download</button>
   <div id="result" class="status" aria-live="polite"></div>
 </section>
 
@@ -45,7 +47,7 @@
 
   <fieldset>
     <legend>Exclude items</legend>
-    <div id="items"></div>
+    <div id="items"><p class="hint">Loading…</p></div>
     <p class="hint">Some key items are fixed in this version because their chest has a story event.</p>
   </fieldset>
 
@@ -62,27 +64,24 @@
   </fieldset>
 
   <p class="hint">The Market Treasure Chest Game chests and those holding keys, maps or compasses do not receive key items in this version.</p>
-
-  <div class="soon">
-    <label class="check disabled"><input type="checkbox" disabled> Small keys <span>(coming soon)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Maps and compasses <span>(coming soon)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Songs <span>(coming soon)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> NPC items <span>(coming soon)</span></label>
-    <label class="check disabled"><input type="checkbox" disabled> Rupees and consumables <span>(coming soon)</span></label>
-  </div>
 </section>
 
 <section role="tabpanel" id="panel-logic" aria-labelledby="tab-logic" hidden>
   <label class="check"><input type="checkbox" checked disabled> No glitches</label>
-  <p class="hint">Every generated seed is beatable.</p>
+  <p class="hint">Every generated seed is beatable with OoTR's glitchless logic, plus a few rules where the remake is stricter.</p>
 </section>
 
-<section role="tabpanel" id="panel-spoiler" aria-labelledby="tab-spoiler" hidden>
-  <label class="check"><input type="checkbox" id="spoiler" checked> Generate spoiler log</label>
-  <p><a href="#" id="spoiler-link" hidden>View log</a></p>
-  <pre id="spoiler-text" tabindex="0" hidden></pre>
+<section role="tabpanel" id="panel-help" aria-labelledby="tab-help" hidden>
+  <ol>
+    <li>Unzip the downloaded file. It contains a <code>Rando_&lt;seed&gt;</code> folder.</li>
+    <li>Copy that folder into <code>load/0400486024DEC000/</code> inside Lichii's data folder (right-click the game in Lichii to open its mods folder, if offered).</li>
+    <li>Keep only one <code>Rando_*</code> mod enabled at a time.</li>
+    <li>Start a new game. An existing save does not pick up the changes.</li>
+  </ol>
+  <p class="hint">The spoiler log (<code>spoiler.txt</code>) inside the folder lists where every item went.</p>
+  <p class="hint">Source code and known limitations: <a href="https://github.com/WekarXD/OOT-Remake-Randomizer">github.com/WekarXD/OOT-Remake-Randomizer</a>. No game files are included.</p>
 </section>
 </main>
-<script src="/static/app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

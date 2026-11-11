@@ -1,6 +1,6 @@
 # Acceptance test
 
-Seed: **ACEPTACION1**. The folder `output/acceptance/Rando_ACEPTACION1` only exists on the machine where it was generated; if you do not have it, generate your own with `python -m randomizer`. Leave "Generate spoiler log" checked (and "Skip cutscenes") and use the `spoiler.txt` of your seed (with a different seed the items are in different places; adapt the tables below to your spoiler).
+Seed: **ACEPTACION1**. The folder `output/acceptance/Rando_ACEPTACION1` only exists on the machine where it was generated; if you do not have it, generate your own on the page (https://wekarxd.github.io/OOT-Remake-Randomizer/). Leave "Include the spoiler log in the zip" checked (and "Skip cutscenes") and use the `spoiler.txt` of your seed (with a different seed the items are in different places; adapt the tables below to your spoiler).
 
 The ACEPTACION1 seed was regenerated after the final review: the same seed gives the same placement with or without a spoiler. It was regenerated again when the Bomb Bag was pinned in place (TestBatch5: outside its original chest, bombs cannot be thrown); it is now always in its Dodongo's Cavern chest.
 

@@ -1,22 +1,20 @@
 # Randomizer OOT Remake
 
-A local Python randomizer for the Switch 2 remake of Ocarina of Time (TotK engine), meant to be played in the Lichii emulator. It is a web application that runs on your machine and generates a mod that moves key items around.
+An item randomizer for the Switch 2 remake of Ocarina of Time (TotK engine), meant to be played in the Lichii emulator. It generates a mod that moves key items around.
 
-It includes no game files: you need your own dump.
+**Use it here: https://wekarxd.github.io/OOT-Remake-Randomizer/**
+
+It runs entirely in your browser: the Python generator runs in [Pyodide](https://pyodide.org/) and reads your game file locally, in pieces, without uploading it anywhere. It includes no game files: you need your own dump.
 
 ## Requirements
 
-- Python 3.14 or later (uses `compression.zstd` from the standard library).
 - Your own dump of the game in `.nup` format, version 1.1.1 (v131072).
+- A recent desktop browser (Chrome, Edge or Firefox).
 - The Lichii emulator.
 
 ## Usage
 
-```
-python -m randomizer
-```
-
-This opens the interface in your browser. Options: `--port <number>` (default 8765) and `--no-browser` (do not open the browser). Choose the `.nup`, the seed and the settings, then click generate. The mod is created in a `Rando_<seed>` folder.
+Open the page, choose your `.nup`, the seed and the settings, then click **Generate and download**. You get `Rando_<seed>.zip`, which contains the `Rando_<seed>` mod folder (with the spoiler log inside if you leave it enabled).
 
 - **Skip cutscenes**: removes the visual steps of the cutscenes in phase 1 (the rest of the game is unchanged).
 - **Gold Skulltula Tokens (Tokensanity)**: Off, Dungeons Only, Overworld Only or All Tokens. The Gold Skulltulas in that area join the fill: they can drop key items (which stay floating and are picked up by walking over them or with the Hookshot or Boomerang) or minor items, and their tokens are spread across chests and Skulltulas. The 27 Skulltulas that are not yet identified with certainty do not receive key items.
@@ -25,7 +23,7 @@ Source code: https://github.com/WekarXD/OOT-Remake-Randomizer
 
 ## Installing the mod in Lichii
 
-1. Copy the `Rando_<seed>` folder (with its `romfs`) to `load/0400486024DEC000/Rando_<seed>/romfs/...` inside Lichii's data folder. If Lichii offers an option to open the game's mod folder (right-click the game), use it; otherwise look for the load/0400486024DEC000/ folder inside Lichii's data folder (its location depends on your installation).
+1. Unzip the download and copy the `Rando_<seed>` folder (with its `romfs`) to `load/0400486024DEC000/Rando_<seed>/romfs/...` inside Lichii's data folder. If Lichii offers an option to open the game's mod folder (right-click the game), use it; otherwise look for the load/0400486024DEC000/ folder inside Lichii's data folder (its location depends on your installation).
 2. Keep **only one** `Rando_*` mod active at a time; remove or disable the others.
 3. Start a new game (an existing save will not reflect the change).
 
@@ -41,6 +39,14 @@ To play it following a checklist, see `docs/acceptance.md`.
 - Ice Arrows also unlock the magic meter.
 - Key items are not placed in the Water Temple, the Fire Temple, the Well or the Gerudo Training Ground in this version.
 - The logic is OoTR's glitchless logic, with some remake-specific rules where the remake is stricter (`REMAKE_RULES` in `randomizer/logic/world.py`; for example, the upper floor of the Deku Tree compass room requires a ranged weapon).
+
+## Development
+
+Python 3.14 or later is needed (it uses `compression.zstd` from the standard library).
+
+- `randomizer/browser.py` is the entry point the page calls; `site/` holds the page itself (`worker.js` runs Pyodide).
+- Build the page locally with `python tools/build_site.py` (writes `_site/`), then serve that folder, for example `python -m http.server 8090 --directory _site`, and open http://127.0.0.1:8090.
+- On every push to `main`, `.github/workflows/pages.yml` runs the tests, builds the page and deploys it to GitHub Pages.
 
 ## Tests
 

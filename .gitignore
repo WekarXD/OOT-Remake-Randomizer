@@ -15,3 +15,6 @@ __pycache__/
 
 # Local Spanish notes and test guides (never uploaded)
 local/
+
+# Built web page
+_site/
