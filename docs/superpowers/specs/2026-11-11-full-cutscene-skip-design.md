@@ -132,3 +132,23 @@ Must be done in phase 2, before rewriting more scenes:
 - Assert "same order along each path" in the real-data tests (§5); the spike only checks that kept actions stay reachable.
 - Implement the fork-dependency flag of §8.4 before scenes that keep waits or state switches (none of the four spike outputs keeps any).
 - Small robustness gaps in the rewriter: a fork whose join is END, a branch jumping back to its own fork, a join that does not match the open fork; synthetic tests for the protected set and for `apply_rewrite` refusing a failed rewrite.
+
+## 11. Spike verdict (2026-11-11)
+
+Played by the user from a new game to Zelda's Lullaby with `TestScenes4` only.
+
+**The method works on event-flow scenes.** No freeze, no black screen, nothing missing:
+- `Dm_Kokiri_0155`: the Fairy Ocarina is received and the scene is gone, but a first part of Saria's scene on the bridge still plays. That part is `Dm_Kokiri_0150`, a timeline (see below).
+- `Dm_HrlCastle_0050`: the conversation that gives Zelda's Letter is skipped and the letter is received.
+- `Dm_MelodyGet_Zelda`: the song is skipped and received.
+- `Dm_Kokiri_0060`: the user still saw "the conversation with Mido and Saria"; which file played it is not known yet (candidates: the timeline `Dm_Kokiri_0050`, or Saria's NPC flow `GuideToDekuTree_BeforeTalkMido`).
+
+Everything else the user saw still plays, as expected, because it was not in the spike: the intro, the Deku Tree and Navi, the targeting and shield tutorials, Mido blocking the way, entering the Deku Tree, the Deku Tree after the boss, the Kokiri at the forest exit, Malon, Zelda's first scene and conversation, a second Zelda scene, and a scene with Zelda after the letter.
+
+**Scenes that are not event flows (§8.3), now measured:**
+- **261 of the 487 `Dm_*` flow files are timelines** (BFEVFL with one `TLIN` timeline and no flowchart), among them the intro `Dm_Kokiri_0000`, `Dm_Kokiri_0050`, `0070`, `0090`, `0140`, `0150`, `0158`, Impa after the letter `Dm_HrlCastle_0060`, and every boss intro and outro. The effects-only rewriter cannot touch them.
+- **26 scenes are pre-rendered movies** (`Event/Movie/*.webm`, `RecordMovieTimelineEvent`), among them `Dm_Kokiri_0000`, `Dm_Kokiri_0095`, `Dm_Kokiri_0160` and `Dm_HrlCastle_0045`.
+- Timelines hold presentation only: a scan of their action names finds no flag, game-data or pouch action. The exceptions with a lasting effect are 3 warps (`EventWarpToTargetPosAndRot` in `Dm_DeathMtTrail_0020`, `Dm_LakeHrl_0010`, `Dm_TimeTemple_0050`; `EventWarpToHomeMatrix` in `Dm_FinalBattle_BossIn`), boots changes and one loading fade-out (`Dm_DeathMtTrail_0030`).
+- The timeline's length is a float in frames at `TLIN + 0x10` (for example 3014 in `Dm_HrlCastle_0060`), followed by the counts of actors, actions, clips, one-shots, subtimelines and triggers.
+
+**Open for the user:** how to skip timelines and movies (proposal: shorten the timeline to almost no frames, keeping the warps, and test it on `Dm_Kokiri_0150`, `Dm_Kokiri_0050` and `Dm_HrlCastle_0060` before phase 2).

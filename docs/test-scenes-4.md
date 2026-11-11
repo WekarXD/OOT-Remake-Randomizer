@@ -43,4 +43,10 @@ Report any of the following, with the scene and where it happened:
 
 ## Results
 
-Notes: ______
+Played 2026-11-11 (spec §11). No freeze, no black screen, nothing missing.
+
+- Saria: Fairy Ocarina received; a first part of the bridge scene still plays (`Dm_Kokiri_0150`, a timeline).
+- Garden: the conversation that gives the letter is skipped; letter received.
+- Lullaby: skipped and received.
+- Kokiri Forest scene (`Dm_Kokiri_0060`): a conversation with Mido and Saria still played; which file it was is not known yet.
+- Everything outside the four scenes still plays, as expected.
