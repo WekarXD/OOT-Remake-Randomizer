@@ -21,7 +21,7 @@ Es la primera semilla generada por el randomizer con Tokensanity en "Todas": sem
 | Árbol Deku, Skulltula de la sala del fondo del sótano | **Pieza de corazón** |
 | Árbol Deku, las dos Skulltulas del sótano | Su ficha |
 | Bosque perdido, Skulltula de encima del teatro (de noche, adulto) | Tarro de magia grande |
-| Kakariko, Skulltula de encima de la casa de Impa y la de la Casa de las Skulltulas (de noche, niño) | Rupia azul cada una |
+| Kakariko, Skulltula de la Casa de las Skulltulas (de noche, niño) y la de encima de la casa de Impa (de noche, adulto) | Rupia azul cada una |
 
 Si llegas más lejos:
 
