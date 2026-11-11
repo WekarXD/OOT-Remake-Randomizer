@@ -152,3 +152,5 @@ Everything else the user saw still plays, as expected, because it was not in the
 - The timeline's length is a float in frames at `TLIN + 0x10` (for example 3014 in `Dm_HrlCastle_0060`), followed by the counts of actors, actions, clips, one-shots, subtimelines and triggers.
 
 **Open for the user:** how to skip timelines and movies (proposal: shorten the timeline to almost no frames, keeping the warps, and test it on `Dm_Kokiri_0150`, `Dm_Kokiri_0050` and `Dm_HrlCastle_0060` before phase 2).
+
+**Timeline spike (TestTimelines, built 2026-11-11):** `randomizer/timeline_skip.py` cuts a timeline right after a fade-in that starts in its first 60 frames (else after 1 frame) and moves the clips in `LASTING` (warps, boots, music, Navi's appearance and colour, NPC schedules, time of day, heart refill) to just before the new end; subtimelines (`_Effect`, `_Env`) are shortened too. Applied to `Dm_Kokiri_0150` (6108 → 60 frames), `Dm_Kokiri_0050` (1178 → 15) and `Dm_HrlCastle_0060` (3014 → 60), on top of the four TestScenes4 scenes. Guide: `docs/test-timelines.md`.
