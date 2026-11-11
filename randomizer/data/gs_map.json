@@ -231,8 +231,8 @@
  "16101480770659370603": {
   "dungeon": true,
   "location": "Deku Tree GS Basement Vines",
-  "note": "medium confidence: room 4, 8 higher (y=86.9) next to the water; the vines one asks for a projectile; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (3.3, 86.9, 1.1)",
-  "status": "guessed"
+  "note": "game: confirmed (batch 17, dropped the purple rupee the spoiler log listed); room 4, 8 higher (y=86.9) next to the water; the vines one asks for a projectile; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (3.3, 86.9, 1.1)",
+  "status": "confirmed"
  },
  "1612219105489330028": {
   "dungeon": true,
@@ -303,8 +303,8 @@
  "18075358844331090388": {
   "dungeon": true,
   "location": "Deku Tree GS Basement Gate",
-  "note": "medium confidence: room 4 (basement) like Basement Vines, different rules (Gate: adult or child attack; Vines: projectile); this one is at ground level (y=78.7) next to the Basement Chest, reachable in melee; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-18.1, 78.7, -13.0)",
-  "status": "guessed"
+  "note": "game: confirmed (batch 17, dropped the blue rupee the spoiler log listed); room 4 (basement) like Basement Vines, different rules (Gate: adult or child attack; Vines: projectile); this one is at ground level (y=78.7) next to the Basement Chest, reachable in melee; InsideTheDekuTree InsideTheDekuTree_Static [DefaultDungeonRoomIndex] (-18.1, 78.7, -13.0)",
+  "status": "confirmed"
  },
  "18139423190738716302": {
   "dungeon": false,

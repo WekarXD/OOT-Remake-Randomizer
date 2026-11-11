@@ -125,12 +125,14 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
 
 
 def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
-    """Contents of eligible chests that need a wrapper and cannot be wrapped."""
+    """Contents of eligible chests that no Skulltula can drop: no floating
+    wrapper can be built for them and the game has no world actor for them."""
     original = {c.hash: c.drop for c in chests}
     rows = wrappers.pouch_rows(game)
-    needing = {original[h] for h in _eligible(chests, loc_map, original)
-               if wrappers.drop_actor(original[h], rows).startswith(wrappers.WRAPPER_PREFIX)}
-    return frozenset(c for c in sorted(needing) if not wrappers.can_wrap(game, c))
+    contents = {original[h] for h in _eligible(chests, loc_map, original)}
+    wrappable = wrappers.wrap_sources(game, contents)
+    return frozenset(c for c in sorted(contents)
+                     if c not in wrappable and wrappers.vanilla_drop(c, rows) is None)
 
 
 def _swap_in(tmp_dir: Path, mod_dir: Path) -> None:

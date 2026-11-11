@@ -5,7 +5,7 @@ from .formats import byml
 from .formats.rstb import Rstb, banc_rstb_size
 from .game import GameData
 from .locations import LocationEntry
-from .wrappers import TOKEN, build_wrapper_files, drop_actor, pouch_rows
+from .wrappers import TOKEN, build_wrapper_files, drop_actor, pouch_rows, wrap_sources
 
 RSTB_PATH = 'System/Resource/ResourceSizeTable.Product.111.Nin_Ounce_NVN2.rsizetable.zs'
 
@@ -44,6 +44,8 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     rs_raw = game.codec.decompress(RSTB_PATH, game.nup.read(RSTB_PATH))
     rstb = Rstb.load(rs_raw)
     rows = pouch_rows(game) if sk_changed else None
+    sources = wrap_sources(game, sk_changed.values()) if sk_changed else {}
+    wrappable = frozenset(sources)
     for path in bancs:
         ver, root = game.load_banc(path)
         for a in root['Actors']:
@@ -54,7 +56,7 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
             if h in sk_changed:
                 if not isinstance(dyn, dict):
                     dyn = a['Dynamic'] = {}
-                dyn['Drop__DropActor'] = drop_actor(sk_changed[h], rows)
+                dyn['Drop__DropActor'] = drop_actor(sk_changed[h], wrappable, rows)
                 continue
             if h in changed and isinstance(dyn, dict) and 'Drop__DropActor' in dyn:
                 dyn['Drop__DropActor'] = placement[h]
@@ -65,7 +67,7 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
         rstb.set(path[:-3], banc_rstb_size(len(raw)))
         written.append(path)
     if sk_changed:
-        wrappers = build_wrapper_files(game, sk_changed.values(), rstb)
+        wrappers = build_wrapper_files(game, sources, rstb)
         for rel, data in wrappers.items():
             _write(mod_root, rel, data)
             written.append(rel)

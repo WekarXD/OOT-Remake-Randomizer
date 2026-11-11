@@ -213,11 +213,13 @@ class RealTests(unittest.TestCase):
                 return res
             self.assertEqual(len(drops(a)), 2)
             self.assertEqual(set(drops(a)), {'Obj_Rando_Item_Boomerang'})
-            self.assertEqual(set(drops(b)), {'Obj_Rupee_Red'})
+            # Minor items float too: the red rupee gets a wrapper.
+            self.assertEqual(set(drops(b)), {'Obj_Rando_TBox_Rupee_Red'})
             self.assertEqual(set(drops(c)), {None})
             pack = 'Pack/Actor/Obj_Rando_Item_Boomerang.pack.zs'
-            self.assertTrue((root / pack).exists())
-            self.assertIn(pack, written)
+            for p in (pack, 'Pack/Actor/Obj_Rando_TBox_Rupee_Red.pack.zs'):
+                self.assertTrue((root / p).exists())
+                self.assertIn(p, written)
             for t in ('ActorInfo', 'GameActorInfo', 'PouchActorInfo'):
                 self.assertTrue((root / 'RSDB' / f'{t}.Product.111.rstbl.byml.zs').exists())
             rstb = Rstb.load(game.codec.decompress(
