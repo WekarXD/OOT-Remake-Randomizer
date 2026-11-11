@@ -70,6 +70,8 @@ def can_wrap(game, content: str) -> bool:
         return False
     if content not in pouch_rows(game):
         return False
+    if not any(r['__RowId'] == content for r in _load_table(game, 'GameActorInfo')[2]):
+        return False
     return any(r['__RowId'] == content for r in _load_table(game, 'ActorInfo')[2])
 
 

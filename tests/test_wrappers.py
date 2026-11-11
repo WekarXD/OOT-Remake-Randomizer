@@ -90,6 +90,20 @@ class TestWrappers(unittest.TestCase):
         self.assertTrue(can_wrap(self.game, 'Item_Hookshot'))
         self.assertFalse(can_wrap(self.game, 'Item_NoExiste'))
 
+    def test_can_wrap_requires_game_actor_info_row(self):
+        from unittest import mock
+
+        from randomizer import wrappers
+        real = wrappers._load_table
+
+        def no_row(game, t):
+            n, v, rows = real(game, t)
+            if t == 'GameActorInfo':
+                rows = [r for r in rows if r['__RowId'] != 'Item_Hookshot']
+            return n, v, rows
+        with mock.patch.object(wrappers, '_load_table', no_row):
+            self.assertFalse(can_wrap(self.game, 'Item_Hookshot'))
+
     def test_can_wrap_chest_contents(self):
         rows = pouch_rows(self.game)
         contents = sorted({c.drop for c in load_chests_fixture(FIXTURE)

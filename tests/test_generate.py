@@ -10,12 +10,14 @@ from randomizer import locations, spoiler
 from randomizer.fill import Settings
 from randomizer.formats import byml
 from randomizer.formats.rstb import Rstb, banc_rstb_size
-from randomizer.game import GameData
+from randomizer.game import GameData, load_chests_fixture, load_skulltulas_fixture
 from randomizer.generate import GenerationError, generate, safe_seed_name
 from randomizer.nup import NupArchive
 from randomizer.patch import RSTB_PATH, write_mod
 
 NUP_PATH = os.environ.get('OOT_NUP')
+CHESTS_FIXTURE = Path(__file__).parent / 'fixtures' / 'chests.json'
+SK_FIXTURE = Path(__file__).parent / 'fixtures' / 'skulltulas.json'
 
 
 def _hashes(root: Path) -> dict[str, str]:
@@ -231,6 +233,15 @@ class RealTests(unittest.TestCase):
             write_mod(game, placement, Path(out), locations.load_map())
             self.assertFalse((Path(out) / 'romfs' / 'RSDB').exists())
 
+    def test_write_mod_chests_only_does_not_scan_skulltulas(self):
+        with tempfile.TemporaryDirectory() as out, NupArchive(NUP_PATH) as nup:
+            game = GameData(nup)
+            placement = {x.hash: x.drop for x in game.chests()}
+            placement[game.chests()[0].hash] = 'Item_Boomerang'
+            with mock.patch.object(GameData, 'skulltulas',
+                                   side_effect=AssertionError('escaneo')):
+                write_mod(game, placement, Path(out), locations.load_map())
+
     def test_spoiler_sections(self):
         with tempfile.TemporaryDirectory() as out:
             res = generate(NUP_PATH, out, Settings(seed='texto'))
@@ -290,6 +301,35 @@ class RealTests(unittest.TestCase):
                 with self.assertRaises(GenerationError):
                     generate(NUP_PATH, out, Settings(seed='gs', tokensanity='all'))
             self.assertEqual(os.listdir(out), [])
+
+
+class SpoilerGsKeyItemsTest(unittest.TestCase):
+    def _build(self, mode):
+        chests = load_chests_fixture(CHESTS_FIXTURE)
+        sk = load_skulltulas_fixture(SK_FIXTURE)
+        gs_map = locations.load_gs_map()
+        loc_map = locations.load_map()
+        placement = {c.hash: c.drop for c in chests}
+        s = next(s for s in sk if s.hash in gs_map)
+        placement[s.hash] = 'Item_Hookshot' if mode != 'off' else 'Obj_Token_Gold'
+        settings = Settings(seed='x', tokensanity=mode)
+        return s, gs_map, spoiler.build(settings, placement, chests, loc_map, '1.3.1',
+                                        sk, gs_map)
+
+    def test_gs_key_item_listed(self):
+        s, gs_map, d = self._build('all')
+        rows = [r for r in d['key_items'] if r['hash'] == str(s.hash)]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(set(rows[0]), {'item', 'label', 'location', 'zone', 'hash'})
+        self.assertEqual(rows[0]['item'], 'Item_Hookshot')
+        self.assertEqual(rows[0]['location'], gs_map[s.hash].location)
+
+    def test_token_label_everywhere(self):
+        self.assertEqual(spoiler._label('Obj_Token_Gold'), 'Ficha de Skulltula dorada')
+
+    def test_off_has_no_gs_key_items(self):
+        s, _m, d = self._build('off')
+        self.assertFalse([r for r in d['key_items'] if r['hash'] == str(s.hash)])
 
 
 class SpoilerTextTest(unittest.TestCase):

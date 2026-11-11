@@ -3,15 +3,18 @@ from . import RANDO_VERSION
 from .fill import TOKEN
 from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS_ES
 
+TOKEN_LABEL = 'Ficha de Skulltula dorada'
+
 
 def _label(drop: str) -> str:
+    if drop == TOKEN:
+        return TOKEN_LABEL
     return LABELS_ES.get(drop, drop)
 
 
 MODE_LABELS = {'any_chest': 'Cualquier cofre', 'vanilla': 'Vanilla'}
 TOKENSANITY_LABELS = {'off': 'Desactivado', 'dungeons': 'Solo mazmorras',
                       'overworld': 'Solo mundo exterior', 'all': 'Todas'}
-TOKEN_LABEL = 'Ficha de Skulltula dorada'
 
 
 def _zone(banc: str) -> str:
@@ -57,6 +60,15 @@ def build(settings, placement, chests, loc_map, game_version,
                               'hash': str(h)})
         if row['changed'] and e is not None and e.strip_event:
             stripped.append(str(h))
+    seen_gs = set()
+    for s in skulltulas:
+        e = (gs_map or {}).get(s.hash)
+        if s.hash in seen_gs or e is None or placement.get(s.hash) not in KEY_ITEMS:
+            continue
+        seen_gs.add(s.hash)
+        key_items.append({'item': placement[s.hash], 'label': _label(placement[s.hash]),
+                          'location': e.location, 'zone': _zone(s.banc),
+                          'hash': str(s.hash)})
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
     result = {
         'seed': settings.seed,
@@ -84,7 +96,7 @@ def _skulltula_rows(placement, skulltulas, gs_map) -> list[dict]:
             continue
         seen.add(s.hash)
         placed = placement[s.hash]
-        label = TOKEN_LABEL if placed == TOKEN else _label(placed)
+        label = _label(placed)
         rows.append({'hash': str(s.hash), 'zone': _zone(s.banc),
                      'location': gs_map[s.hash].location, 'placed': placed,
                      'label': label})

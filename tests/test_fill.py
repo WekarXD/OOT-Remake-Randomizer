@@ -226,6 +226,22 @@ class TokensanityTest(unittest.TestCase):
             for h in flagged:
                 self.assertNotIn(r[h], items.KEY_ITEMS, (i, h))
 
+    def test_tokensanity_no_key_on_guessed_gs(self):
+        guessed = {h for h, e in self.gs_map.items() if e.status == 'guessed'}
+        self.assertTrue(guessed)
+        for i in range(5):
+            r = self.P(f'G{i}', 'all')
+            for h in guessed & set(r):
+                self.assertNotIn(r[h], items.KEY_ITEMS, (i, h))
+
+    def test_tokensanity_forbidden_key_item_not_on_gs(self):
+        gs = set(self._gs('all'))
+        forbidden = frozenset({'Item_Boomerang'})
+        for i in range(5):
+            r = self.P(f'B{i}', 'all', forbidden)
+            for h in gs:
+                self.assertNotIn(r[h], forbidden, (i, h))
+
     def test_tokensanity_completable(self):
         gs = self._gs('all')
         for i in range(5):

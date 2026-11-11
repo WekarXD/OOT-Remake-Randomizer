@@ -23,7 +23,8 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
     # Skulltulas cuyo contenido no es la ficha vanilla: reciben un drop.
-    skulls = game.skulltulas()
+    # Solo se escanean si el reparto trae algún Hash que no es de cofre.
+    skulls = game.skulltulas() if any(h not in original for h in placement) else []
     sk_hashes = {s.hash for s in skulls}
     sk_changed = {h: c for h, c in placement.items()
                   if h in sk_hashes and c != TOKEN}

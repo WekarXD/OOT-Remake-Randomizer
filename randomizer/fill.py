@@ -148,7 +148,8 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
         reach = world.reachable_locations(_fixed(base, site_loc, placed),
                                           owned=to_place[i + 1:])
         candidates = [h for h in free if h not in placed and h not in no_key
-                      and site_loc[h] in reach]
+                      and site_loc[h] in reach
+                      and not (h in gs and item in gs_forbidden)]
         if not candidates:
             return None
         placed[rng.choice(candidates)] = item
@@ -210,7 +211,8 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
     no_key = frozenset(h for h, banc in bancs
                        if banc.split('/')[1:2] and banc.split('/')[1] in NO_KEY_TARGET_ZONES)
-    no_key |= frozenset(h for h in gs if gs_map[h].no_key)
+    no_key |= frozenset(h for h in gs
+                        if gs_map[h].no_key or gs_map[h].status == 'guessed')
     base = world.vanilla_fixed()
     for h in eligible:
         base[site_loc[h]] = FILLER
