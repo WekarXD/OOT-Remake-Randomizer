@@ -114,3 +114,21 @@ For each targeted entry point, the scene is rewritten **in place** so that it ru
 - The exact keep/drop/review table and the full list of entry points, starting from §4.1, §4.3 and the data.
 - How to order fork branches when their order matters (default: branch order in the file).
 - How to detect the item-get and song play-along parameters.
+
+## 10. Spike build notes (2026-11-11)
+
+Built on branch `feat/full-skip` (plan `docs/superpowers/plans/2026-11-11-full-cutscene-skip-spike.md`); test mod `TestScenes4`, guide `docs/test-scenes-4.md`.
+
+Decisions taken while building (each with what it costs if wrong):
+- **Classification order:** action names with `GameData`, `EventBool` or `Pouch` are kept before the drop list is checked, and query names are checked against the state list before the collapse list. Cost: a few waits on flags stay in scenes.
+- **Song play-along** (`EventPlayerPlayOcarina*`) is dropped. Cost: a song that needs that step to be granted would be lost; the spike checks Zelda's Lullaby.
+- **Collapsed switches** skip cases that lead back to the switch (a re-asked question) and take the first case with its own effects; a kept node that can never reach the end is a `loop` error. Cost: a scene whose only effect was behind a re-asked question would lose it.
+- **Fades:** a kept fade-out with no later fade-in is accepted only if the original scene also had none after it (the game fades back at event end). Cost: a black screen the test lets through.
+- **The spike's song** is Zelda's Lullaby (`Dm_MelodyGet_Zelda`), not Saria's or Epona's, because it is on the same play path as Zelda's scene.
+- **`Dm_Kokiri_0060`** is the Kokiri Forest scene with Saria, Mido and Navi, not the Deku Tree's death.
+
+Must be done in phase 2, before rewriting more scenes:
+- Check external callers (EventSetting entries, timelines, cross-file subflows) before relinking an entry point that a scene inlines; the spike relinks the cut entries of its four scenes (no cross-file callers exist for them).
+- Assert "same order along each path" in the real-data tests (§5); the spike only checks that kept actions stay reachable.
+- Implement the fork-dependency flag of §8.4 before scenes that keep waits or state switches (none of the four spike outputs keeps any).
+- Small robustness gaps in the rewriter: a fork whose join is END, a branch jumping back to its own fork, a join that does not match the open fork; synthetic tests for the protected set and for `apply_rewrite` refusing a failed rewrite.
