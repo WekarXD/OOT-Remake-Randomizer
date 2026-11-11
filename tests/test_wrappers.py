@@ -102,7 +102,7 @@ class TestWrappers(unittest.TestCase):
             self.assertIsInstance(ok, bool)
             if not ok:
                 forbidden.append(c)
-        print('\nCAN_WRAP False:', forbidden)
+        self.assertEqual(len(forbidden), len(set(forbidden)))
 
 
 if __name__ == '__main__':
