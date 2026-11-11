@@ -85,7 +85,7 @@ For each targeted entry point, the scene is rewritten **in place** so that it ru
 
 ## 6. Rollout
 
-1. **Spike (throwaway):** four representative scenes, rewritten by hand with the rule of §4.1 and tested in game: Saria's ocarina (`Dm_Kokiri_0155`), the Great Deku Tree's death (`Dm_Kokiri_0060`, one that froze before), Zelda in the garden (`Dm_HrlCastle_0020`) and one song (Saria's Song or Epona's Song). It settles the "review" actions of §4.1 and whether the item-get presentation can be turned off. If the method fails, stop and come back to the user.
+1. **Spike (throwaway):** four representative scenes, rewritten by hand with the rule of §4.1 and tested in game: Saria's ocarina (`Dm_Kokiri_0155`), the Great Deku Tree's death (`Dm_Kokiri_0060`, one that froze before), Zelda in the garden (`Dm_HrlCastle_0050`) and one song (Saria's Song or Epona's Song). It settles the "review" actions of §4.1 and whether the item-get presentation can be turned off. If the method fails, stop and come back to the user.
 2. **Childhood** (Kokiri Forest, Deku Tree, Hyrule Field, Market, Castle, Lon Lon, Kakariko, Death Mountain, Goron City, Zora's Domain, Jabu-Jabu, Dodongo's Cavern).
 3. **Adult** (Temple of Time, Sacred Forest Meadow, the temples, Gerudo Valley and Fortress, Desert, the sages).
 4. **Ganon's Castle and the ending** (except the credits).
