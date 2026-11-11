@@ -1,9 +1,15 @@
+import importlib.util
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from randomizer.skipflow import SkipTable
+
+_spec = importlib.util.spec_from_file_location(
+    'build_skip_actions', Path(__file__).resolve().parent.parent / 'tools' / 'build_skip_actions.py')
+tool = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(tool)
 
 DROP = ['EventWait', 'EventTalk', 'EventMoveToTargetPosCamera',
         'EventMoveCameraAnimationInstructionsForFlowchart', 'EventPlayAS',
@@ -32,6 +38,13 @@ class TableTests(unittest.TestCase):
         for a in KEEP:
             self.assertTrue(self.t.keeps(None, a), a)
 
+    def test_state_keywords_win(self):
+        self.assertTrue(self.t.keeps(None, 'EventGameDataBoolWaitChangeValue'))
+        self.assertTrue(self.t.keeps(None, 'EventScrubBusinessWriteGameDataHaveTalked'))
+        self.assertFalse(self.t.keeps(None, 'EventNaviWarpToPlayerHomePosition'))
+        self.assertFalse(self.t.keeps(None, 'EventTriggerXLinkFadeByKey'))
+        self.assertFalse(self.t.collapses('EventQueryPlayerCheckSelectedItem'))
+
     def test_unknown_query(self):
         self.assertIs(self.t.collapses('NotARealQuery'), False)
 
@@ -59,6 +72,21 @@ class TableTests(unittest.TestCase):
         self.assertTrue(t.keeps(None, 'EventR'))
         self.assertTrue(t.collapses('Q'))
         self.assertFalse(t.collapses('S'))
+
+
+class ClassifierTests(unittest.TestCase):
+    def test_actions(self):
+        c = tool.classify_action
+        self.assertEqual(c('EventGameDataBoolWaitChangeValue'), 'keep')  # state beats drop
+        self.assertEqual(c('EventNaviWarpToPlayerHomePosition'), 'drop')  # drop beats warp keep
+        self.assertEqual(c('EventTransition'), 'keep')
+        self.assertEqual(c('EventSomethingElse'), 'review')
+
+    def test_queries(self):
+        c = tool.classify_query
+        self.assertEqual(c('EventQueryPlayerCheckSelectedItem'), 'state')  # state beats collapse
+        self.assertEqual(c('EventQueryTalkChoiceX'), 'collapse')
+        self.assertEqual(c('EventQueryZzz'), 'review')
 
 
 if __name__ == '__main__':

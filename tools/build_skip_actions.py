@@ -17,13 +17,16 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'randomizer
 ACTION_DROP = ('PlayAS', 'XLink', 'Talk', 'Camera', 'Wait', 'LookAt', 'Turn', 'DoF', 'Light', 'Palette',
                'Rumble', 'Sound', 'Bgm', 'Voice', 'Shake', 'Emotion', 'Ducking', 'Comment', 'DoNothing',
                'Navi', 'Ballon', 'CloseMessageDialog', 'ShadingParams', 'Effect', 'NorifyCutChange')
-ACTION_KEEP = ('GameData', 'EventBool', 'Pouch', 'Transition', 'BancChange', 'Warp', 'AutoSave', 'Fade')
+ACTION_STATE = ('GameData', 'EventBool', 'Pouch')
+ACTION_KEEP = ('Transition', 'BancChange', 'Warp', 'AutoSave', 'Fade')
 QUERY_COLLAPSE = ('TalkChoice', 'Select', 'Random', 'Anim', 'Camera')
 QUERY_STATE = ('GameData', 'Pouch', 'Flag', 'Item', 'Count', 'Have', 'Is')
 SUBFLOWS_DROP = ['GetPouchContent/DisplayGetByActorName', 'Dm_SY_Ocarina/LearningOcarina*', 'Common_Camera_*/*']
 
 
 def classify_action(name):
+    if any(s in name for s in ACTION_STATE):
+        return 'keep'
     if any(s in name for s in ACTION_DROP):
         return 'drop'
     if any(s in name for s in ACTION_KEEP):
@@ -32,10 +35,10 @@ def classify_action(name):
 
 
 def classify_query(name):
-    if any(s in name for s in QUERY_COLLAPSE):
-        return 'collapse'
     if any(s in name for s in QUERY_STATE):
         return 'state'
+    if any(s in name for s in QUERY_COLLAPSE):
+        return 'collapse'
     return 'review'
 
 
