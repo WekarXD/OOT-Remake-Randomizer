@@ -37,7 +37,7 @@ Para jugarlo siguiendo una lista de comprobacion, ver `docs/acceptance.md`.
 - La imagen y el texto del cofre pueden seguir mostrando el objeto original (aceptado en la v1); lo que recibes es el objeto nuevo.
 - Las Flechas de hielo tambien desbloquean el medidor de magia.
 - Los objetos clave no se colocan en el Templo del Agua, el Templo del Fuego, el Pozo ni el Centro de Entrenamiento Gerudo en esta versión.
-- La logica es la de OoTR sin glitches.
+- La logica es la de OoTR sin glitches, con algunas reglas propias del remake donde este es más estricto (`REMAKE_RULES` en `randomizer/logic/world.py`; por ejemplo, el piso de la sala de la brújula del Árbol Deku pide un arma a distancia).
 
 ## Tests
 

@@ -9,3 +9,6 @@ user_config.json
 __pycache__/
 *.pyc
 *.tmp/
+
+# Local Claude Code settings
+.claude/
