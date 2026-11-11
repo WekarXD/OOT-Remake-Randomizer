@@ -1,5 +1,6 @@
 """Spoiler: JSON y texto en español."""
 from . import RANDO_VERSION
+from .fill import TOKEN
 from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS_ES
 
 
@@ -8,6 +9,9 @@ def _label(drop: str) -> str:
 
 
 MODE_LABELS = {'any_chest': 'Cualquier cofre', 'vanilla': 'Vanilla'}
+TOKENSANITY_LABELS = {'off': 'Desactivado', 'dungeons': 'Solo mazmorras',
+                      'overworld': 'Solo mundo exterior', 'all': 'Todas'}
+TOKEN_LABEL = 'Ficha de Skulltula dorada'
 
 
 def _zone(banc: str) -> str:
@@ -15,7 +19,8 @@ def _zone(banc: str) -> str:
     return parts[1] if len(parts) > 2 else banc
 
 
-def build(settings, placement, chests, loc_map, game_version) -> dict:
+def build(settings, placement, chests, loc_map, game_version,
+          skulltulas=(), gs_map=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -53,7 +58,7 @@ def build(settings, placement, chests, loc_map, game_version) -> dict:
         if row['changed'] and e is not None and e.strip_event:
             stripped.append(str(h))
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
-    return {
+    result = {
         'seed': settings.seed,
         'settings': {'key_items_mode': settings.key_items_mode,
                      'excluded_items': sorted(settings.excluded_items),
@@ -66,6 +71,25 @@ def build(settings, placement, chests, loc_map, game_version) -> dict:
         'excluded': excluded,
         'stripped_event_sites': stripped,
     }
+    if settings.tokensanity != 'off':
+        result['settings']['tokensanity'] = settings.tokensanity
+        result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
+    return result
+
+
+def _skulltula_rows(placement, skulltulas, gs_map) -> list[dict]:
+    rows, seen = [], set()
+    for s in skulltulas:
+        if s.hash in seen or s.hash not in placement or s.hash not in gs_map:
+            continue
+        seen.add(s.hash)
+        placed = placement[s.hash]
+        label = TOKEN_LABEL if placed == TOKEN else _label(placed)
+        rows.append({'hash': str(s.hash), 'zone': _zone(s.banc),
+                     'location': gs_map[s.hash].location, 'placed': placed,
+                     'label': label})
+    rows.sort(key=lambda r: (r['location'], r['hash']))
+    return rows
 
 
 def to_text(d: dict) -> str:
@@ -74,8 +98,11 @@ def to_text(d: dict) -> str:
     lines = ['Semilla', f'  {d["seed"]}', '', 'Ajustes',
              f'  Modo de objetos clave: {MODE_LABELS.get(s["key_items_mode"], s["key_items_mode"])}',
              f'  Objetos excluidos: {excl}',
-             f'  Saltar cinemáticas: {"Sí" if s.get("skip_cutscenes") else "No"}',
-             '', 'Versión del randomizer', f'  {d["randomizer_version"]}', '',
+             f'  Saltar cinemáticas: {"Sí" if s.get("skip_cutscenes") else "No"}']
+    if 'tokensanity' in s:
+        lines.append('  Fichas de Skulltula (Tokensanity): '
+                     f'{TOKENSANITY_LABELS.get(s["tokensanity"], s["tokensanity"])}')
+    lines += ['', 'Versión del randomizer', f'  {d["randomizer_version"]}', '',
              'Versión del juego', f'  {d["game_version"]}', '', 'Objetos clave']
     for k in d['key_items']:
         lines.append(f'  {k["label"]}: {k["location"]} ({k["zone"]})')
@@ -90,4 +117,8 @@ def to_text(d: dict) -> str:
         loc = r['location'] or 'sin asociar'
         lines.append(f'  {r["zone"]} {r["hash"]} [{loc}]: {_label(r["original"])}'
                      f' ({r["reason"]})')
+    if 'skulltulas' in d:
+        lines += ['', 'Skulltulas']
+        for r in d['skulltulas']:
+            lines.append(f'  {r["location"]} ({r["zone"]}): {r["label"]}')
     return '\n'.join(lines) + '\n'

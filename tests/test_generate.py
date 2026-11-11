@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from randomizer import locations
+from randomizer import locations, spoiler
 from randomizer.fill import Settings
 from randomizer.formats import byml
 from randomizer.formats.rstb import Rstb, banc_rstb_size
@@ -240,6 +240,80 @@ class RealTests(unittest.TestCase):
                         'Excluidos / sin asociar'):
                 self.assertIn(sec, text)
             self.assertFalse((Path(res.mod_dir) / 'romfs' / 'spoiler.txt').exists())
+
+    def test_generate_tokensanity_all(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            s = Settings(seed='gs', tokensanity='all')
+            ra = generate(NUP_PATH, a, s)
+            data = json.loads(Path(ra.spoiler_json).read_text(encoding='utf-8'))
+            self.assertEqual(data['settings']['tokensanity'], 'all')
+            self.assertEqual(len(data['skulltulas']), 100)
+            self.assertEqual([r['location'] for r in data['skulltulas']],
+                             sorted(r['location'] for r in data['skulltulas']))
+            text = Path(ra.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('Skulltulas', text)
+            self.assertIn('Fichas de Skulltula (Tokensanity): Todas', text)
+            root = Path(ra.mod_dir) / 'romfs'
+            used = set()
+            with NupArchive(NUP_PATH) as nup:
+                game = GameData(nup)
+                for banc in {x.banc for x in game.skulltulas()} |                         {x.banc for x in game.chests()}:
+                    f = root / banc
+                    if not f.exists():
+                        continue
+                    _v, r = byml.load(game.codec.decompress(banc, f.read_bytes()))
+                    for act in r['Actors']:
+                        dyn = act.get('Dynamic') if isinstance(act, dict) else None
+                        d = dyn.get('Drop__DropActor') if isinstance(dyn, dict) else None
+                        if isinstance(d, str) and d.startswith('Obj_Rando_'):
+                            used.add(d)
+            self.assertTrue(used)
+            for d in used:
+                self.assertTrue((root / 'Pack' / 'Actor' / f'{d}.pack.zs').exists(), d)
+            rb = generate(NUP_PATH, b, s)
+            self.assertEqual(_hashes(Path(ra.mod_dir)), _hashes(Path(rb.mod_dir)))
+
+    def test_generate_tokensanity_off_unchanged(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            ra = generate(NUP_PATH, a, Settings(seed='x'))
+            rb = generate(NUP_PATH, b, Settings(seed='x', tokensanity='off'))
+            self.assertEqual(_hashes(Path(ra.mod_dir)), _hashes(Path(rb.mod_dir)))
+            data = json.loads(Path(ra.spoiler_json).read_text(encoding='utf-8'))
+            self.assertNotIn('skulltulas', data)
+            self.assertNotIn('tokensanity', data['settings'])
+            self.assertNotIn('Skulltula', Path(ra.spoiler_txt).read_text(encoding='utf-8'))
+
+    def test_wrapper_error_becomes_generation_error(self):
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch('randomizer.patch.build_wrapper_files',
+                            side_effect=ValueError('roto')):
+                with self.assertRaises(GenerationError):
+                    generate(NUP_PATH, out, Settings(seed='gs', tokensanity='all'))
+            self.assertEqual(os.listdir(out), [])
+
+
+class SpoilerTextTest(unittest.TestCase):
+    def _data(self, mode):
+        d = {'seed': 's', 'settings': {'key_items_mode': 'any_chest', 'excluded_items': [],
+                                       'spoiler': True, 'skip_cutscenes': False},
+             'randomizer_version': '1', 'game_version': '1.3.1', 'key_items': [],
+             'chests': [], 'excluded': [], 'stripped_event_sites': []}
+        if mode != 'off':
+            d['settings']['tokensanity'] = mode
+            d['skulltulas'] = [{'hash': '5', 'zone': 'Kokiri', 'location': 'GS Casa',
+                                'placed': 'Obj_Token_Gold',
+                                'label': 'Ficha de Skulltula dorada'}]
+        return d
+
+    def test_to_text_tokensanity(self):
+        text = spoiler.to_text(self._data('dungeons'))
+        self.assertIn('Fichas de Skulltula (Tokensanity): Solo mazmorras', text)
+        self.assertIn('\nSkulltulas\n  GS Casa (Kokiri): Ficha de Skulltula dorada', text)
+
+    def test_to_text_off_has_no_section(self):
+        text = spoiler.to_text(self._data('off'))
+        self.assertNotIn('Skulltula', text)
+        self.assertNotIn('Tokensanity', text)
 
 
 if __name__ == '__main__':

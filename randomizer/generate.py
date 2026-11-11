@@ -12,8 +12,9 @@ from pathlib import Path
 from . import locations, patch, spoiler
 from .cutscenes import build_cutscene_files
 from .formats.bfevfl import BfevflError
-from .fill import FillError, Settings, place
+from .fill import FillError, Settings, _eligible, place
 from .game import GameData
+from . import wrappers
 from .logic.world import World, load_vanilla_settings
 from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError, TITLE_ID
 
@@ -76,8 +77,15 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 game = GameData(nup)
                 chests = game.chests()
                 loc_map = locations.load_map()
-                placement = place(chests, loc_map,
-                                  World(load_vanilla_settings()), settings)
+                world_settings = dict(load_vanilla_settings())
+                world_settings['tokensanity'] = settings.tokensanity
+                skulltulas, gs_map, gs_forbidden = (), None, frozenset()
+                if settings.tokensanity != 'off':
+                    skulltulas = game.skulltulas()
+                    gs_map = locations.load_gs_map()
+                    gs_forbidden = _gs_forbidden(game, chests, loc_map)
+                placement = place(chests, loc_map, World(world_settings), settings,
+                                  skulltulas, gs_map, gs_forbidden)
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
@@ -88,10 +96,14 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(
                             f'No se pudieron preparar las cinemáticas: {e}') from e
-                changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras)
+                try:
+                    changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras)
+                except ValueError as e:
+                    raise GenerationError(
+                        f'No se pudieron preparar los envoltorios de objetos: {e}') from e
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
-                                         SUPPORTED_DISPLAY_VERSION)
+                                         SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map)
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
                                                          encoding='utf-8')
                     (tmp_dir / 'spoiler.json').write_text(
@@ -110,6 +122,15 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
         shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
     return GenerateResult(settings.seed, str(mod_dir), txt_path, json_path, changed)
+
+
+def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
+    """Contenidos de cofres elegibles que necesitan envoltorio y no se pueden envolver."""
+    original = {c.hash: c.drop for c in chests}
+    rows = wrappers.pouch_rows(game)
+    needing = {original[h] for h in _eligible(chests, loc_map, original)
+               if wrappers.drop_actor(original[h], rows).startswith(wrappers.WRAPPER_PREFIX)}
+    return frozenset(c for c in sorted(needing) if not wrappers.can_wrap(game, c))
 
 
 def _swap_in(tmp_dir: Path, mod_dir: Path) -> None:
