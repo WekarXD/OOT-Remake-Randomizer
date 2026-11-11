@@ -98,7 +98,8 @@ class GameData:
                 if a.get('Gyaml') != SKULLTULA_GYAML:
                     continue
                 dyn = a.get('Dynamic')
-                flags = tuple(sorted(k for k, v in dyn.items() if v))                     if isinstance(dyn, dict) else ()
+                flags = (tuple(sorted(k for k, v in dyn.items() if v))
+                         if isinstance(dyn, dict) else ())
                 pos = a.get('Translate') or (0.0, 0.0, 0.0)
                 out.append(SkulltulaActor(path, int(a['Hash']), flags,
                                           tuple(float(x) for x in pos)))

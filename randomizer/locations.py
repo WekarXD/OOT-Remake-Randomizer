@@ -35,11 +35,15 @@ class GsEntry:
     # requisitos idénticos a la otra candidata. 'guessed': falta comprobarla.
     status: str
     note: str
+    # True: el comportamiento del remake contradice la lógica de OoTR; no
+    # recibe objetos clave.
+    no_key: bool = False
 
 
 def load_gs_map(path=GS_MAP_PATH) -> dict[int, GsEntry]:
     with open(path, encoding='utf-8') as f:
         raw = json.load(f)
     return {int(h): GsEntry(int(h), e['location'], bool(e['dungeon']),
-                            e['status'], e['note'])
+                            e['status'], e['note'],
+                            bool(e.get('no_key', False)))
             for h, e in raw.items()}

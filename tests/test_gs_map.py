@@ -40,6 +40,12 @@ class GsMapTest(unittest.TestCase):
             self.assertEqual(self.map[h].location, name, h)
             self.assertEqual(self.map[h].status, 'confirmed', h)
 
+    def test_no_key_where_remake_contradicts_ootr(self):
+        # Cow Grotto: solo en el Banc de adulto, OoTR la permite de niño.
+        # ZR Tree: tierra blanda en el remake, OoTR pide can_bonk.
+        got = {h for h, e in self.map.items() if e.no_key}
+        self.assertEqual(got, {9047381233010434881, 12370559827741970774})
+
     def test_every_entry_has_note(self):
         for e in self.map.values():
             self.assertTrue(e.note, e.hash)

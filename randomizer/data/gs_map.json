@@ -92,7 +92,8 @@
  "12370559827741970774": {
   "dungeon": false,
   "location": "ZR GS Tree",
-  "note": "confianza media: por descarte. OJO: en el remake es de tierra blanda (IsMagicBeanSoil, Obj_SmallFarm), no de árbol; OoTR pide can_bonk; ZoraRiver ZoraRiver_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-54.6, 100.6, -11.9)",
+  "no_key": true,
+  "note": "confianza media: por descarte. OJO: en el remake es de tierra blanda (IsMagicBeanSoil, Obj_SmallFarm), no de árbol; OoTR pide can_bonk; ZoraRiver ZoraRiver_Child_Static [AppearPlayerCheck,AppearPopOut,AvoidTargetAngle,IsMagicBeanSoil] (-54.6, 100.6, -11.9); no_key: en el remake sale de tierra blanda y OoTR pide can_bonk (árbol); no recibe objetos clave",
   "status": "guessed"
  },
  "12751796212121957464": {
@@ -542,7 +543,8 @@
  "9047381233010434881": {
   "dungeon": false,
   "location": "HF GS Cow Grotto",
-  "note": "confianza media: gruta con Piedra chismosa y hada. OJO: en el remake solo está en el Banc de adulto y OoTR la permite de niño (fuego + bumerán); HyruleField HyruleField_Adult_Static [AppearPopOut,IsAgonyStoneBoxConnect] (56.5, 126.3, 342.6)",
+  "no_key": true,
+  "note": "confianza media: gruta con Piedra chismosa y hada. OJO: en el remake solo está en el Banc de adulto y OoTR la permite de niño (fuego + bumerán); HyruleField HyruleField_Adult_Static [AppearPopOut,IsAgonyStoneBoxConnect] (56.5, 126.3, 342.6); no_key: el remake la tiene solo en el Banc de adulto y OoTR la da por alcanzable de niño (fuego + bumerán); no recibe objetos clave",
   "status": "guessed"
  },
  "9162653017526462607": {
