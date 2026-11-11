@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 
 from .. import config, locations
-from ..fill import Settings
+from ..fill import TOKENSANITY, Settings
 from ..generate import GenerationError, generate
 from ..items import KEY_ITEM_HOME, KEY_ITEMS, LABELS_ES, NON_EXCLUDABLE
 from ..nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, TITLE_ID, NupArchive, NupError
@@ -214,6 +214,9 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             skip = body.get('skip_cutscenes', False)
             if not isinstance(skip, bool):
                 return self._err('skip_cutscenes debe ser true o false')
+            tokensanity = body.get('tokensanity', 'off')
+            if not isinstance(tokensanity, str) or tokensanity not in TOKENSANITY:
+                return self._err('Valor de Tokensanity no válido.')
             bad = [x for x in excluded if x in NON_EXCLUDABLE]
             if bad:
                 return self._err(
@@ -226,7 +229,7 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
             effective = frozenset(x for x in excluded if movable.get(x, True))
             settings = Settings(seed=seed, key_items_mode=mode,
                                 excluded_items=effective, spoiler=spoiler,
-                                skip_cutscenes=skip)
+                                skip_cutscenes=skip, tokensanity=tokensanity)
             if not _GENERATE_LOCK.acquire(blocking=False):
                 return self._err('Ya hay una generación en curso.', 409)
             try:
@@ -243,7 +246,8 @@ def make_server(port: int, config_path: Path) -> ThreadingHTTPServer:
                             'last_settings': {'seed': seed, 'key_items_mode': mode,
                                               'excluded_items': sorted(excluded),
                                               'spoiler': settings.spoiler,
-                                              'skip_cutscenes': skip}})
+                                              'skip_cutscenes': skip,
+                                              'tokensanity': tokensanity}})
                 config.save(config_path, cfg)
             self._json({'ok': True, 'seed': res.seed, 'mod_dir': res.mod_dir,
                         'spoiler_txt': res.spoiler_txt,

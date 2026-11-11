@@ -120,6 +120,33 @@ class ServerTest(unittest.TestCase):
                 self.assertEqual(d['error'], 'skip_cutscenes debe ser true o false')
         g.assert_not_called()
 
+    def test_tokensanity_invalid(self):
+        with mock.patch('randomizer.web.server.generate') as g:
+            for bad in ('todo', 1, None, ['all']):
+                status, d = self.jreq('/api/generate', self.gen_body(tokensanity=bad))
+                self.assertEqual(status, 400, bad)
+                self.assertEqual(d['error'], 'Valor de Tokensanity no válido.')
+        g.assert_not_called()
+
+    def test_tokensanity_valid_reaches_settings_and_config(self):
+        res = GenerateResult('s', 'mod', None, None, [])
+        for value in ('off', 'dungeons', 'overworld', 'all'):
+            with self.subTest(value=value):
+                with mock.patch('randomizer.web.server.generate', return_value=res) as g:
+                    status, d = self.jreq('/api/generate', self.gen_body(tokensanity=value))
+                self.assertTrue(d['ok'])
+                self.assertEqual(g.call_args.args[2].tokensanity, value)
+                saved = json.loads(self.cfg.read_text(encoding='utf-8'))
+                self.assertEqual(saved['last_settings']['tokensanity'], value)
+
+    def test_tokensanity_defaults_to_off(self):
+        res = GenerateResult('s', 'mod', None, None, [])
+        with mock.patch('randomizer.web.server.generate', return_value=res) as g:
+            self.jreq('/api/generate', self.gen_body())
+        self.assertEqual(g.call_args.args[2].tokensanity, 'off')
+        saved = json.loads(self.cfg.read_text(encoding='utf-8'))
+        self.assertEqual(saved['last_settings']['tokensanity'], 'off')
+
     def test_last_settings_without_skip(self):
         config.save(self.cfg, {'last_settings': {'seed': 'a'}})
         status, d = self.jreq('/api/config')
