@@ -37,4 +37,25 @@ Los objetos de adulto (botas, guanteletes, martillo, escudo espejo) no se pueden
 
 ## Resultados
 
-(Pendiente de rellenar tras probarlo.)
+Resultados en el juego (2026-11-11). El juego no se colgó.
+
+| Prueba | Resultado |
+|---|---|
+| Cofres de Mido | Los dos dan la ficha y el contador sube. Valen `Obj_Token_Gold` e `Item_Token_Gold`. |
+| Skulltula nocturna | Funciona: suelta los Guanteletes de plata y llegan al equipo. El día y la noche no avanzan hasta conseguir la carta de Zelda y salir del castillo. |
+| Tierra blanda | Sin probar (no había insectos en botella). |
+| A (Botas de hierro) | Tras cogerlas, la Skulltula no vuelve a aparecer. |
+| B (ficha puesta a mano) | Sube el contador y la Skulltula no vuelve. |
+| C (salir sin coger el Martillo) | Al volver, la Skulltula ha vuelto a aparecer. Se mata otra vez y el Martillo llega al inventario. **El objeto no se pierde.** |
+| D (guardar y cargar) | El Escudo espejo se conserva y la Skulltula no vuelve. |
+| Contador final | 3 (dos cofres más B), correcto. |
+
+Conclusión: **la fase 1 de Tokensanity está superada.**
+
+- Las fichas pueden ir en cofres.
+- Una Skulltula queda "cogida" cuando se recoge lo que suelta.
+- Si no se recoge, la Skulltula vuelve y lo suelta otra vez. Nada se pierde ni se puede coger dos veces.
+- Las nocturnas funcionan.
+- Los envoltorios valen para varias familias de objetos clave: botas y guanteletes (`Armor_*`), martillo (`Item_*`) y escudo (`Weapon_*`).
+
+Queda sin probar la Skulltula de tierra blanda. Se comprobará en la semilla de prueba de la fase 3.

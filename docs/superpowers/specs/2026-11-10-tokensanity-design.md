@@ -65,6 +65,16 @@ Hasta ahora no se podía hacer, porque los objetos clave (`Item_*`) soltados por
 
 ## 4. Lo que falta por saber (se prueba en el juego al empezar)
 
+**Resuelto en el lote 15 (2026-11-11, `docs/test-batch-15.md`).**
+
+- 1 y 3: las fichas valen en cofres (`Obj_Token_Gold` o `Item_Token_Gold`) y como suelta explícita, y el contador sube.
+- 2: tras recoger lo que suelta, la Skulltula no vuelve.
+- 4: la nocturna funciona; la de tierra blanda queda sin probar.
+- 5: si no se recoge el objeto, la Skulltula vuelve y lo suelta otra vez, así que no se pierde.
+- 6: probados el Bumerán, el Gancho, las Botas de hierro, los Guanteletes de plata, el Martillo y el Escudo espejo.
+
+El texto original sigue a continuación.
+
 1. **Una ficha que sale de un cofre** (`Drop__DropActor: Obj_Token_Gold` en un cofre): ¿aparece, se coge y sube el contador? La ficha tiene un dato `GoldTokenGmdHash` que podría ligarla a su Skulltula.
 2. **Una Skulltula que suelta otra cosa** (envoltorio, rupia): ¿se queda como "cogida" al salir y volver a entrar, y al cargar la partida, o vuelve a aparecer y a soltar el objeto? Si vuelve a aparecer y el objeto se puede coger otra vez, no bloquea la partida, pero hay que saberlo.
 3. **Una ficha que sale de otra Skulltula:** ¿cuenta bien?
