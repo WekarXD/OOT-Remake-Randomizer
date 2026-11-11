@@ -13,7 +13,7 @@ from randomizer.formats.rstb import Rstb, banc_rstb_size
 from randomizer.game import GameData
 from randomizer.generate import GenerationError, generate, safe_seed_name
 from randomizer.nup import NupArchive
-from randomizer.patch import RSTB_PATH
+from randomizer.patch import RSTB_PATH, write_mod
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -182,6 +182,54 @@ class RealTests(unittest.TestCase):
             for c in chests:
                 if c.hash in changed:
                     self.assertIn(c.banc, written)
+
+    def test_write_mod_skulltula_drops(self):
+        with tempfile.TemporaryDirectory() as out, NupArchive(NUP_PATH) as nup:
+            game = GameData(nup)
+            sk = game.skulltulas()
+            count = {}
+            for s in sk:
+                count[s.hash] = count.get(s.hash, 0) + 1
+            dup = next(h for h, n in count.items() if n > 1)
+            others = [h for h in dict.fromkeys(s.hash for s in sk) if h != dup]
+            a, b, c = dup, others[0], others[1]
+            placement = {x.hash: x.drop for x in game.chests()}
+            placement.update({a: 'Item_Boomerang', b: 'TBox_Rupee_Red',
+                              c: 'Obj_Token_Gold'})
+            written = write_mod(game, placement, Path(out), locations.load_map())
+            root = Path(out) / 'romfs'
+
+            def drops(h):
+                res = []
+                for banc in sorted({s.banc for s in sk if s.hash == h}):
+                    raw = game.codec.decompress(
+                        banc, (root / banc).read_bytes())
+                    _v, r = byml.load(raw)
+                    for act in r['Actors']:
+                        if isinstance(act, dict) and act.get('Hash') == h:
+                            res.append((act.get('Dynamic') or {}).get('Drop__DropActor'))
+                return res
+            self.assertEqual(len(drops(a)), 2)
+            self.assertEqual(set(drops(a)), {'Obj_Rando_Item_Boomerang'})
+            self.assertEqual(set(drops(b)), {'Obj_Rupee_Red'})
+            self.assertEqual(set(drops(c)), {None})
+            pack = 'Pack/Actor/Obj_Rando_Item_Boomerang.pack.zs'
+            self.assertTrue((root / pack).exists())
+            self.assertIn(pack, written)
+            for t in ('ActorInfo', 'GameActorInfo', 'PouchActorInfo'):
+                self.assertTrue((root / 'RSDB' / f'{t}.Product.111.rstbl.byml.zs').exists())
+            rstb = Rstb.load(game.codec.decompress(
+                RSTB_PATH, (root / RSTB_PATH).read_bytes()))
+            self.assertGreater(rstb.get(pack[:-3]), 0)
+
+    def test_write_mod_no_skulltulas_no_rsdb(self):
+        with tempfile.TemporaryDirectory() as out, NupArchive(NUP_PATH) as nup:
+            game = GameData(nup)
+            placement = {x.hash: x.drop for x in game.chests()}
+            first = game.chests()[0]
+            placement[first.hash] = 'Item_Boomerang'
+            write_mod(game, placement, Path(out), locations.load_map())
+            self.assertFalse((Path(out) / 'romfs' / 'RSDB').exists())
 
     def test_spoiler_sections(self):
         with tempfile.TemporaryDirectory() as out:
