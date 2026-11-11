@@ -34,6 +34,16 @@ TOKEN = 'Obj_Token_Gold'
 OOTR_TOKEN = 'Gold Skulltula Token'
 MAX_ATTEMPTS = 100
 FILLER = 'Rupees (5)'
+# Ammo -> key item that holds it. In the remake, picking up ammo without its
+# container unlocks the container in the inventory without making it usable
+# (batch 17: bombs before the Bomb Bag). Ammo only goes to chests that cannot
+# be reached without the container, and never to a Skulltula.
+AMMO_CONTAINER: dict[str, str] = {
+    'Item_BombBundle_Small': 'Item_BombBag_Small',
+    'Item_BombchuBundle_Small': 'Item_BombBag_Small',
+    'TBox_ArrowBundle_Medium': 'Item_Range_Bow',
+    'TBox_ArrowBundle_Large': 'Item_Range_Bow',
+}
 # Zones (path segment of the Banc after 'Banc/') where no key items are
 # placed. Their chests are still sources of items and destinations for filler,
 # but in the remake the number of small keys and doors in these dungeons
@@ -157,6 +167,26 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     rest = [original[h] for h in free if h not in moving]
     rng.shuffle(rest)
     open_sites = [h for h in free if h not in placed]
+    ammo = [drop for drop in rest if drop in AMMO_CONTAINER]
+    if ammo:
+        rest = [drop for drop in rest if drop not in AMMO_CONTAINER]
+        fixed_now = _fixed(base, site_loc, placed)
+        # Owning every token gives the widest reach, so the gated sites
+        # computed this way need the container whatever the tokens do.
+        tokens = [OOTR_TOKEN] * 100
+        gated: dict[str, list[int]] = {}
+        for container in sorted({AMMO_CONTAINER[a] for a in ammo}):
+            without = {loc: FILLER if item == container else item
+                       for loc, item in fixed_now.items()}
+            reach = world.reachable_locations(without, owned=tokens)
+            gated[container] = [h for h in open_sites
+                                if h not in gs and site_loc[h] not in reach]
+        for drop in ammo:
+            candidates = [h for h in gated[AMMO_CONTAINER[drop]] if h not in placed]
+            if not candidates:
+                return None
+            placed[rng.choice(candidates)] = drop
+        open_sites = [h for h in open_sites if h not in placed]
     # Free Skulltulas are filled first, with the first shuffled contents that
     # can be dropped; what is left goes to the free chests.
     open_gs = [h for h in open_sites if h in gs]

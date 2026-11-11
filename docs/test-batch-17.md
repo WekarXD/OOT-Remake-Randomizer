@@ -51,6 +51,48 @@ Key items in Skulltulas, if you get further:
 - [ ] Is there any other place the logic sends you to that cannot be reached? ______
 - [ ] Did the game hang or show a black screen? When? ______
 
+### Results (played up to leaving Kokiri Forest)
+
+- Everything worked up to leaving Kokiri Forest, including climbing to the compass room with the Slingshot.
+- **Bug:** the bombs in the Slingshot room big chest unlocked the Bomb Bag in the inventory without the bag, and they could not be used. **Fix:** ammo (bombs, Bombchus, arrows) now only goes to chests that cannot be reached without its container, the Bomb Bag or the Bow (`AMMO_CONTAINER` in `randomizer/fill.py`), and never to a Skulltula.
+- The basement Skulltulas dropped the blue and the purple rupee, and both could be picked up. The purple one fell to the floor instead of floating like the tokens. Rupees use the game's own drop actor, which falls like an enemy drop. If it is not collected the Skulltula comes back and drops it again, so nothing is lost.
+
+## Attempt 3: seed `TestTokens3`
+
+### Setup
+
+- [ ] Remove `Rando_TestTokens2`.
+- [ ] Copy `test-mod/0400486024DEC000/Rando_TestTokens3` to `load/0400486024DEC000/`.
+- [ ] Start a **new game**.
+
+### What to check
+
+| Place | Should give |
+|---|---|
+| Mido's house, top right | **Fairy Slingshot** |
+| Mido's house, bottom left | **Kokiri Sword** |
+| Mido's house, top left and bottom right | Token |
+| Kokiri Sword chest | Red rupee |
+| Deku Tree, Slingshot room big chest | Deku Sticks |
+| Deku Tree, Slingshot room side chest | Token |
+| Deku Tree, compass room side chest | Green rupee |
+| Deku Tree, basement chest | Blue rupee |
+| Deku Tree, all four Skulltulas | Their token |
+| Kokiri Forest, bean patch Skulltula (child, drop bugs on the soft soil) | **Longshot** (first test of a soft-soil Skulltula) |
+| Lost Woods, Skulltula above the theater (adult, at night) | Green rupee |
+| Kakariko, Skulltula near the gate guard (child, at night) | **Lens of Truth** |
+| Kakariko, Skulltula in the house under construction (child, at night) | Purple rupee |
+| Hyrule Field, cow grotto Skulltula | Hylian Shield |
+
+Ammo in this seed is only in late dungeons (Ganon's Castle, Shadow Temple, Gerudo Training Ground).
+
+### Check
+
+- [ ] Does any chest give bombs, Bombchus or arrows before you have the Bomb Bag or the Bow? ______
+- [ ] Does the soft-soil Skulltula appear and drop the Longshot? ______
+- [ ] Did any Skulltula drop something other than expected, or nothing? ______
+- [ ] Did the game hang or show a black screen? When? ______
+
 ## Results
 
 (To be filled in after testing.)

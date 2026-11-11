@@ -4,8 +4,8 @@ from collections import Counter
 from pathlib import Path
 
 from randomizer import items, locations
-from randomizer.fill import (NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN, FillError, Settings,
-                              gs_sites, place)
+from randomizer.fill import (AMMO_CONTAINER, NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN,
+                              FillError, Settings, gs_sites, place)
 from randomizer.game import load_chests_fixture, load_skulltulas_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
@@ -165,6 +165,34 @@ class TokensanityTest(unittest.TestCase):
 
     def _gs(self, mode):
         return gs_sites(self.skulltulas, self.gs_map, mode)
+
+    def test_ammo_only_where_container_is_required(self):
+        # Batch 17: bombs from a chest before the Bomb Bag unlocked the bag in
+        # the inventory without being usable. Ammo may only land on a site
+        # that cannot be reached without its container.
+        sites = {h: self.loc_map[h].location for h in _eligible_hashes(self.chests, self.loc_map)}
+        sites.update((h, self.gs_map[h].location) for h in self._gs('all'))
+        for seed, mode in (('A1', 'off'), ('A2', 'off'), ('A3', 'all'), ('A4', 'all')):
+            r = self.P(seed, mode)
+            fixed = self.world.vanilla_fixed()
+            for h, loc in sites.items():
+                if h in r:
+                    drop = r[h]
+                    fixed[loc] = (drop if drop in items.KEY_ITEMS
+                                  else OOTR_TOKEN if drop == TOKEN else 'Rupees (5)')
+            checked = 0
+            for h, loc in sites.items():
+                container = AMMO_CONTAINER.get(r.get(h))
+                if container is None:
+                    continue
+                without = dict(fixed)
+                for other, item in fixed.items():
+                    if item == container:
+                        without[other] = 'Rupees (5)'
+                reach = self.world.reachable_locations(without, owned=[OOTR_TOKEN] * 100)
+                self.assertNotIn(loc, reach, (seed, r[h], loc))
+                checked += 1
+            self.assertGreater(checked, 0, seed)
 
     def test_tokensanity_off_identical(self):
         self.assertEqual(self._place(seed='ABC'), self.P('ABC', 'off'))
