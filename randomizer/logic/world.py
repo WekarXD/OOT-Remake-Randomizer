@@ -54,6 +54,27 @@ SETTINGS_PATH = Path(__file__).resolve().parent / 'vanilla_settings.json'
 Rule = Callable[[State, str], bool]
 
 
+# Reglas propias del remake que endurecen las de OoTR, por
+# (región, tipo, sitio). `{orig}` es la regla original de OoTR.
+# - Árbol Deku: para subir al piso de la sala de la brújula hay que matar las
+#   Skulltulas de las enredaderas con un arma a distancia (lote 17). El sótano
+#   se abre saltando desde ese piso sobre la telaraña.
+_DEKU_UPPER = 'can_use(Slingshot) or can_use(Bow) or can_use(Hookshot)'
+REMAKE_RULES: dict[tuple[str, str, str], str] = {
+    ('Deku Tree Lobby', 'locations', 'Deku Tree Compass Chest'): _DEKU_UPPER,
+    ('Deku Tree Lobby', 'locations', 'Deku Tree Compass Room Side Chest'): _DEKU_UPPER,
+    ('Deku Tree Lobby', 'locations', 'Deku Tree GS Compass Room'):
+        f'({{orig}}) and ({_DEKU_UPPER})',
+    ('Deku Tree Lobby', 'exits', 'Deku Tree Basement'):
+        f'deku_tree_shortcuts or (({{orig}}) and here({_DEKU_UPPER}))',
+}
+
+
+def _remake_rule(region: str, kind: str, spot: str, rule: str) -> str:
+    override = REMAKE_RULES.get((region, kind, spot))
+    return rule if override is None else override.replace('{orig}', rule)
+
+
 def load_vanilla_settings() -> dict:
     data = json.loads(SETTINGS_PATH.read_text(encoding='utf-8'))
     data.pop('_comment', None)
@@ -85,6 +106,7 @@ class World:
                 for kind in ('exits', 'locations', 'events'):
                     target = getattr(region, kind)
                     for spot, rule in (data.get(kind) or {}).items():
+                        rule = _remake_rule(name, kind, spot, rule)
                         target.append((spot, compiler.compile(rule, region=name)))
                 if 'savewarp' in data:
                     # Como OoTR: salida sin condición hacia el destino del savewarp.

@@ -152,6 +152,30 @@ class ReachabilityTest(unittest.TestCase):
         self.assertIn('Deku Tree Queen Gohma Heart',
                       w.reachable_locations(w.vanilla_fixed()))
 
+    def test_remake_rules_target_existing_spots(self):
+        w = _vanilla_world()
+        for region, kind, spot in world.REMAKE_RULES:
+            spots = [s for s, _ in getattr(w.regions[region], kind)]
+            self.assertIn(spot, spots, (region, kind))
+
+    def test_deku_upper_floor_needs_ranged_weapon(self):
+        # Remake: para subir al piso de la sala de la brújula hay que matar
+        # las Skulltulas de las enredaderas (lote 17: Resortera en el cofre
+        # lateral de la sala de la brújula dejaba la partida bloqueada).
+        w = _vanilla_world()
+        fixed = w.vanilla_fixed()
+        fixed['Deku Tree Slingshot Chest'], fixed['Deku Tree Compass Room Side Chest'] = (
+            fixed['Deku Tree Compass Room Side Chest'], fixed['Deku Tree Slingshot Chest'])
+        reach = w.reachable_locations(fixed)
+        self.assertIn('Deku Tree Slingshot Chest', reach)
+        for loc in ('Deku Tree Compass Room Side Chest', 'Deku Tree Compass Chest',
+                    'Deku Tree GS Compass Room', 'Deku Tree Basement Chest'):
+            self.assertNotIn(loc, reach)
+        reach = w.reachable_locations(w.vanilla_fixed())
+        for loc in ('Deku Tree Compass Room Side Chest', 'Deku Tree Compass Chest',
+                    'Deku Tree GS Compass Room', 'Deku Tree Basement Chest'):
+            self.assertIn(loc, reach)
+
     def test_baseline_reaches_all_key_chests(self):
         reach = _vanilla_world().reachable_locations(_baseline_fixed())
         for loc in list(KEY_ITEM_HOME.values()) + ['Ganon']:
