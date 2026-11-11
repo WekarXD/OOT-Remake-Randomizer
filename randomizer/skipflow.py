@@ -267,3 +267,24 @@ def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
     if rw.error:
         raise ValueError(f'Cannot apply a failed rewrite: {rw.error} ({rw.detail})')
     return patch_pointers(data, {flow.link_slots[k]: v for k, v in rw.links.items()})
+
+
+SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0155', 'Dm_Kokiri_0060', 'Dm_HrlCastle_0050',
+                                 'Dm_MelodyGet_Zelda')
+
+
+def build_spike_files(nup) -> dict[str, bytes]:
+    """romfs path -> compressed bytes for the spike scenes rewritten effects-only."""
+    from randomizer.formats.zs import ZsCodec
+    codec = ZsCodec.from_archive(nup)
+    table = SkipTable.load()
+    files = {}
+    for name in SPIKE_SCENES:
+        path = f'Event/EventFlow/{name}.bfevfl.zs'
+        data = codec.decompress(path, nup.read(path))
+        flow = EventFlow(data)
+        rw = effects_only(flow, 'EntryPoint0', table)
+        if rw.error:
+            raise ValueError(f'{name}: {rw.error} ({rw.detail})')
+        files[path] = codec.compress(path, apply_rewrite(data, flow, rw))
+    return files

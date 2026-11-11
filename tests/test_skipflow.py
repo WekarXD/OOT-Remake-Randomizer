@@ -7,8 +7,8 @@ from pathlib import Path
 
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
-from randomizer.skipflow import (SkipTable, apply_rewrite, effects_only, linearize,
-                                 reachable, reachable_chosen)
+from randomizer.skipflow import (SPIKE_SCENES, SkipTable, apply_rewrite, build_spike_files,
+                                 effects_only, linearize, reachable, reachable_chosen)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -50,6 +50,9 @@ class TableTests(unittest.TestCase):
         self.assertFalse(self.t.keeps(None, 'EventNaviWarpToPlayerHomePosition'))
         self.assertFalse(self.t.keeps(None, 'EventTriggerXLinkFadeByKey'))
         self.assertFalse(self.t.collapses('EventQueryPlayerCheckSelectedItem'))
+
+    def test_play_ocarina_dropped(self):
+        self.assertIs(self.t.keeps(None, 'EventPlayerPlayOcarinaFree'), False)
 
     def test_unknown_query(self):
         self.assertIs(self.t.collapses('NotARealQuery'), False)
@@ -282,6 +285,80 @@ class SpikeScenesTests(unittest.TestCase):
                     self.assertIn(i, after)
                 for i in no:
                     self.assertNotIn(i, after)
+
+    def _fade_paths(self, flow, entry_events, fade_kind, start):
+        """Yields lists of events on each path from `start` (switch cases and subflows followed)."""
+        events, entries = flow.events, flow.entry_points
+
+        def walk(i, trail):
+            while i != END:
+                if i in trail:
+                    yield trail
+                    return
+                trail = trail + [i]
+                ev = events[i]
+                if ev.kind == SWITCH:
+                    for c in ev.cases:
+                        yield from walk(c, trail)
+                    return
+                if ev.kind == FORK:
+                    for c in ev.forks + [ev.join]:
+                        yield from walk(c, trail)
+                    return
+                if ev.kind == SUBFLOW and ev.sub_flow == '' and ev.sub_entry in entries:
+                    for p in walk(entries[ev.sub_entry], trail):
+                        yield p
+                if ev.next is None:
+                    break
+                i = ev.next
+            yield trail
+        return walk(start, [])
+
+    def test_spike_fades(self):
+        for name in SPIKE_SCENES:
+            with self.subTest(name):
+                data = self.data_for(name)
+                flow = EventFlow(data)
+                rw = effects_only(flow, 'EntryPoint0', self.table)
+                self.assertIsNone(rw.error, rw.detail)
+                new = EventFlow(apply_rewrite(data, flow, rw))
+                # fade-outs of the original that some later fade-in follows
+                orig_paths = list(self._fade_paths(flow, None, None, flow.entry_points['EntryPoint0']))
+
+                def fades(ev):
+                    return ev.kind == ACTION and ev.action
+
+                guarded = set()
+                for path in orig_paths:
+                    for n, i in enumerate(path):
+                        if fades(flow.events[i]) == 'EventEventFadeOut' and any(
+                                fades(flow.events[j]) == 'EventEventFadeIn' for j in path[n + 1:]):
+                            guarded.add(i)
+                for path in self._fade_paths(new, None, None, new.entry_points['EntryPoint0']):
+                    for n, i in enumerate(path):
+                        if fades(new.events[i]) == 'EventEventFadeOut' and i in guarded:
+                            self.assertTrue(
+                                any(fades(new.events[j]) == 'EventEventFadeIn' for j in path[n + 1:]),
+                                f'{name}: fade-out {i} has no kept fade-in after it: {path}')
+
+    def data_for(self, name):
+        from randomizer.formats.zs import ZsCodec
+        from randomizer.nup import NupArchive
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            path = f'Event/EventFlow/{name}.bfevfl.zs'
+            return codec.decompress(path, nup.read(path))
+
+    def test_build_spike_files(self):
+        from randomizer.formats.zs import ZsCodec
+        from randomizer.nup import NupArchive
+        with NupArchive(NUP_PATH) as nup:
+            files = build_spike_files(nup)
+            codec = ZsCodec.from_archive(nup)
+            self.assertEqual(set(files), {f'Event/EventFlow/{n}.bfevfl.zs' for n in SPIKE_SCENES})
+            for path, comp in files.items():
+                self.assertEqual(len(codec.decompress(path, comp)),
+                                 len(codec.decompress(path, nup.read(path))))
 
 
 if __name__ == '__main__':

@@ -16,7 +16,8 @@ from randomizer.nup import NupArchive  # noqa: E402
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'randomizer', 'data', 'skip_actions.json')
 ACTION_DROP = ('PlayAS', 'XLink', 'Talk', 'Camera', 'Wait', 'LookAt', 'Turn', 'DoF', 'Light', 'Palette',
                'Rumble', 'Sound', 'Bgm', 'Voice', 'Shake', 'Emotion', 'Ducking', 'Comment', 'DoNothing',
-               'Navi', 'Ballon', 'CloseMessageDialog', 'ShadingParams', 'Effect', 'NorifyCutChange')
+               'Navi', 'Ballon', 'CloseMessageDialog', 'ShadingParams', 'Effect', 'NorifyCutChange',
+               'PlayOcarina')
 ACTION_STATE = ('GameData', 'EventBool', 'Pouch')
 ACTION_KEEP = ('Transition', 'BancChange', 'Warp', 'AutoSave', 'Fade')
 QUERY_COLLAPSE = ('TalkChoice', 'Select', 'Random', 'Anim', 'Camera')
