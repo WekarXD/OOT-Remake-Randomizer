@@ -1,0 +1,1399 @@
+[
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+  "hash": "3889761319471426870",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   31.99060821533203,
+   104.80044555664062,
+   -14.920162200927734
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+  "hash": "7460556442932201772",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -8.221013069152832,
+   103.80000305175781,
+   -31.854373931884766
+  ]
+ },
+ {
+  "banc": "Banc/BottomOfTheWell/BottomOfTheWell_Static.bcett.byml.zs",
+  "hash": "12165938013608963606",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   2.6456260681152344,
+   103.80000305175781,
+   -30.5
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Child_Static.bcett.byml.zs",
+  "hash": "6397182598322965076",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   3.75,
+   111.22280883789062,
+   -0.75
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainCrater/DeathMountainCrater_Child_Static.bcett.byml.zs",
+  "hash": "18219295034534354574",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut"
+  ],
+  "pos": [
+   -2.8718931674957275,
+   128.19378662109375,
+   48.671485900878906
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Adult_Static.bcett.byml.zs",
+  "hash": "351345377871782696",
+  "flags": [],
+  "pos": [
+   -51.194190979003906,
+   102.79547882080078,
+   27.209787368774414
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Adult_Static.bcett.byml.zs",
+  "hash": "832677387023638406",
+  "flags": [],
+  "pos": [
+   3.1727843284606934,
+   187.2981719970703,
+   -111.29439544677734
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Adult_Static.bcett.byml.zs",
+  "hash": "17669199296215821346",
+  "flags": [],
+  "pos": [
+   -30.967592239379883,
+   125.08125305175781,
+   -17.964969635009766
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Child_Static.bcett.byml.zs",
+  "hash": "351345377871782696",
+  "flags": [],
+  "pos": [
+   -51.194190979003906,
+   102.79547882080078,
+   27.209787368774414
+  ]
+ },
+ {
+  "banc": "Banc/DeathMountainTrail/DeathMountainTrail_Child_Static.bcett.byml.zs",
+  "hash": "17425319789138387506",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AvoidTargetAngle",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -45.49999237060547,
+   109.19584655761719,
+   -20.249996185302734
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+  "hash": "11160993739666517210",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -73.9000015258789,
+   105.30000305175781,
+   -5.676787376403809
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Adult_Static.bcett.byml.zs",
+  "hash": "15057756765324812936",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -170.1173858642578,
+   101.76375579833984,
+   -47.873783111572266
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "234735562946824289",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -157.46372985839844,
+   95.65901184082031,
+   17.185211181640625
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "11160993739666517210",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -73.9000015258789,
+   105.30000305175781,
+   -5.676787376403809
+  ]
+ },
+ {
+  "banc": "Banc/DesertColossus/DesertColossus_Child_Static.bcett.byml.zs",
+  "hash": "15057756765324812936",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -170.1173858642578,
+   101.76375579833984,
+   -47.873783111572266
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "960362013021648957",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   58.177188873291016,
+   104.5,
+   -19.87388801574707
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "1171854281537584829",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   64.0,
+   98.54999542236328,
+   15.853925704956055
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "4565265801822094851",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   21.472806930541992,
+   112.4000015258789,
+   -55.92611312866211
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "8470399761714006011",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -48.42082214355469,
+   120.30813598632812,
+   -40.11746597290039
+  ]
+ },
+ {
+  "banc": "Banc/DodongoCavern/DodongoCavern_Static.bcett.byml.zs",
+  "hash": "13690401647626643497",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -48.83503341674805,
+   96.5999984741211,
+   -104.25
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "5556173334779815044",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   40.04562759399414,
+   189.10000610351562,
+   -19.75
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "6789992996625105554",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   67.72834014892578,
+   115.30000305175781,
+   -47.0
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "9172014785497046138",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   36.57268142700195,
+   187.70001220703125,
+   -5.178072452545166
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "12751796212121957464",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   59.04434585571289,
+   148.39515686035156,
+   -29.981725692749023
+  ]
+ },
+ {
+  "banc": "Banc/FireTemple/FireTemple_Static.bcett.byml.zs",
+  "hash": "14706322686481615109",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   11.249996185302734,
+   101.5,
+   -43.23644256591797
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "2014780391754316762",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   44.2745246887207,
+   112.06562042236328,
+   -38.244903564453125
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "3072474196008424241",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -3.429262399673462,
+   65.60299682617188,
+   17.167165756225586
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "10970805784153267902",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -38.06084442138672,
+   112.85747528076172,
+   -4.375627517700195
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "11081821111317815057",
+  "flags": [],
+  "pos": [
+   11.277002334594727,
+   119.84398651123047,
+   64.0
+  ]
+ },
+ {
+  "banc": "Banc/ForestTemple/ForestTemple_Static.bcett.byml.zs",
+  "hash": "17612196129225973969",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   8.81517505645752,
+   109.55828857421875,
+   -23.5566463470459
+  ]
+ },
+ {
+  "banc": "Banc/GanonCastle/GanonCastle_Static.bcett.byml.zs",
+  "hash": "5626064870824758772",
+  "flags": [],
+  "pos": [
+   78.40133666992188,
+   94.09721374511719,
+   328.3810729980469
+  ]
+ },
+ {
+  "banc": "Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+  "hash": "9362225887419425752",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   55.2983512878418,
+   131.8716583251953,
+   -70.22035217285156
+  ]
+ },
+ {
+  "banc": "Banc/GerudoFortress/GerudoFortress_Adult_Static.bcett.byml.zs",
+  "hash": "13037049463363052038",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   181.69467163085938,
+   125.55743408203125,
+   -88.60527801513672
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Static.bcett.byml.zs",
+  "hash": "11535915511003753934",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -34.53456115722656,
+   109.96247863769531,
+   10.28170394897461
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Adult_Static.bcett.byml.zs",
+  "hash": "13584527502619061465",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -45.68217849731445,
+   106.23309326171875,
+   -35.5576057434082
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Static.bcett.byml.zs",
+  "hash": "8326970197618554626",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -11.040997505187988,
+   48.04132843017578,
+   2.4471940994262695
+  ]
+ },
+ {
+  "banc": "Banc/GerudoValley/GerudoValley_Child_Static.bcett.byml.zs",
+  "hash": "15265071047503310220",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   50.80552673339844,
+   97.40318298339844,
+   5.090764045715332
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Adult_Static.bcett.byml.zs",
+  "hash": "18139423190738716302",
+  "flags": [],
+  "pos": [
+   0.4883832037448883,
+   113.35750579833984,
+   -1.2281033992767334
+  ]
+ },
+ {
+  "banc": "Banc/GoronCity/GoronCity_Child_Static.bcett.byml.zs",
+  "hash": "569390966671955163",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut"
+  ],
+  "pos": [
+   -48.25,
+   113.67526245117188,
+   -7.840000152587891
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Adult_Static.bcett.byml.zs",
+  "hash": "229475726653285413",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -20.200000762939453,
+   104.30000305175781,
+   26.399999618530273
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Child_Static.bcett.byml.zs",
+  "hash": "229475726653285413",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -20.200000762939453,
+   104.30000305175781,
+   26.399999618530273
+  ]
+ },
+ {
+  "banc": "Banc/Graveyard/Graveyard_Child_Static.bcett.byml.zs",
+  "hash": "16798263777516949500",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -12.147199630737305,
+   103.36949920654297,
+   -12.197487831115723
+  ]
+ },
+ {
+  "banc": "Banc/HountedWasteland/HountedWasteland_Adult_Static.bcett.byml.zs",
+  "hash": "14910672274965350769",
+  "flags": [],
+  "pos": [
+   16.01300048828125,
+   88.84510040283203,
+   -99.79999542236328
+  ]
+ },
+ {
+  "banc": "Banc/HountedWasteland/HountedWasteland_Child_Static.bcett.byml.zs",
+  "hash": "14910672274965350769",
+  "flags": [],
+  "pos": [
+   16.01300048828125,
+   88.84510040283203,
+   -99.79999542236328
+  ]
+ },
+ {
+  "banc": "Banc/HyruleCastle/HyruleCastle_Static.bcett.byml.zs",
+  "hash": "2504273934093629549",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   -12.364601135253906,
+   121.77613830566406,
+   -94.94949340820312
+  ]
+ },
+ {
+  "banc": "Banc/HyruleCastle/HyruleCastle_Static.bcett.byml.zs",
+  "hash": "9162653017526462607",
+  "flags": [],
+  "pos": [
+   39.049591064453125,
+   101.05016326904297,
+   -116.12972259521484
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "341792603838029977",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   -39.55157470703125,
+   158.24966430664062,
+   200.6729736328125
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "789492162651991711",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -196.95042419433594,
+   150.27999877929688,
+   517.3847045898438
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "2177746409373494991",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   70.53002166748047,
+   167.4074249267578,
+   263.8376159667969
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "2730878115209290675",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -147.4391326904297,
+   159.2058563232422,
+   268.2318115234375
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "7388645484070660331",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AvoidTargetAngle",
+   "Enemy_Skulltula_Gold_IsWaterDepthJumpOut"
+  ],
+  "pos": [
+   -175.11459350585938,
+   128.46214294433594,
+   415.5933837890625
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "8655370827943125875",
+  "flags": [],
+  "pos": [
+   -295.6242370605469,
+   131.97518920898438,
+   597.7672119140625
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "9047381233010434881",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsAgonyStoneBoxConnect"
+  ],
+  "pos": [
+   56.51300048828125,
+   126.33322143554688,
+   342.5752258300781
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs",
+  "hash": "12007978132755687032",
+  "flags": [],
+  "pos": [
+   -147.92022705078125,
+   129.89300537109375,
+   322.4954833984375
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "341792603838029977",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   -39.55157470703125,
+   158.24966430664062,
+   200.6729736328125
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "2177746409373494991",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   70.53002166748047,
+   167.4074249267578,
+   263.8376159667969
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "2730878115209290675",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -147.4391326904297,
+   159.2058563232422,
+   268.2318115234375
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "7014193622407727514",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AvoidTargetAngle",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -167.69143676757812,
+   137.9018096923828,
+   413.48260498046875
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "8655370827943125875",
+  "flags": [],
+  "pos": [
+   -295.6242370605469,
+   131.97518920898438,
+   597.7672119140625
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "12007978132755687032",
+  "flags": [],
+  "pos": [
+   -147.92022705078125,
+   129.89300537109375,
+   322.4954833984375
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "13944703896577680014",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -178.2529296875,
+   141.95822143554688,
+   426.4041442871094
+  ]
+ },
+ {
+  "banc": "Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs",
+  "hash": "15889002414176907668",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -63.216087341308594,
+   156.38766479492188,
+   212.38632202148438
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "1612219105489330028",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   83.67357635498047,
+   108.25199890136719,
+   -0.4505326747894287
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "7165255787572043804",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -1.4165087938308716,
+   107.22708129882812,
+   -6.200536727905273
+  ]
+ },
+ {
+  "banc": "Banc/IceCavern/IceCavern_Static.bcett.byml.zs",
+  "hash": "14822647495538506998",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -18.1279239654541,
+   108.6768569946289,
+   -16.56170654296875
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "11283202900158580106",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -15.361268043518066,
+   90.3413314819336,
+   -82.93287658691406
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "11513774157335944149",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   17.372461318969727,
+   81.71894836425781,
+   -59.27528762817383
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "13852835165271311030",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -2.2131662368774414,
+   88.40897369384766,
+   -94.95555114746094
+  ]
+ },
+ {
+  "banc": "Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs",
+  "hash": "15983944335296207002",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   38.288944244384766,
+   106.12387084960938,
+   -49.08511734008789
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "13609975487234437568",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -29.764575958251953,
+   121.0026626586914,
+   13.039876937866211
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "16101480770659370603",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   3.322671890258789,
+   86.86177825927734,
+   1.1332212686538696
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "17501688996789643983",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -81.90412139892578,
+   86.69369506835938,
+   -7.400758743286133
+  ]
+ },
+ {
+  "banc": "Banc/InsideTheDekuTree/InsideTheDekuTree_Static.bcett.byml.zs",
+  "hash": "18075358844331090388",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -18.129474639892578,
+   78.69496154785156,
+   -12.980559349060059
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Alternative_Static.bcett.byml.zs",
+  "hash": "3310819903461047792",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -38.73756408691406,
+   113.69886016845703,
+   115.47581481933594
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Adult_Static.bcett.byml.zs",
+  "hash": "3310819903461047792",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -38.73756790161133,
+   113.6988296508789,
+   115.47581481933594
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Static.bcett.byml.zs",
+  "hash": "7677963516305772491",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   -73.60032653808594,
+   104.45828247070312,
+   43.47663879394531
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Static.bcett.byml.zs",
+  "hash": "11629189455828560791",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -75.00682830810547,
+   105.28756713867188,
+   2.172684669494629
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Static.bcett.byml.zs",
+  "hash": "14107117960174262321",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -60.71241760253906,
+   102.1308364868164,
+   59.549861907958984
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Static.bcett.byml.zs",
+  "hash": "15118290503807073158",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -48.10788345336914,
+   110.90959167480469,
+   18.399999618530273
+  ]
+ },
+ {
+  "banc": "Banc/KakarikoVillage/KakarikoVillage_Child_Static.bcett.byml.zs",
+  "hash": "15314554401574296838",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -29.075544357299805,
+   103.08731079101562,
+   60.51190185546875
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Adult_Static.bcett.byml.zs",
+  "hash": "7116603238806634901",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   18.039623260498047,
+   117.17457580566406,
+   18.87630844116211
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Static.bcett.byml.zs",
+  "hash": "9623998892552467148",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   8.242212295532227,
+   112.63771057128906,
+   -23.305742263793945
+  ]
+ },
+ {
+  "banc": "Banc/KokiriForest/KokiriForest_Child_Static.bcett.byml.zs",
+  "hash": "17067594426901953848",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -83.7901382446289,
+   117.85399627685547,
+   -17.619117736816406
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Adult_Static.bcett.byml.zs",
+  "hash": "4335656213162247230",
+  "flags": [
+   "Enemy_Skulltula_Gold_IsOverwriteAgonyStonePos"
+  ],
+  "pos": [
+   14.450913429260254,
+   105.85079956054688,
+   -56.41813278198242
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+  "hash": "4335656213162247230",
+  "flags": [
+   "Enemy_Skulltula_Gold_IsOverwriteAgonyStonePos"
+  ],
+  "pos": [
+   14.450913429260254,
+   105.85079956054688,
+   -56.41813278198242
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+  "hash": "9333354743976439033",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AvoidTargetAngle",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -33.187705993652344,
+   100.16835021972656,
+   31.416748046875
+  ]
+ },
+ {
+  "banc": "Banc/LostWood/LostWood_Child_Static.bcett.byml.zs",
+  "hash": "17796658857969527112",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil",
+   "Enemy_Skulltula_Gold_IsOverwriteAgonyStonePos"
+  ],
+  "pos": [
+   10.871164321899414,
+   99.77523803710938,
+   -52.065940856933594
+  ]
+ },
+ {
+  "banc": "Banc/Market/Market_Child_Static.bcett.byml.zs",
+  "hash": "8942465719711548237",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPopOut"
+  ],
+  "pos": [
+   17.38143539428711,
+   102.09561920166016,
+   58.356998443603516
+  ]
+ },
+ {
+  "banc": "Banc/SacredForestMeadow/SacredForestMeadow_Adult_Static.bcett.byml.zs",
+  "hash": "14473218207379268379",
+  "flags": [],
+  "pos": [
+   7.752925395965576,
+   107.37591552734375,
+   13.20976734161377
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "8823884712433934372",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   104.61121368408203,
+   52.01121520996094,
+   -39.78573989868164
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "10270336409167849808",
+  "flags": [
+   "DefaultDungeonRoomIndex",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearMessageWarp",
+   "Enemy_Skulltula_Gold_AppearPopOut"
+  ],
+  "pos": [
+   -212.26614379882812,
+   41.30322265625,
+   -37.39935302734375
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "15148554628675590606",
+  "flags": [
+   "DefaultDungeonRoomIndex",
+   "Enemy_Skulltula_Gold_IsOverwriteAgonyStonePos"
+  ],
+  "pos": [
+   33.3664665222168,
+   73.76506805419922,
+   86.19779968261719
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "15564367841356014861",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   75.83562469482422,
+   53.40935134887695,
+   6.327821254730225
+  ]
+ },
+ {
+  "banc": "Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs",
+  "hash": "16933078188088206331",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   179.78692626953125,
+   62.47434616088867,
+   96.86360168457031
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "5086449036385341804",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -23.085262298583984,
+   129.6679229736328,
+   -66.67888641357422
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "8120267919866495114",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   38.95558547973633,
+   104.17094421386719,
+   -62.89006042480469
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "10127391959410674946",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -55.689632415771484,
+   136.62864685058594,
+   -7.304373741149902
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "10530233152473742636",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -9.585224151611328,
+   107.42214965820312,
+   -55.99749755859375
+  ]
+ },
+ {
+  "banc": "Banc/SpiritTemple/SpiritTemple_Static.bcett.byml.zs",
+  "hash": "12959656942046734931",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   14.746406555175781,
+   115.15298461914062,
+   -68.7867660522461
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "186694424287048567",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   18.645626068115234,
+   107.5,
+   -65.66000366210938
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "4399424945134189769",
+  "flags": [
+   "DefaultDungeonRoomIndex",
+   "Enemy_Skulltula_Gold_IsAgonyStoneDungeonRoomLimit"
+  ],
+  "pos": [
+   35.07986831665039,
+   112.5,
+   -9.548903465270996
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "11571778270592589517",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -1.1885554790496826,
+   125.95437622070312,
+   -7.896000385284424
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "15506432733081566465",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   -54.54180145263672,
+   114.00733947753906,
+   -59.25239944458008
+  ]
+ },
+ {
+  "banc": "Banc/WaterTemple/WaterTemple_Static.bcett.byml.zs",
+  "hash": "16157272130665282352",
+  "flags": [
+   "DefaultDungeonRoomIndex"
+  ],
+  "pos": [
+   1.3956254720687866,
+   95.15240478515625,
+   0.5450186729431152
+  ]
+ },
+ {
+  "banc": "Banc/ZoraDomain/ZoraDomain_Adult_Alternative_Static.bcett.byml.zs",
+  "hash": "9600417828645642589",
+  "flags": [],
+  "pos": [
+   17.287803649902344,
+   115.4747085571289,
+   2.7248196601867676
+  ]
+ },
+ {
+  "banc": "Banc/ZoraDomain/ZoraDomain_Adult_Static.bcett.byml.zs",
+  "hash": "9600417828645642589",
+  "flags": [],
+  "pos": [
+   17.287803649902344,
+   115.4747085571289,
+   2.7248196601867676
+  ]
+ },
+ {
+  "banc": "Banc/ZoraFountain/ZoraFountain_Adult_Static.bcett.byml.zs",
+  "hash": "9537398183107003742",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   79.96245574951172,
+   133.3588409423828,
+   12.896195411682129
+  ]
+ },
+ {
+  "banc": "Banc/ZoraFountain/ZoraFountain_Child_Static.bcett.byml.zs",
+  "hash": "7152962033963346563",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   14.036932945251465,
+   107.78923797607422,
+   22.81756019592285
+  ]
+ },
+ {
+  "banc": "Banc/ZoraFountain/ZoraFountain_Child_Static.bcett.byml.zs",
+  "hash": "9537398183107003742",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   79.9628677368164,
+   133.35609436035156,
+   12.899026870727539
+  ]
+ },
+ {
+  "banc": "Banc/ZoraFountain/ZoraFountain_Child_Static.bcett.byml.zs",
+  "hash": "17355397719442343054",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearJumpHight",
+   "Enemy_Skulltula_Gold_AppearJumpSpeed",
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AppearWarpRotOffset"
+  ],
+  "pos": [
+   49.30533981323242,
+   110.36543273925781,
+   32.040775299072266
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Adult_Static.bcett.byml.zs",
+  "hash": "9450239379321634455",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   76.28485107421875,
+   126.80093383789062,
+   -46.406898498535156
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Adult_Static.bcett.byml.zs",
+  "hash": "10917372215719266172",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   -35.0,
+   118.75,
+   12.50000286102295
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Child_Static.bcett.byml.zs",
+  "hash": "8695975724114049706",
+  "flags": [
+   "Enemy_Skulltula_Gold_Nocturnal"
+  ],
+  "pos": [
+   112.59999084472656,
+   111.80000305175781,
+   -48.800010681152344
+  ]
+ },
+ {
+  "banc": "Banc/ZoraRiver/ZoraRiver_Child_Static.bcett.byml.zs",
+  "hash": "12370559827741970774",
+  "flags": [
+   "Enemy_Skulltula_Gold_AppearPlayerCheck",
+   "Enemy_Skulltula_Gold_AppearPopOut",
+   "Enemy_Skulltula_Gold_AvoidTargetAngle",
+   "Enemy_Skulltula_Gold_IsMagicBeanSoil"
+  ],
+  "pos": [
+   -54.55933380126953,
+   100.6044692993164,
+   -11.857033729553223
+  ]
+ }
+]
