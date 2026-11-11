@@ -73,6 +73,8 @@ class Event:
     cases: list[int] = field(default_factory=list)
     forks: list[int] = field(default_factory=list)
     join: int | None = None
+    sub_flow: str | None = None  # SUBFLOW: called flow file ('' = same file)
+    sub_entry: str | None = None  # SUBFLOW: called entry point
 
 
 class EventFlow:
@@ -101,6 +103,7 @@ class EventFlow:
     def _parse(self):
         d = self._d
         self._slots: list[tuple[int, int]] = []
+        self.link_slots: dict[tuple, int] = {}  # link key -> offset of its u16
         self.events: list[Event] = []
         self.entry_points: dict[str, int] = {}
         self._params: dict[int, int] = {}  # event -> parameter container
@@ -123,8 +126,9 @@ class EventFlow:
                 [self._str(self._u64(qs_p + 8 * j)) for j in range(self._u16(a + 0x32))],
             ))
 
-        def slot(off):
+        def slot(off, key):
             v = self._u16(off)
+            self.link_slots[key] = off
             self._slots.append((off, v))
             return v
 
@@ -141,18 +145,21 @@ class EventFlow:
                 sub = self._u16(e + 0xE)
                 if kind == ACTION:
                     ev.action = actions[sub]
-                    ev.next = slot(e + 0xA)
+                    ev.next = slot(e + 0xA, ('next', i))
                 else:
                     ev.query = queries[sub]
                     cases_p = self._u64(e + 0x18)  # 8-byte cases: u32 value, u16 event
-                    ev.cases = [slot(cases_p + 8 * k + 4)
+                    ev.cases = [slot(cases_p + 8 * k + 4, ('case', i, k))
                                 for k in range(self._u16(e + 0xA))]
             elif kind == FORK:
                 forks_p = self._u64(e + 0x10)
-                ev.forks = [slot(forks_p + 2 * k) for k in range(self._u16(e + 0xA))]
-                ev.join = slot(e + 0xC)
+                ev.forks = [slot(forks_p + 2 * k, ('fork', i, k)) for k in range(self._u16(e + 0xA))]
+                ev.join = slot(e + 0xC, ('join', i))
             elif kind in (JOIN, SUBFLOW):
-                ev.next = slot(e + 0xA)
+                ev.next = slot(e + 0xA, ('next', i))
+                if kind == SUBFLOW:
+                    ev.sub_flow = self._str(self._u64(e + 0x18)) or ''
+                    ev.sub_entry = self._str(self._u64(e + 0x20))
             # Types 5 and 6: markers with only a name/hash; no event pointers.
             self.events.append(ev)
 
@@ -161,7 +168,7 @@ class EventFlow:
         if n_dic != n_entries:
             raise BfevflError('The dictionary and the entries do not match.')
         for i, name in enumerate(names):
-            self.entry_points[name] = slot(entries_p + 0x20 * i + 0x1C)
+            self.entry_points[name] = slot(entries_p + 0x20 * i + 0x1C, ('entry', name))
 
     def pointer_slots(self) -> list[tuple[int, int]]:
         """(offset, current index) of every u16 that references an event."""

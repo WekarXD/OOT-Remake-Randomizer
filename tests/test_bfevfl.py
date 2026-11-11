@@ -47,6 +47,27 @@ class BfevflTests(unittest.TestCase):
                 for i in range(n):
                     flow.action_params(i)  # all containers are read
 
+    def test_subflow_targets(self):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            flow = EventFlow(_load(nup, codec, 'Dm_Kokiri_0155.bfevfl.zs'))
+        self.assertEqual(flow.events[2].sub_flow, '')
+        self.assertEqual(flow.events[2].sub_entry, 'C01')
+        self.assertEqual((flow.events[52].sub_flow, flow.events[52].sub_entry),
+                         ('GetPouchContent', 'DisplayGetByActorName'))
+
+    def test_link_slots(self):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            data = _load(nup, codec, 'Dm_Kokiri_0155.bfevfl.zs')
+        flow = EventFlow(data)
+        self.assertEqual(sorted(flow.link_slots.values()),
+                         sorted(o for o, _ in flow.pointer_slots()))
+        self.assertIn(('entry', 'EntryPoint0'), flow.link_slots)
+        self.assertIn(('next', 51), flow.link_slots)
+        patched = patch_pointers(data, {flow.link_slots[('next', 51)]: 0xFFFF})
+        self.assertEqual(EventFlow(patched).events[51].next, 0xFFFF)
+
     def test_patch_roundtrip(self):
         with NupArchive(NUP_PATH) as nup:
             codec = ZsCodec.from_archive(nup)
@@ -198,6 +219,8 @@ class EventTests(unittest.TestCase):
     def test_defaults(self):
         ev = Event(index=1, kind=0, next=2)
         self.assertEqual((ev.cases, ev.forks, ev.join, ev.actor), ([], [], None, None))
+        ev = Event(0, 0)
+        self.assertTrue(ev.sub_flow is None and ev.sub_entry is None)
 
 
 if __name__ == '__main__':
