@@ -20,6 +20,19 @@ of flowcharts.
 and subflow (4) have a u64 at +0x10 pointing to the parameter container (0 if
 they have none); the fork (2) uses +0x10 for its list of branches.
 
+Types 5 and 6 (decoded from all 925 type 5 and 583 type 6 events in the game):
+- 5, subflow switch: a subflow call that branches on the result the called
+  entry ends with. +0xA u16 number of cases; +0xC and +0xE are 0 (no actor or
+  query); +0x10 u64 parameter container (0 if none); +0x18 u64 cases, 8 bytes
+  each: u32 hash of a result label, u16 event (as for the switch); +0x20 u64
+  -> name of the called flow ('' = same file); +0x28 u64 -> called entry. E.g.
+  SubEvent_GetEponaSong event 27 calls Mask_Talk_Common_With_InitTalk_Malon_
+  Child_Only, whose results 0xf7b0eeb8 and 0xfab0f371 (events 75, 76) pick
+  cases 28 and 112. Cases target events of every type.
+- 6, result: ends the entry with a result; +0xC u32 hash of its label (the
+  value a calling subflow switch matches; reading +0xC as actor indices is
+  what used to crash). No event pointers: for the graph it is a terminal.
+
 Parameter container (type 1): u8 type, u8 0, u16 number of items, u32 0,
 u64 `DIC ` dictionary with the names, then one u64 per item. Item j is named
 like entry j+1 of the dictionary (entry 0 is the root).
@@ -52,7 +65,7 @@ import struct
 from dataclasses import dataclass, field
 
 END = 0xFFFF
-ACTION, SWITCH, FORK, JOIN, SUBFLOW = range(5)
+ACTION, SWITCH, FORK, JOIN, SUBFLOW, SUBFLOW_SWITCH, RESULT = range(7)
 # Item types of a parameter container.
 (ARG, CONTAINER, INT, BOOL, FLOAT, STRING, WSTRING, INT_ARRAY, BOOL_ARRAY,
  FLOAT_ARRAY, STRING_ARRAY, WSTRING_ARRAY, ACTOR_ID) = range(13)
@@ -73,8 +86,8 @@ class Event:
     cases: list[int] = field(default_factory=list)
     forks: list[int] = field(default_factory=list)
     join: int | None = None
-    sub_flow: str | None = None  # SUBFLOW: called flow file ('' = same file)
-    sub_entry: str | None = None  # SUBFLOW: called entry point
+    sub_flow: str | None = None  # SUBFLOW(_SWITCH): called flow file ('' = same file)
+    sub_entry: str | None = None  # SUBFLOW(_SWITCH): called entry point
 
 
 class EventFlow:
@@ -137,7 +150,7 @@ class EventFlow:
             e = events_p + 0x30 * i
             kind = d[e + 8]
             ev = Event(index=i, kind=kind)
-            if kind in (ACTION, SWITCH, SUBFLOW) and self._u64(e + 0x10):
+            if kind in (ACTION, SWITCH, SUBFLOW, SUBFLOW_SWITCH) and self._u64(e + 0x10):
                 self._params[i] = self._u64(e + 0x10)
             if kind in (ACTION, SWITCH):
                 actor, actions, queries = actors[self._u16(e + 0xC)]
@@ -160,7 +173,13 @@ class EventFlow:
                 if kind == SUBFLOW:
                     ev.sub_flow = self._str(self._u64(e + 0x18)) or ''
                     ev.sub_entry = self._str(self._u64(e + 0x20))
-            # Types 5 and 6: markers with only a name/hash; no event pointers.
+            elif kind == SUBFLOW_SWITCH:
+                cases_p = self._u64(e + 0x18)  # 8-byte cases: u32 result hash, u16 event
+                ev.cases = [slot(cases_p + 8 * k + 4, ('case', i, k))
+                            for k in range(self._u16(e + 0xA))]
+                ev.sub_flow = self._str(self._u64(e + 0x20)) or ''
+                ev.sub_entry = self._str(self._u64(e + 0x28))
+            # RESULT (6): only a label hash; no event pointers.
             self.events.append(ev)
 
         n_dic = self._u32(dic_p + 4)

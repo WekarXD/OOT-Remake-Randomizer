@@ -34,6 +34,20 @@ class BfevflTests(unittest.TestCase):
         self.assertEqual(chain, ['EventTriggerParticipateEvent', 'EventTransition',
                                  'EventNaviRequestBallonMessage'])
 
+    def test_kind5_cases_are_parsed(self):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            flow = EventFlow(_load(nup, codec, 'SubEvent_GetEponaSong.bfevfl.zs'))
+        self.assertEqual(flow.events[27].kind, 5)
+        self.assertEqual(flow.events[27].cases, [28, 112])
+        self.assertIn(28, [v for _, v in flow.pointer_slots()])
+        self.assertEqual(flow.events[27].sub_flow, '')
+        self.assertEqual(flow.events[27].sub_entry,
+                         'Mask_Talk_Common_With_InitTalk_Malon_Child_Only')
+        self.assertIn(('case', 27, 1), flow.link_slots)
+        self.assertEqual(flow.events[28].kind, 6)
+        self.assertEqual((flow.events[28].next, flow.events[28].cases), (None, []))
+
     def test_all_flows_parse(self):
         with NupArchive(NUP_PATH) as nup:
             codec = ZsCodec.from_archive(nup)

@@ -5,8 +5,10 @@ from dataclasses import dataclass, field
 from fnmatch import fnmatchcase
 from pathlib import Path
 
-from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
-                                       EventFlow, patch_pointers)
+from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, RESULT, SUBFLOW, SUBFLOW_SWITCH,
+                                       SWITCH, Event, EventFlow, patch_pointers)
+
+SWITCHES = (SWITCH, SUBFLOW_SWITCH)  # kinds whose edges are `cases`
 
 TABLE_PATH = Path(__file__).resolve().parent / 'data' / 'skip_actions.json'
 
@@ -66,8 +68,10 @@ def reachable_chosen(events, entries, starts: Iterable[int],
             continue
         seen.add(i)
         ev = events[i]
-        if ev.kind == SWITCH:
+        if ev.kind in SWITCHES:
             todo += [ev.cases[chosen[i]]] if i in chosen else ev.cases
+            if ev.kind == SUBFLOW_SWITCH and ev.sub_flow == '' and ev.sub_entry in entries:
+                todo.append(entries[ev.sub_entry])
         elif ev.kind == FORK:
             todo += ev.forks + [ev.join]
         else:
@@ -79,7 +83,8 @@ def reachable_chosen(events, entries, starts: Iterable[int],
 
 
 def reachable(events, entries, starts: Iterable[int]) -> set[int]:
-    """Events reachable from `starts`: next, cases, forks, joins, same-file subflows."""
+    """Events reachable from `starts`: next, cases, forks, joins, same-file subflows
+    (also those a subflow switch calls)."""
     return reachable_chosen(events, entries, starts, {})
 
 
@@ -95,6 +100,11 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
     Between two kept nodes the walk is a single path, so revisiting the same
     (event, stack) there is a loop. A kept node's successors depend only on
     (node, stack), which is expanded once.
+
+    A subflow switch is never kept: it collapses like a switch (`choose`), so
+    the entry it calls does not run. A result ends the entry with the value
+    its caller switches on: at the top level it is a kept terminal; inside an
+    inlined call or a fork branch it is refused (nothing could follow it).
     """
     collapsed: dict[int, int] = {}
 
@@ -156,6 +166,10 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
             ev = events[i]
             if is_kept(ev):
                 return i, stack
+            if ev.kind == RESULT:
+                if stack:
+                    raise _Fail('result in call', f'event {i}')
+                return i, stack
             if ev.kind == ACTION:
                 i = ev.next
             elif ev.kind == SUBFLOW:
@@ -190,7 +204,7 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                     raise _Fail('join mismatch', f'event {i}')
                 else:
                     i = ev.next
-            elif ev.kind == SWITCH and ev.cases:  # collapsing
+            elif ev.kind in SWITCHES and ev.cases:  # collapsing
                 i = ev.cases[choose(i)]
             else:
                 raise _Fail('dead end', f'event {i} (kind {ev.kind})')
@@ -216,7 +230,9 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                 continue
             expanded.add((n, stack))
             ev = events[n]
-            if ev.kind == SWITCH:
+            if ev.kind == RESULT:
+                continue
+            if ev.kind in SWITCHES:
                 todo += [(('case', n, k), c, stack)
                          for k, c in reversed(list(enumerate(ev.cases)))]
             else:
@@ -227,7 +243,8 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
         for key, target in links.items():
             if key[0] != 'entry':
                 preds.setdefault(target, set()).add(key[1])
-        ends, todo2 = set(), [END]
+        ends = {n for n in kept if events[n].kind == RESULT}
+        todo2 = [END, *ends]
         while todo2:
             for p in preds.get(todo2.pop(), ()):
                 if p not in ends:

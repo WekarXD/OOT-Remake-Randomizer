@@ -106,6 +106,16 @@ def SW(i, query, cases):
     return Event(index=i, kind=SWITCH, actor='Npc', query=query, cases=list(cases))
 
 
+def HS(i, cases, flow='Other', entry='Q'):
+    """Kind 5: a subflow call that switches on the called entry's result."""
+    return Event(index=i, kind=5, sub_flow=flow, sub_entry=entry, cases=list(cases))
+
+
+def RS(i):
+    """Kind 6: ends the entry with a result (no event pointers)."""
+    return Event(index=i, kind=6)
+
+
 def SUB(i, flow, entry, nxt=END):
     return Event(index=i, kind=SUBFLOW, sub_flow=flow, sub_entry=entry, next=nxt)
 
@@ -192,6 +202,30 @@ class LinearizeTests(unittest.TestCase):
         rw = lin(ev, choices={0: 0})
         self.assertEqual(rw.links, {('entry', 'E'): END})
         self.assertEqual(rw.collapsed, {0: 0})
+
+    def test_kind5_collapses_like_a_switch(self):
+        ev = [A(0, 'K0', 1), HS(1, [2, 3]), A(2, 'D2'), A(3, 'K3')]
+        rw = lin(ev)
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.links, {('entry', 'E'): 0, ('next', 0): 3, ('next', 3): END})
+        self.assertEqual(rw.collapsed, {1: 1})
+        rw = lin(ev, choices={1: 0})
+        self.assertEqual(rw.links, {('entry', 'E'): 0, ('next', 0): END})
+
+    def test_result_is_a_kept_terminal(self):
+        # The entry's result is what its caller switches on: it stays.
+        rw = lin([A(0, 'D0', 1), A(1, 'K1', 2), A(2, 'D2', 3), RS(3)])
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.links, {('entry', 'E'): 1, ('next', 1): 3})
+        self.assertEqual(rw.kept, [1, 3])
+
+    def test_result_inside_an_inlined_call_is_refused(self):
+        # The output could not continue after the result to the caller's next.
+        rw = lin([SUB(0, '', 'X', 1), A(1, 'K1'), RS(2)], {'E': 0, 'X': 2})
+        self.assertEqual(rw.error, 'result in call')
+
+    def test_kind5_reachable_follows_cases(self):
+        self.assertEqual(reachable([HS(0, [1, 2]), A(1, 'a'), A(2, 'b')], {}, [0]), {0, 1, 2})
 
     def test_collapse_prefers_distinct_effects(self):
         # Both cases reach K3; only case 1 has an effect of its own.

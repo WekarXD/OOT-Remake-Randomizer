@@ -282,13 +282,13 @@ class TestCutsceneFiles(unittest.TestCase):
             spec = self.policy['story_flows'][path[len(FLOW_DIR):-len('.bfevfl.zs')]]
             if spec != '*':
                 cases.append((path, spec, orig, new))
-        # NPC flow with mixed entries: one story entry, the rest chatter.
+        # NPC flow with mixed entries: one story entry, the rest chatter. The
+        # chatter entries reach the story entry's events through subflow switch
+        # (kind 5) cases, so nothing of it may be trimmed.
         path = FLOW_DIR + 'Npc_Kokiri_Saria_Child.bfevfl.zs'
         orig = self.game.codec.decompress(path, self.nup.read(path))
         spec = ['GuideToDekuTree_BeforeTalkMido']
-        new = cutscenes.trim_flow(orig, spec, cutscenes.active_actions(self.policy))
-        self.assertIsNotNone(new)
-        cases.append((path, spec, orig, new))
+        self.assertIsNone(cutscenes.trim_flow(orig, spec, cutscenes.active_actions(self.policy)))
         checked = 0
         for path, spec, orig, new in cases:
             fo, fn = EventFlow(orig), EventFlow(new)
