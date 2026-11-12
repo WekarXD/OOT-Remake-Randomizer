@@ -475,6 +475,32 @@ class CheckRewriteTests(unittest.TestCase):
         problems = self.check(events, entries, rw)
         self.assertTrue(any(p.startswith('rule 4') and 'F' in p for p in problems), problems)
 
+    def test_exclusive_cases_chained_in_a_fork_branch(self):
+        events = [FK(0, [1, 4], 5), SW(1, 'Q', [2, 3]), A(2, 'K2'), A(3, 'K3'), A(4, 'K4'),
+                  JN(5, 6), A(6, 'K6')]
+        rw = Rewrite({('entry', 'E'): 1, ('next', 2): 3, ('next', 3): 4, ('next', 4): 6,
+                      ('next', 6): END, ('case', 1, 0): 2, ('case', 1, 1): 3},
+                     [1, 2, 3, 4, 6])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 3') for p in problems), problems)
+
+    def test_exclusive_cases_chained_outside_a_fork(self):
+        events = [SW(0, 'Q', [1, 2]), A(1, 'K1'), A(2, 'K2')]
+        rw = Rewrite({('entry', 'E'): 0, ('case', 0, 0): 1, ('case', 0, 1): 2,
+                      ('next', 1): 2, ('next', 2): END}, [0, 1, 2])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 3') for p in problems), problems)
+
+    def test_external_entry_changed_by_the_rewrite(self):
+        events = [SUB(0, '', 'X', 1), A(1, 'K1'), A(2, 'K2', 3), A(3, 'D3', 4), A(4, 'K4')]
+        entries = {'E': 0, 'X': 2}
+        rw = lin(events, entries)
+        new, new_entries = rewritten(events, entries, rw)
+        old, newf = FakeFlow(events, entries, {}), FakeFlow(new, new_entries, {})
+        self.assertEqual(check_rewrite(old, newf, 'E', rw), [])
+        problems = check_rewrite(old, newf, 'E', rw, external=frozenset({'X'}))
+        self.assertTrue(any(p.startswith('rule 4') and 'X' in p for p in problems), problems)
+
     def test_untouched_other_entry_is_fine(self):
         events = [A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2'), A(3, 'K3', 4), A(4, 'K4')]
         entries = {'E': 0, 'F': 3}

@@ -504,8 +504,7 @@ class _Graph:
 
 def _old_graphs(flow) -> tuple[_Graph, _Graph]:
     """(plain, augmented) graphs of the old flow. Plain: `_successors`. Augmented adds an
-    edge from each JOIN to every branch of the fork that uses it, from the end of each
-    branch to the next branch (or the join after the last), from the RESULTs a same-file
+    edge from the end of each fork branch to the next branch (the last to the join), from the RESULTs a same-file
     call can end with to the matching case of its subflow switch, and from where a called
     entry ends to what follows its SUBFLOW."""
     events, entries = flow.events, flow.entry_points
@@ -514,8 +513,6 @@ def _old_graphs(flow) -> tuple[_Graph, _Graph]:
     for ev in events:
         if ev.kind != FORK:
             continue
-        if ev.join in aug:
-            aug[ev.join] += ev.forks
         for k, branch in enumerate(ev.forks):  # where a branch ends, the next one runs
             seen, todo = set(), [branch]
             while todo:
@@ -541,16 +538,44 @@ def _old_graphs(flow) -> tuple[_Graph, _Graph]:
     return _Graph(plain), _Graph(aug)
 
 
-def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite) -> list[str]:
+def _case_membership(flow, plain: _Graph) -> dict[int, dict[int, int]]:
+    """node -> {switch: case} for the nodes reachable from exactly one case of that switch
+    (kinds 1 and 5) without coming back through the switch."""
+    events, entries = flow.events, flow.entry_points
+    member: dict[int, dict[int, int]] = {}
+    for s, ev in enumerate(events):
+        if ev.kind not in SWITCHES or len(ev.cases) < 2:
+            continue
+        sets = []
+        for c in ev.cases:
+            seen, todo = set(), [c]
+            while todo:
+                n = todo.pop()
+                if n == END or n == s or n in seen:
+                    continue
+                seen.add(n)
+                todo += plain.adj[n]
+            sets.append(seen)
+        for k, cs in enumerate(sets):
+            for n in cs:
+                if not any(n in o for j, o in enumerate(sets) if j != k):
+                    member.setdefault(n, {})[s] = k
+    return member
+
+
+def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
+                  external: frozenset[str] = frozenset()) -> list[str]:
     """Problems found in the rewritten file (empty means OK); `new_data` is the bytes
-    `apply_rewrite` produced (or an already parsed flow). Each problem starts with its rule:
+    `apply_rewrite` produced (or an already parsed flow); `external` is what was passed to
+    `effects_only`. Each problem starts with its rule:
 
     1. the kept nodes reachable from `entry` are exactly `rw.kept` (copies count as
        their originals);
     2. no FORK or JOIN is reachable from `entry`;
     3. order: every new link a -> b between kept nodes follows the old flow (b after a,
-       counting a join as leading back to its fork's branches) and does not reverse it
-       (a not after b), unless a is on a cycle there;
+       counting the end of a fork branch as leading to the next one), does not reverse it
+       (a not after b, unless a is on a cycle there) and does not chain two exclusive
+       cases of one switch;
     4. every entry other than `entry` and the inlined ones reaches the same events as
        before, walking the new flow through its own entry table (so a caller of a
        rewritten entry is caught);
@@ -575,6 +600,7 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite) -> list[str
         problems.append(f'rule 2: fork/join reachable: {bad}')
     # 3. order
     plain, aug = _old_graphs(old)
+    member = _case_membership(old, plain)
     for a in sorted(kept_new):
         for b in _successors(new.events, {}, a):
             if b == END or b not in kept_new:
@@ -584,8 +610,12 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite) -> list[str
                 problems.append(f'rule 3: link {a} -> {b} does not follow the old flow')
             elif a0 in plain.after(b0) and a0 not in plain.after(a0):
                 problems.append(f'rule 3: link {a} -> {b} reverses the old order')
+            elif b0 not in plain.after(a0) and any(
+                    s in member.get(b0, ()) and member[a0][s] != member[b0][s]
+                    for s in member.get(a0, ())):
+                problems.append(f'rule 3: link {a} -> {b} chains exclusive cases of a switch')
     # 4. other entries
-    skip = inlined_entries(old, entry)
+    skip = inlined_entries(old, entry, external)
     for other, i in old.entry_points.items():
         if other in skip:
             continue
