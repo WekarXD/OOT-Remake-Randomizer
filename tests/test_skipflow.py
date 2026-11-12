@@ -8,7 +8,8 @@ from pathlib import Path
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
 from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, apply_rewrite, build_spike_files,
-                                 effects_only, linearize, reachable, reachable_chosen)
+                                 effects_only, fork_dependencies, linearize, reachable,
+                                 reachable_chosen)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -344,6 +345,95 @@ class ReachableTests(unittest.TestCase):
 
 SPIKE = {'Dm_Kokiri_0155': ([51], [52]), 'Dm_Kokiri_0060': ([], []),
          'Dm_HrlCastle_0050': ([238], []), 'Dm_MelodyGet_Zelda': ([66], [4, 5, 6])}
+
+
+class FakeFlow:
+    """What the fork dependency check needs from an EventFlow."""
+    def __init__(self, events, entry_points, params):
+        self.events, self.entry_points, self._params = events, entry_points, params
+
+    def action_params(self, index):
+        return self._params.get(index, {})
+
+
+def SETF(i, flag, nxt=END):
+    return A(i, 'EventTriggerSetGameDataBool', nxt), {i: {'GameDataName': flag}}
+
+
+def RDF(i, flag, cases):
+    return SW(i, 'EventQueryIsGameDataBool', cases), {i: {'GameDataName': flag}}
+
+
+def fake(parts, entries=None):
+    events, params = [], {}
+    for p in parts:
+        ev, pr = p if isinstance(p, tuple) else (p, {})
+        events.append(ev)
+        params.update(pr)
+    return FakeFlow(events, entries or {'E': 0}, params)
+
+
+class ForkDependencyTests(unittest.TestCase):
+    table = SkipTable({'actions': {'EventWait': 'drop'}})
+
+    def dependent(self):
+        # fork 0: branch 1 sets X; branch 3 reads X
+        return fake([FK(0, [1, 3], 6), SETF(1, 'X', 6), A(2, 'KA', 6),
+                     RDF(3, 'X', [4, 5]), A(4, 'K4', 6), A(5, 'K5', 6), JN(6)])
+
+    def test_flagged(self):
+        flow = self.dependent()
+        self.assertEqual(fork_dependencies(flow, 'E'), [(0, 'X')])
+        rw = effects_only(flow, 'E', self.table)
+        self.assertEqual(rw.error, 'fork dependency')
+        self.assertIn('X', rw.detail)
+
+    def test_reviewed_fork_is_accepted(self):
+        rw = effects_only(self.dependent(), 'E', self.table, reviewed_forks=frozenset({0}))
+        self.assertNotEqual(rw.error, 'fork dependency')
+
+    def test_independent_branches(self):
+        flow = fake([FK(0, [1, 3], 6), SETF(1, 'X', 6), A(2, 'KA', 6),
+                     RDF(3, 'Y', [4, 5]), A(4, 'K4', 6), A(5, 'K5', 6), JN(6)])
+        self.assertEqual(fork_dependencies(flow, 'E'), [])
+        self.assertIsNone(effects_only(flow, 'E', self.table).error)
+
+    def test_read_in_same_branch_is_fine(self):
+        flow = fake([FK(0, [1, 4], 5), SETF(1, 'X', 2), RDF(2, 'X', [3, 3]),
+                     A(3, 'K3', 5), A(4, 'K4', 5), JN(5)])
+        self.assertEqual(fork_dependencies(flow, 'E'), [])
+
+    def test_read_through_same_file_call(self):
+        # branch 1 calls entry Q (event 4) whose switch reads X; branch 2 sets X
+        flow = fake([FK(0, [1, 2], 6), SUB(1, '', 'Q', 6), SETF(2, 'X', 6),
+                     A(3, 'KA', 6), RDF(4, 'X', [5, 5]), A(5, 'K5', END), JN(6)],
+                    {'E': 0, 'Q': 4})
+        self.assertEqual(fork_dependencies(flow, 'E'), [(0, 'X')])
+
+    def test_write_through_same_file_call(self):
+        flow = fake([FK(0, [1, 2], 6), SUB(1, '', 'Q', 6), RDF(2, 'X', [3, 3]),
+                     A(3, 'K3', 6), SETF(4, 'X', END), A(5, 'K5', 6), JN(6)],
+                    {'E': 0, 'Q': 4})
+        self.assertEqual(fork_dependencies(flow, 'E'), [(0, 'X')])
+
+    def test_other_actions_do_not_write(self):
+        flow = fake([FK(0, [1, 2], 4), (A(1, 'EventQueryNotAWriter', 4), {1: {'GameDataName': 'X'}}),
+                     RDF(2, 'X', [3, 3]), A(3, 'K3', 4), JN(4)])
+        self.assertEqual(fork_dependencies(flow, 'E'), [])
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class SpikeForkDependencyTests(unittest.TestCase):
+    def test_spike_scenes_not_flagged(self):
+        from randomizer.formats.zs import ZsCodec
+        from randomizer.nup import NupArchive
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            for name in SPIKE_SCENES:
+                path = f'Event/EventFlow/{name}.bfevfl.zs'
+                flow = EventFlow(codec.decompress(path, nup.read(path)))
+                with self.subTest(name):
+                    self.assertEqual(fork_dependencies(flow, 'EntryPoint0'), [])
 
 
 @unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')

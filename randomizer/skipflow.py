@@ -286,10 +286,76 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
         return Rewrite({}, [], e.error, e.detail, collapsed)
     return Rewrite(links, kept, None, '', collapsed)
 
+# Parameter keys that name a game data flag (found by scanning the action and query
+# parameters of every flow: GameDataName for the Set/Is/Add/Wait family, GameDataA/B
+# for the compare and Sub queries, GameData for the pouch queries, Src/Dst for copies).
+FLAG_KEYS = ('GameDataName', 'GameDataA', 'GameDataB', 'GameData', 'GameDataForActorName',
+             'SrcGameDataName', 'DstGameDataName')
+
+
+def _flags(flow, i):
+    params = flow.action_params(i)
+    return {v for k in FLAG_KEYS if isinstance(v := params.get(k), str) and v}
+
+
+def fork_dependencies(flow: EventFlow, entry: str) -> list[tuple[int, str]]:
+    """(fork, flag) for each fork reached from `entry` where a branch reads a flag
+    (a switch naming it) that a sibling branch writes (an action named `...Set...`).
+
+    Branches run one after another in the output, so a read that used to follow a
+    concurrent write may see a different value. Same-file calls (subflows and subflow
+    switches) are followed into the callee, which counts for the branch that calls it.
+    """
+    events, entries = flow.events, flow.entry_points
+    if entry not in entries:
+        return []
+
+    def effects(start, stop):
+        reads, writes, seen, todo = set(), set(), set(), [start]
+        while todo:
+            i = todo.pop()
+            if i == END or i == stop or i in seen:
+                continue
+            seen.add(i)
+            ev = events[i]
+            if ev.kind == SWITCH:
+                reads |= _flags(flow, i)
+            elif ev.kind == ACTION and 'Set' in (ev.action or ''):
+                writes |= _flags(flow, i)
+            if ev.kind in SWITCHES:
+                todo += ev.cases
+            elif ev.kind == FORK:
+                todo += ev.forks + [ev.join]
+            elif ev.next is not None:
+                todo.append(ev.next)
+            if ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow == '' and ev.sub_entry in entries:
+                todo.append(entries[ev.sub_entry])
+        return reads, writes
+
+    found = set()
+    for i in sorted(reachable(events, entries, [entries[entry]])):
+        ev = events[i]
+        if ev.kind != FORK or len(ev.forks) < 2:
+            continue
+        eff = [effects(b, ev.join) for b in ev.forks]
+        for k, (reads, _) in enumerate(eff):
+            for j, (_, writes) in enumerate(eff):
+                if j != k:
+                    found |= {(i, f) for f in reads & writes}
+    return sorted(found)
+
 
 def effects_only(flow: EventFlow, entry: str, table: SkipTable,
-                 choices: Mapping[int, int] = {}) -> Rewrite:
-    """`linearize` with the table's decisions; other entry points stay untouched."""
+                 choices: Mapping[int, int] = {},
+                 reviewed_forks: frozenset[int] = frozenset()) -> Rewrite:
+    """`linearize` with the table's decisions; other entry points stay untouched.
+
+    Fails with 'fork dependency' if a fork branch reads a flag that a sibling writes
+    (see `fork_dependencies`), unless the fork is in `reviewed_forks`."""
+    deps = [(f, n) for f, n in fork_dependencies(flow, entry) if f not in reviewed_forks]
+    if deps:
+        return Rewrite({}, [], 'fork dependency', ', '.join(f'fork {f} flag {n}' for f, n in deps))
+
     def keep(ev):
         if ev.kind in (SUBFLOW, SUBFLOW_SWITCH):
             return not table.drops_subflow(ev.sub_flow, ev.sub_entry)
