@@ -380,6 +380,19 @@ class SpoilerGsKeyItemsTest(unittest.TestCase):
         self.assertFalse([r for r in d['key_items'] if r['hash'] == str(s.hash)])
 
 
+class NotSkippedFilterTest(unittest.TestCase):
+    def test_filter(self):
+        from randomizer.generate import _not_skipped
+        report = ['movie A dropped from B', 'movie A not dropped from B: err',
+                  'applied F/E', 'unchanged F/E: already effects-only',
+                  'full skip only F: the old trimming is not applied on top',
+                  'full skip built in 1.00 s', 'fallback to trimming F/E: x',
+                  'not written F: no targeted entry changed it (the old trimming applies)']
+        self.assertEqual(_not_skipped(report),
+                         ['movie A not dropped from B: err', 'fallback to trimming F/E: x',
+                          'not written F: no targeted entry changed it (the old trimming applies)'])
+
+
 class SpoilerTextTest(unittest.TestCase):
     def _data(self, mode):
         d = {'seed': 's', 'settings': {'key_items_mode': 'any_chest', 'excluded_items': [],

@@ -129,7 +129,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
     return GenerateResult(settings.seed, str(mod_dir), txt_path, json_path, changed)
 
 
-_APPLIED = ('applied ', 'unchanged ', 'full skip built in ')
+_APPLIED = ('applied ', 'unchanged ', 'full skip built in ', 'full skip only ')
 
 
 def _not_skipped(report: list[str]) -> list[str]:
@@ -137,7 +137,7 @@ def _not_skipped(report: list[str]) -> list[str]:
     files, failed movies); the successful steps and the timing are left out."""
     return [line for line in report
             if not line.startswith(_APPLIED)
-            and not (line.startswith('movie ') and ' dropped from ' in line)]
+            and not (line.startswith('movie ') and ' not dropped from ' not in line)]
 
 
 def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
