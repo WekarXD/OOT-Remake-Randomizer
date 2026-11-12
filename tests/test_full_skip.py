@@ -66,8 +66,8 @@ class FullSkipTest(unittest.TestCase):
         self.assertIn(('Dm_Kokiri_0155', 'EntryPoint0'), self.applied)
         # A fork dependency stays unreviewed: it falls back and is reported.
         self.assertNotIn(('Dm_Kokiri_0045', 'EntryPoint0'), self.applied)
-        self.assertTrue(any(line.startswith('fallback Dm_Kokiri_0045/EntryPoint0: fork dependency')
-                            for line in self.report))
+        self.assertTrue(any(line.startswith('fallback to trimming Dm_Kokiri_0045/EntryPoint0: '
+                                            'fork dependency') for line in self.report))
 
     def test_every_applied_entry_passes_the_checker(self):
         callers = full_skip.flow_callers(self.cache)
@@ -82,13 +82,26 @@ class FullSkipTest(unittest.TestCase):
                 problems = check_rewrite(EventFlow(step.before), step.after, step.entry, step.rw,
                                          step.external)
                 self.assertEqual(problems, [], (name, step.entry))
-                self.assertEqual(step.external,
-                                 full_skip.external_entries(callers, name, step.entry))
+                before = EventFlow(step.before)
+                self.assertEqual(step.external, full_skip.protected_entries(
+                    callers, name, before, entries, step.entry))
+                # Siblings and (outside Dm_ scenes) untargeted entries are never inlined.
+                self.assertTrue(set(entries) - {step.entry} <= step.external)
+                if not name.startswith('Dm_'):
+                    self.assertEqual(step.external, set(before.entry_points) - {step.entry})
                 seen.add((name, step.entry))
             if path_of(name) in self.files:
                 self.assertEqual(self.output(name), data, name)
             else:
                 self.assertEqual(self.original(name), data, name)
+            # In the final file every applied entry reaches exactly what its own step made.
+            final = EventFlow(data)
+            for step in steps:
+                own = EventFlow(step.after)
+                self.assertEqual(
+                    reachable(final.events, final.entry_points, [final.entry_points[step.entry]]),
+                    reachable(own.events, own.entry_points, [own.entry_points[step.entry]]),
+                    (name, step.entry))
         self.assertEqual(seen, self.applied)
 
     def test_goto_hyrulecastle_is_written_once_with_all_methods(self):
@@ -110,7 +123,7 @@ class FullSkipTest(unittest.TestCase):
                                  choices={}, reviewed_forks={})
         with mock.patch.object(full_skip, 'load_targets', return_value=only):
             files, report = full_skip.files_with_fallback(self.game, 1)
-        self.assertTrue(any(line.startswith(f'fallback {name}/EntryPoint0: conflict')
+        self.assertTrue(any(line.startswith(f'fallback to trimming {name}/EntryPoint0: conflict')
                             for line in report))
         old = build_cutscene_files(self.game)
         self.assertEqual(files.get(path_of(name)), old.get(path_of(name)))
@@ -121,6 +134,11 @@ class FullSkipTest(unittest.TestCase):
         p = path_of('Goto_HyruleCastle')
         self.assertEqual(files[p], self.files[p])
         self.assertTrue(any(line.startswith('full skip only Goto_HyruleCastle') for line in report))
+        # Its failed entries are reported as untrimmed, not as falling back to trimming.
+        self.assertTrue(any(line.startswith('untrimmed (file partly rewritten) Goto_HyruleCastle/')
+                            for line in report))
+        self.assertFalse(any(line.startswith('fallback to trimming Goto_HyruleCastle/')
+                             for line in report))
         # The intro's unlocked skip (a component list) still comes from the old option.
         old = build_cutscene_files(self.game)
         for path in old:

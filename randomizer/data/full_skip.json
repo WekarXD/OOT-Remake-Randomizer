@@ -1,11 +1,5 @@
 {
  "flows": {
-  "Dm_DeathMtTrail_0000": {
-   "entries": [
-    "EntryPoint0"
-   ],
-   "phase": 1
-  },
   "Dm_DeathMtTrail_0010": {
    "entries": [
     "EntryPoint0"
@@ -453,7 +447,6 @@
   "DoorOfTime": {
    "entries": [
     "Dm_MelodyGet_Time_After",
-    "Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk",
     "DoorOfTime_GetOcarinaOfTime",
     "DoorOfTime_GetOcarinaOfTime_AreaOut",
     "Step01_Npc_Hylia_Impa_Child_Talk"
@@ -462,10 +455,6 @@
   },
   "Get_StoneOfFire": {
    "entries": [
-    "AfterMeetDarnia_Near",
-    "AfterMeetDarnia_Talk",
-    "DeathMtTrailNpc_Npc_Goron_007_Child_Near",
-    "DeathMtTrailNpc_Npc_Goron_007_Child_Talk",
     "Get_StoneOfFire_AppearBoss",
     "Get_StoneOfFire_ArriveCity",
     "Get_StoneOfFire_DeathMtTrailIn",
@@ -478,19 +467,9 @@
     "Get_StoneOfFire_PlayOcarina",
     "Get_StoneOfFire_ReadStoneTablet",
     "Get_StoneOfFire_ReadStoneTablet2",
-    "GoronCityDarniaroomNpcTalk01_Npc_Goron_005_Child_Near",
-    "GoronCityDarniaroomNpcTalk01_Npc_Goron_005_Child_Talk",
     "GoronCity_PlayZeldasLullaby",
     "GoronCity_SecretHole_AppearTreasureBox",
-    "GoronCity_SecretHole_AppearTreasureBox2",
-    "KakarikoVillageLetter_Npc_Hylia_Soldier_003_Near",
-    "KakarikoVillageLetter_Npc_Hylia_Soldier_003_Talk",
-    "KakarikoVillageNpc_Npc_Hylia_Soldier_003_Near",
-    "KakarikoVillageNpc_Npc_Hylia_Soldier_003_Talk",
-    "KokiriForestNPCTalk_Npc_Goron_003_Child_Near",
-    "KokiriForestNPCTalk_Npc_Goron_003_Child_Talk",
-    "SariaMelodyPlay_Npc_Goron_Darunia_Child_Near",
-    "SariaMelodyPlay_Npc_Goron_Darunia_Child_Talk"
+    "GoronCity_SecretHole_AppearTreasureBox2"
    ],
    "phase": 1
   },
@@ -499,14 +478,6 @@
     "BossAppearSkipFunc",
     "BossAppearSkip_Barinade",
     "BossAppearSkip_Dodongo",
-    "BossAppearSkip_Ganon",
-    "BossAppearSkip_Ganondorf",
-    "BossAppearSkip_KotakeKoume",
-    "BossAppearSkip_Morpha",
-    "BossAppearSkip_Nabooru",
-    "BossAppearSkip_Phantom",
-    "BossAppearSkip_Twinrova",
-    "BossAppearSkip_Valvagia",
     "BossArea_ShutIn",
     "Boss_Appear",
     "Boss_Win",
@@ -519,13 +490,7 @@
   "Get_StoneOfWater": {
    "entries": [
     "IrregularEvent",
-    "IrregularTalk",
     "KingZoraCamera",
-    "Step01_Npc_Zora_KingZora_child_Near",
-    "Step01_Npc_Zora_KingZora_child_Talk",
-    "Step07_Npc_Zora_KingZora_child_Near",
-    "Step07_Npc_Zora_KingZora_child_Talk",
-    "Step10_Npc_Zora_Ruto_Child_001_Talk",
     "StoneOfWater_ArriveJabuJabuBelly",
     "StoneOfWater_BossAppear",
     "StoneOfWater_ClearDivingGame",
@@ -541,10 +506,6 @@
     "StoneOfWater_TalkWithImpa",
     "StoneOfWater_UseRutoletter",
     "StoneOfWater_WaterfallSplit",
-    "Talk_Nearby_Emergency",
-    "Test_InitTalk_KingZora",
-    "Test_InitTalk_KingZora01",
-    "Test_InitTalk_KingZora02",
     "fromDream"
    ],
    "phase": 1
@@ -624,7 +585,6 @@
     "AboutWaterStone",
     "InterestTalk_Zelda_Child",
     "InterestTalk_Zelda_Child_ChangeTheTopic",
-    "Talk",
     "ThatsAll",
     "Zelda_CanbeStopped_Impa_01",
     "Zelda_CanbeStopped_Impa_02"
@@ -635,8 +595,7 @@
    "entries": [
     "GoToDekuTree",
     "GoToMido",
-    "Near_FirstReaction",
-    "Talk"
+    "Near_FirstReaction"
    ],
    "phase": 1
   },
@@ -655,8 +614,7 @@
   },
   "Npc_Kokiri_Mido_Child": {
    "entries": [
-    "KokiriForest_Get_StoneOfForest_Completed_Event",
-    "Talk"
+    "KokiriForest_Get_StoneOfForest_Completed_Event"
    ],
    "phase": 1
   },
@@ -677,10 +635,8 @@
    "entries": [
     "GetEponaSong_MelodyGet_Epona",
     "GetEponaSong_StepCheck",
-    "GuideToLonLonRanch_Npc_Hylia_Malon_Child_Talk",
     "GuideToLonLonRanch_Npc_Hylia_Malon_Child_Talk_Market",
     "GuideToLonLonRanch_Npc_Hylia_Malon_Child_Talk_MarketAfterTalkMalon",
-    "Mask_Talk",
     "Mask_Talk_Common_With_InitTalk_Malon_Child_Only",
     "SayHello"
    ],

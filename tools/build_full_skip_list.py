@@ -33,7 +33,7 @@ from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, load_policy  # noqa: E402
 from randomizer.flow_callers import entry_callers  # noqa: E402
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, SWITCH, EventFlow  # noqa: E402
 from randomizer.formats.zs import ZsCodec  # noqa: E402
-from randomizer.full_skip import TARGETS_PATH, external_entries, skip_flow  # noqa: E402
+from randomizer.full_skip import TARGETS_PATH, protected_entries, skip_flow  # noqa: E402
 from randomizer.movie_skip import TRANSITION  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.skipflow import SkipTable, effects_only, fork_dependencies, reachable  # noqa: E402
@@ -67,7 +67,6 @@ CHILD_ZONES = frozenset({
 # left out (a scene that still plays is better than a wrong skip). Reasons in
 # NOT_CHILD_EXTRA and the task 7 report.
 CHILD_EXTRA: dict[str, str] = {
-    'Dm_DeathMtTrail_0000': 'arrival at Death Mountain Trail (location name; age switch inside)',
     'Dm_DeathMtTrail_0027': 'leaving Dodongo\'s Cavern (Get_StoneOfFire_Complete)',
     'Dm_DodongoCave_0000': 'entering Dodongo\'s Cavern (location name)',
     'Dm_DodongoCave_0020': 'Dodongo skull eyes lit (Get_StoneOfFire_EmitLight)',
@@ -87,6 +86,7 @@ CHILD_EXTRA: dict[str, str] = {
 # Reviewed and left out, with the reason (printed in the table).
 NOT_CHILD_EXTRA: dict[str, str] = {
     'Dm_DeathMtCrater_0000': 'no EntryPoint0; crater entrance reached at both ages',
+    'Dm_DeathMtTrail_0000': 'arrival at Death Mountain Trail; age switch inside (both ages)',
     'Dm_DeathMtTrail_0005': 'no flow starts it; nature unknown (falling rocks?)',
     'Dm_Goron_0045': 'Goron City spinning pot prize (minigame)',
     'Dm_HrlField_0030': 'Kaepora scene, no flow starts it; where it plays is unknown',
@@ -111,6 +111,19 @@ GIFT_TALKS: dict[str, list[str]] = {
     # Zelda's Lullaby after the letter: Impa starts Dm_MelodyGet_Zelda.
     'DoorOfTime': ['Step01_Npc_Hylia_Impa_Child_Talk'],
 }
+
+# Entries left out of phase 1 by name (review of 2026-11-12), unless listed in GIFT_TALKS:
+# (reason, test on (flow, entry)). Checked after KEEP_TALKS.
+ADULT_BOSSES = ('Ganon', 'Ganondorf', 'KotakeKoume', 'Morpha', 'Nabooru', 'Phantom',
+                'Twinrova', 'Valvagia')
+CHATTER = re.compile(r'(^|_)(Talk|Near)$|^IrregularTalk$|^Talk_Nearby_')
+EXCLUDED_ENTRIES = (
+    ('adult boss intro skip (Get_StoneOfForest "*" lists every boss)',
+     lambda f, e: e.startswith('BossAppearSkip_') and e[len('BossAppearSkip_'):] in ADULT_BOSSES),
+    ('developer test entry (Test_*)', lambda f, e: e.startswith('Test_')),
+    ('player-started chatter (Talk / Near, *_Talk / *_Near, IrregularTalk, Talk_Nearby_*)',
+     lambda f, e: not f.startswith('Dm_') and CHATTER.search(e) is not None),
+)
 
 # Targets removed after reviewing their kept effects: (flow, entry) -> reason.
 REVIEWED_OUT: dict[tuple[str, str], str] = {}
@@ -263,6 +276,15 @@ def build(nup, old: dict | None = None):
             targets.get(name, set()).discard(e)
     for (name, e) in REVIEWED_OUT:
         targets.get(name, set()).discard(e)
+    gifts = {(n, e) for n, es in GIFT_TALKS.items() for e in es}
+    print('== Entries left out by name ==')
+    for reason, test in EXCLUDED_ENTRIES:
+        out = sorted((n, e) for n, es in targets.items() for e in es
+                     if (n, e) not in gifts and test(n, e))
+        print(f'{reason}: {len(out)}')
+        for n, e in out:
+            print(f'    {n}/{e}')
+            targets[n].discard(e)
     targets = {n: es for n, es in targets.items() if es}
     missing = set(CHILD_EXTRA) - {n for n, _, _ in review_rows}
     if missing:
@@ -272,14 +294,14 @@ def build(nup, old: dict | None = None):
     movie_targets = {m: c for m, c in mcallers.items() if c}
 
     # --- review table
-    stats = Counter()
+    results = {}
     empty = []
     print('\n== Targets (method flow) ==')
     print('flow/entry | source | result | kept | external | fork deps')
     for name in sorted(targets):
         flow = flows[name]
         for e in sorted(targets[name]):
-            ext = external_entries(callers, name, e)
+            ext = protected_entries(callers, name, flow, targets[name], e)
             rw = effects_only(flow, e, table, choices.get(name, {}),
                               forks.get(name, frozenset()), ext)
             deps = fork_dependencies(flow, e)
@@ -287,7 +309,7 @@ def build(nup, old: dict | None = None):
             if rw.error is None and not rw.kept:
                 res = 'EMPTY (left out)'
                 empty.append((name, e))
-            stats[res.split(':')[0]] += 1
+            results[(name, e)] = res.split(':')[0]
             print(f'{name}/{e} | {sources[(name, e)]} | {res} | {len(rw.kept)} | '
                   f'{sorted(ext)[:4]}{"..." if len(ext) > 4 else ""} | {deps[:3]}')
     # An entry that keeps nothing would start at 0xFFFF; the old trimming never makes one
@@ -316,14 +338,17 @@ def build(nup, old: dict | None = None):
         flow = flows[name]
         for e in entries:
             rw = effects_only(flow, e, table, choices.get(name, {}),
-                              forks.get(name, frozenset()), external_entries(callers, name, e))
+                              forks.get(name, frozenset()),
+                              protected_entries(callers, name, flow, targets.get(name, ()), e))
             print(f'{name}/{e}: {rw.error or "ok"} {rw.detail}')
             for line in kept_effects(flow, rw):
                 print('    ' + line)
     n_entries = sum(len(v) for v in targets.values())
+    # Counts of what is left (each entry alone on the original file; the builder applies
+    # them in sequence, so its counts differ).
+    stats = Counter(results[(n, e)] for n, es in targets.items() for e in es)
     summary = (f'{len(targets)} flows / {n_entries} entries ({stats["ok"]} rewrite cleanly; '
-               + ', '.join(f'{k} {v}' for k, v in sorted(stats.items())
-                           if k not in ('ok', 'EMPTY (left out)'))
+               + ', '.join(f'{k} {v}' for k, v in sorted(stats.items()) if k != 'ok')
                + f'; {len(empty)} empty and {len(guarded)} by the KEEP_TALKS guard left out'
                + f'), {len(timelines)} timelines, {len(movie_targets)} movies')
     return targets, sorted(timelines), movie_targets, summary

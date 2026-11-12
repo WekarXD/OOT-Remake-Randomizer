@@ -71,6 +71,27 @@ class Step:
     external: frozenset[str] = field(default_factory=frozenset)
 
 
+def protected_entries(callers: Mapping[tuple[str, str], set[str]], name: str,
+                      flow: EventFlow, targets, entry: str) -> frozenset[str]:
+    """The entries passed as `external` when `entry` of flow `name` is rewritten: never
+    inlined, their events never relinked in place (only copied).
+
+    - entries other files call (`external_entries`);
+    - the other targets of the same file, so that a target never relinks a sibling;
+    - in flows that are not `Dm_*` scenes (NPC and challenge flows), every entry that is not
+      targeted: the game may start any of them on its own (actor AI, event settings).
+    `entry` itself is never in the result."""
+    out = set(external_entries(callers, name, entry)) | set(targets)
+    if not name.startswith('Dm_'):
+        out |= set(flow.entry_points)
+    out.discard(entry)
+    return frozenset(out)
+
+
+FALLBACK = 'fallback to trimming'
+UNTRIMMED = 'untrimmed (file partly rewritten)'
+
+
 def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
               callers, choices: Mapping[int, int] = {},
               reviewed_forks: frozenset[int] = frozenset()
@@ -78,9 +99,13 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
     """(new data, applied steps, report lines) for one flow file.
 
     First the transitions to `movies` are removed; then each entry in turn is rewritten
-    effects-only and applied only if `check_rewrite` finds nothing (each on the file as
-    the previous steps left it, since copies use donors)."""
-    report = []
+    effects-only (with `protected_entries` as `external`) and applied only if
+    `check_rewrite` finds nothing (each on the file as the previous steps left it, since
+    copies use donors). An entry that fails is reported as `FALLBACK` if the file ends up
+    unchanged (it keeps the old trimming) and as `UNTRIMMED` otherwise (the file is written
+    by the full skip and is not trimmed as well)."""
+    original = data
+    report, failed = [], []
     if movies:
         try:
             data = drop_transitions(data, movies)
@@ -90,10 +115,10 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
     steps = []
     for entry in sorted(entries):
         flow = EventFlow(data)
-        ext = external_entries(callers, name, entry)
+        ext = protected_entries(callers, name, flow, entries, entry)
         rw = effects_only(flow, entry, table, choices, reviewed_forks, ext)
         if rw.error:
-            report.append(f'fallback {name}/{entry}: {rw.error} ({rw.detail})')
+            failed.append(f'{name}/{entry}: {rw.error} ({rw.detail})')
             continue
         new = apply_rewrite(data, flow, rw)
         if new == data:
@@ -101,11 +126,13 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
             continue
         problems = check_rewrite(flow, new, entry, rw, ext)
         if problems:
-            report.append(f'fallback {name}/{entry}: check: {"; ".join(problems)}')
+            failed.append(f'{name}/{entry}: check: {"; ".join(problems)}')
             continue
         steps.append(Step(entry, rw, data, new, ext))
         report.append(f'applied {name}/{entry}')
         data = new
+    label = FALLBACK if data == original else UNTRIMMED
+    report += [f'{label} {line}' for line in failed]
     return data, steps, report
 
 
@@ -146,12 +173,13 @@ def build_full_skip_files(game, phase: int = 1, flows_cache=None
         if data != raw[name]:
             path = FLOW_DIR + name + FLOW_EXT
             files[path] = game.codec.compress(path, data)
-    todo = list(targets.timelines)
+    todo, seen = list(targets.timelines), set()
     while todo:
         name = todo.pop(0)
         path = FLOW_DIR + name + FLOW_EXT
-        if path in files:
+        if name in seen:
             continue
+        seen.add(name)
         if name not in raw:
             report.append(f'missing timeline {name}')
             continue
