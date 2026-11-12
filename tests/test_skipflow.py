@@ -7,7 +7,7 @@ from pathlib import Path
 
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
-from randomizer.skipflow import (SPIKE_SCENES, SkipTable, apply_rewrite, build_spike_files,
+from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, apply_rewrite, build_spike_files,
                                  effects_only, linearize, reachable, reachable_chosen)
 
 NUP_PATH = os.environ.get('OOT_NUP')
@@ -230,6 +230,33 @@ class LinearizeTests(unittest.TestCase):
         self.assertEqual(rw.error, 'shared')
         rw = lin([A(0, 'K0', 1), A(1, 'K1')], protected=frozenset({0}))
         self.assertIsNone(rw.error)
+
+    def test_fork_with_end_join_runs_all_branches(self):
+        # 0 fork [1, 2] join END; 1 keep -> END; 2 keep -> END
+        rw = lin([FK(0, [1, 2], END), A(1, 'K'), A(2, 'K')], {'E': 0})
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.kept, [1, 2])
+        self.assertEqual(rw.links[('next', 1)], 2)
+        self.assertEqual(rw.links[('next', 2)], END)
+
+    def test_branch_back_to_own_fork_is_a_loop(self):
+        rw = lin([FK(0, [1], 2), A(1, 'D', 0), JN(2)], {'E': 0})
+        self.assertEqual(rw.error, 'loop')
+
+    def test_join_of_another_fork_is_refused(self):
+        # branch of fork 0 reaches join 4, which belongs to fork 3
+        rw = lin([FK(0, [1], 2), A(1, 'K', 4), JN(2), FK(3, [], 4), JN(4)], {'E': 0})
+        self.assertEqual(rw.error, 'join mismatch')
+
+    def test_protected_event_cannot_be_relinked(self):
+        # entry E: 0 drop -> 1 keep -> 2 drop -> 3 keep; entry F (untargeted) starts at 1
+        events = [A(0, 'D', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K')]
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}))
+        self.assertEqual(rw.error, 'shared')
+
+    def test_apply_rewrite_refuses_a_failed_rewrite(self):
+        with self.assertRaises(ValueError):
+            apply_rewrite(b'', None, Rewrite({}, [], 'loop', 'x'))
 
 
 class ReachableTests(unittest.TestCase):

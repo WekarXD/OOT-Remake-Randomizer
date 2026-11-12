@@ -140,7 +140,16 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                 if top[0] == 'sub':
                     i, stack = top[1], stack[:-1]
                     continue
-                i = events[top[1]].join  # a branch that ends: as if it reached the join
+                f = top[1]  # a branch that ends: as if it reached the join
+                if events[f].join == END:  # no join event: next branch, else done
+                    k = top[2] + 1
+                    if k < len(events[f].forks):
+                        stack = stack[:-1] + (('fork', f, k),)
+                        i = events[f].forks[k]
+                    else:
+                        stack, i = stack[:-1], END
+                    continue
+                i = events[f].join
             if (i, stack) in seen:
                 raise _Fail('loop', f'event {i}')
             seen.add((i, stack))
@@ -164,6 +173,8 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                 if not ev.forks:
                     i = ev.join
                     continue
+                if any(f[0] == 'fork' and f[1] == i for f in stack):
+                    raise _Fail('loop', f'event {i} re-enters its own fork')
                 stack = stack + (('fork', i, 0),)
                 i = ev.forks[0]
             elif ev.kind == JOIN:
@@ -175,6 +186,8 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                         i = events[f].forks[k]
                     else:
                         stack, i = stack[:-1], ev.next
+                elif any(f[0] == 'fork' for f in stack):
+                    raise _Fail('join mismatch', f'event {i}')
                 else:
                     i = ev.next
             elif ev.kind == SWITCH and ev.cases:  # collapsing
