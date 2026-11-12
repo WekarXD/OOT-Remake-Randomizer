@@ -2,8 +2,10 @@ import os
 import struct
 import unittest
 
-from randomizer.formats.bfevfl import (ACTION, BfevflError, Event, EventFlow, copy_event,
-                                       patch_pointers, set_string_param, string_param_owners)
+from randomizer.formats.bfevfl import (ACTION, FORK, JOIN, RESULT, SWITCH, BfevflError, Event,
+                                       EventFlow, build_relocation_table, copy_event,
+                                       grow_events, patch_pointers, relocation_table,
+                                       set_string_param, string_param_owners)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -268,6 +270,141 @@ class StringParamTests(unittest.TestCase):
             set_string_param(self.data, len(self.flow.events), 'Actor', 'x')
         with self.assertRaises(BfevflError):
             string_param_owners(self.data, 51, 'Num')
+
+
+GROW_FLOW = 'Npc_Kokiri_007_Child.bfevfl.zs'
+
+
+def _shape(ev):
+    return (ev.kind, ev.actor, ev.action, ev.query, ev.next, ev.cases, ev.case_hashes,
+            ev.sub_flow, ev.sub_entry)
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class RelocationTableTests(unittest.TestCase):
+    def test_relocation_table_round_trip(self):
+        count = 0
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            for p in nup.list(FLOW_DIR):
+                if not p.endswith('.bfevfl.zs'):
+                    continue
+                data = codec.decompress(p, nup.read(p))
+                at, size, pointers = relocation_table(data)
+                self.assertTrue(pointers, p)
+                self.assertEqual(data[:at] + build_relocation_table(at, size, pointers), data, p)
+                count += 1
+        self.assertEqual(count, 914)
+
+    def test_unexpected_layout(self):
+        data = bytearray(64)
+        struct.pack_into('<II', data, 0x18, 0x20, 64)
+        data[0x20:0x30] = struct.pack('<4sIII', b'RELT', 0x20, 2, 0)
+        with self.assertRaises(BfevflError):
+            relocation_table(bytes(data))
+        data[0x20:0x24] = b'XXXX'
+        with self.assertRaises(BfevflError):
+            relocation_table(bytes(data))
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class GrowEventsTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            cls.data = _load(nup, codec, GROW_FLOW)
+            cls.gold = _load(nup, codec, 'GatheringTokenGold.bfevfl.zs')
+            cls.epona = _load(nup, codec, 'SubEvent_GetEponaSong.bfevfl.zs')
+        cls.flow = EventFlow(cls.data)
+        kinds = [ev.kind for ev in cls.flow.events]
+        cls.action = kinds.index(ACTION)
+        cls.switch = kinds.index(SWITCH)
+
+    def _check_original(self, old, new):
+        n = len(old.events)
+        for i in range(n):
+            self.assertEqual(_shape(new.events[i]), _shape(old.events[i]), i)
+            self.assertEqual(new.action_params(i), old.action_params(i), i)
+        self.assertEqual(new.entry_points, old.entry_points)
+
+    def test_grow_keeps_every_event(self):
+        n = len(self.flow.events)
+        same = _assert_valid(self, grow_events(self.data, []))
+        self.assertEqual(len(same.events), n)
+        self._check_original(self.flow, same)
+        grown_data = grow_events(self.data, [self.action, self.switch])
+        grown = _assert_valid(self, grown_data)
+        self.assertEqual(len(grown.events), n + 2)
+        self._check_original(self.flow, grown)
+        for j, src in enumerate((self.action, self.switch)):
+            self.assertEqual(_shape(grown.events[n + j]), _shape(self.flow.events[src]))
+            self.assertEqual(grown.action_params(n + j), self.flow.action_params(src))
+        # The relocated pointers are exactly the old ones plus the moved and new slots'.
+        at, size, pointers = relocation_table(grown_data)
+        self.assertEqual(at, (size + 0xF) & ~0xF)
+        self.assertEqual(grown_data[size:at], bytes(at - size))
+        old_pointers = relocation_table(self.data)[2]
+        self.assertTrue(old_pointers < pointers)
+        for p in pointers:
+            self.assertLess(p, size)
+            if p not in old_pointers:  # (the game's RELT lists a few null pointers)
+                self.assertNotEqual(struct.unpack_from('<Q', grown_data, p)[0], 0, hex(p))
+        # Nothing points into the old array any more (except its own dead slots).
+        old_p, m = self.flow._events_p, 0x30 * n
+        for p in pointers:
+            if not old_p <= p < old_p + m:
+                v = struct.unpack_from('<Q', grown_data, p)[0]
+                self.assertFalse(old_p <= v < old_p + m, hex(p))
+
+    def test_grow_twice(self):
+        n = len(self.flow.events)
+        once = grow_events(self.data, [self.switch])
+        twice = grow_events(once, [self.action, n])
+        flow = _assert_valid(self, twice)
+        self._check_original(self.flow, flow)
+        self.assertEqual(len(flow.events), n + 3)
+        self.assertEqual(_shape(flow.events[n]), _shape(self.flow.events[self.switch]))
+        self.assertEqual(_shape(flow.events[n + 1]), _shape(self.flow.events[self.action]))
+        self.assertEqual(_shape(flow.events[n + 2]), _shape(self.flow.events[self.switch]))
+        # The copy of the copy owns its own cases too.
+        patched = EventFlow(patch_pointers(twice, {flow.link_slots[('case', n + 2, 0)]: 0xFFFF}))
+        self.assertEqual(patched.events[n].cases, self.flow.events[self.switch].cases)
+        self.assertEqual(patched.events[n + 2].cases[0], 0xFFFF)
+
+    def test_switch_copy_owns_its_cases(self):
+        n = len(self.flow.events)
+        grown = grow_events(self.data, [self.switch])
+        flow = EventFlow(grown)
+        old_cases = list(flow.events[self.switch].cases)
+        patched = EventFlow(patch_pointers(grown, {flow.link_slots[('case', n, 0)]: 0xFFFF}))
+        self.assertEqual(patched.events[n].cases[0], 0xFFFF)
+        self.assertEqual(patched.events[self.switch].cases, old_cases)
+        self.assertNotEqual(old_cases[0], 0xFFFF)
+
+    def test_subflow_switch_copy_owns_its_cases(self):
+        old = EventFlow(self.epona)
+        n = len(old.events)
+        grown = grow_events(self.epona, [27])
+        flow = _assert_valid(self, grown)
+        self._check_original(old, flow)
+        self.assertEqual(_shape(flow.events[n]), _shape(old.events[27]))
+        patched = EventFlow(patch_pointers(grown, {flow.link_slots[('case', n, 1)]: 0xFFFF}))
+        self.assertEqual(patched.events[n].cases, [28, 0xFFFF])
+        self.assertEqual(patched.events[27].cases, [28, 112])
+
+    def test_fork_cannot_be_copied(self):
+        old = EventFlow(self.gold)
+        kinds = [ev.kind for ev in old.events]
+        for kind in (FORK, JOIN):
+            self.assertIn(kind, kinds)
+            with self.assertRaises(BfevflError):
+                grow_events(self.gold, [kinds.index(kind)])
+        result = [ev.kind for ev in EventFlow(self.epona).events].index(RESULT)
+        with self.assertRaises(BfevflError):
+            grow_events(self.epona, [result])
+        with self.assertRaises(BfevflError):
+            grow_events(self.data, [len(self.flow.events)])
 
 
 class EventTests(unittest.TestCase):

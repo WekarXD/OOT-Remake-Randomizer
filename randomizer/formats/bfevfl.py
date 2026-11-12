@@ -7,6 +7,10 @@ u16 that references an event index and reading the actions' parameters.
 string to the end of the pool. `copy_event` overwrites an action's slot with
 another action's (same length; only between actions with the same pointer
 fields set, since the RELT lists exactly the non-null pointers).
+`grow_events` moves the event array to the end of the relocated data with new
+slots that copy existing events and rebuilds the RELT (`relocation_table`,
+`build_relocation_table`). A grown file's pool is no longer at the end of the
+relocated data, so `set_string_param` refuses to append strings to it.
 
 Format (little endian, absolute offsets from the start of the file):
 
@@ -67,6 +71,7 @@ end of the pool moves none of them: only the string count, the section size,
 the RELT offset (header and the table's own) and the file size need updating.
 """
 import struct
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 END = 0xFFFF
@@ -389,6 +394,113 @@ def copy_event(data: bytes, src: int, dst: int) -> bytes:
     s, d = flow._events_p + 0x30 * src, flow._events_p + 0x30 * dst
     out = bytearray(data)
     out[d:d + 0x30] = data[s:s + 0x30]
+    return bytes(out)
+
+
+def relocation_table(data: bytes) -> tuple[int, int, set[int]]:
+    """(RELT offset, size of the relocated data, offsets of every pointer it lists).
+
+    Raises BfevflError unless the RELT has the layout of every flow file in the
+    game: one section starting at 0 and ending before the table, the table
+    running to the end of the file, and entries that each start at a pointer."""
+    try:
+        at, file_size = struct.unpack_from('<II', data, 0x18)
+        magic, own, n_sections, zero = struct.unpack_from('<4sIII', data, at)
+        if magic != b'RELT' or own != at or n_sections != 1 or zero or file_size != len(data):
+            raise BfevflError('Unexpected RELT header.')
+        base, offset, size, first, count = struct.unpack_from('<QIIII', data, at + 0x10)
+        if base or offset or first or size > at or at + 0x28 + 8 * count != len(data):
+            raise BfevflError('Unexpected RELT section.')
+        pointers = set()
+        for k in range(count):
+            start, mask = struct.unpack_from('<II', data, at + 0x28 + 8 * k)
+            if not mask & 1:
+                raise BfevflError('RELT entry that does not start at a pointer.')
+            pointers.update(start + 8 * b for b in range(32) if mask >> b & 1)
+    except struct.error as e:
+        raise BfevflError(f'Invalid RELT: {e}') from e
+    if any(p % 8 or p + 8 > size for p in pointers):
+        raise BfevflError('RELT pointer outside the relocated data.')
+    return at, size, pointers
+
+
+def build_relocation_table(at: int, size: int, pointers: set[int]) -> bytes:
+    """The RELT for a table placed at `at`, covering `size` bytes with those pointers
+    (the inverse of `relocation_table`: same entries as the game's files)."""
+    entries: list[list[int]] = []
+    for p in sorted(pointers):
+        if p % 8:
+            raise BfevflError(f'Unaligned pointer: {p:#x}')
+        if entries and p - entries[-1][0] < 0x100:
+            entries[-1][1] |= 1 << ((p - entries[-1][0]) // 8)
+        else:
+            entries.append([p, 1])
+    return (struct.pack('<4sIII', b'RELT', at, 1, 0)
+            + struct.pack('<QIIII', 0, 0, size, 0, len(entries))
+            + b''.join(struct.pack('<II', o, m) for o, m in entries))
+
+
+GROWABLE = (ACTION, SWITCH, SUBFLOW, SUBFLOW_SWITCH)
+
+
+def grow_events(data: bytes, sources: Sequence[int]) -> bytes:
+    """The file with its event array moved after the relocated data (16-aligned) and
+    one new slot per source: slot n + j is a byte copy of event sources[j].
+
+    ACTION and SUBFLOW copies share their source's name, parameters and called
+    flow/entry strings (read-only). SWITCH and SUBFLOW_SWITCH copies get their own
+    case array (appended after the slots, +0x18 repointed), so patching the copy's
+    cases leaves the source's alone. FORK, JOIN and RESULT cannot be copied. The
+    old array stays as dead bytes; the RELT is rebuilt after the new data
+    (16-aligned) and the header's RELT offset and file size are updated."""
+    flow = EventFlow(data)
+    if flow._flowchart is None:
+        raise BfevflError('The file has no flowchart.')
+    at, size, pointers = relocation_table(data)
+    if any(data[size:at]):
+        raise BfevflError('Unexpected data between the relocated data and the RELT.')
+    n, old = len(flow.events), flow._events_p
+    total = n + len(sources)
+    if total >= END:
+        raise BfevflError(f'Too many events: {total}')
+    for src in sources:
+        flow._check_index(src)
+        if flow.events[src].kind not in GROWABLE:
+            raise BfevflError(f'Event {src} (kind {flow.events[src].kind}) cannot be copied.')
+    if old + 0x30 * n > size:
+        raise BfevflError('The event array lies outside the relocated data.')
+    events_ptr = flow._flowchart + 0x30
+    if events_ptr not in pointers:
+        raise BfevflError('The events pointer is not relocated.')
+    for p in pointers:
+        if p != events_ptr and not old <= p < old + 0x30 * n and old <= flow._u64(p) < old + 0x30 * n:
+            raise BfevflError(f'Pointer at {p:#x} points into the event array.')
+
+    new = (size + 0xF) & ~0xF
+    inside = sorted(p - old for p in pointers if old <= p < old + 0x30 * n)
+    out = bytearray(data[:size]) + bytes(new - size) + data[old:old + 0x30 * n]
+    new_pointers = set(pointers) | {new + p for p in inside}
+    for j, src in enumerate(sources):
+        slot = new + 0x30 * (n + j)
+        out += data[old + 0x30 * src:old + 0x30 * (src + 1)]
+        new_pointers.update(slot + p - 0x30 * src for p in inside
+                            if 0x30 * src <= p < 0x30 * (src + 1))
+    for j, src in enumerate(sources):  # own case arrays, after all the slots
+        slot = new + 0x30 * (n + j)
+        count = flow._u16(old + 0x30 * src + 0xA)
+        if flow.events[src].kind not in (SWITCH, SUBFLOW_SWITCH) or not count:
+            continue
+        if slot + 0x18 not in new_pointers:
+            raise BfevflError(f'The cases of event {src} are not relocated.')
+        cases = flow._u64(old + 0x30 * src + 0x18)
+        struct.pack_into('<Q', out, slot + 0x18, len(out))
+        out += data[cases:cases + 8 * count]
+    struct.pack_into('<Q', out, events_ptr, new)
+    struct.pack_into('<H', out, flow._flowchart + 0x10 + 2 * 3, total)
+    end = len(out)
+    reloc = (end + 0xF) & ~0xF
+    out += bytes(reloc - end) + build_relocation_table(reloc, end, new_pointers)
+    struct.pack_into('<II', out, 0x18, reloc, len(out))
     return bytes(out)
 
 
