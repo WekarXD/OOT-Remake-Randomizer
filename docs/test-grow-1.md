@@ -20,4 +20,4 @@ If the game accepts these files, the next step uses the new slots for the rewrit
 
 ## Results
 
-Notes: ______
+Played 2026-11-12. **Verdict: the game accepts grown flow files.** Kokiri Forest loads, the targeting tutorial Kokiri and Mido talk as in the original game (the exit Kokiri was not reached). Next: use the new slots for the rewrite's copies.
