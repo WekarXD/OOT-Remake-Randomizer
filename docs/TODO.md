@@ -16,6 +16,7 @@ Pending work, most important first within each section.
 ## To test in game
 
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
+- `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
 - Adult batch of the full skip: `AllSage` and `Get_Epona`, whose old-trim output changed when the parser began to show the case slots of subflow switches (kind 5). `Goto_HyruleCastle` and `SubEvent_GetEponaSong` changed the same way and are in the childhood guide.
 - Batch 17, attempt 3: seed `TestTokens3`.
 - Batch 16 (optional): confirm the 27 "guessed" Skulltulas with a rupee-colour mod so they can also hold key items.
@@ -23,7 +24,7 @@ Pending work, most important first within each section.
 
 ## To build
 
-- **Shared / no-donor forced conversations** (dozens in the childhood; see the spoiler's "Cutscenes not skipped"): they share events with player-started talks, or need a copy but no donor slot exists. Options: grow the BFEVFL (needs a relocation-table writer) or index the banc EventStarters.
+- **Remaining full-skip failures** (shared forced talks are done by growing, pending the round 3 test): the targeting tutorial `ActionTutorial_1st_Talk` (conflict), Din's fairy (conflict), `Dm_InsideJabu_Jabu_0050` (conflict). Compounding growth (copy of a copy) could be optimised by growing in place.
 - **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.
 - **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
 - **Full skip, adult phase:** the same method for the adult scenes, after the childhood test batch.
