@@ -347,11 +347,14 @@ def fork_dependencies(flow: EventFlow, entry: str) -> list[tuple[int, str]]:
 
 def effects_only(flow: EventFlow, entry: str, table: SkipTable,
                  choices: Mapping[int, int] = {},
-                 reviewed_forks: frozenset[int] = frozenset()) -> Rewrite:
+                 reviewed_forks: frozenset[int] = frozenset(),
+                 external: frozenset[str] = frozenset()) -> Rewrite:
     """`linearize` with the table's decisions; other entry points stay untouched.
 
     Fails with 'fork dependency' if a fork branch reads a flag that a sibling writes
-    (see `fork_dependencies`), unless the fork is in `reviewed_forks`."""
+    (see `fork_dependencies`), unless the fork is in `reviewed_forks`. Entry points in
+    `external` (called from other files) are never inlined, whatever reaches them, and are
+    protected like untargeted entries; the targeted entry itself is exempt."""
     deps = [(f, n) for f, n in fork_dependencies(flow, entry) if f not in reviewed_forks]
     if deps:
         return Rewrite({}, [], 'fork dependency', ', '.join(f'fork {f} flag {n}' for f, n in deps))
@@ -366,6 +369,7 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
 
     events, entries = flow.events, flow.entry_points
     inlined, todo = {entry}, [entry]
+    external = external - {entry}
     while todo:  # entry points this one reaches through same-file subflows
         e = todo.pop()
         if e not in entries:
@@ -373,7 +377,7 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
         for i in reachable(events, {}, [entries[e]]):
             ev = events[i]
             if (ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow == ''
-                    and ev.sub_entry not in inlined):
+                    and ev.sub_entry not in inlined and ev.sub_entry not in external):
                 inlined.add(ev.sub_entry)
                 todo.append(ev.sub_entry)
     protected = frozenset(reachable(events, entries,
