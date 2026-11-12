@@ -271,15 +271,18 @@ def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
 
 SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0155', 'Dm_Kokiri_0060', 'Dm_HrlCastle_0050',
                                  'Dm_MelodyGet_Zelda')
+# Second spike (TestMovies2): the scenes around two movies, the Deku Tree's speech after Gohma
+# and Zelda's first scene.
+MOVIE_SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0080', 'Dm_HrlCastle_0035')
 
 
-def build_spike_files(nup) -> dict[str, bytes]:
+def build_spike_files(nup, names=SPIKE_SCENES) -> dict[str, bytes]:
     """romfs path -> compressed bytes for the spike scenes rewritten effects-only."""
     from randomizer.formats.zs import ZsCodec
     codec = ZsCodec.from_archive(nup)
     table = SkipTable.load()
     files = {}
-    for name in SPIKE_SCENES:
+    for name in names:
         path = f'Event/EventFlow/{name}.bfevfl.zs'
         data = codec.decompress(path, nup.read(path))
         flow = EventFlow(data)

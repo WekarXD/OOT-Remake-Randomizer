@@ -31,4 +31,4 @@ Report freezes, black screens, sound from the movie that keeps playing, or anyth
 
 ## Results
 
-Notes: ______
+Played 2026-11-12. **Verdict: shortening does not skip movies.** The intro played in full (with its rumble in the middle, so the timeline clips still ran on the movie's clock) and so did the Deku Tree's speech after Gohma; the user stopped there. Saria's first conversation was skipped (that is `Dm_Kokiri_0060` from TestScenes4). Next: TestMovies2 (`docs/test-movies-2.md`).
