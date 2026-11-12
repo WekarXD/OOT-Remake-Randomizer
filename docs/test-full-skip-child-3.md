@@ -8,10 +8,16 @@ Newly applied (all of them need a game check):
 
 - `Npc_Kokiri_007_Child` (`GoToDekuTree`, `GoToMido`, `Talk`): the Kokiri who blocks the exit.
 - `Npc_Kokiri_Mido_Child/Talk`: Mido.
+- `Npc_Kokiri_011_Child/KokiriForest_Kokiri_011_StopInFrontOfShop_00`: the Kokiri who stops Link in front of the shop.
+- `Npc_Hylia_ImperialSoldier_001_Child/Retaliation`: a castle guard.
 - Two `Npc_Hylia_Zelda_Child` `Zelda_CanbeStopped` entries.
-- `HyruleCastle_FoundBySecurity` (Courtyard).
-- All 16 `MelodyGet_Sun_SubEvent` targets (Royal Family Tomb, Sun's Song). The flow file grew from 126 KB to 276 KB, a size never tried in game.
+- `HyruleCastle_FoundBySecurity/FoundBySecurity_Courtyard`.
+- 14 of the 16 `MelodyGet_Sun_SubEvent` targets (Royal Family Tomb, Sun's Song); the other 2 were already applied in round 2, so all 16 are now applied. The flow file grew from 126 KB to 143 KB.
 - `Goto_HyruleCastle/EggHatch` (Malon's egg / cucco). `Step03_01_Npc_Navi_StepStart` still plays in full in the same file.
+
+Every file above grew (new event slots): `Npc_Kokiri_007_Child`, `Npc_Kokiri_Mido_Child`, `Npc_Kokiri_011_Child`, `Npc_Hylia_ImperialSoldier_001_Child`, `Npc_Hylia_Zelda_Child`, `HyruleCastle_FoundBySecurity`, `MelodyGet_Sun_SubEvent` and `Goto_HyruleCastle`. A file grown by several entries is compacted into one event array (`MelodyGet_Sun_SubEvent` would otherwise be 276 KB).
+
+The exit Kokiri's and Mido's `Talk` entries are themselves applied targets (their `Talk` is also the forced block): in the shipped files the exit Kokiri's `Talk` reaches 0 of its 10 `EventTalk` actions and Mido's 0 of 32. Talking to them yourself now shows **no dialogue**; that is accepted, and the only check is that nothing freezes.
 
 Generated with `randomizer.generate.generate` (seed `FullSkipChild3`, skip cutscenes and spoiler on) into `test-mod/0400486024DEC000/Rando_FullSkipChild3` (380 files).
 
@@ -21,7 +27,7 @@ Generated with `randomizer.generate.generate` (seed `FullSkipChild3`, skip cutsc
 
 ## Still playing in full (untrimmed, 16 entries)
 
-`Get_StoneOfFire/Get_StoneOfFire_DodongoCavernOpne`, four `Get_StoneOfWater` entries (`IrregularEvent`, `KingZoraCamera`, `StoneOfWater_GetRutoletter`, `fromDream`), `GimmickFlow_RoyalFamilyTomb/CheckStone_To_MelodyGet_Sun`, `Goto_HyruleCastle/Step03_01_Npc_Navi_StepStart`, six `HyruleCastle_FoundBySecurity` entries (`FoundBySecurity`, `_Common`, `_Common_Courtyard`, `_Common_IsFirst`, `Soldier_RandomTalk_IsAfterSecond`), and four `Npc_Hylia_Zelda_Child` entries (`AboutWaterStone`, `InterestTalk_Zelda_Child`, `..._ChangeTheTopic`, `ThatsAll`).
+`Get_StoneOfFire/Get_StoneOfFire_DodongoCavernOpne`, four `Get_StoneOfWater` entries (`IrregularEvent`, `KingZoraCamera`, `StoneOfWater_GetRutoletter`, `fromDream`), `GimmickFlow_RoyalFamilyTomb/CheckStone_To_MelodyGet_Sun`, `Goto_HyruleCastle/Step03_01_Npc_Navi_StepStart`, five `HyruleCastle_FoundBySecurity` entries (`FoundBySecurity`, `_Common`, `_Common_Courtyard`, `_Common_IsFirst`, `Soldier_RandomTalk_IsAfterSecond`), and four `Npc_Hylia_Zelda_Child` entries (`AboutWaterStone`, `InterestTalk_Zelda_Child`, `..._ChangeTheTopic`, `ThatsAll`).
 
 ## Setup
 
@@ -31,11 +37,12 @@ Generated with `randomizer.generate.generate` (seed `FullSkipChild3`, skip cutsc
 ## Checks
 
 - [ ] The exit Kokiri and Mido no longer stop Link with a conversation? ______
-- [ ] Talking to them yourself afterwards works (no freeze; some lines missing is accepted)? ______
+- [ ] Talking to them yourself afterwards shows no dialogue (expected): nothing freezes? ______
+- [ ] The Kokiri in front of the shop no longer stops Link; talking to him yourself: no freeze? ______
 - [ ] Targeting tutorial (expected to play, shortened) and Deku Shield tutorial: behaviour? ______
-- [ ] Royal Family Tomb / Sun's Song (grown file, 276 KB): song received, no freeze or crash? ______
+- [ ] Royal Family Tomb / Sun's Song (grown file, 143 KB): song received, no freeze or crash? ______
 - [ ] Castle: Malon's egg hatches / the cucco appears, Navi's step plays, nothing stuck? ______
-- [ ] Zelda (courtyard and talks) and the castle guards: no freeze, nothing stuck? ______
+- [ ] Zelda (courtyard and talks) and the castle guards (including one that retaliates): no freeze, nothing stuck? ______
 - [ ] Nothing lost compared with round 2 (items, songs, stones, Door of Time)? ______
 
 ## Results
