@@ -3,8 +3,8 @@ import struct
 import unittest
 
 from randomizer.formats.timeline import Timeline, TimelineError, retime
-from randomizer.timeline_skip import (LASTING, SPIKE_TIMELINES, build_timeline_spike_files,
-                                      new_length, shorten)
+from randomizer.timeline_skip import (LASTING, MOVIE_SPIKE_TIMELINES, SPIKE_TIMELINES,
+                                      build_timeline_spike_files, new_length, shorten)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -109,15 +109,17 @@ class RealTimelineTest(unittest.TestCase):
         from randomizer.formats.zs import ZsCodec
         from randomizer.nup import NupArchive
         with NupArchive(NUP_PATH) as nup:
-            files = build_timeline_spike_files(nup)
+            names = SPIKE_TIMELINES + MOVIE_SPIKE_TIMELINES
+            files = build_timeline_spike_files(nup, names)
             codec = ZsCodec.from_archive(nup)
-            for name in SPIKE_TIMELINES:
+            for name in names:
                 path = f'Event/EventFlow/{name}.bfevfl.zs'
                 old = Timeline(codec.decompress(path, nup.read(path)))
                 new = Timeline(codec.decompress(path, files[path]))
                 self.assertLessEqual(new.duration, 60.0, name)
-                for sub in old.subtimelines:
-                    self.assertIn(f'Event/EventFlow/{sub}.bfevfl.zs', files)
+                for sub in old.subtimelines:  # some are missing (Dm_Kokiri_0000_Effect)
+                    sub_path = f'Event/EventFlow/{sub}.bfevfl.zs'
+                    self.assertEqual(sub_path in files, nup.has(sub_path), sub)
                 for o, n in zip(old.clips, new.clips):
                     if o.action in LASTING:
                         self.assertLess(n.start, new.duration, (name, o.action))

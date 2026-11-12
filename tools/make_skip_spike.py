@@ -1,7 +1,8 @@
 """Spike test mods: TestScenes4 (four cutscenes rewritten effects-only: no scene, same
 effects) and, with --timelines, TestTimelines (the same plus three timeline cutscenes
-shortened, see randomizer/timeline_skip.py).
-Usage: python -I tools/make_skip_spike.py [--timelines] <nup> <out_dir>
+shortened, see randomizer/timeline_skip.py) and, with --movies, TestMovies (TestTimelines plus
+three movie cutscenes shortened the same way).
+Usage: python -I tools/make_skip_spike.py [--timelines] [--movies] <nup> <out_dir>
 Only reads the .nup; writes <out_dir>/romfs/Event/EventFlow/<name>.bfevfl.zs for each scene and
 prints the kept events of each as `index actor.action`. If <out_dir> already exists it must be
 empty or a previous batch (romfs only); it is replaced atomically (built in <out_dir>.tmp).
@@ -15,7 +16,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow  # noqa: E402
 from randomizer.formats.zs import ZsCodec  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
-from randomizer.timeline_skip import build_timeline_spike_files  # noqa: E402
+from randomizer.timeline_skip import (MOVIE_SPIKE_TIMELINES, SPIKE_TIMELINES,  # noqa: E402
+                                      build_timeline_spike_files)
 from randomizer.skipflow import (SPIKE_SCENES, SkipTable, apply_rewrite, build_spike_files,  # noqa: E402
                                  effects_only, reachable)
 
@@ -48,13 +50,14 @@ def _check_replaceable(d):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--timelines', action='store_true', help='also shorten the spike timelines')
+    ap.add_argument('--movies', action='store_true', help='also shorten the spike movies (implies --timelines)')
     ap.add_argument('nup')
     ap.add_argument('out_dir')
     a = ap.parse_args()
     with NupArchive(a.nup) as nup:
         files = build_spike_files(nup)
-        if a.timelines:
-            files.update(build_timeline_spike_files(nup))
+        names = SPIKE_TIMELINES * (a.timelines or a.movies) + MOVIE_SPIKE_TIMELINES * a.movies
+        files.update(build_timeline_spike_files(nup, names))
         report(nup)
     out = os.path.abspath(a.out_dir)
     tmp, old = out + '.tmp', out + '.old'

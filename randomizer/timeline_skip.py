@@ -22,6 +22,9 @@ FADE_WINDOW = 60.0  # 2 s at 30 fps
 # The spike's timelines: Saria on the bridge, Navi just outside Link's house (before Saria),
 # the scene with Zelda and Impa after the letter.
 SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0150', 'Dm_Kokiri_0050', 'Dm_HrlCastle_0060')
+# Movie cutscenes are timelines too (their EventSetting derives from RecordMovieTimelineEvent and
+# Event/Movie/<name>.webm plays alongside): the intro, the Deku Tree after Gohma, Zelda's story.
+MOVIE_SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0000', 'Dm_Kokiri_0095', 'Dm_HrlCastle_0045')
 
 
 def new_length(tl: Timeline) -> float:
@@ -42,12 +45,12 @@ def shorten(data: bytes) -> bytes:
     return retime(data, length, {c.offset: (last, 1.0) for c in moved_clips(tl, length)})
 
 
-def build_timeline_spike_files(nup) -> dict[str, bytes]:
-    """romfs path -> compressed bytes for the spike timelines and their subtimelines, shortened."""
+def build_timeline_spike_files(nup, names=SPIKE_TIMELINES) -> dict[str, bytes]:
+    """romfs path -> compressed bytes for the given timelines and their subtimelines, shortened."""
     from .formats.zs import ZsCodec
     codec = ZsCodec.from_archive(nup)
     files = {}
-    todo = list(SPIKE_TIMELINES)
+    todo = list(names)
     while todo:
         name = todo.pop(0)
         path = f'Event/EventFlow/{name}.bfevfl.zs'
