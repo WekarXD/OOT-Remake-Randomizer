@@ -243,10 +243,25 @@ class FullSkipTest(unittest.TestCase):
 
     def test_timelines_are_shortened_with_their_subtimelines(self):
         from randomizer.formats.timeline import Timeline
-        for name in ('Dm_Kokiri_0150', 'Dm_Deku_BossIn'):
+        for name in ('Dm_Kokiri_0150', 'Dm_Kokiri_0030'):
             self.assertLess(Timeline(self.output(name)).duration,
                             Timeline(self.original(name)).duration, name)
         self.assertIn(path_of('Dm_Kokiri_0150_Effect'), self.files)
+
+    def test_boss_scenes_are_kept(self):
+        # User decision (2026-11-12): boss intros and defeats play.
+        for name in ('Dm_Deku_BossIn', 'Dm_Deku_BossOut', 'Dm_DodongoCave_BossIn',
+                     'Dm_InsideJabu_Jabu_BossOut'):
+            self.assertNotIn(path_of(name), self.files, name)
+        self.assertNotIn(('Get_StoneOfForest', 'Boss_Appear'), self.applied)
+        self.assertNotIn(('Get_StoneOfWater', 'StoneOfWater_BossAppear'), self.applied)
+
+    def test_king_zora_keeps_his_animation(self):
+        flow = EventFlow(self.output('Dm_Zora_0010'))
+        start = flow.entry_points['EntryPoint0']
+        actions = {(flow.events[i].actor, flow.events[i].action)
+                   for i in reachable(flow.events, flow.entry_points, [start])}
+        self.assertIn(('Npc_Zora_KingZora_child', 'EventPlayAS'), actions)
 
 
 if __name__ == '__main__':

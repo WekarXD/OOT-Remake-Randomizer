@@ -81,7 +81,12 @@ CHILD_EXTRA: dict[str, str] = {
     'Dm_MelodyGet_Epona': 'Epona\'s Song from Malon (child song)',
     'Dm_MelodyGet_Sun': 'Royal Family Tomb wall, Sun\'s Song (child song)',
     'Dm_MelodyGet_Sun_03': 'Sun\'s Song granted (GetPouchContent) after the tomb wall',
-    'Dm_ZoraFountain_0000': 'arrival at Zora\'s Fountain (location name)',
+    'Dm_FairyFountain_Din': 'Great Fairy gives Din\'s Fire (childhood spell)',
+    'Dm_FairyFountain_Frore': 'Great Fairy gives Farore\'s Wind (childhood spell)',
+    'Dm_HrlField_0030': 'Kaepora Gaebora (the owl only meets child Link)',
+    'Dm_HrlField_0040': 'Kaepora Gaebora (the owl only meets child Link)',
+    'Dm_HrlField_0050': 'Kaepora Gaebora with the scarecrows (the owl only meets child Link)',
+    'Dm_LostWood_0010': 'Kaepora Gaebora in the Lost Woods (the owl only meets child Link)',
     'Dm_Zora_0000': 'arrival at Zora\'s Domain (location name)',
 }
 # Reviewed and left out, with the reason (printed in the table).
@@ -90,9 +95,8 @@ NOT_CHILD_EXTRA: dict[str, str] = {
     'Dm_DeathMtTrail_0000': 'arrival at Death Mountain Trail; age switch inside (both ages)',
     'Dm_DeathMtTrail_0005': 'no flow starts it; nature unknown (falling rocks?)',
     'Dm_Goron_0045': 'Goron City spinning pot prize (minigame)',
-    'Dm_HrlField_0030': 'Kaepora scene, no flow starts it; where it plays is unknown',
-    'Dm_HrlField_0040': 'Kaepora scene, no flow starts it; where it plays is unknown',
-    'Dm_HrlField_0050': 'Kaepora scene with the scarecrows, no flow starts it; unknown',
+    'Dm_ZoraFountain_0000': ('arrival at Zora\'s Fountain: the rewrite serialised its fork so '
+                             'Link walked on a black screen (childhood test, 2026-11-12)'),
     'Dm_Kakariko_0040': 'flashback timeline with Sheik (KakarikoVillage_FlashbackScenes, adult)',
     'Dm_Kokiri_0162': 'after the Forest Temple (ForestTemple_SageOfForest_..., adult)',
     'Dm_Zora_0020': 'diving minigame (MiniGame_Diving)',
@@ -113,6 +117,29 @@ GIFT_TALKS: dict[str, list[str]] = {
     'DoorOfTime': ['Step01_Npc_Hylia_Impa_Child_Talk'],
 }
 
+# Forced conversations outside cutscenes.json that the childhood test still showed
+# (2026-11-12): the owl stopping Link, the targeting and Deku Shield tutorials.
+# Which tutorial entries start by themselves is a guess from their names; the next
+# test confirms it.
+FORCED_TALKS_EXTRA: dict[str, list[str]] = {
+    'Npc_Kaepora_LakeHylia': ['Talk', 'Near'],
+    'Npc_Kaepora_DeathMountainTrail': ['Near'],
+    'Npc_Kokiri_006_Child': ['ActionTutorial_1st_Talk', 'AttentionMove_LectureTalk_IsFirst'],
+    'Npc_Kokiri_010_Child': ['DekuShield_TutorialTalk'],
+}
+
+# Boss scenes are kept (user decision, 2026-11-12: boss intros and defeats play).
+BOSS_ENTRIES = frozenset({
+    ('Get_StoneOfForest', 'Boss_Appear'), ('Get_StoneOfForest', 'BossAppearSkipFunc'),
+    ('Get_StoneOfForest', 'Boss_Win'), ('Get_StoneOfForest', 'Boss_Win_DreamWorld'),
+    ('Get_StoneOfForest', 'InitDefeatBoss'),
+    ('Get_StoneOfFire', 'Get_StoneOfFire_AppearBoss'),
+    ('Get_StoneOfFire', 'Get_StoneOfFire_DefeatBoss'),
+    ('Get_StoneOfWater', 'StoneOfWater_BossAppear'),
+    ('Get_StoneOfWater', 'StoneOfWater_DestroyBoss'),
+})
+BOSS_TIMELINE_MARKS = ('_BossIn', '_BossOut')
+
 # Entries left out of phase 1 by name (review of 2026-11-12), unless listed in GIFT_TALKS or FORCED_TALKS_ALLOW:
 # (reason, test on (flow, entry)). Checked after KEEP_TALKS.
 ADULT_BOSSES = ('Ganon', 'Ganondorf', 'KotakeKoume', 'Morpha', 'Nabooru', 'Phantom',
@@ -121,6 +148,8 @@ CHATTER = re.compile(r'(^|_)(Talk|Near)$|^IrregularTalk$|^Talk_Nearby_')
 EXCLUDED_ENTRIES = (
     ('adult boss intro skip (Get_StoneOfForest "*" lists every boss)',
      lambda f, e: e.startswith('BossAppearSkip_') and e[len('BossAppearSkip_'):] in ADULT_BOSSES),
+    ('boss intro or defeat (kept by the user)',
+     lambda f, e: (f, e) in BOSS_ENTRIES or e.startswith('BossAppearSkip')),
     ('developer test entry (Test_*)', lambda f, e: e.startswith('Test_')),
     ('player-started chatter (Talk / Near, *_Talk / *_Near, IrregularTalk, Talk_Nearby_*)',
      lambda f, e: not f.startswith('Dm_') and CHATTER.search(e) is not None),
@@ -256,7 +285,8 @@ def build(nup, old: dict | None = None):
             continue
         data = raw[name]
         tl = is_timeline(data)
-        if tl and (name.endswith(SUBTIMELINE_SUFFIXES) or name in movie_files):
+        if tl and (name.endswith(SUBTIMELINE_SUFFIXES) or name in movie_files
+                   or any(m in name for m in BOSS_TIMELINE_MARKS)):
             continue
         a = age(data)
         if a in ('none', 'both'):
@@ -281,12 +311,16 @@ def build(nup, old: dict | None = None):
     for name, entries in GIFT_TALKS.items():
         for e in entries:
             add(name, e, 'GIFT_TALKS')
+    for name, entries in FORCED_TALKS_EXTRA.items():
+        for e in entries:
+            add(name, e, 'FORCED_TALKS_EXTRA')
     for name, entries in KEEP_TALKS.items():
         for e in entries:
             targets.get(name, set()).discard(e)
     for (name, e) in REVIEWED_OUT:
         targets.get(name, set()).discard(e)
-    gifts = {(n, e) for n, es in GIFT_TALKS.items() for e in es} | FORCED_TALKS_ALLOW
+    gifts = ({(n, e) for n, es in GIFT_TALKS.items() for e in es} | FORCED_TALKS_ALLOW
+             | {(n, e) for n, es in FORCED_TALKS_EXTRA.items() for e in es})
     print('== Entries left out by name ==')
     for reason, test in EXCLUDED_ENTRIES:
         out = sorted((n, e) for n, es in targets.items() for e in es

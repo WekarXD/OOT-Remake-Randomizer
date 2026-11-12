@@ -23,6 +23,11 @@ ACTION_KEEP = ('Transition', 'BancChange', 'Warp', 'AutoSave', 'Fade')
 QUERY_COLLAPSE = ('TalkChoice', 'Select', 'Random', 'Anim', 'Camera')
 QUERY_STATE = ('GameData', 'Pouch', 'Flag', 'Item', 'Count', 'Have', 'Is')
 SUBFLOWS_DROP = ['GetPouchContent/DisplayGetByActorName', 'Dm_SY_Ocarina/LearningOcarina*', 'Common_Camera_*/*']
+# Per-actor exceptions to the rules above ('actor.action' -> class).
+# King Zora moves aside through an animation after reading Ruto's letter (Dm_Zora_0010);
+# dropping it left him blocking the way until the area was reloaded (childhood test,
+# 2026-11-12).
+ACTOR_ACTIONS = {'Npc_Zora_KingZora_child.EventPlayAS': 'keep'}
 
 
 def classify_action(name):
@@ -66,7 +71,7 @@ def scan(nup):
 def build(actions, queries):
     return {
         'actions': {n: classify_action(n) for n in sorted(actions)},
-        'actor_actions': {},
+        'actor_actions': dict(sorted(ACTOR_ACTIONS.items())),
         'queries': {n: classify_query(n) for n in sorted(queries)},
         'subflows_drop': SUBFLOWS_DROP,
         'counts': {n: c for n, c in sorted({**actions, **queries}.items())},

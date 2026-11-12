@@ -765,7 +765,9 @@
   "ExecuteFrogDisappear": "review",
   "ExecuteFrogSwell": "review"
  },
- "actor_actions": {},
+ "actor_actions": {
+  "Npc_Zora_KingZora_child.EventPlayAS": "keep"
+ },
  "counts": {
   "EventAIScheduleEndTerror": 33,
   "EventAIScheduleMoveToAnchor": 17,

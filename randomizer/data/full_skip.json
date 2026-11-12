@@ -84,6 +84,18 @@
    ],
    "phase": 1
   },
+  "Dm_FairyFountain_Din": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
+  "Dm_FairyFountain_Frore": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
   "Dm_FairyFountain_Power": {
    "entries": [
     "EntryPoint0"
@@ -193,6 +205,24 @@
    "phase": 1
   },
   "Dm_HrlField_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
+  "Dm_HrlField_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
+  "Dm_HrlField_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
+  "Dm_HrlField_0050": {
    "entries": [
     "EntryPoint0"
    ],
@@ -342,6 +372,12 @@
    ],
    "phase": 1
   },
+  "Dm_LostWood_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 1
+  },
   "Dm_MelodyGet_Epona": {
    "entries": [
     "EntryPoint0"
@@ -391,12 +427,6 @@
    "phase": 1
   },
   "Dm_TimeTemple_0080": {
-   "entries": [
-    "EntryPoint0"
-   ],
-   "phase": 1
-  },
-  "Dm_ZoraFountain_0000": {
    "entries": [
     "EntryPoint0"
    ],
@@ -456,10 +486,8 @@
   },
   "Get_StoneOfFire": {
    "entries": [
-    "Get_StoneOfFire_AppearBoss",
     "Get_StoneOfFire_ArriveCity",
     "Get_StoneOfFire_DeathMtTrailIn",
-    "Get_StoneOfFire_DefeatBoss",
     "Get_StoneOfFire_DodongoCavernOpne",
     "Get_StoneOfFire_GetBombBag",
     "Get_StoneOfFire_KakarikoVillageLetter",
@@ -476,15 +504,8 @@
   },
   "Get_StoneOfForest": {
    "entries": [
-    "BossAppearSkipFunc",
-    "BossAppearSkip_Barinade",
-    "BossAppearSkip_Dodongo",
     "BossArea_ShutIn",
-    "Boss_Appear",
-    "Boss_Win",
-    "Boss_Win_DreamWorld",
-    "GetSword",
-    "InitDefeatBoss"
+    "GetSword"
    ],
    "phase": 1
   },
@@ -494,9 +515,7 @@
     "KingZoraCamera",
     "Step10_Npc_Zora_Ruto_Child_001_Talk",
     "StoneOfWater_ArriveJabuJabuBelly",
-    "StoneOfWater_BossAppear",
     "StoneOfWater_ClearDivingGame",
-    "StoneOfWater_DestroyBoss",
     "StoneOfWater_DiscoveryStone",
     "StoneOfWater_ElevatedFloor",
     "StoneOfWater_GetRutoletter",
@@ -593,6 +612,26 @@
    ],
    "phase": 1
   },
+  "Npc_Kaepora_DeathMountainTrail": {
+   "entries": [
+    "Near"
+   ],
+   "phase": 1
+  },
+  "Npc_Kaepora_LakeHylia": {
+   "entries": [
+    "Near",
+    "Talk"
+   ],
+   "phase": 1
+  },
+  "Npc_Kokiri_006_Child": {
+   "entries": [
+    "ActionTutorial_1st_Talk",
+    "AttentionMove_LectureTalk_IsFirst"
+   ],
+   "phase": 1
+  },
   "Npc_Kokiri_007_Child": {
    "entries": [
     "GoToDekuTree",
@@ -604,6 +643,7 @@
   },
   "Npc_Kokiri_010_Child": {
    "entries": [
+    "DekuShield_TutorialTalk",
     "FocusOnAttentionRock_ShieldDeku",
     "FocusOnAttentionRock_ShieldDeku_Short"
    ],
@@ -719,12 +759,8 @@
  "timelines": {
   "Dm_DeathMtTrail_0020": 1,
   "Dm_DeathMtTrail_0030": 1,
-  "Dm_Deku_BossIn": 1,
-  "Dm_Deku_BossOut": 1,
   "Dm_DesertColossus_0020": 1,
   "Dm_DesertColossus_0030": 1,
-  "Dm_DodongoCave_BossIn": 1,
-  "Dm_DodongoCave_BossOut": 1,
   "Dm_Goron_0020": 1,
   "Dm_Goron_0025": 1,
   "Dm_HrlCastle_0030": 1,
@@ -732,8 +768,6 @@
   "Dm_HrlField_0005": 1,
   "Dm_HrlField_0060": 1,
   "Dm_InsideJabu_Jabu_0010": 1,
-  "Dm_InsideJabu_Jabu_BossIn": 1,
-  "Dm_InsideJabu_Jabu_BossOut": 1,
   "Dm_Kokiri_0030": 1,
   "Dm_Kokiri_0050": 1,
   "Dm_Kokiri_0070": 1,
