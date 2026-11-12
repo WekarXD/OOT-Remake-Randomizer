@@ -116,7 +116,7 @@ class RealTimelineTest(unittest.TestCase):
                 path = f'Event/EventFlow/{name}.bfevfl.zs'
                 old = Timeline(codec.decompress(path, nup.read(path)))
                 new = Timeline(codec.decompress(path, files[path]))
-                self.assertLessEqual(new.duration, 60.0, name)
+                self.assertEqual(new.duration, new_length(old), name)
                 for sub in old.subtimelines:  # some are missing (Dm_Kokiri_0000_Effect)
                     sub_path = f'Event/EventFlow/{sub}.bfevfl.zs'
                     self.assertEqual(sub_path in files, nup.has(sub_path), sub)
