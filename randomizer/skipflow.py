@@ -6,7 +6,7 @@ from fnmatch import fnmatchcase
 from pathlib import Path
 
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, RESULT, SUBFLOW, SUBFLOW_SWITCH,
-                                       SWITCH, Event, EventFlow, patch_pointers)
+                                       SWITCH, Event, EventFlow, copy_event, patch_pointers)
 
 SWITCHES = (SWITCH, SUBFLOW_SWITCH)  # kinds whose edges are `cases`
 
@@ -56,6 +56,9 @@ class Rewrite:
     error: str | None = None
     detail: str = ''  # what failed, for reports (empty when error is None)
     collapsed: dict[int, int] = field(default_factory=dict)  # switch -> case followed
+    # copy slot -> original event: the copy (written over an unreachable action, the
+    # donor) stands in for the original on the targeted path; `links` may name its slot.
+    copies: dict[int, int] = field(default_factory=dict)
 
 
 def reachable_chosen(events, entries, starts: Iterable[int],
@@ -67,19 +70,24 @@ def reachable_chosen(events, entries, starts: Iterable[int],
         if i == END or i in seen:
             continue
         seen.add(i)
-        ev = events[i]
-        if ev.kind in SWITCHES:
-            todo += [ev.cases[chosen[i]]] if i in chosen else ev.cases
-            if ev.kind == SUBFLOW_SWITCH and ev.sub_flow == '' and ev.sub_entry in entries:
-                todo.append(entries[ev.sub_entry])
-        elif ev.kind == FORK:
-            todo += ev.forks + [ev.join]
-        else:
-            if ev.next is not None:
-                todo.append(ev.next)
-            if ev.kind == SUBFLOW and ev.sub_flow == '' and ev.sub_entry in entries:
-                todo.append(entries[ev.sub_entry])
+        todo += _successors(events, entries, i, chosen)
     return seen
+
+
+def _successors(events, entries, i, chosen=None) -> list[int]:
+    """Events reached in one step from i (`chosen` as in `reachable_chosen`)."""
+    ev = events[i]
+    if ev.kind in SWITCHES:
+        out = [ev.cases[chosen[i]]] if chosen and i in chosen else list(ev.cases)
+        if ev.kind == SUBFLOW_SWITCH and ev.sub_flow == '' and ev.sub_entry in entries:
+            out.append(entries[ev.sub_entry])
+        return out
+    if ev.kind == FORK:
+        return ev.forks + [ev.join]
+    out = [ev.next] if ev.next is not None else []
+    if ev.kind == SUBFLOW and ev.sub_flow == '' and ev.sub_entry in entries:
+        out.append(entries[ev.sub_entry])
+    return out
 
 
 def reachable(events, entries, starts: Iterable[int]) -> set[int]:
@@ -90,8 +98,8 @@ def reachable(events, entries, starts: Iterable[int]) -> set[int]:
 
 def linearize(events: list[Event], entries: dict[str, int], entry: str,
               keep: Callable[[Event], bool], collapse: Callable[[Event], bool],
-              choices: Mapping[int, int] = {}, protected: frozenset[int] = frozenset()
-              ) -> Rewrite:
+              choices: Mapping[int, int] = {}, protected: frozenset[int] = frozenset(),
+              can_copy: Callable[[int, int], bool] | None = None) -> Rewrite:
     """Relink the walk from `entry` so that it only passes through kept nodes.
 
     The walk carries a continuation stack: ('sub', next, entry) frames for
@@ -110,6 +118,10 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
     `choices` ('subflow switch' if none). A result outside a call frame: at
     the top level it is a kept terminal (the entry's own result); inside an
     inlined subflow or a fork branch it is refused (nothing could follow it).
+
+    Events in `protected` (reached from untargeted entries) are never relinked:
+    see `_private_copies`. `can_copy(src, dst)` says whether action `src` may be
+    written over the slot of action `dst` (default: always).
     """
     collapsed: dict[int, int] = {}
 
@@ -275,16 +287,80 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
         stuck = [n for n in kept if n not in ends]
         if stuck:
             raise _Fail('loop', f'cannot end from {stuck[:10]}')
+        links, copies = _private_copies(events, entries, links, protected, can_copy)
+    except _Fail as e:
+        return Rewrite({}, [], e.error, e.detail, collapsed)
+    return Rewrite(links, kept, None, '', collapsed, copies)
+
+
+def _private_copies(events, entries, links, protected, can_copy):
+    """(links, copies): `links` with every protected event whose link changes
+    replaced, on the targeted path, by a private copy (spec 8.1).
+
+    Fixpoint: a protected action whose link differs from the original gets a copy
+    that carries the new link, and every link of the rewrite that pointed at the
+    original now points at the copy. That may change the link of a protected
+    predecessor, which is then copied in turn. Switches, subflows and subflow
+    switches are never copied ('shared').
+
+    Copies first get placeholder slots (len(events) + j). Then each takes the slot
+    of a donor: an action that nothing reaches after the rewrite (from any entry,
+    through cases, forks, joins and same-file calls), that no link targets, that
+    is not protected and that `can_copy` accepts; lowest index first ('no donor'
+    when they run out). Overwriting a donor is safe because nothing reaches it.
+    """
+    links = dict(links)
+    n_events = len(events)
+    originals: dict[int, int] = {}  # placeholder -> original
+    changed = True
+    while changed:
+        changed = False
         for key, target in links.items():
             if key[0] == 'entry' or key[1] not in protected:
                 continue
             ev = events[key[1]]
             old = ev.next if key[0] == 'next' else ev.cases[key[2]]
-            if old != target:
+            if old == target:
+                continue
+            if ev.kind != ACTION:
                 raise _Fail('shared', f'{key}: {old} -> {target}')
-    except _Fail as e:
-        return Rewrite({}, [], e.error, e.detail, collapsed)
-    return Rewrite(links, kept, None, '', collapsed)
+            src, c = key[1], n_events + len(originals)
+            originals[c] = src
+            links[('next', c)] = links.pop(('next', src))
+            for k, t in links.items():
+                if t == src:
+                    links[k] = c
+            changed = True
+            break
+    if not originals:
+        return links, {}
+
+    def succ(i):
+        if i >= n_events or ('next', i) in links:
+            return [links[('next', i)]]
+        if events[i].kind in SWITCHES and ('case', i, 0) in links:
+            return [links[('case', i, k)] for k in range(len(events[i].cases))]
+        return _successors(events, entries, i)
+
+    seen, todo = set(), [links.get(('entry', e), i) for e, i in entries.items()]
+    while todo:
+        i = todo.pop()
+        if i != END and i not in seen:
+            seen.add(i)
+            todo += succ(i)
+    targets = set(links.values())
+    free = [i for i, ev in enumerate(events) if ev.kind == ACTION and i not in seen
+            and i not in targets and i not in protected]
+    slot = {}
+    for c, src in originals.items():
+        d = next((d for d in free if can_copy is None or can_copy(src, d)), None)
+        if d is None:
+            raise _Fail('no donor', f'copy of event {src}')
+        free.remove(d)
+        slot[c] = d
+    links = {(k if k[0] == 'entry' else (k[0], slot.get(k[1], k[1]), *k[2:])): slot.get(t, t)
+             for k, t in links.items()}
+    return links, {slot[c]: src for c, src in originals.items()}
 
 # Parameter keys that name a game data flag (found by scanning the action and query
 # parameters of every flow: GameDataName for the Set/Is/Add/Wait family, GameDataA/B
@@ -345,6 +421,26 @@ def fork_dependencies(flow: EventFlow, entry: str) -> list[tuple[int, str]]:
     return sorted(found)
 
 
+def inlined_entries(flow: EventFlow, entry: str,
+                    external: frozenset[str] = frozenset()) -> set[str]:
+    """`entry` and the entry points it reaches through same-file subflows and subflow
+    switches, except those in `external` (`entry` itself always counts)."""
+    events, entries = flow.events, flow.entry_points
+    inlined, todo = {entry}, [entry]
+    external = external - {entry}
+    while todo:
+        e = todo.pop()
+        if e not in entries:
+            continue
+        for i in reachable(events, {}, [entries[e]]):
+            ev = events[i]
+            if (ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow == ''
+                    and ev.sub_entry not in inlined and ev.sub_entry not in external):
+                inlined.add(ev.sub_entry)
+                todo.append(ev.sub_entry)
+    return inlined
+
+
 def effects_only(flow: EventFlow, entry: str, table: SkipTable,
                  choices: Mapping[int, int] = {},
                  reviewed_forks: frozenset[int] = frozenset(),
@@ -368,27 +464,18 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
         return table.collapses(ev.query)
 
     events, entries = flow.events, flow.entry_points
-    inlined, todo = {entry}, [entry]
-    external = external - {entry}
-    while todo:  # entry points this one reaches through same-file subflows
-        e = todo.pop()
-        if e not in entries:
-            continue
-        for i in reachable(events, {}, [entries[e]]):
-            ev = events[i]
-            if (ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow == ''
-                    and ev.sub_entry not in inlined and ev.sub_entry not in external):
-                inlined.add(ev.sub_entry)
-                todo.append(ev.sub_entry)
+    inlined = inlined_entries(flow, entry, external)
     protected = frozenset(reachable(events, entries,
                                     [i for e, i in entries.items() if e not in inlined]))
-    return linearize(events, entries, entry, keep, collapse, choices, protected)
+    return linearize(events, entries, entry, keep, collapse, choices, protected, flow.copyable)
 
 
 def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
-    """The file with the rewrite's links patched in (same length)."""
+    """The file with the rewrite's copies written, then its links patched in (same length)."""
     if rw.error:
         raise ValueError(f'Cannot apply a failed rewrite: {rw.error} ({rw.detail})')
+    for dst, src in rw.copies.items():
+        data = copy_event(data, src, dst)
     return patch_pointers(data, {flow.link_slots[k]: v for k, v in rw.links.items()})
 
 

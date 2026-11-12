@@ -1,3 +1,4 @@
+import copy
 import importlib.util
 import json
 import os
@@ -8,8 +9,8 @@ from pathlib import Path
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
 from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, apply_rewrite, build_spike_files,
-                                 effects_only, fork_dependencies, linearize, reachable,
-                                 reachable_chosen)
+                                 effects_only, fork_dependencies, inlined_entries, linearize,
+                                 reachable, reachable_chosen)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -142,6 +143,32 @@ def collapse(ev):
 
 def lin(events, entries=None, entry='E', **kw):
     return linearize(events, entries or {'E': 0}, entry, keep, collapse, **kw)
+
+
+def rewritten(events, entries, rw):
+    """(events, entries) as `apply_rewrite` would leave them: copies written, links patched."""
+    new = [copy.deepcopy(ev) for ev in events]
+    for dst, src in rw.copies.items():
+        new[dst] = copy.deepcopy(events[src])
+        new[dst].index = dst
+    new_entries = dict(entries)
+    for key, target in rw.links.items():
+        if key[0] == 'entry':
+            new_entries[key[1]] = target
+        elif key[0] == 'next':
+            new[key[1]].next = target
+        else:
+            new[key[1]].cases[key[2]] = target
+    return new, new_entries
+
+
+def walk(events, i):
+    """Events visited from i following `next` only."""
+    out = []
+    while i != END:
+        out.append(i)
+        i = events[i].next
+    return out
 
 
 class LinearizeTests(unittest.TestCase):
@@ -301,7 +328,8 @@ class LinearizeTests(unittest.TestCase):
         self.assertEqual(lin([A(0, 'D0', 1), A(1, 'D1', 0)]).error, 'loop')
 
     def test_shared(self):
-        rw = lin([A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2')], protected=frozenset({0}))
+        # A kept subflow is never copied: relinking a protected one fails.
+        rw = lin([SUB(0, 'Other', 'K0', 1), A(1, 'D1', 2), A(2, 'K2')], protected=frozenset({0}))
         self.assertEqual(rw.error, 'shared')
         rw = lin([A(0, 'K0', 1), A(1, 'K1')], protected=frozenset({0}))
         self.assertIsNone(rw.error)
@@ -323,11 +351,70 @@ class LinearizeTests(unittest.TestCase):
         rw = lin([FK(0, [1], 2), A(1, 'K', 4), JN(2), FK(3, [], 4), JN(4)], {'E': 0})
         self.assertEqual(rw.error, 'join mismatch')
 
-    def test_protected_event_cannot_be_relinked(self):
-        # entry E: 0 drop -> 1 keep -> 2 drop -> 3 keep; entry F (untargeted) starts at 1
+    def test_protected_event_gets_a_private_copy(self):
+        # entry E: 0 keep -> 1 keep -> 2 drop -> 3 keep; entry F (untargeted) starts at 1;
+        # 4 is reached by nothing: the donor slot for the copy of 1.
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K'), A(4, 'D')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}))
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.copies, {4: 1})
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(walk(new, new_entries['F']), [1, 2, 3])
+        self.assertEqual(walk(new, new_entries['E']), [0, 4, 3])
+        self.assertEqual(new[4].action, 'K')
+
+    def test_protected_event_without_a_donor(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K')]
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}))
+        self.assertEqual(rw.error, 'no donor')
+
+    def test_dropped_event_of_the_path_is_a_donor(self):
+        # Task 1's flow: E starts at 0 (dropped), which nothing reaches after the rewrite.
         events = [A(0, 'D', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}))
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.copies, {0: 1})
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(walk(new, new_entries['F']), [1, 2, 3])
+        self.assertEqual(walk(new, new_entries['E']), [0, 3])
+
+    def test_copied_event_redirects_its_protected_predecessor(self):
+        # E: 0 keep -> 1 keep -> 2 keep -> 3 drop -> 4 keep; F starts at 1: 1 is copied
+        # because 2 is, and the copy of 1 goes to the copy of 2. Donors: 5 and 6.
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'K', 3), A(3, 'D', 4), A(4, 'K'),
+                  A(5, 'D'), A(6, 'D')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}))
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(sorted(rw.copies.values()), [1, 2])
+        self.assertEqual(set(rw.copies), {5, 6})
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(walk(new, new_entries['F']), [1, 2, 3, 4])
+        path = walk(new, new_entries['E'])
+        self.assertEqual([new[i].action for i in path], ['K'] * 4)
+        self.assertEqual(path[-1], 4)
+
+    def test_protected_switch_is_still_shared(self):
+        # E: 0 keep -> 1 switch (kept) -> [2 drop -> 3 keep]; F starts at 1.
+        events = [A(0, 'K', 1), SW(1, 'S', [2]), A(2, 'D', 3), A(3, 'K'), A(4, 'D')]
         rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}))
         self.assertEqual(rw.error, 'shared')
+
+    def test_donor_must_be_copyable(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K'), A(4, 'D'), A(5, 'D')]
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}),
+                 can_copy=lambda src, dst: dst != 4)
+        self.assertEqual(rw.copies, {5: 1})
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}),
+                 can_copy=lambda src, dst: False)
+        self.assertEqual(rw.error, 'no donor')
+
+    def test_donor_must_be_an_action(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K'), JN(4)]
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}))
+        self.assertEqual(rw.error, 'no donor')
 
     def test_apply_rewrite_refuses_a_failed_rewrite(self):
         with self.assertRaises(ValueError):
@@ -354,6 +441,9 @@ class FakeFlow:
 
     def action_params(self, index):
         return self._params.get(index, {})
+
+    def copyable(self, src, dst):
+        return True
 
 
 def SETF(i, flag, nxt=END):
@@ -550,6 +640,75 @@ class SpikeScenesTests(unittest.TestCase):
             for path, comp in files.items():
                 self.assertEqual(len(codec.decompress(path, comp)),
                                  len(codec.decompress(path, nup.read(path))))
+
+
+# The childhood survey: flows of the story and NPCs of the childhood (entries from
+# cutscenes.json story_flows, else all of them).
+CHILD_FLOWS = ('OpeningEvent', 'Meet_DekuTree', 'Get_StoneOfForest', 'Goto_HyruleCastle',
+               'Get_StoneOfFire', 'Get_StoneOfWater', 'SubEvent_GetEponaSong',
+               'HyruleCastle_FoundBySecurity', 'Npc_Hylia_Zelda_Child', 'Npc_Kokiri_007_Child',
+               'Npc_Kokiri_010_Child', 'Npc_Kokiri_011_Child', 'Npc_Kokiri_Mido_Child',
+               'Npc_Hylia_052_Child', 'Npc_Hylia_ImperialSoldier_001_Child',
+               'MelodyGet_Sun_SubEvent', 'DoorOfTime', 'NpcCommon')
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class PrivateCopyRealDataTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from randomizer.formats.zs import ZsCodec
+        from randomizer.nup import NupArchive
+        cls.table = SkipTable.load()
+        policy = json.loads((Path(__file__).resolve().parent.parent / 'randomizer' / 'data'
+                             / 'cutscenes.json').read_text(encoding='utf-8'))['story_flows']
+        cls.flows = {}
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            for name in CHILD_FLOWS:
+                path = f'Event/EventFlow/{name}.bfevfl.zs'
+                cls.flows[name] = (codec.decompress(path, nup.read(path)), policy.get(name, '*'))
+
+    def test_untargeted_entries_reach_the_same_events(self):
+        rewrites = 0
+        for name, (data, entries) in self.flows.items():
+            flow = EventFlow(data)
+            for entry in (list(flow.entry_points) if entries == '*' else entries):
+                rw = effects_only(flow, entry, self.table)
+                if rw.error:
+                    continue
+                rewrites += 1
+                with self.subTest(name=name, entry=entry):
+                    new = EventFlow(apply_rewrite(data, flow, rw))
+                    inlined = inlined_entries(flow, entry)
+                    for other, i in flow.entry_points.items():
+                        before = reachable(flow.events, flow.entry_points, [i])
+                        # Known gap (not about copies): an entry that calls the targeted
+                        # entry by name follows its moved entry slot.
+                        if other in inlined or any(
+                                flow.events[j].kind in (SUBFLOW, 5)
+                                and flow.events[j].sub_flow == ''
+                                and flow.events[j].sub_entry in inlined for j in before):
+                            continue
+                        self.assertEqual(
+                            reachable(new.events, new.entry_points, [new.entry_points[other]]),
+                            before, other)
+                    for dst, src in rw.copies.items():
+                        self.assertEqual((new.events[dst].actor, new.events[dst].action),
+                                         (flow.events[src].actor, flow.events[src].action))
+                        self.assertEqual(new.action_params(dst), flow.action_params(src))
+        self.assertGreaterEqual(rewrites, 100)
+
+    def test_apply_rewrite_writes_copies_before_links(self):
+        data, _ = self.flows['Get_StoneOfFire']
+        flow = EventFlow(data)
+        src, dst = [i for i, ev in enumerate(flow.events)
+                    if ev.kind == ACTION and flow.action_params(i)][:2]
+        rw = Rewrite({('next', dst): END}, [], copies={dst: src})
+        new = EventFlow(apply_rewrite(data, flow, rw))
+        self.assertEqual(new.events[dst].action, flow.events[src].action)
+        self.assertEqual(new.action_params(dst), flow.action_params(src))
+        self.assertEqual(new.events[dst].next, END)
+        self.assertEqual(new.events[src], flow.events[src])
 
 
 if __name__ == '__main__':

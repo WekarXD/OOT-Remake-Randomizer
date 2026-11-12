@@ -3,7 +3,7 @@ import unittest
 from randomizer.flow_callers import entry_callers
 from randomizer.formats.bfevfl import ACTION, END, Event
 from randomizer.skipflow import SkipTable, effects_only
-from tests.test_skipflow import A, SUB, fake
+from tests.test_skipflow import A, SUB, fake, rewritten, walk
 
 
 class EmptyFlow:
@@ -65,8 +65,21 @@ class ExternalEntryTests(unittest.TestCase):
     def test_external_entry_is_not_inlined(self):
         flow = self.flow()
         self.assertIsNone(effects_only(flow, 'E', self.table).error)
+        # 2 would need a private copy, and no event is free to hold it.
         rw = effects_only(flow, 'E', self.table, external=frozenset({'C01'}))
-        self.assertEqual(rw.error, 'shared')
+        self.assertEqual(rw.error, 'no donor')
+
+    def test_external_entry_keeps_its_events_with_a_donor(self):
+        flow = self.flow()
+        flow.events.append(A(5, 'EventWait'))  # reached by nothing: holds the copy of 2
+        rw = effects_only(flow, 'E', self.table, external=frozenset({'C01'}))
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.copies, {5: 2})
+        self.assertEqual(rw.links[('next', 0)], 5)
+        self.assertEqual(rw.links[('next', 5)], 4)
+        self.assertNotIn(('next', 2), rw.links)
+        new, entries = rewritten(flow.events, flow.entry_points, rw)
+        self.assertEqual(walk(new, entries['C01']), [2, 3, 4])
 
     def test_targeted_entry_in_external_is_still_rewritten(self):
         flow = fake([A(0, 'KB', 1), A(1, 'EventWait', 2), A(2, 'KC')], {'C01': 0})

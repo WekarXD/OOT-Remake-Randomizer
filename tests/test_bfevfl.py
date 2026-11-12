@@ -2,8 +2,8 @@ import os
 import struct
 import unittest
 
-from randomizer.formats.bfevfl import (BfevflError, Event, EventFlow, patch_pointers,
-                                       set_string_param, string_param_owners)
+from randomizer.formats.bfevfl import (ACTION, BfevflError, Event, EventFlow, copy_event,
+                                       patch_pointers, set_string_param, string_param_owners)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -100,6 +100,43 @@ class BfevflTests(unittest.TestCase):
         self.assertEqual([o for o, _ in after], [o for o, _ in slots])
         for (o, a), (_, b) in zip(after, slots):
             self.assertEqual(a, new if o == off else b)
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class CopyEventTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        with NupArchive(NUP_PATH) as nup:
+            cls.data = _load(nup, ZsCodec.from_archive(nup), 'Get_StoneOfFire.bfevfl.zs')
+        flow = EventFlow(cls.data)
+        actions = [i for i, ev in enumerate(flow.events) if ev.kind == ACTION]
+        cls.with_params = [i for i in actions if flow.action_params(i)]
+        cls.without = [i for i in actions if i not in flow._params]
+        cls.other = next(i for i, ev in enumerate(flow.events) if ev.kind != ACTION)
+
+    def test_copy(self):
+        src, dst = self.with_params[0], self.with_params[-1]
+        out = copy_event(self.data, src, dst)
+        self.assertEqual(len(out), len(self.data))
+        old, new = EventFlow(self.data), _assert_valid(self, out)
+        for attr in ('kind', 'actor', 'action', 'next'):
+            self.assertEqual(getattr(new.events[dst], attr), getattr(old.events[src], attr))
+        self.assertEqual(new.action_params(dst), old.action_params(src))
+        for i, ev in enumerate(old.events):
+            if i != dst:
+                self.assertEqual(new.events[i], ev)
+
+    def test_refuses_a_donor_without_parameters(self):
+        with self.assertRaises(BfevflError):
+            copy_event(self.data, self.with_params[0], self.without[0])
+        with self.assertRaises(BfevflError):
+            copy_event(self.data, self.without[0], self.with_params[0])
+
+    def test_refuses_other_kinds(self):
+        with self.assertRaises(BfevflError):
+            copy_event(self.data, self.other, self.with_params[0])
+        with self.assertRaises(BfevflError):
+            copy_event(self.data, self.with_params[0], self.other)
 
 
 # Keys found in Dm_Kokiri_0155: event 51 (action) and event 52 (subflow)

@@ -4,7 +4,9 @@ Only the structures needed to walk the event graph are read: locating every
 u16 that references an event index and reading the actions' parameters.
 `patch_pointers` rewrites those u16s without changing the length;
 `set_string_param` repoints a string parameter and, if needed, appends a
-string to the end of the pool.
+string to the end of the pool. `copy_event` overwrites an action's slot with
+another action's (same length; only between actions with the same pointer
+fields set, since the RELT lists exactly the non-null pointers).
 
 Format (little endian, absolute offsets from the start of the file):
 
@@ -69,6 +71,7 @@ from dataclasses import dataclass, field
 
 END = 0xFFFF
 ACTION, SWITCH, FORK, JOIN, SUBFLOW, SUBFLOW_SWITCH, RESULT = range(7)
+ACTION_POINTERS = (0x00, 0x10, 0x18, 0x20)  # pointer fields of an action slot
 # Item types of a parameter container.
 (ARG, CONTAINER, INT, BOOL, FLOAT, STRING, WSTRING, INT_ARRAY, BOOL_ARRAY,
  FLOAT_ARRAY, STRING_ARRAY, WSTRING_ARRAY, ACTOR_ID) = range(13)
@@ -126,6 +129,7 @@ class EventFlow:
         self.entry_points: dict[str, int] = {}
         self._params: dict[int, int] = {}  # event -> parameter container
         self._flowchart = None
+        self._events_p = 0
         if self._u16(0x20) == 0:
             return  # file without a flowchart (empty marker)
         f = self._u64(self._u64(0x28))
@@ -151,6 +155,7 @@ class EventFlow:
             return v
 
         self._flowchart = f
+        self._events_p = events_p
         for i in range(n_events):
             e = events_p + 0x30 * i
             kind = d[e + 8]
@@ -199,6 +204,20 @@ class EventFlow:
     def pointer_slots(self) -> list[tuple[int, int]]:
         """(offset, current index) of every u16 that references an event."""
         return list(self._slots)
+
+    def _pointer_fields(self, index) -> tuple[bool, ...]:
+        """Which pointer fields of an action slot are set (+0x00 name, +0x10
+        parameters, +0x18, +0x20); the RELT lists exactly those."""
+        e = self._events_p + 0x30 * index
+        return tuple(self._u64(e + o) != 0 for o in ACTION_POINTERS)
+
+    def copyable(self, src: int, dst: int) -> bool:
+        """True if action `src` may be copied over the slot of action `dst`: both are
+        actions with the same pointer fields set, so the RELT still covers every pointer."""
+        self._check_index(src)
+        self._check_index(dst)
+        return (self.events[src].kind == ACTION and self.events[dst].kind == ACTION
+                and self._pointer_fields(src) == self._pointer_fields(dst))
 
     def _check_index(self, index):
         if not 0 <= index < len(self.events):
@@ -357,6 +376,20 @@ def string_param_owners(data: bytes, event_index: int, key: str) -> list[int]:
     flow = EventFlow(data)
     target = flow._u64(flow._string_slot(event_index, key))
     return sorted({i for i, slot in flow._string_slots() if flow._u64(slot) == target})
+
+
+def copy_event(data: bytes, src: int, dst: int) -> bytes:
+    """The file with action `dst`'s 0x30-byte slot replaced by a copy of action `src`
+    (same length; the copy shares `src`'s name and parameter container). Raises
+    BfevflError unless both are actions with the same pointer fields set (see
+    `EventFlow.copyable`)."""
+    flow = EventFlow(data)
+    if not flow.copyable(src, dst):
+        raise BfevflError(f'Event {src} cannot be copied over event {dst}.')
+    s, d = flow._events_p + 0x30 * src, flow._events_p + 0x30 * dst
+    out = bytearray(data)
+    out[d:d + 0x30] = data[s:s + 0x30]
+    return bytes(out)
 
 
 def patch_pointers(data: bytes, new_targets: dict[int, int]) -> bytes:
