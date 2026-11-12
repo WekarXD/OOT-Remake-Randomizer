@@ -162,3 +162,26 @@ Everything else the user saw still plays, as expected, because it was not in the
 **Movie spike 2 (TestMovies2):** `randomizer/movie_skip.py` removes the `EventTransition` that starts the movie from the flow that calls it (`OpeningEvent` for the intro, `Dm_SY_BancChange_EscapeDungeon` for `Dm_Kokiri_0095`, `Goto_HyruleCastle` for `Dm_HrlCastle_0045`), relinking what pointed to it to what came after. Each movie sits in a chain of scenes, so the neighbours are skipped too: `Dm_Kokiri_0080` (the Deku Tree's speech) → movie → `Dm_Kokiri_0090` (Ganondorf vision, timeline), and `Dm_HrlCastle_0035` (Zelda's first scene) → movie → `Dm_HrlCastle_0050`. `0080` and `0035` are rewritten effects-only, `0090` shortened. Guide: `docs/test-movies-2.md`. **Verdict (2026-11-12): works.** The intro, the Deku Tree's speech (movie included) and Zelda's story are gone with no freeze; the letter and the Lullaby still arrive. The loading screen after the intro is longer, since the movie used to hide it. Scenes still seen were simply not in the batch (`Dm_Kokiri_0030`, `Dm_Kokiri_0130`, `Dm_Kokiri_0140`, `Dm_HrlCastle_0030`).
 
 **Spike conclusion:** the three methods are proven in game: effects-only rewrite (event flows), shortening (timelines), removing the starting transition (movies). Phase 2 applies them to the whole childhood.
+
+## 12. Phase 2 build notes (2026-11-12)
+
+Childhood full skip built on branch `feat/full-skip` (`randomizer/full_skip.py`, data `randomizer/data/full_skip.json`, wired in `randomizer/generate.py`; the spoiler gets a "Cutscenes not skipped" section). Test mod `Rando_FullSkipChild1`, guide `docs/test-full-skip-child.md`.
+
+**Counts (the real report for phase 1).** Targets: 93 flow files with 186 entry points, 31 timelines, 11 movies. Report: 108 applied, 16 unchanged, 29 fell back to the old trimming, 28 left untrimmed because the file was only partly rewritten, 14 files not written at all (the old trimming applies). 264 report lines; the full skip changes 335 files.
+
+**Decisions taken while building (each with what it costs if wrong):**
+- **Kind 5 = a subflow switch that runs its call; kind 6 = a result.** Cost: a scene follows the wrong case; the checker cannot see it, so the game test must.
+- **Copies go into donor slots; the game data has no donors for some.** Growing a file needs a relocation-table writer, so every copy that found no donor falls back. Cost: shared paths stay unskipped.
+- **Untargeted entries outside `Dm_*` are protected** (never changed in place). Cost: some forced talks stay.
+- **Siblings are external:** a sibling file never relinks another sibling's entries.
+- **New END cases are refused:** a rewrite that would add a case to END is rejected. Cost: 5 scene files stay (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`).
+- **Chatter is excluded** except `FORCED_TALKS_ALLOW` (four forced talks).
+- **Partly written files are not old-trimmed**, to avoid mixing two edits. They are reported as "untrimmed".
+
+**Fell back or left alone:** about 56 forced conversations that share events with player-started ones (Kokiri blocking the exit, Mido's Talk, Zelda and Malon talks, castle guards); `Dm_Kokiri_0045` (fork dependency on `KokiriForest_LinkHouseDoor_Open`); `Dm_InsideJabu_Jabu_0050` (conflict); the Royal Family Tomb files; one "no result" case (event 28, hash `0xa6da0479`, in `SubEvent_GetEponaSong`).
+
+**What the test batch must decide:**
+1. Do the kind 5 and kind 6 readings hold (no scene takes a wrong branch)?
+2. Navi's colour after `Dm_Kokiri_0030`, and whether the longer loading screen after the intro is acceptable.
+3. Whether Link still raises gifted items (section 8.7).
+4. Whether the fallback list is short enough, or the shared conversations need growing files or banc EventStarter indexing.

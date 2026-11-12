@@ -10,17 +10,22 @@ Pending work, most important first within each section.
 - **Boomerang and the Deku Tree vine Skulltulas.** `REMAKE_RULES` only accepts the Slingshot, Bow or Hookshot for the Deku Tree upper floor; check whether the Boomerang kills those Skulltulas in the remake.
 - **Soft-soil Skulltulas** (bugs on the soil) are untested with Tokensanity (batch 17, attempt 3).
 - **Chest image and text** may still show the original item.
-- **Movie cutscenes** (26 `.webm` in `Event/Movie`): removing the transition that starts them works (TestMovies2, full-skip spec §11). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`) have no timeline and need another way. Timelines are solved (TestTimelines, 2026-11-12).
+- **Movie cutscenes** (26 `.webm` in `Event/Movie`): removing the transition that starts them works (TestMovies2) and timelines are shortened; both are built into the childhood full skip (`Rando_FullSkipChild1`, waiting for the test). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`) have no timeline and need another way.
 - **Which file plays "Mido and Saria"** in Kokiri Forest (spike: `Dm_Kokiri_0060` was rewritten but the user still saw a conversation with them).
 
 ## To test in game
 
+- `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - Batch 17, attempt 3: seed `TestTokens3`.
 - Batch 16 (optional): confirm the 27 "guessed" Skulltulas with a rupee-colour mod so they can also hold key items.
 - Acceptance seed `ACEPTACION1` and the round 2b cutscene re-test.
 
 ## To build
 
+- **Shared / no-donor forced conversations** (about 56 in the childhood): they share events with player-started talks, or need a copy but no donor slot exists. Options: grow the BFEVFL (needs a relocation-table writer) or index the banc EventStarters.
+- **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.
+- **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
+- **Full skip, adult phase:** the same method for the adult scenes, after the childhood test batch.
 - **Browser generator on GitHub Pages:** built (`site/`, `randomizer/browser.py`); confirm a full generation in the browser with a real `.nup`.
 - **NPC gifts:** phase B (plan written), then phases C and D.
 - **OoTR generator options:** Open Forest / Kakariko / Door of Time / Zora's Fountain / Gerudo Fortress, and the timesavers (skip child stealth, free Rauru reward, skip tower escape, skip Epona race, minigame phases, fast chests, fast bunny hood, plant beans, Ruto on F1, fast shadow boat, free scarecrow, cucco/poe counts, ...).
