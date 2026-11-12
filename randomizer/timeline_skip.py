@@ -19,8 +19,8 @@ LASTING = frozenset({
 FADE_IN = 'EventEventFadeInForTimeline'
 MIN_FRAMES = 1.0
 FADE_WINDOW = 60.0  # 2 s at 30 fps
-# The spike's timelines: Saria on the bridge, Link's house door with Navi (probably leaving
-# home), the scene with Zelda and Impa after the letter.
+# The spike's timelines: Saria on the bridge, Navi just outside Link's house (before Saria),
+# the scene with Zelda and Impa after the letter.
 SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0150', 'Dm_Kokiri_0050', 'Dm_HrlCastle_0060')
 
 

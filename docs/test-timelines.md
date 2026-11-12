@@ -19,15 +19,15 @@ It carries the four TestScenes4 scenes (unchanged) plus three timeline cutscenes
 
 ## Checks
 
-- [ ] Each of the three: cut short, Link free to move afterwards? ______
-- [ ] Screen comes back from black each time? ______
-- [ ] Navi still with Link and its colour right after `Dm_Kokiri_0050`? ______
-- [ ] Music plays normally after each scene? ______
-- [ ] Link, Navi and NPCs in sensible places afterwards? ______
-- [ ] Which scene was `Dm_Kokiri_0050` really? ______
+- [x] Each of the three: cut short, Link free to move afterwards? **Yes.**
+- [x] Screen comes back from black each time? **"No"** (with everything else fine, read as: no black screen was left; to confirm).
+- [x] Navi still with Link and its colour right after `Dm_Kokiri_0050`? **Yes.**
+- [x] Music plays normally after each scene? **Yes.**
+- [x] Link, Navi and NPCs in sensible places afterwards? **Yes.**
+- [x] Which scene was `Dm_Kokiri_0050` really? **A short scene with Navi right after leaving Link's house, before talking to Saria.**
 
 Report freezes, black screens, missing music, wrong positions or anything left of the scenes.
 
 ## Results
 
-Notes: ______
+Played 2026-11-12. **Verdict: shortening works.** The three timelines are cut, control returns, music, Navi and positions are right. The method can be extended to the other timelines.

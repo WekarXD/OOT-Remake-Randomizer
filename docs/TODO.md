@@ -10,7 +10,7 @@ Pending work, most important first within each section.
 - **Boomerang and the Deku Tree vine Skulltulas.** `REMAKE_RULES` only accepts the Slingshot, Bow or Hookshot for the Deku Tree upper floor; check whether the Boomerang kills those Skulltulas in the remake.
 - **Soft-soil Skulltulas** (bugs on the soil) are untested with Tokensanity (batch 17, attempt 3).
 - **Chest image and text** may still show the original item.
-- **Timeline and movie cutscenes** (261 timelines, 26 movies) are not reached by the effects-only rewrite (full-skip spec §11); decide how to skip them, then test it on `Dm_Kokiri_0150`, `Dm_Kokiri_0050` and `Dm_HrlCastle_0060`.
+- **Movie cutscenes** (26 `.webm` in `Event/Movie`) are not skipped yet (full-skip spec §11). Timelines are solved: shortening them works in game (TestTimelines, 2026-11-12).
 - **Which file plays "Mido and Saria"** in Kokiri Forest (spike: `Dm_Kokiri_0060` was rewritten but the user still saw a conversation with them).
 
 ## To test in game
