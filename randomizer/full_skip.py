@@ -70,6 +70,7 @@ class Step:
     before: bytes
     after: bytes
     external: frozenset[str] = field(default_factory=frozenset)
+    tolerated: frozenset[str] = field(default_factory=frozenset)
 
 
 def protected_entries(callers: Mapping[tuple[str, str], set[str]], name: str,
@@ -96,7 +97,7 @@ def new_end_cases(flow: EventFlow, rw: Rewrite) -> list[tuple[int, int]]:
     out = []
     for key, target in rw.links.items():
         if key[0] == 'case' and target == END:
-            src = rw.copies.get(key[1], key[1])
+            src = rw.source(key[1], len(flow.events))
             if flow.events[src].cases[key[2]] != END:
                 out.append((key[1], key[2]))
     return sorted(out)
@@ -113,11 +114,14 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
     """(new data, applied steps, report lines) for one flow file.
 
     First the transitions to `movies` are removed; then each entry in turn is rewritten
-    effects-only (with `protected_entries` as `external`) and applied only if
-    `check_rewrite` finds nothing (each on the file as the previous steps left it, since
-    copies use donors). An entry that fails is reported as `FALLBACK` if the file ends up
-    unchanged (it keeps the old trimming) and as `UNTRIMMED` otherwise (the file is written
-    by the full skip and is not trimmed as well)."""
+    effects-only (with `protected_entries` as `external`; private copies may take new
+    slots, growing the file) and applied only if `check_rewrite` finds nothing (each on the
+    file as the previous steps left it, since copies use donors and new slots). Rule 4
+    tolerates the other targets of the file: one may call this entry by name (the exit
+    Kokiri's Talk calls GoToDekuTree) and is skipped too. An entry that fails is reported
+    as `FALLBACK` if the file ends up unchanged (it keeps the old trimming) and as
+    `UNTRIMMED` otherwise (the file is written by the full skip and is not trimmed as
+    well)."""
     original = data
     report, failed = [], []
     if movies:
@@ -135,7 +139,7 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
         for step in steps:
             ext |= inlined_entries(EventFlow(step.before), step.entry, step.external)
         ext = ext - {entry}
-        rw = effects_only(flow, entry, table, choices, reviewed_forks, ext)
+        rw = effects_only(flow, entry, table, choices, reviewed_forks, ext, grow=True)
         if rw.error:
             failed.append(f'{name}/{entry}: {rw.error} ({rw.detail})')
             continue
@@ -151,11 +155,12 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
         if new == data:
             report.append(f'unchanged {name}/{entry}: already effects-only')
             continue
-        problems = check_rewrite(flow, new, entry, rw, ext)
+        tolerated = frozenset(entries) - {entry}
+        problems = check_rewrite(flow, new, entry, rw, ext, tolerated)
         if problems:
             failed.append(f'{name}/{entry}: check: {"; ".join(problems)}')
             continue
-        steps.append(Step(entry, rw, data, new, ext))
+        steps.append(Step(entry, rw, data, new, ext, tolerated))
         report.append(f'applied {name}/{entry}')
         data = new
     label = FALLBACK if data == original else UNTRIMMED
@@ -173,8 +178,9 @@ def _all_flows(game, cache: dict[str, bytes]) -> dict[str, bytes]:
 
 
 def build_full_skip_files(game, phase: int = 1, flows_cache=None
-                          ) -> tuple[dict[str, bytes], list[str]]:
-    """(romfs path -> compressed bytes of the files the full skip changes, report lines).
+                          ) -> tuple[dict[str, bytes], list[str], dict[str, int]]:
+    """(romfs path -> compressed bytes of the files the full skip changes, report lines,
+    romfs path -> size change of each grown flow (new - original decompressed length)).
 
     `flows_cache` (name -> decompressed bytes) may be passed to share the decompressed
     flows between calls; it is filled on first use."""
@@ -183,7 +189,7 @@ def build_full_skip_files(game, phase: int = 1, flows_cache=None
     raw = _all_flows(game, {} if flows_cache is None else flows_cache)
     callers = flow_callers(raw)
     table = SkipTable.load()
-    files, report = {}, []
+    files, report, sizes = {}, [], {}
     names = set(targets.flows) | {c for cs in targets.movies.values() for c in cs}
     for name in sorted(names):
         if name not in raw:
@@ -200,6 +206,8 @@ def build_full_skip_files(game, phase: int = 1, flows_cache=None
         if data != raw[name]:
             path = FLOW_DIR + name + FLOW_EXT
             files[path] = game.codec.compress(path, data)
+            if len(data) != len(raw[name]):
+                sizes[path] = len(data) - len(raw[name])
     todo, seen = list(targets.timelines), set()
     while todo:
         name = todo.pop(0)
@@ -216,16 +224,17 @@ def build_full_skip_files(game, phase: int = 1, flows_cache=None
         if new != data:
             files[path] = game.codec.compress(path, new)
     report.append(f'full skip built in {time.perf_counter() - start:.2f} s')
-    return {p: files[p] for p in sorted(files)}, report
+    return {p: files[p] for p in sorted(files)}, report, sizes
 
 
 def files_with_fallback(game, phase: int = 1, flows_cache=None
-                        ) -> tuple[dict[str, bytes], list[str]]:
+                        ) -> tuple[dict[str, bytes], list[str], dict[str, int]]:
     """The full skip's files plus the old trimming (`build_cutscene_files`) of every path
-    the full skip did not write. A flow where every targeted entry failed is not written
-    by the full skip, so it keeps the old trimming; a file the full skip wrote is not
-    trimmed as well (reported)."""
-    files, report = build_full_skip_files(game, phase, flows_cache)
+    the full skip did not write, the report and the size change of each grown flow (for
+    the RSTB, see `patch.write_mod`). A flow where every targeted entry failed is not
+    written by the full skip, so it keeps the old trimming; a file the full skip wrote is
+    not trimmed as well (reported)."""
+    files, report, sizes = build_full_skip_files(game, phase, flows_cache)
     old = build_cutscene_files(game)
     for path, data in old.items():
         if path in files:
@@ -233,4 +242,4 @@ def files_with_fallback(game, phase: int = 1, flows_cache=None
             report.append(f'full skip only {name}: the old trimming is not applied on top')
         else:
             files[path] = data
-    return {p: files[p] for p in sorted(files)}, report
+    return {p: files[p] for p in sorted(files)}, report, sizes

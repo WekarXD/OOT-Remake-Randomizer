@@ -18,7 +18,15 @@ def _write(mod_root: Path, rel: str, data: bytes) -> None:
 
 def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
               loc_map: dict[int, LocationEntry],
-              extra_files: dict[str, bytes] | None = None) -> list[str]:
+              extra_files: dict[str, bytes] | None = None,
+              extra_sizes: dict[str, int] | None = None,
+              report: list[str] | None = None) -> list[str]:
+    """Writes the mod under `mod_root` and returns the romfs paths written.
+
+    `extra_files` (romfs path -> compressed bytes) are written as they are;
+    `extra_sizes` (romfs path -> size change of a grown file) adds each change to the
+    file's RSTB entry. A path with no RSTB entry is left alone and a line is appended to
+    `report`. The RSTB is written only when a banc changed or a size changed."""
     chests = game.chests()
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
@@ -38,7 +46,7 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     for rel, data in (extra_files or {}).items():
         _write(mod_root, rel, data)
         written.append(rel)
-    if not bancs:
+    if not bancs and not extra_sizes:
         return sorted(written)
 
     rs_raw = game.codec.decompress(RSTB_PATH, game.nup.read(RSTB_PATH))
@@ -71,6 +79,13 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
         for rel, data in wrappers.items():
             _write(mod_root, rel, data)
             written.append(rel)
+    for rel, delta in sorted((extra_sizes or {}).items()):
+        size = rstb.get(rel[:-3])
+        if size is None:
+            if report is not None:
+                report.append(f'no RSTB entry for {rel} (its size was not updated)')
+            continue
+        rstb.set(rel[:-3], size + delta)
     _write(mod_root, RSTB_PATH, game.codec.compress(RSTB_PATH, rstb.dump()))
     written.append(RSTB_PATH)
     return sorted(written)

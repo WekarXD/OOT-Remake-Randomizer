@@ -90,20 +90,25 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
-                extras = None
+                extras = sizes = None
                 not_skipped = None
+                rstb_report: list[str] = []
                 if settings.skip_cutscenes:
                     try:
-                        extras, report = files_with_fallback(game, 1)
+                        extras, report, sizes = files_with_fallback(game, 1)
                         not_skipped = _not_skipped(report)
                     except (ValueError, BfevflError, TimelineError) as e:
                         raise GenerationError(
                             f'Could not prepare the cutscenes: {e}') from e
                 try:
-                    changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras)
+                    changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras,
+                                              extra_sizes=sizes, report=rstb_report)
                 except ValueError as e:
                     raise GenerationError(
                         f'Could not prepare the item wrappers: {e}') from e
+                if not_skipped is not None:
+                    # Grown flows with no RSTB entry (their size could not be updated).
+                    not_skipped += rstb_report
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped)

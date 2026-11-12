@@ -598,6 +598,9 @@ class CheckRewriteTests(unittest.TestCase):
         self.assertEqual(check_rewrite(old, newf, 'E', rw), [])
         problems = check_rewrite(old, newf, 'E', rw, external=frozenset({'X'}))
         self.assertTrue(any(p.startswith('rule 4') and 'X' in p for p in problems), problems)
+        # An entry whose reachability may change (another target of the file) is tolerated.
+        self.assertEqual(check_rewrite(old, newf, 'E', rw, external=frozenset({'X'}),
+                                       tolerated=frozenset({'X'})), [])
 
     def test_untouched_other_entry_is_fine(self):
         events = [A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2'), A(3, 'K3', 4), A(4, 'K4')]

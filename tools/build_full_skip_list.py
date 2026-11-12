@@ -208,7 +208,7 @@ def transition_callers(flows, names) -> dict[str, list[str]]:
 def kept_effects(flow, rw) -> list[str]:
     out = []
     for i in rw.kept:
-        ev = flow.events[rw.copies.get(i, i)]
+        ev = flow.events[rw.source(i, len(flow.events))]
         if ev.kind == ACTION:
             params = flow.action_params(ev.index)
             key = {k: v for k, v in params.items()
@@ -347,7 +347,7 @@ def build(nup, old: dict | None = None):
         for e in sorted(targets[name]):
             ext = protected_entries(callers, name, flow, targets[name], e)
             rw = effects_only(flow, e, table, choices.get(name, {}),
-                              forks.get(name, frozenset()), ext)
+                              forks.get(name, frozenset()), ext, grow=True)
             deps = fork_dependencies(flow, e)
             res = 'ok' if rw.error is None else f'{rw.error}: {rw.detail[:70]}'
             if rw.error is None and new_end_cases(flow, rw):
@@ -385,7 +385,8 @@ def build(nup, old: dict | None = None):
         for e in entries:
             rw = effects_only(flow, e, table, choices.get(name, {}),
                               forks.get(name, frozenset()),
-                              protected_entries(callers, name, flow, targets.get(name, ()), e))
+                              protected_entries(callers, name, flow, targets.get(name, ()), e),
+                              grow=True)
             print(f'{name}/{e}: {rw.error or "ok"} {rw.detail}')
             for line in kept_effects(flow, rw):
                 print('    ' + line)

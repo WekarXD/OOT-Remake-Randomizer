@@ -3,6 +3,7 @@ import json
 import os
 import tempfile
 import unittest
+import zlib
 from pathlib import Path
 from unittest import mock
 
@@ -149,6 +150,9 @@ class RealTests(unittest.TestCase):
             # Only the actual not-skipped findings are listed, not the applied steps.
             self.assertFalse([l for l in d_on['cutscenes_not_skipped']
                               if l.startswith(('applied ', 'unchanged ', 'full skip built'))])
+            # The exit Kokiri's conversation (shared events, grown file) is skipped.
+            self.assertFalse([l for l in d_on['cutscenes_not_skipped']
+                              if 'Npc_Kokiri_007_Child/Talk' in l])
 
     def test_full_skip_no_spoiler(self):
         with tempfile.TemporaryDirectory() as out:
@@ -165,7 +169,30 @@ class RealTests(unittest.TestCase):
             self.assertIsNotNone(r.mod_dir)
             self.assertTrue(r.changed_files)
             self.assertFalse(any(f.startswith('Banc/') for f in r.changed_files))
-            self.assertNotIn(RSTB_PATH, r.changed_files)
+            # No banc changed, but grown flows update the RSTB: original + size change.
+            self.assertIn(RSTB_PATH, r.changed_files)
+            root = Path(r.mod_dir) / 'romfs'
+            flow = 'Event/EventFlow/Npc_Kokiri_007_Child.bfevfl.zs'
+            self.assertIn(flow, r.changed_files)
+            with NupArchive(NUP_PATH) as nup:
+                game = GameData(nup)
+                orig_rstb = Rstb.load(game.codec.decompress(RSTB_PATH, nup.read(RSTB_PATH)))
+                new_rstb = Rstb.load(game.codec.decompress(
+                    RSTB_PATH, (root / RSTB_PATH).read_bytes()))
+                old_len = len(game.codec.decompress(flow, nup.read(flow)))
+                new_len = len(game.codec.decompress(flow, (root / flow).read_bytes()))
+            self.assertGreater(new_len, old_len)
+            self.assertEqual(new_rstb.get(flow[:-3]), orig_rstb.get(flow[:-3]) + new_len - old_len)
+
+    def test_missing_rstb_entry_is_reported_in_the_spoiler(self):
+        path = 'Event/EventFlow/NoSuchFlow.bfevfl.zs'
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch('randomizer.generate.files_with_fallback',
+                            return_value=({}, ['applied X/Y'], {path: 16})):
+                r = generate(NUP_PATH, out, Settings(seed='nostb', skip_cutscenes=True))
+            data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
+            self.assertEqual([l for l in data['cutscenes_not_skipped'] if 'RSTB' in l],
+                             [f'no RSTB entry for {path} (its size was not updated)'])
 
     def test_spoiler_excluded_reasons(self):
         with tempfile.TemporaryDirectory() as out:
@@ -380,7 +407,65 @@ class SpoilerGsKeyItemsTest(unittest.TestCase):
         self.assertFalse([r for r in d['key_items'] if r['hash'] == str(s.hash)])
 
 
+class FakeCodec:
+    def decompress(self, path, data):
+        return data
+
+    def compress(self, path, data):
+        return data
+
+
+class FakeGame:
+    """No chests; the RSTB holds `sizes` (romfs path without .zs -> size)."""
+    def __init__(self, sizes):
+        self.codec = FakeCodec()
+        rows = sorted([zlib.crc32(p.encode()), n] for p, n in sizes.items())
+        self.nup = mock.Mock()
+        self.nup.read.return_value = Rstb((1, 160), rows, []).dump()
+
+    def chests(self):
+        return []
+
+
+class WriteModSizesTest(unittest.TestCase):
+    FLOW = 'Event/EventFlow/A.bfevfl.zs'
+    GONE = 'Event/EventFlow/B.bfevfl.zs'
+
+    def test_grown_flow_updates_its_rstb_entry(self):
+        with tempfile.TemporaryDirectory() as out:
+            report = []
+            written = write_mod(FakeGame({self.FLOW[:-3]: 1000}), {}, Path(out), {},
+                                {self.FLOW: b'x'}, {self.FLOW: 48}, report)
+            self.assertEqual(written, [self.FLOW, RSTB_PATH])
+            rstb = Rstb.load((Path(out) / 'romfs' / RSTB_PATH).read_bytes())
+            self.assertEqual(rstb.get(self.FLOW[:-3]), 1048)
+            self.assertEqual(report, [])
+
+    def test_missing_entry_is_skipped_and_reported(self):
+        with tempfile.TemporaryDirectory() as out:
+            report = []
+            write_mod(FakeGame({self.FLOW[:-3]: 1000}), {}, Path(out), {},
+                      {self.FLOW: b'x', self.GONE: b'y'}, {self.FLOW: 8, self.GONE: 16}, report)
+            rstb = Rstb.load((Path(out) / 'romfs' / RSTB_PATH).read_bytes())
+            self.assertEqual(rstb.get(self.FLOW[:-3]), 1008)
+            self.assertIsNone(rstb.get(self.GONE[:-3]))
+            self.assertEqual(report, [f'no RSTB entry for {self.GONE} (its size was not updated)'])
+
+    def test_no_sizes_no_rstb(self):
+        for sizes in (None, {}):
+            with tempfile.TemporaryDirectory() as out:
+                written = write_mod(FakeGame({self.FLOW[:-3]: 1000}), {}, Path(out), {},
+                                    {self.FLOW: b'x'}, sizes)
+                self.assertEqual(written, [self.FLOW])
+                self.assertFalse((Path(out) / 'romfs' / RSTB_PATH).exists())
+
+
 class NotSkippedFilterTest(unittest.TestCase):
+    def test_rstb_lines_are_kept(self):
+        from randomizer.generate import _not_skipped
+        line = 'no RSTB entry for Event/EventFlow/X.bfevfl.zs (its size was not updated)'
+        self.assertEqual(_not_skipped(['applied F/E', line]), [line])
+
     def test_filter(self):
         from randomizer.generate import _not_skipped
         report = ['movie A dropped from B', 'movie A not dropped from B: err',

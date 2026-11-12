@@ -4,10 +4,11 @@ from unittest import mock
 
 from randomizer import full_skip
 from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
-from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, EventFlow
+from randomizer.formats.bfevfl import ACTION, END, SUBFLOW, SUBFLOW_SWITCH, EventFlow
 from randomizer.movie_skip import transitions_to
-from randomizer.skipflow import SkipTable, check_rewrite, effects_only, inlined_entries, reachable
-from tests.test_skipflow import A, SUB, FakeFlow, rewritten
+from randomizer.skipflow import (Rewrite, SkipTable, check_rewrite, effects_only, inlined_entries,
+                                 reachable)
+from tests.test_skipflow import A, SUB, SW, FakeFlow, rewritten
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -64,9 +65,9 @@ class SkipFlowSiblingTests(unittest.TestCase):
             flows[new] = FakeFlow(ev, ent, {})
             return new
 
-        def spy(flow, entry, table, choices, reviewed, external):
-            calls.append((entry, external))
-            return effects_only(flow, entry, table, choices, reviewed, external)
+        def spy(flow, entry, table, choices, reviewed, external, grow=False):
+            calls.append((entry, external, grow))
+            return effects_only(flow, entry, table, choices, reviewed, external, grow)
 
         with mock.patch.object(full_skip, 'EventFlow', parse),                 mock.patch.object(full_skip, 'apply_rewrite', apply),                 mock.patch.object(full_skip, 'check_rewrite', return_value=[]),                 mock.patch.object(full_skip, 'effects_only', spy):
             out = full_skip.skip_flow(b'v0', 'Dm_X', targets, set(), FakeTable(), {})
@@ -85,6 +86,17 @@ class SkipFlowSiblingTests(unittest.TestCase):
         self.assertIn('C', calls[1][1])
         self.assertIn('C', steps[1].external)
         self.assertNotIn('C', steps[0].external)
+        # The builder lets the private copies take new slots.
+        self.assertTrue(all(grow for _, _, grow in calls))
+        # Each step tolerates the other targets of the file (rule 4), nothing else.
+        self.assertEqual(steps[0].tolerated, {'B'})
+        self.assertEqual(steps[1].tolerated, {'A'})
+
+    def test_new_end_case_of_a_grown_slot(self):
+        # Slot 2 is new (a copy of switch 0); its case 1 becomes END where switch 0's was not.
+        flow = FakeFlow([SW(0, 'Q', [1, END]), A(1, 'K1')], {'E': 0}, {})
+        rw = Rewrite({('case', 2, 1): END, ('case', 2, 0): END}, [2], grown=[0])
+        self.assertEqual(full_skip.new_end_cases(flow, rw), [(2, 0)])
 
     def test_entry_that_keeps_nothing_is_refused(self):
         (data, steps, report), _ = self.run_skip([A(0, 'D0', 1), A(1, 'D1')], {'E': 0}, ['E'])
@@ -103,7 +115,7 @@ class FullSkipTest(unittest.TestCase):
         cls.nup = NupArchive(NUP_PATH)
         cls.game = GameData(cls.nup)
         cls.cache = {}
-        cls.files, cls.report = full_skip.build_full_skip_files(cls.game, 1, cls.cache)
+        cls.files, cls.report, cls.sizes = full_skip.build_full_skip_files(cls.game, 1, cls.cache)
         cls.applied = applied(cls.report)
         cls.targets = full_skip.load_targets(1)
 
@@ -139,7 +151,8 @@ class FullSkipTest(unittest.TestCase):
                 self.targets.reviewed_forks.get(name, frozenset()))
             for step in steps:
                 problems = check_rewrite(EventFlow(step.before), step.after, step.entry, step.rw,
-                                         step.external)
+                                         step.external, step.tolerated)
+                self.assertEqual(step.tolerated, set(entries) - {step.entry})
                 self.assertEqual(problems, [], (name, step.entry))
                 before = EventFlow(step.before)
                 base = full_skip.protected_entries(callers, name, before, entries, step.entry)
@@ -173,10 +186,12 @@ class FullSkipTest(unittest.TestCase):
     def test_goto_hyrulecastle_is_written_once_with_all_methods(self):
         new = EventFlow(self.output('Goto_HyruleCastle'))
         old = EventFlow(self.original('Goto_HyruleCastle'))
-        # The movie's transition is still in the file, but nothing reaches it any more.
+        # Nothing reaches the movie's transition any more (its slot may have become a
+        # donor for a private copy, so it is looked up by content, not by index).
         (t,) = transitions_to(old, {'Dm_HrlCastle_0045'})
         self.assertIn(t, reachable(old.events, old.entry_points, old.entry_points.values()))
-        self.assertNotIn(t, reachable(new.events, new.entry_points, new.entry_points.values()))
+        self.assertFalse(set(transitions_to(new, {'Dm_HrlCastle_0045'}))
+                         & reachable(new.events, new.entry_points, new.entry_points.values()))
         rewritten = [e for f, e in self.applied if f == 'Goto_HyruleCastle']
         self.assertTrue(rewritten)
         for e in rewritten:
@@ -188,7 +203,8 @@ class FullSkipTest(unittest.TestCase):
         only = full_skip.Targets(flows={name: ['EntryPoint0']}, timelines=[], movies={},
                                  choices={}, reviewed_forks={})
         with mock.patch.object(full_skip, 'load_targets', return_value=only):
-            files, report = full_skip.files_with_fallback(self.game, 1)
+            files, report, sizes = full_skip.files_with_fallback(self.game, 1)
+        self.assertEqual(sizes, {})
         self.assertTrue(any(line.startswith(f'fallback to trimming {name}/EntryPoint0: conflict')
                             for line in report))
         old = build_cutscene_files(self.game)
@@ -196,7 +212,8 @@ class FullSkipTest(unittest.TestCase):
         self.assertEqual(set(files), set(old))
 
     def test_partly_rewritten_file_is_not_old_trimmed(self):
-        files, report = full_skip.files_with_fallback(self.game, 1)
+        files, report, sizes = full_skip.files_with_fallback(self.game, 1)
+        self.assertEqual(sizes, self.sizes)
         p = path_of('Goto_HyruleCastle')
         self.assertEqual(files[p], self.files[p])
         self.assertTrue(any(line.startswith('full skip only Goto_HyruleCastle') for line in report))
@@ -278,6 +295,40 @@ class FullSkipTest(unittest.TestCase):
                 self.assertTrue(rw.grown)
                 self.assertEqual(check_rewrite(flow, apply_rewrite(data, flow, rw), entry, rw,
                                                ext), problems)
+
+    def test_grown_flows_report_their_size_change(self):
+        self.assertIn(path_of('Npc_Kokiri_007_Child'), self.sizes)
+        for path, data in self.files.items():
+            if not path.startswith(FLOW_DIR):
+                continue
+            name = path[len(FLOW_DIR):-len(FLOW_EXT)]
+            delta = len(self.output(name)) - len(self.original(name))
+            self.assertEqual(self.sizes.get(path, 0), delta, name)
+            if delta:
+                self.assertGreater(delta, 0, name)
+
+    def test_shared_forced_conversations_are_applied(self):
+        # The exit Kokiri, Mido and the targeting tutorial share events with the
+        # player-started conversations: their rewrites take new slots.
+        for flow, entry in (('Npc_Kokiri_007_Child', 'Talk'),
+                            ('Npc_Kokiri_007_Child', 'GoToDekuTree'),
+                            ('Npc_Kokiri_Mido_Child', 'Talk')):
+            self.assertIn((flow, entry), self.applied)
+
+    def test_entry_called_by_a_sibling_target_is_tolerated(self):
+        # Talk calls GoToDekuTree by name: rewriting GoToDekuTree changes what Talk
+        # reaches, which is allowed only when Talk is itself a target of the file.
+        name = 'Npc_Kokiri_007_Child'
+        callers = full_skip.flow_callers(self.cache)
+        table = SkipTable.load()
+        _, steps, _ = full_skip.skip_flow(self.original(name), name, ['GoToDekuTree', 'Talk'],
+                                          set(), table, callers)
+        self.assertIn('GoToDekuTree', [s.entry for s in steps])
+        _, steps, report = full_skip.skip_flow(self.original(name), name, ['GoToDekuTree'],
+                                               set(), table, callers)
+        self.assertEqual(steps, [])
+        self.assertTrue(any(line.startswith(f'fallback to trimming {name}/GoToDekuTree: check: '
+                                            'rule 4: entry Talk') for line in report), report)
 
     def test_king_zora_keeps_his_animation(self):
         flow = EventFlow(self.output('Dm_Zora_0010'))

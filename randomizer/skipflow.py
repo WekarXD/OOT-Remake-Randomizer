@@ -603,10 +603,13 @@ def _case_membership(flow, plain: _Graph) -> dict[int, dict[int, int]]:
 
 
 def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
-                  external: frozenset[str] = frozenset()) -> list[str]:
+                  external: frozenset[str] = frozenset(),
+                  tolerated: frozenset[str] = frozenset()) -> list[str]:
     """Problems found in the rewritten file (empty means OK); `new_data` is the bytes
     `apply_rewrite` produced (or an already parsed flow); `external` is what was passed to
-    `effects_only`. Each problem starts with its rule:
+    `effects_only`; `tolerated` names entries whose reachability may change (rule 4 skips
+    them: the builder passes the other targets of the file, which may call `entry` by
+    name). Each problem starts with its rule:
 
     1. the kept nodes reachable from `entry` are exactly `rw.kept` (donor copies and new
        slots count as their originals);
@@ -615,9 +618,9 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
        counting the end of a fork branch as leading to the next one), does not reverse it
        (a not after b, unless a is on a cycle there) and does not chain two exclusive
        cases of one switch;
-    4. every entry other than `entry` and the inlined ones reaches the same events as
-       before, walking the new flow through its own entry table (so a caller of a
-       rewritten entry is caught);
+    4. every entry other than `entry`, the inlined and the tolerated ones reaches the same
+       events as before, walking the new flow through its own entry table (so a caller of
+       a rewritten entry is caught);
     5. a kept fade-out with no later kept fade-in, where the old flow had one after it.
     """
     new = new_data if hasattr(new_data, 'events') else EventFlow(new_data)
@@ -656,7 +659,7 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
     # 4. other entries
     skip = inlined_entries(old, entry, external)
     for other, i in old.entry_points.items():
-        if other in skip:
+        if other in skip or other in tolerated:
             continue
         if other not in new.entry_points:
             problems.append(f'rule 4: entry {other} is missing from the new file')
