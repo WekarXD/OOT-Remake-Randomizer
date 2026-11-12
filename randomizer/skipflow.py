@@ -6,7 +6,8 @@ from fnmatch import fnmatchcase
 from pathlib import Path
 
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, RESULT, SUBFLOW, SUBFLOW_SWITCH,
-                                       SWITCH, Event, EventFlow, copy_event, patch_pointers)
+                                       SWITCH, Event, EventFlow, copy_event, grow_events,
+                                       patch_pointers)
 
 SWITCHES = (SWITCH, SUBFLOW_SWITCH)  # kinds whose edges are `cases`
 
@@ -59,6 +60,15 @@ class Rewrite:
     # copy slot -> original event: the copy (written over an unreachable action, the
     # donor) stands in for the original on the targeted path; `links` may name its slot.
     copies: dict[int, int] = field(default_factory=dict)
+    # Sources of the new slots n, n + 1, ... (n = events in the file) that `apply_rewrite`
+    # appends with `grow_events`; each stands in for its source like a donor copy.
+    grown: list[int] = field(default_factory=list)
+
+    def source(self, i: int, n_events: int) -> int:
+        """The original event that slot `i` stands for (a donor copy or a new slot)."""
+        if n_events <= i < END:
+            return self.grown[i - n_events]
+        return self.copies.get(i, i)
 
 
 def reachable_chosen(events, entries, starts: Iterable[int],
@@ -99,7 +109,8 @@ def reachable(events, entries, starts: Iterable[int]) -> set[int]:
 def linearize(events: list[Event], entries: dict[str, int], entry: str,
               keep: Callable[[Event], bool], collapse: Callable[[Event], bool],
               choices: Mapping[int, int] = {}, protected: frozenset[int] = frozenset(),
-              can_copy: Callable[[int, int], bool] | None = None) -> Rewrite:
+              can_copy: Callable[[int, int], bool] | None = None,
+              grow: bool = False) -> Rewrite:
     """Relink the walk from `entry` so that it only passes through kept nodes.
 
     The walk carries a continuation stack: ('sub', next, entry) frames for
@@ -121,7 +132,8 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
 
     Events in `protected` (reached from untargeted entries) are never relinked:
     see `_private_copies`. `can_copy(src, dst)` says whether action `src` may be
-    written over the slot of action `dst` (default: always).
+    written over the slot of action `dst` (default: always). `grow` lets copies take
+    new slots appended to the file (see `_private_copies`).
     """
     collapsed: dict[int, int] = {}
 
@@ -287,30 +299,39 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
         stuck = [n for n in kept if n not in ends]
         if stuck:
             raise _Fail('loop', f'cannot end from {stuck[:10]}')
-        links, copies = _private_copies(events, entries, links, protected, can_copy)
+        links, copies, grown = _private_copies(events, entries, links, protected, can_copy,
+                                               grow)
     except _Fail as e:
         return Rewrite({}, [], e.error, e.detail, collapsed)
-    return Rewrite(links, kept, None, '', collapsed, copies)
+    return Rewrite(links, kept, None, '', collapsed, copies, grown)
 
 
-def _private_copies(events, entries, links, protected, can_copy):
-    """(links, copies): `links` with every protected event whose link changes
+COPIED_WHEN_GROWING = (ACTION, SWITCH, SUBFLOW, SUBFLOW_SWITCH)
+
+
+def _private_copies(events, entries, links, protected, can_copy, grow=False):
+    """(links, copies, grown): `links` with every protected event whose link changes
     replaced, on the targeted path, by a private copy (spec 8.1).
 
     Fixpoint: a protected action whose link differs from the original gets a copy
     that carries the new link, and every link of the rewrite that pointed at the
     original now points at the copy. That may change the link of a protected
-    predecessor, which is then copied in turn. Switches, subflows and subflow
-    switches are never copied ('shared').
+    predecessor, which is then copied in turn. Without `grow`, switches, subflows and
+    subflow switches are never copied ('shared'); with it they are (a switch copy
+    carries all its cases), but forks, joins and results still are not.
 
-    Copies first get placeholder slots (len(events) + j). Then each takes the slot
-    of a donor: an action that nothing reaches after the rewrite (from any entry,
-    through cases, forks, joins and same-file calls), that no link targets, that
-    is not protected and that `can_copy` accepts; lowest index first ('no donor'
-    when they run out). Overwriting a donor is safe because nothing reaches it.
+    Copies first get placeholder slots (len(events) + j). Then each action copy takes
+    the slot of a donor: an action that nothing reaches after the rewrite (from any
+    entry, through cases, forks, joins and same-file calls), that no link targets, that
+    is not protected and that `can_copy` accepts; lowest index first. Overwriting a
+    donor is safe because nothing reaches it. An action with no donor left ('no donor'
+    without `grow`) and every other copy take new slots len(events), len(events) + 1,
+    ... in the order the copies were made; `grown` lists their sources in that order
+    (`apply_rewrite` appends them with `grow_events`).
     """
     links = dict(links)
     n_events = len(events)
+    kinds = COPIED_WHEN_GROWING if grow else (ACTION,)
     originals: dict[int, int] = {}  # placeholder -> original
     changed = True
     while changed:
@@ -322,20 +343,26 @@ def _private_copies(events, entries, links, protected, can_copy):
             old = ev.next if key[0] == 'next' else ev.cases[key[2]]
             if old == target:
                 continue
-            if ev.kind != ACTION:
+            if ev.kind not in kinds:
                 raise _Fail('shared', f'{key}: {old} -> {target}')
             src, c = key[1], n_events + len(originals)
             originals[c] = src
-            links[('next', c)] = links.pop(('next', src))
+            if ev.kind in SWITCHES:  # the copy carries every case
+                for k, case in enumerate(ev.cases):
+                    links[('case', c, k)] = links.pop(('case', src, k), case)
+            else:
+                links[('next', c)] = links.pop(('next', src))
             for k, t in links.items():
                 if t == src:
                     links[k] = c
             changed = True
             break
     if not originals:
-        return links, {}
+        return links, {}, []
 
     def succ(i):
+        if i >= n_events and events[originals[i]].kind in SWITCHES:
+            return [links[('case', i, k)] for k in range(len(events[originals[i]].cases))]
         if i >= n_events or ('next', i) in links:
             return [links[('next', i)]]
         if events[i].kind in SWITCHES and ('case', i, 0) in links:
@@ -351,16 +378,22 @@ def _private_copies(events, entries, links, protected, can_copy):
     targets = set(links.values())
     free = [i for i, ev in enumerate(events) if ev.kind == ACTION and i not in seen
             and i not in targets and i not in protected]
-    slot = {}
-    for c, src in originals.items():
-        d = next((d for d in free if can_copy is None or can_copy(src, d)), None)
-        if d is None:
+    slot, copies, grown = {}, {}, []
+    for c, src in originals.items():  # creation order
+        d = None
+        if events[src].kind == ACTION:
+            d = next((d for d in free if can_copy is None or can_copy(src, d)), None)
+        if d is not None:
+            free.remove(d)
+            slot[c], copies[d] = d, src
+        elif grow:
+            slot[c] = n_events + len(grown)
+            grown.append(src)
+        else:
             raise _Fail('no donor', f'copy of event {src}')
-        free.remove(d)
-        slot[c] = d
     links = {(k if k[0] == 'entry' else (k[0], slot.get(k[1], k[1]), *k[2:])): slot.get(t, t)
              for k, t in links.items()}
-    return links, {slot[c]: src for c, src in originals.items()}
+    return links, copies, grown
 
 # Parameter keys that name a game data flag (found by scanning the action and query
 # parameters of every flow: GameDataName for the Set/Is/Add/Wait family, GameDataA/B
@@ -444,13 +477,14 @@ def inlined_entries(flow: EventFlow, entry: str,
 def effects_only(flow: EventFlow, entry: str, table: SkipTable,
                  choices: Mapping[int, int] = {},
                  reviewed_forks: frozenset[int] = frozenset(),
-                 external: frozenset[str] = frozenset()) -> Rewrite:
+                 external: frozenset[str] = frozenset(), grow: bool = False) -> Rewrite:
     """`linearize` with the table's decisions; other entry points stay untouched.
 
     Fails with 'fork dependency' if a fork branch reads a flag that a sibling writes
     (see `fork_dependencies`), unless the fork is in `reviewed_forks`. Entry points in
     `external` (called from other files) are never inlined, whatever reaches them, and are
-    protected like untargeted entries; the targeted entry itself is exempt."""
+    protected like untargeted entries; the targeted entry itself is exempt. `grow` lets
+    the private copies take new slots appended to the file (see `_private_copies`)."""
     deps = [(f, n) for f, n in fork_dependencies(flow, entry) if f not in reviewed_forks]
     if deps:
         return Rewrite({}, [], 'fork dependency', ', '.join(f'fork {f} flag {n}' for f, n in deps))
@@ -467,13 +501,18 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
     inlined = inlined_entries(flow, entry, external)
     protected = frozenset(reachable(events, entries,
                                     [i for e, i in entries.items() if e not in inlined]))
-    return linearize(events, entries, entry, keep, collapse, choices, protected, flow.copyable)
+    return linearize(events, entries, entry, keep, collapse, choices, protected, flow.copyable,
+                     grow)
 
 
 def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
-    """The file with the rewrite's copies written, then its links patched in (same length)."""
+    """The file grown with the rewrite's new slots (if any), then its donor copies written,
+    then its links patched in (same length unless it grew)."""
     if rw.error:
         raise ValueError(f'Cannot apply a failed rewrite: {rw.error} ({rw.detail})')
+    if rw.grown:
+        data = grow_events(data, rw.grown)
+        flow = EventFlow(data)
     for dst, src in rw.copies.items():
         data = copy_event(data, src, dst)
     return patch_pointers(data, {flow.link_slots[k]: v for k, v in rw.links.items()})
@@ -569,8 +608,8 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
     `apply_rewrite` produced (or an already parsed flow); `external` is what was passed to
     `effects_only`. Each problem starts with its rule:
 
-    1. the kept nodes reachable from `entry` are exactly `rw.kept` (copies count as
-       their originals);
+    1. the kept nodes reachable from `entry` are exactly `rw.kept` (donor copies and new
+       slots count as their originals);
     2. no FORK or JOIN is reachable from `entry`;
     3. order: every new link a -> b between kept nodes follows the old flow (b after a,
        counting the end of a fork branch as leading to the next one), does not reverse it
@@ -585,7 +624,7 @@ def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite,
     problems: list[str] = []
     if entry not in new.entry_points:
         return [f'rule 1: entry {entry} is missing from the new file']
-    orig = lambda i: rw.copies.get(i, i)  # noqa: E731
+    orig = lambda i: rw.source(i, len(old.events))  # noqa: E731
     start = new.entry_points[entry]
     reach = reachable(new.events, new.entry_points, [start])
     kept_new = {i for i in reach if new.events[i].kind not in (FORK, JOIN)}

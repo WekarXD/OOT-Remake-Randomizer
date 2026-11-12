@@ -256,6 +256,29 @@ class FullSkipTest(unittest.TestCase):
         self.assertNotIn(('Get_StoneOfForest', 'Boss_Appear'), self.applied)
         self.assertNotIn(('Get_StoneOfWater', 'StoneOfWater_BossAppear'), self.applied)
 
+    def test_shared_conversations_rewrite_into_new_slots(self):
+        # Forced conversations that share events with player-started ones (spec 8.1).
+        from randomizer.skipflow import apply_rewrite
+        callers = full_skip.flow_callers(self.cache)
+        table = SkipTable.load()
+        # GoToDekuTree rewrites, but the untargeted Talk calls it by name (event 30), so
+        # Talk would follow the moved entry slot: rule 4 refuses it (not about growing).
+        for name, entry, problems in (
+                ('Npc_Kokiri_007_Child', 'GoToDekuTree',
+                 ['rule 4: entry Talk reaches other events than before']),
+                ('Npc_Kokiri_007_Child', 'Talk', []),
+                ('Npc_Kokiri_Mido_Child', 'Talk', [])):
+            with self.subTest(name=name, entry=entry):
+                data = self.original(name)
+                flow = EventFlow(data)
+                ext = full_skip.protected_entries(callers, name, flow, [entry], entry)
+                self.assertEqual(effects_only(flow, entry, table, external=ext).error, 'shared')
+                rw = effects_only(flow, entry, table, external=ext, grow=True)
+                self.assertIsNone(rw.error, rw.detail)
+                self.assertTrue(rw.grown)
+                self.assertEqual(check_rewrite(flow, apply_rewrite(data, flow, rw), entry, rw,
+                                               ext), problems)
+
     def test_king_zora_keeps_his_animation(self):
         flow = EventFlow(self.output('Dm_Zora_0010'))
         start = flow.entry_points['EntryPoint0']

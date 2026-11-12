@@ -146,8 +146,12 @@ def lin(events, entries=None, entry='E', **kw):
 
 
 def rewritten(events, entries, rw):
-    """(events, entries) as `apply_rewrite` would leave them: copies written, links patched."""
+    """(events, entries) as `apply_rewrite` would leave them: grown, copies written, links
+    patched."""
     new = [copy.deepcopy(ev) for ev in events]
+    for src in rw.grown:
+        new.append(copy.deepcopy(events[src]))
+        new[-1].index = len(new) - 1
     for dst, src in rw.copies.items():
         new[dst] = copy.deepcopy(events[src])
         new[dst].index = dst
@@ -421,6 +425,83 @@ class LinearizeTests(unittest.TestCase):
         rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}))
         self.assertEqual(rw.error, 'no donor')
 
+    def test_protected_switch_grows_a_copy(self):
+        # E: 0 keep -> 1 switch (kept) -> [2 drop -> 3 keep | 4 keep]; F starts at 1.
+        events = [A(0, 'K', 1), SW(1, 'S', [2, 4]), A(2, 'D', 3), A(3, 'K'), A(4, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.grown, [1])
+        self.assertEqual(rw.copies, {})
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(reachable(new, new_entries, [new_entries['F']]), {1, 2, 3, 4})
+        self.assertEqual([ev.cases for ev in new[:5]], [[], [2, 4], [], [], []])
+        self.assertEqual(new[0].next, 5)
+        self.assertEqual(new[5].cases, [3, 4])
+        self.assertEqual(reachable(new, new_entries, [new_entries['E']]), {0, 5, 3, 4})
+
+    def test_switch_copy_carries_its_unchanged_cases(self):
+        # Only case 0 changes; the copy still has case 1 (the original target).
+        events = [A(0, 'K', 1), SW(1, 'S', [2, 3]), A(2, 'D', 3), A(3, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.grown, [1])
+        self.assertEqual({k: v for k, v in rw.links.items() if k[0] == 'case'},
+                         {('case', 4, 0): 3, ('case', 4, 1): 3})
+
+    def test_protected_subflow_grows_a_copy(self):
+        # E: 0 keep -> 1 other-file subflow (kept) -> 2 drop -> 3 keep; F starts at 1.
+        events = [A(0, 'K', 1), SUB(1, 'Other', 'KX', 2), A(2, 'D', 3), A(3, 'K')]
+        entries = {'E': 0, 'F': 1}
+        self.assertEqual(lin(events, entries, protected=frozenset({1, 2, 3})).error, 'shared')
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.grown, [1])
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(walk(new, new_entries['F']), [1, 2, 3])
+        self.assertEqual(walk(new, new_entries['E']), [0, 4, 3])
+
+    def test_action_without_a_donor_grows(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual((rw.grown, rw.copies), ([1], {}))
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(walk(new, new_entries['F']), [1, 2, 3])
+        self.assertEqual(walk(new, new_entries['E']), [0, 4, 3])
+
+    def test_actions_take_donors_before_new_slots(self):
+        # E: 0 keep -> 1 keep -> 2 switch -> [3 drop -> 4 keep]; F starts at 1; donor 5.
+        # 2 is copied first (new slot 6), then 1 (to the donor 5).
+        events = [A(0, 'K', 1), A(1, 'K', 2), SW(2, 'S', [3]), A(3, 'D', 4), A(4, 'K'),
+                  A(5, 'D')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual((rw.grown, rw.copies), ([2], {5: 1}))
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(reachable(new, new_entries, [new_entries['F']]), {1, 2, 3, 4})
+        self.assertEqual(reachable(new, new_entries, [new_entries['E']]), {0, 5, 6, 4})
+
+    def test_new_slots_follow_creation_order(self):
+        # E: 0 keep -> 1 switch -> [2 switch -> [3 drop -> 4 keep]]; F starts at 1; no donor.
+        events = [A(0, 'K', 1), SW(1, 'S', [2]), SW(2, 'S', [3]), A(3, 'D', 4), A(4, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}), grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.grown, [2, 1])
+        new, new_entries = rewritten(events, entries, rw)
+        self.assertEqual(new[0].next, 6)
+        self.assertEqual((new[6].cases, new[5].cases), ([5], [4]))
+        self.assertEqual(reachable(new, new_entries, [new_entries['F']]), {1, 2, 3, 4})
+
+    def test_without_grow_nothing_grows(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K'), A(4, 'D')]
+        rw = lin(events, {'E': 0, 'F': 1}, protected=frozenset({1, 2, 3}), grow=False)
+        self.assertEqual((rw.grown, rw.copies), ([], {4: 1}))
+
     def test_apply_rewrite_refuses_a_failed_rewrite(self):
         with self.assertRaises(ValueError):
             apply_rewrite(b'', None, Rewrite({}, [], 'loop', 'x'))
@@ -529,6 +610,18 @@ class CheckRewriteTests(unittest.TestCase):
         entries = {'E': 0, 'F': 1}
         rw = lin(events, entries, protected=frozenset({1, 2, 3}))
         self.assertEqual(rw.copies, {4: 1})
+        self.assertEqual(self.check(events, entries, rw), [])
+
+    def test_new_slots_stand_in_for_their_sources(self):
+        events = [A(0, 'K', 1), SW(1, 'S', [2, 4]), A(2, 'D', 3), A(3, 'K'), A(4, 'K')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}), grow=True)
+        self.assertEqual(rw.grown, [1])
+        self.assertEqual(self.check(events, entries, rw), [])
+        events = [A(0, 'K', 1), A(1, 'K', 2), SW(2, 'S', [3]), A(3, 'D', 4), A(4, 'K'),
+                  A(5, 'D')]
+        rw = lin(events, entries, protected=frozenset({1, 2, 3, 4}), grow=True)
+        self.assertEqual((rw.grown, rw.copies), ([2], {5: 1}))
         self.assertEqual(self.check(events, entries, rw), [])
 
     def test_fade_out_without_a_later_fade_in(self):
@@ -847,6 +940,32 @@ class PrivateCopyRealDataTests(unittest.TestCase):
         self.assertIsNone(rw.error, rw.detail)
         problems = check_rewrite(flow, apply_rewrite(data, flow, rw), 'Intro', rw)
         self.assertTrue(any(p.startswith('rule 4') for p in problems), problems)
+
+    def test_grown_rewrite_of_the_exit_kokiri(self):
+        # Npc_Kokiri_007_Child/Talk walks into GoToDekuTree and GoToMido, which the game
+        # also starts on their own: their switches get copies in new slots, an action a donor.
+        data, _ = self.flows['Npc_Kokiri_007_Child']
+        flow = EventFlow(data)
+        ext = frozenset(flow.entry_points) - {'Talk'}
+        self.assertEqual(effects_only(flow, 'Talk', self.table, external=ext).error, 'shared')
+        rw = effects_only(flow, 'Talk', self.table, external=ext, grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertTrue(rw.grown)
+        self.assertTrue(rw.copies)
+        new_data = apply_rewrite(data, flow, rw)
+        new = EventFlow(new_data)
+        n = len(flow.events)
+        self.assertEqual(len(new.events), n + len(rw.grown))
+        for j, src in enumerate(rw.grown):
+            a, b = new.events[n + j], flow.events[src]
+            self.assertEqual((a.kind, a.actor, a.action, a.query, a.sub_flow, a.sub_entry),
+                             (b.kind, b.actor, b.action, b.query, b.sub_flow, b.sub_entry))
+            self.assertEqual(new.action_params(n + j), flow.action_params(src))
+        for other in ext:
+            self.assertEqual(
+                reachable(new.events, new.entry_points, [new.entry_points[other]]),
+                reachable(flow.events, flow.entry_points, [flow.entry_points[other]]), other)
+        self.assertEqual(check_rewrite(flow, new_data, 'Talk', rw, ext), [])
 
     def test_apply_rewrite_writes_copies_before_links(self):
         data, _ = self.flows['Get_StoneOfFire']
