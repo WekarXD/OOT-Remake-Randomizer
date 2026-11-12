@@ -10,12 +10,13 @@ Pending work, most important first within each section.
 - **Boomerang and the Deku Tree vine Skulltulas.** `REMAKE_RULES` only accepts the Slingshot, Bow or Hookshot for the Deku Tree upper floor; check whether the Boomerang kills those Skulltulas in the remake.
 - **Soft-soil Skulltulas** (bugs on the soil) are untested with Tokensanity (batch 17, attempt 3).
 - **Chest image and text** may still show the original item.
-- **Movie cutscenes** (26 `.webm` in `Event/Movie`): removing the transition that starts them works (TestMovies2) and timelines are shortened; both are built into the childhood full skip (`Rando_FullSkipChild1`, waiting for the test). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`) have no timeline and need another way.
+- **Movie cutscenes** (26 `.webm` in `Event/Movie`): removing the transition that starts them works (TestMovies2) and timelines are shortened; both are built into the childhood full skip (`Rando_FullSkipChild1`, waiting for the test). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`): transitions dropped, untested in game.
 - **Which file plays "Mido and Saria"** in Kokiri Forest (spike: `Dm_Kokiri_0060` was rewritten but the user still saw a conversation with them).
 
 ## To test in game
 
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
+- Adult batch of the full skip: `AllSage` and `Get_Epona`, whose old-trim output changed when the parser began to show the case slots of subflow switches (kind 5). `Goto_HyruleCastle` and `SubEvent_GetEponaSong` changed the same way and are in the childhood guide.
 - Batch 17, attempt 3: seed `TestTokens3`.
 - Batch 16 (optional): confirm the 27 "guessed" Skulltulas with a rupee-colour mod so they can also hold key items.
 - Acceptance seed `ACEPTACION1` and the round 2b cutscene re-test.

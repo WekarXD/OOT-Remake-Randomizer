@@ -25,6 +25,9 @@ Play: new game, Deku Tree, Gohma, Saria, castle (Malon, Zelda, letter, Lullaby),
 | Dodongo's Cavern | Most scenes (`Dm_DodongoCave_0010` is in the next section) | The cavern opens, the boss dies, the reward is received | Outside the cavern |
 | Zora's Domain, Jabu-Jabu | Most scenes (`Dm_InsideJabu_Jabu_0050` is in the next section) | Zora's Sapphire; Ruto's Letter as the seed places it | Free to walk on |
 | Door of Time | Most scenes | The door opens | In the Temple of Time |
+| Lon Lon Ranch (Malon, Epona's Song) | The Malon scenes of `SubEvent_GetEponaSong` that were rewritten (four entries still play, see below) | Epona's Song received; Malon still talks and gives what the seed placed | Free, no freeze |
+| Graveyard, Royal Family Tomb (needs Zelda's Lullaby) | The wall movies (`Dm_MelodyGet_Sun_*`, their transitions are dropped; never tried in game) and the Sun's Song scene | Sun's Song received; the time of day changes | Free in the tomb, no freeze, no black screen |
+| Great Fairy fountains (child: Power, Wisdom, Courage) | The fairy's speech and appearance | The reward (spell or upgrade) is received | Free at the fountain |
 
 Also note:
 - **Loading screen after the intro** is longer: the intro movie used to hide it.
@@ -71,6 +74,9 @@ Played: ______
 - [ ] Kakariko, Death Mountain, Goron City, Dodongo: anything blocked or missing? ______
 - [ ] Zora's Domain and Jabu-Jabu: stone and letter received? ______
 - [ ] Door of Time opens? ______
+- [ ] Malon / Epona's Song area (`SubEvent_GetEponaSong`): song received, anything stuck? ______
+- [ ] Royal Family Tomb: Sun's Song received, time of day changes, no freeze after the wall movies? ______
+- [ ] Great Fairy fountain(s): reward received? ______
 - [ ] Does Link raise gifted items? ______
 - [ ] Any freeze, black screen, wrong position or sound left playing? ______
 - [ ] Scenes that still played and are not in the table above: ______

@@ -167,7 +167,7 @@ Everything else the user saw still plays, as expected, because it was not in the
 
 Childhood full skip built on branch `feat/full-skip` (`randomizer/full_skip.py`, data `randomizer/data/full_skip.json`, wired in `randomizer/generate.py`; the spoiler gets a "Cutscenes not skipped" section). Test mod `Rando_FullSkipChild1`, guide `docs/test-full-skip-child.md`.
 
-**Counts (the real report for phase 1).** Targets: 93 flow files with 186 entry points, 31 timelines, 11 movies. Report: 108 applied, 16 unchanged, 29 fell back to the old trimming, 28 left untrimmed because the file was only partly rewritten, 14 files not written at all (the old trimming applies). 264 report lines; the full skip changes 335 files.
+**Counts (the real report for phase 1).** Targets: 93 flow files with 181 entry points, 31 timelines, 11 movies. Report: 108 applied, 16 unchanged, 29 fell back to the old trimming, 28 left untrimmed because the file was only partly rewritten, 14 files not written at all (the old trimming applies). 264 report lines; the full skip changes 335 files.
 
 **Decisions taken while building (each with what it costs if wrong):**
 - **Kind 5 = a subflow switch that runs its call; kind 6 = a result.** Cost: a scene follows the wrong case; the checker cannot see it, so the game test must.
