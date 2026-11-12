@@ -64,19 +64,28 @@ Taken from the spoiler's "Cutscenes not skipped" section (the full list, with ex
 
 ## Results
 
-Played: ______
+Played 2026-11-12. **Verdict: nothing lost, nothing frozen.** Every item, song, stone and flag on the childhood path arrived; the Door of Time opens.
 
-- [ ] New game: intro gone, Link in his house with control? ______
-- [ ] Navi's colour right after the house? ______
-- [ ] Fairy Ocarina received, forest exit opens? ______
-- [ ] Gohma and the Kokiri Emerald; no speech scenes? ______
-- [ ] Letter, Lullaby and Epona's Song received? ______
-- [ ] Kakariko, Death Mountain, Goron City, Dodongo: anything blocked or missing? ______
-- [ ] Zora's Domain and Jabu-Jabu: stone and letter received? ______
-- [ ] Door of Time opens? ______
-- [ ] Malon / Epona's Song area (`SubEvent_GetEponaSong`): song received, anything stuck? ______
-- [ ] Royal Family Tomb: Sun's Song received, time of day changes, no freeze after the wall movies? ______
-- [ ] Great Fairy fountain(s): reward received? ______
-- [ ] Does Link raise gifted items? ______
-- [ ] Any freeze, black screen, wrong position or sound left playing? ______
-- [ ] Scenes that still played and are not in the table above: ______
+- [x] New game: intro gone, Link in his house with control? **Yes**; a short scene (Navi flying to the house, `Dm_Kokiri_0030`, cut to its fade-in) ends after a few seconds.
+- [x] Navi's colour right after the house? **Right.**
+- [x] Fairy Ocarina received, forest exit opens? **Ocarina yes, Saria's conversations skipped; the Kokiri blocking the exit still talks.**
+- [x] Gohma and the Kokiri Emerald; no speech scenes? **Yes.**
+- [x] Letter, Lullaby and Epona's Song received? **Yes.**
+- [x] Kakariko, Death Mountain, Goron City, Dodongo: anything blocked or missing? **All fine.**
+- [x] Zora's Domain and Jabu-Jabu: stone and letter received? **Yes.**
+- [x] Door of Time opens? **Yes.**
+- [x] Malon / Epona's Song area: song received, anything stuck? **Received.**
+- [x] Royal Family Tomb: Sun's Song received, time of day changes, no freeze? **Received.**
+- [x] Great Fairy fountain(s): reward received? **The conversation where she grants the reward still plays (with its scene).**
+- [x] Does Link raise gifted items? **Yes.**
+- [x] Saria's Song received.
+
+Still seen (not in the table above or worth noting):
+- The targeting tutorial NPC and the shield tutorial.
+- Mido's first conversation blocking the Deku Tree without sword and shield, even when Link has both.
+- The Kokiri blocking the forest exit.
+- Some owl (Kaepora Gaebora) conversations.
+- King Zora, after getting Ruto's letter, does not move aside on screen (his animation was dropped); leaving and re-entering shows him moved.
+- Entering Zora's Fountain shows a black-screen animation.
+
+User decision: **boss intro animations are to be kept** (not skipped).
