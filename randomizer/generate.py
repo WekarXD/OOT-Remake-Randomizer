@@ -5,6 +5,7 @@ import re
 import secrets
 import shutil
 import string
+import sys
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
@@ -109,6 +110,9 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if not_skipped is not None:
                     # Grown flows with no RSTB entry (their size could not be updated).
                     not_skipped += rstb_report
+                if rstb_report and not settings.spoiler:
+                    # No spoiler log to hold them: tell the user anyway.
+                    print('\n'.join(rstb_report), file=sys.stderr)
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped)

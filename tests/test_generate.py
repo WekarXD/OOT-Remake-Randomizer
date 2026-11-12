@@ -1,4 +1,6 @@
+import contextlib
 import hashlib
+import io
 import json
 import os
 import tempfile
@@ -193,6 +195,17 @@ class RealTests(unittest.TestCase):
             data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
             self.assertEqual([l for l in data['cutscenes_not_skipped'] if 'RSTB' in l],
                              [f'no RSTB entry for {path} (its size was not updated)'])
+
+    def test_missing_rstb_entry_is_printed_without_a_spoiler(self):
+        path = 'Event/EventFlow/NoSuchFlow.bfevfl.zs'
+        err = io.StringIO()
+        with tempfile.TemporaryDirectory() as out, contextlib.redirect_stderr(err):
+            with mock.patch('randomizer.generate.files_with_fallback',
+                            return_value=({}, ['applied X/Y'], {path: 16})):
+                r = generate(NUP_PATH, out, Settings(seed='nostb2', skip_cutscenes=True,
+                                                     spoiler=False))
+            self.assertIsNone(r.spoiler_txt)
+        self.assertIn(f'no RSTB entry for {path} (its size was not updated)', err.getvalue())
 
     def test_spoiler_excluded_reasons(self):
         with tempfile.TemporaryDirectory() as out:

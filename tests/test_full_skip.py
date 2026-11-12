@@ -1,10 +1,12 @@
 import os
+import struct
 import unittest
 from unittest import mock
 
 from randomizer import full_skip
 from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
-from randomizer.formats.bfevfl import ACTION, END, SUBFLOW, SUBFLOW_SWITCH, EventFlow
+from randomizer.formats.bfevfl import (ACTION, END, SUBFLOW, SUBFLOW_SWITCH, SWITCH, BfevflError,
+                                       EventFlow, relocation_table)
 from randomizer.movie_skip import transitions_to
 from randomizer.skipflow import (Rewrite, SkipTable, check_rewrite, effects_only, inlined_entries,
                                  reachable)
@@ -306,6 +308,67 @@ class FullSkipTest(unittest.TestCase):
             self.assertEqual(self.sizes.get(path, 0), delta, name)
             if delta:
                 self.assertGreater(delta, 0, name)
+
+    def skip(self, name):
+        """skip_flow of one target flow, as build_full_skip_files runs it."""
+        t = self.targets
+        return full_skip.skip_flow(self.original(name), name, t.flows.get(name, ()),
+                                   t.movies_called_by(name), SkipTable.load(),
+                                   full_skip.flow_callers(self.cache), t.choices.get(name, {}),
+                                   t.reviewed_forks.get(name, frozenset()))
+
+    def assert_relocated(self, name, data):
+        """Every non-null pointer field of every event is in the RELT and no two switches
+        share a case array."""
+        flow = EventFlow(data)
+        pointers = relocation_table(data)[2]
+        arrays = {}
+        for i, ev in enumerate(flow.events):
+            e = flow._events_p + 0x30 * i
+            for o in (0x00, 0x10, 0x18, 0x20, 0x28):
+                if struct.unpack_from('<Q', data, e + o)[0]:
+                    self.assertIn(e + o, pointers, (name, i, o))
+            if ev.kind in (SWITCH, SUBFLOW_SWITCH) and ev.cases:
+                p = struct.unpack_from('<Q', data, e + 0x18)[0]
+                self.assertNotIn(p, arrays, (name, i, arrays.get(p)))
+                arrays[p] = i
+
+    def test_repeated_growth_is_compacted(self):
+        name = 'MelodyGet_Sun_SubEvent'
+        orig, out = self.original(name), self.output(name)
+        with mock.patch.object(full_skip, 'compact', lambda data, original: data):
+            loose, steps, _ = self.skip(name)
+        self.assertGreater(sum(1 for s in steps if s.rw.grown), 1)
+        old, new, flat = EventFlow(orig), EventFlow(out), EventFlow(loose)
+        n = len(old.events)
+        # One moved array (live events only), the copies' case arrays and the RELT.
+        size0 = relocation_table(orig)[1]
+        cases = sum(8 * len(ev.cases) for ev in new.events[n:]
+                    if ev.kind in (SWITCH, SUBFLOW_SWITCH))
+        relt = len(out) - struct.unpack_from('<I', out, 0x18)[0]
+        self.assertLess(len(out), size0 + 0x30 * len(new.events) + cases + relt + 64)
+        self.assertLess(len(out), len(loose))
+        # The compacted file reads exactly like the uncompacted one.
+        self.assertEqual(len(new.events), len(flat.events))
+        for i in range(len(new.events)):
+            self.assertEqual(new.events[i], flat.events[i], i)
+            self.assertEqual(new.action_params(i), flat.action_params(i), i)
+        self.assertEqual(new.entry_points, flat.entry_points)
+        # The RSTB delta is the final size change.
+        self.assertEqual(self.sizes[path_of(name)], len(out) - len(orig))
+
+    def test_grown_files_relocate_every_pointer(self):
+        for path in self.sizes:
+            name = path[len(FLOW_DIR):-len(FLOW_EXT)]
+            self.assert_relocated(name, self.output(name))
+
+    def test_growth_error_fails_the_entry_only(self):
+        name = 'Npc_Kokiri_Mido_Child'
+        with mock.patch('randomizer.skipflow.grow_events', side_effect=BfevflError('boom')):
+            data, steps, report = self.skip(name)
+        self.assertFalse(any(s.rw.grown for s in steps))
+        self.assertTrue(any(line.endswith(f'{name}/Talk: cannot apply: boom')
+                            for line in report), report)
 
     def test_shared_forced_conversations_are_applied(self):
         # The exit Kokiri, Mido and the targeting tutorial share events with the

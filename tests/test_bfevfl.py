@@ -3,7 +3,7 @@ import struct
 import unittest
 
 from randomizer.formats.bfevfl import (ACTION, FORK, JOIN, RESULT, SWITCH, BfevflError, Event,
-                                       EventFlow, build_relocation_table, copy_event,
+                                       EventFlow, build_relocation_table, compact, copy_event,
                                        grow_events, patch_pointers, relocation_table,
                                        set_string_param, string_param_owners)
 from randomizer.formats.zs import ZsCodec
@@ -405,6 +405,40 @@ class GrowEventsTests(unittest.TestCase):
             grow_events(self.epona, [result])
         with self.assertRaises(BfevflError):
             grow_events(self.data, [len(self.flow.events)])
+
+    def test_compact_of_one_growth_is_unchanged(self):
+        self.assertEqual(compact(self.data, self.data), self.data)
+        once = grow_events(self.data, [self.switch, self.action])
+        self.assertEqual(compact(once, self.data), once)
+
+    def test_compact_twice_grown_is_one_growth(self):
+        n = len(self.flow.events)
+        once = grow_events(self.data, [self.switch])
+        twice = grow_events(once, [self.action, n])
+        single = grow_events(self.data, [self.switch, self.action, self.switch])
+        self.assertLess(len(single), len(twice))
+        self.assertEqual(compact(twice, self.data), single)
+        # Patches made after the growths carry over (cases of both switch copies).
+        flow = EventFlow(twice)
+        patched = patch_pointers(twice, {flow.link_slots[('case', n + 2, 0)]: 0xFFFF,
+                                         flow.link_slots[('next', n + 1)]: 3})
+        out = _assert_valid(self, compact(patched, self.data))
+        old = EventFlow(patched)
+        for i in range(n + 3):
+            self.assertEqual(_shape(out.events[i]), _shape(old.events[i]), i)
+            self.assertEqual(out.action_params(i), old.action_params(i), i)
+        self.assertEqual(out.entry_points, old.entry_points)
+        self.assertEqual(out.events[n + 2].cases[0], 0xFFFF)
+        self.assertNotEqual(out.events[n].cases[0], 0xFFFF)
+
+    def test_compact_refuses_shared_case_arrays(self):
+        n = len(self.flow.events)
+        grown = bytearray(grow_events(self.data, [self.switch, self.switch]))
+        e = EventFlow(bytes(grown))._events_p
+        struct.pack_into('<Q', grown, e + 0x30 * (n + 1) + 0x18,
+                         struct.unpack_from('<Q', grown, e + 0x30 * n + 0x18)[0])
+        with self.assertRaises(BfevflError):
+            compact(bytes(grown), self.data)
 
 
 class EventTests(unittest.TestCase):

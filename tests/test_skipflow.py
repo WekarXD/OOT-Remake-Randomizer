@@ -8,7 +8,8 @@ from pathlib import Path
 
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
-from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, apply_rewrite, build_spike_files,
+from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, _private_copies, apply_rewrite,
+                                 build_spike_files,
                                  check_rewrite, effects_only, fork_dependencies, inlined_entries, linearize,
                                  reachable, reachable_chosen)
 
@@ -449,6 +450,23 @@ class LinearizeTests(unittest.TestCase):
         self.assertEqual(rw.grown, [1])
         self.assertEqual({k: v for k, v in rw.links.items() if k[0] == 'case'},
                          {('case', 4, 0): 3, ('case', 4, 1): 3})
+
+    def test_switch_copy_case_without_a_link_keeps_its_target(self):
+        # The rewrite links only case 0 of the protected switch 1; the copy (new slot 4)
+        # falls back to the original target of case 1.
+        events = [A(0, 'K', 1), SW(1, 'S', [2, 3]), A(2, 'D', 3), A(3, 'K')]
+        entries = {'E': 0, 'F': 1}
+        links = {('entry', 'E'): 0, ('next', 0): 1, ('case', 1, 0): 3}
+        links, copies, grown = _private_copies(events, entries, links, frozenset({1, 2, 3}),
+                                               None, grow=True)
+        self.assertEqual((grown, copies), ([1], {}))
+        self.assertEqual(links, {('entry', 'E'): 0, ('next', 0): 4, ('case', 4, 0): 3,
+                                 ('case', 4, 1): 3})
+        links, _, _ = _private_copies([A(0, 'K', 1), SW(1, 'S', [2, 2]), A(2, 'D', 3), A(3, 'K')],
+                                      entries, {('entry', 'E'): 0, ('next', 0): 1,
+                                                ('case', 1, 0): 3},
+                                      frozenset({1, 2, 3}), None, grow=True)
+        self.assertEqual(links[('case', 4, 1)], 2)
 
     def test_protected_subflow_grows_a_copy(self):
         # E: 0 keep -> 1 other-file subflow (kept) -> 2 drop -> 3 keep; F starts at 1.

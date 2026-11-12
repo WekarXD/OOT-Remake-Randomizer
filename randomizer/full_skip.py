@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
 from .flow_callers import entry_callers
-from .formats.bfevfl import END, EventFlow
+from .formats.bfevfl import END, BfevflError, EventFlow, compact
 from .formats.timeline import Timeline
 from .movie_skip import drop_transitions
 from .skipflow import (Rewrite, SkipTable, apply_rewrite, check_rewrite, effects_only,
@@ -121,7 +121,10 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
     Kokiri's Talk calls GoToDekuTree) and is skipped too. An entry that fails is reported
     as `FALLBACK` if the file ends up unchanged (it keeps the old trimming) and as
     `UNTRIMMED` otherwise (the file is written by the full skip and is not trimmed as
-    well)."""
+    well); a BfevflError while growing or applying an entry fails that entry only.
+
+    If more than one step grew the file, the result is `compact`ed (one event array
+    instead of one per growth); the steps' `after` stay as they were applied."""
     original = data
     report, failed = [], []
     if movies:
@@ -151,18 +154,27 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
             failed.append(f'{name}/{entry}: new END case ('
                           + ', '.join(f'switch {i} case {k}' for i, k in ends) + ')')
             continue
-        new = apply_rewrite(data, flow, rw)
-        if new == data:
-            report.append(f'unchanged {name}/{entry}: already effects-only')
+        try:
+            new = apply_rewrite(data, flow, rw)
+            if new == data:
+                report.append(f'unchanged {name}/{entry}: already effects-only')
+                continue
+            tolerated = frozenset(entries) - {entry}
+            problems = check_rewrite(flow, new, entry, rw, ext, tolerated)
+        except BfevflError as e:
+            failed.append(f'{name}/{entry}: cannot apply: {e}')
             continue
-        tolerated = frozenset(entries) - {entry}
-        problems = check_rewrite(flow, new, entry, rw, ext, tolerated)
         if problems:
             failed.append(f'{name}/{entry}: check: {"; ".join(problems)}')
             continue
         steps.append(Step(entry, rw, data, new, ext, tolerated))
         report.append(f'applied {name}/{entry}')
         data = new
+    if sum(1 for step in steps if step.rw.grown) > 1:
+        try:
+            data = compact(data, original)
+        except BfevflError as e:  # the uncompacted file is valid, only larger
+            report.append(f'not compacted {name}: {e}')
     label = FALLBACK if data == original else UNTRIMMED
     report += [f'{label} {line}' for line in failed]
     return data, steps, report
