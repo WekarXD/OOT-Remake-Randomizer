@@ -22,7 +22,7 @@ Pending work, most important first within each section.
 
 ## To build
 
-- **Shared / no-donor forced conversations** (about 56 in the childhood): they share events with player-started talks, or need a copy but no donor slot exists. Options: grow the BFEVFL (needs a relocation-table writer) or index the banc EventStarters.
+- **Shared / no-donor forced conversations** (dozens in the childhood; see the spoiler's "Cutscenes not skipped"): they share events with player-started talks, or need a copy but no donor slot exists. Options: grow the BFEVFL (needs a relocation-table writer) or index the banc EventStarters.
 - **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.
 - **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
 - **Full skip, adult phase:** the same method for the adult scenes, after the childhood test batch.

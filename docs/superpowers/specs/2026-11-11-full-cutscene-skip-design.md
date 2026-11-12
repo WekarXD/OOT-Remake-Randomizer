@@ -178,7 +178,7 @@ Childhood full skip built on branch `feat/full-skip` (`randomizer/full_skip.py`,
 - **Chatter is excluded** except `FORCED_TALKS_ALLOW` (four forced talks).
 - **Partly written files are not old-trimmed**, to avoid mixing two edits. They are reported as "untrimmed".
 
-**Fell back or left alone:** about 56 forced conversations that share events with player-started ones (Kokiri blocking the exit, Mido's Talk, Zelda and Malon talks, castle guards); `Dm_Kokiri_0045` (fork dependency on `KokiriForest_LinkHouseDoor_Open`); `Dm_InsideJabu_Jabu_0050` (conflict); the Royal Family Tomb files; one "no result" case (event 28, hash `0xa6da0479`, in `SubEvent_GetEponaSong`).
+**Fell back or left alone:** dozens of forced conversations that share events with player-started ones (Kokiri blocking the exit, Mido's Talk, Zelda and Malon talks, castle guards; see the spoiler: 29 entries shortened as before, 28 playing in full); `Dm_Kokiri_0045` (fork dependency on `KokiriForest_LinkHouseDoor_Open`); `Dm_InsideJabu_Jabu_0050` (conflict); the Royal Family Tomb files; one "no result" case (event 28, hash `0xa6da0479`, in `SubEvent_GetEponaSong`).
 
 **What the test batch must decide:**
 1. Do the kind 5 and kind 6 readings hold (no scene takes a wrong branch)?
