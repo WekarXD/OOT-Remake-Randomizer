@@ -447,6 +447,7 @@
   "DoorOfTime": {
    "entries": [
     "Dm_MelodyGet_Time_After",
+    "Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk",
     "DoorOfTime_GetOcarinaOfTime",
     "DoorOfTime_GetOcarinaOfTime_AreaOut",
     "Step01_Npc_Hylia_Impa_Child_Talk"
@@ -491,6 +492,7 @@
    "entries": [
     "IrregularEvent",
     "KingZoraCamera",
+    "Step10_Npc_Zora_Ruto_Child_001_Talk",
     "StoneOfWater_ArriveJabuJabuBelly",
     "StoneOfWater_BossAppear",
     "StoneOfWater_ClearDivingGame",
@@ -595,7 +597,8 @@
    "entries": [
     "GoToDekuTree",
     "GoToMido",
-    "Near_FirstReaction"
+    "Near_FirstReaction",
+    "Talk"
    ],
    "phase": 1
   },
@@ -614,7 +617,8 @@
   },
   "Npc_Kokiri_Mido_Child": {
    "entries": [
-    "KokiriForest_Get_StoneOfForest_Completed_Event"
+    "KokiriForest_Get_StoneOfForest_Completed_Event",
+    "Talk"
    ],
    "phase": 1
   },

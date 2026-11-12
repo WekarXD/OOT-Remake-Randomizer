@@ -89,6 +89,7 @@ class FullSkipTest(unittest.TestCase):
                 self.assertTrue(set(entries) - {step.entry} <= step.external)
                 if not name.startswith('Dm_'):
                     self.assertEqual(step.external, set(before.entry_points) - {step.entry})
+                self.assertEqual(full_skip.new_end_cases(before, step.rw), [], (name, step.entry))
                 seen.add((name, step.entry))
             if path_of(name) in self.files:
                 self.assertEqual(self.output(name), data, name)
@@ -167,6 +168,13 @@ class FullSkipTest(unittest.TestCase):
                 self.assertEqual(
                     reachable(new.events, new.entry_points, [new.entry_points[e]]),
                     reachable(old.events, old.entry_points, [old.entry_points[e]]), (name, e))
+
+    def test_new_end_case_is_refused(self):
+        # Dm_Goron_0028's rewrite sends both cases of switch 28 to END (they were not).
+        self.assertNotIn(('Dm_Goron_0028', 'EntryPoint0'), self.applied)
+        self.assertTrue(any(line.startswith('fallback to trimming Dm_Goron_0028/EntryPoint0: '
+                                            'new END case (switch 28 case 0')
+                            for line in self.report))
 
     def test_timelines_are_shortened_with_their_subtimelines(self):
         from randomizer.formats.timeline import Timeline

@@ -33,7 +33,8 @@ from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, load_policy  # noqa: E402
 from randomizer.flow_callers import entry_callers  # noqa: E402
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, SWITCH, EventFlow  # noqa: E402
 from randomizer.formats.zs import ZsCodec  # noqa: E402
-from randomizer.full_skip import TARGETS_PATH, protected_entries, skip_flow  # noqa: E402
+from randomizer.full_skip import (TARGETS_PATH, new_end_cases, protected_entries,  # noqa: E402
+                                  skip_flow)
 from randomizer.movie_skip import TRANSITION  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.skipflow import SkipTable, effects_only, fork_dependencies, reachable  # noqa: E402
@@ -112,7 +113,7 @@ GIFT_TALKS: dict[str, list[str]] = {
     'DoorOfTime': ['Step01_Npc_Hylia_Impa_Child_Talk'],
 }
 
-# Entries left out of phase 1 by name (review of 2026-11-12), unless listed in GIFT_TALKS:
+# Entries left out of phase 1 by name (review of 2026-11-12), unless listed in GIFT_TALKS or FORCED_TALKS_ALLOW:
 # (reason, test on (flow, entry)). Checked after KEEP_TALKS.
 ADULT_BOSSES = ('Ganon', 'Ganondorf', 'KotakeKoume', 'Morpha', 'Nabooru', 'Phantom',
                 'Twinrova', 'Valvagia')
@@ -124,6 +125,15 @@ EXCLUDED_ENTRIES = (
     ('player-started chatter (Talk / Near, *_Talk / *_Near, IrregularTalk, Talk_Nearby_*)',
      lambda f, e: not f.startswith('Dm_') and CHATTER.search(e) is not None),
 )
+
+# Forced or story conversations the user asked to skip (2026-11-09 review and the task 7
+# brief), exempt from the chatter rule of EXCLUDED_ENTRIES.
+FORCED_TALKS_ALLOW = frozenset({
+    ('Npc_Kokiri_Mido_Child', 'Talk'),         # Mido blocks the way
+    ('Npc_Kokiri_007_Child', 'Talk'),          # a Kokiri blocks the exit
+    ('DoorOfTime', 'Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk'),  # brief's list
+    ('Get_StoneOfWater', 'Step10_Npc_Zora_Ruto_Child_001_Talk'),
+})
 
 # Targets removed after reviewing their kept effects: (flow, entry) -> reason.
 REVIEWED_OUT: dict[tuple[str, str], str] = {}
@@ -276,7 +286,7 @@ def build(nup, old: dict | None = None):
             targets.get(name, set()).discard(e)
     for (name, e) in REVIEWED_OUT:
         targets.get(name, set()).discard(e)
-    gifts = {(n, e) for n, es in GIFT_TALKS.items() for e in es}
+    gifts = {(n, e) for n, es in GIFT_TALKS.items() for e in es} | FORCED_TALKS_ALLOW
     print('== Entries left out by name ==')
     for reason, test in EXCLUDED_ENTRIES:
         out = sorted((n, e) for n, es in targets.items() for e in es
@@ -306,6 +316,8 @@ def build(nup, old: dict | None = None):
                               forks.get(name, frozenset()), ext)
             deps = fork_dependencies(flow, e)
             res = 'ok' if rw.error is None else f'{rw.error}: {rw.detail[:70]}'
+            if rw.error is None and new_end_cases(flow, rw):
+                res = f'new END case: {new_end_cases(flow, rw)}'
             if rw.error is None and not rw.kept:
                 res = 'EMPTY (left out)'
                 empty.append((name, e))

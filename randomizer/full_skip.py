@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
 from .flow_callers import entry_callers
-from .formats.bfevfl import EventFlow
+from .formats.bfevfl import END, EventFlow
 from .formats.timeline import Timeline
 from .movie_skip import drop_transitions
 from .skipflow import Rewrite, SkipTable, apply_rewrite, check_rewrite, effects_only
@@ -88,6 +88,19 @@ def protected_entries(callers: Mapping[tuple[str, str], set[str]], name: str,
     return frozenset(out)
 
 
+def new_end_cases(flow: EventFlow, rw: Rewrite) -> list[tuple[int, int]]:
+    """(switch, case) of the rewrite's case links that become END (0xFFFF) where the
+    original case was not END. No rewrite proven in game (the spike scenes) has one, so the
+    builder refuses them; a `next` becoming END (the scene ends) is normal."""
+    out = []
+    for key, target in rw.links.items():
+        if key[0] == 'case' and target == END:
+            src = rw.copies.get(key[1], key[1])
+            if flow.events[src].cases[key[2]] != END:
+                out.append((key[1], key[2]))
+    return sorted(out)
+
+
 FALLBACK = 'fallback to trimming'
 UNTRIMMED = 'untrimmed (file partly rewritten)'
 
@@ -119,6 +132,11 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
         rw = effects_only(flow, entry, table, choices, reviewed_forks, ext)
         if rw.error:
             failed.append(f'{name}/{entry}: {rw.error} ({rw.detail})')
+            continue
+        ends = new_end_cases(flow, rw)
+        if ends:
+            failed.append(f'{name}/{entry}: new END case ('
+                          + ', '.join(f'switch {i} case {k}' for i, k in ends) + ')')
             continue
         new = apply_rewrite(data, flow, rw)
         if new == data:
