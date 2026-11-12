@@ -289,6 +289,13 @@ class TestCutsceneFiles(unittest.TestCase):
         orig = self.game.codec.decompress(path, self.nup.read(path))
         spec = ['GuideToDekuTree_BeforeTalkMido']
         self.assertIsNone(cutscenes.trim_flow(orig, spec, cutscenes.active_actions(self.policy)))
+        # A mixed-entry flow that is trimmed: the other entries must stay as they were.
+        path = FLOW_DIR + 'Npc_DekuTreeChild.bfevfl.zs'
+        orig = self.game.codec.decompress(path, self.nup.read(path))
+        spec = ['Talk']
+        new = cutscenes.trim_flow(orig, spec, cutscenes.active_actions(self.policy))
+        self.assertIsNotNone(new)
+        cases.append((path, spec, orig, new))
         checked = 0
         for path, spec, orig, new in cases:
             fo, fn = EventFlow(orig), EventFlow(new)

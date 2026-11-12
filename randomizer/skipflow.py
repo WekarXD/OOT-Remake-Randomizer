@@ -101,17 +101,22 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
     (event, stack) there is a loop. A kept node's successors depend only on
     (node, stack), which is expanded once.
 
-    A subflow switch is never kept: it collapses like a switch (`choose`), so
-    the entry it calls does not run. A result ends the entry with the value
-    its caller switches on: at the top level it is a kept terminal; inside an
-    inlined call or a fork branch it is refused (nothing could follow it).
+    A subflow switch (kind 5) calls an entry and follows the case whose hash
+    is the result that entry ends with. Same file: the call is inlined with a
+    ('call', switch, entry) frame; a result pops it and continues at the
+    matching case ('no result' if none matches or the entry ends without
+    one). Other file: kept as a switch node (its call runs unchanged) when
+    `keep` keeps the subflow; otherwise it collapses only to a case given in
+    `choices` ('subflow switch' if none). A result outside a call frame: at
+    the top level it is a kept terminal (the entry's own result); inside an
+    inlined subflow or a fork branch it is refused (nothing could follow it).
     """
     collapsed: dict[int, int] = {}
 
     def is_kept(ev):
         if ev.kind == ACTION:
             return keep(ev)
-        if ev.kind == SUBFLOW:
+        if ev.kind in (SUBFLOW, SUBFLOW_SWITCH):
             return ev.sub_flow != '' and keep(ev)
         return ev.kind == SWITCH and not collapse(ev)
 
@@ -147,6 +152,8 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                 if not stack:
                     return END, ()
                 top = stack[-1]
+                if top[0] == 'call':
+                    raise _Fail('no result', f'{top[2]} ends without one (event {top[1]})')
                 if top[0] == 'sub':
                     i, stack = top[1], stack[:-1]
                     continue
@@ -167,21 +174,36 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
             if is_kept(ev):
                 return i, stack
             if ev.kind == RESULT:
-                if stack:
+                if not stack:
+                    return i, stack
+                top = stack[-1]
+                if top[0] != 'call':
                     raise _Fail('result in call', f'event {i}')
-                return i, stack
+                sw = events[top[1]]
+                if ev.result not in sw.case_hashes:
+                    raise _Fail('no result', f'event {i} result {ev.result:#x} is no case '
+                                             f'of {top[1]}')
+                i, stack = sw.cases[sw.case_hashes.index(ev.result)], stack[:-1]
+                continue
             if ev.kind == ACTION:
                 i = ev.next
-            elif ev.kind == SUBFLOW:
+            elif ev.kind in (SUBFLOW, SUBFLOW_SWITCH):
                 if ev.sub_flow != '':
-                    i = ev.next
+                    if ev.kind == SUBFLOW:
+                        i = ev.next
+                    elif i in choices:
+                        i = ev.cases[choose(i)]
+                    else:
+                        raise _Fail('subflow switch', f'event {i}')
                     continue
-                active = {entry} | {f[2] for f in stack if f[0] == 'sub'}
+                active = {entry} | {f[2] for f in stack if f[0] in ('sub', 'call')}
                 if ev.sub_entry in active:
                     raise _Fail('recursive subflow', f'event {i} calls {ev.sub_entry}')
                 if ev.sub_entry not in entries:
                     raise _Fail('missing entry', f'event {i} calls {ev.sub_entry}')
-                stack = stack + (('sub', ev.next, ev.sub_entry),)
+                frame = (('sub', ev.next, ev.sub_entry) if ev.kind == SUBFLOW
+                         else ('call', i, ev.sub_entry))
+                stack = stack + (frame,)
                 i = entries[ev.sub_entry]
             elif ev.kind == FORK:
                 if not ev.forks:
@@ -204,7 +226,7 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
                     raise _Fail('join mismatch', f'event {i}')
                 else:
                     i = ev.next
-            elif ev.kind in SWITCHES and ev.cases:  # collapsing
+            elif ev.kind == SWITCH and ev.cases:  # collapsing
                 i = ev.cases[choose(i)]
             else:
                 raise _Fail('dead end', f'event {i} (kind {ev.kind})')
@@ -269,7 +291,7 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
                  choices: Mapping[int, int] = {}) -> Rewrite:
     """`linearize` with the table's decisions; other entry points stay untouched."""
     def keep(ev):
-        if ev.kind == SUBFLOW:
+        if ev.kind in (SUBFLOW, SUBFLOW_SWITCH):
             return not table.drops_subflow(ev.sub_flow, ev.sub_entry)
         return table.keeps(ev.actor, ev.action)
 
@@ -284,7 +306,8 @@ def effects_only(flow: EventFlow, entry: str, table: SkipTable,
             continue
         for i in reachable(events, {}, [entries[e]]):
             ev = events[i]
-            if ev.kind == SUBFLOW and ev.sub_flow == '' and ev.sub_entry not in inlined:
+            if (ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow == ''
+                    and ev.sub_entry not in inlined):
                 inlined.add(ev.sub_entry)
                 todo.append(ev.sub_entry)
     protected = frozenset(reachable(events, entries,

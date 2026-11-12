@@ -32,6 +32,9 @@ Types 5 and 6 (decoded from all 925 type 5 and 583 type 6 events in the game):
 - 6, result: ends the entry with a result; +0xC u32 hash of its label (the
   value a calling subflow switch matches; reading +0xC as actor indices is
   what used to crash). No event pointers: for the graph it is a terminal.
+  Some results match no case of a caller (SubEvent_GetEponaSong: Mask_Talk can
+  end with 0xa6da0479 via event 28, but event 32 only has 0xf770c34c); what
+  the game does then is unknown.
 
 Parameter container (type 1): u8 type, u8 0, u16 number of items, u32 0,
 u64 `DIC ` dictionary with the names, then one u64 per item. Item j is named
@@ -88,6 +91,8 @@ class Event:
     join: int | None = None
     sub_flow: str | None = None  # SUBFLOW(_SWITCH): called flow file ('' = same file)
     sub_entry: str | None = None  # SUBFLOW(_SWITCH): called entry point
+    case_hashes: list[int] = field(default_factory=list)  # SUBFLOW_SWITCH: result per case
+    result: int | None = None  # RESULT: hash of its label
 
 
 class EventFlow:
@@ -177,9 +182,11 @@ class EventFlow:
                 cases_p = self._u64(e + 0x18)  # 8-byte cases: u32 result hash, u16 event
                 ev.cases = [slot(cases_p + 8 * k + 4, ('case', i, k))
                             for k in range(self._u16(e + 0xA))]
+                ev.case_hashes = [self._u32(cases_p + 8 * k) for k in range(len(ev.cases))]
                 ev.sub_flow = self._str(self._u64(e + 0x20)) or ''
                 ev.sub_entry = self._str(self._u64(e + 0x28))
-            # RESULT (6): only a label hash; no event pointers.
+            elif kind == RESULT:  # only a label hash; no event pointers
+                ev.result = self._u32(e + 0xC)
             self.events.append(ev)
 
         n_dic = self._u32(dic_p + 4)

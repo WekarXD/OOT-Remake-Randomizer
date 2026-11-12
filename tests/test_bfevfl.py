@@ -45,7 +45,11 @@ class BfevflTests(unittest.TestCase):
         self.assertEqual(flow.events[27].sub_entry,
                          'Mask_Talk_Common_With_InitTalk_Malon_Child_Only')
         self.assertIn(('case', 27, 1), flow.link_slots)
+        self.assertEqual(flow.events[27].case_hashes, [0xf7b0eeb8, 0xfab0f371])
         self.assertEqual(flow.events[28].kind, 6)
+        self.assertEqual(flow.events[28].result, 0xa6da0479)
+        self.assertEqual((flow.events[75].result, flow.events[76].result),
+                         (0xf7b0eeb8, 0xfab0f371))
         self.assertEqual((flow.events[28].next, flow.events[28].cases), (None, []))
 
     def test_all_flows_parse(self):

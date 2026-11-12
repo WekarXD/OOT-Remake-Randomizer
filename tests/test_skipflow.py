@@ -106,14 +106,17 @@ def SW(i, query, cases):
     return Event(index=i, kind=SWITCH, actor='Npc', query=query, cases=list(cases))
 
 
-def HS(i, cases, flow='Other', entry='Q'):
-    """Kind 5: a subflow call that switches on the called entry's result."""
-    return Event(index=i, kind=5, sub_flow=flow, sub_entry=entry, cases=list(cases))
+def HS(i, cases, flow='Other', entry='Q', hashes=None):
+    """Kind 5: a subflow call that switches on the called entry's result (hashes
+    default to 100, 101, ...)."""
+    hashes = list(hashes) if hashes is not None else [100 + k for k in range(len(cases))]
+    return Event(index=i, kind=5, sub_flow=flow, sub_entry=entry, cases=list(cases),
+                 case_hashes=hashes)
 
 
-def RS(i):
-    """Kind 6: ends the entry with a result (no event pointers)."""
-    return Event(index=i, kind=6)
+def RS(i, h=100):
+    """Kind 6: ends the entry with result hash h (no event pointers)."""
+    return Event(index=i, kind=6, result=h)
 
 
 def SUB(i, flow, entry, nxt=END):
@@ -203,14 +206,51 @@ class LinearizeTests(unittest.TestCase):
         self.assertEqual(rw.links, {('entry', 'E'): END})
         self.assertEqual(rw.collapsed, {0: 0})
 
-    def test_kind5_collapses_like_a_switch(self):
-        ev = [A(0, 'K0', 1), HS(1, [2, 3]), A(2, 'D2'), A(3, 'K3')]
+    def test_kind5_same_file_runs_its_call(self):
+        # 0 calls X; X keeps K1 and returns 101 -> case 1 (event 4).
+        ev = [HS(0, [3, 4], '', 'X'), A(1, 'K1', 2), RS(2, 101), A(3, 'K3'), A(4, 'K4')]
+        rw = lin(ev, {'E': 0, 'X': 1})
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.links, {('entry', 'E'): 1, ('next', 1): 4, ('next', 4): END})
+        self.assertEqual(rw.kept, [1, 4])
+
+    def test_kind5_each_result_routes_to_its_case(self):
+        # X: kept switch 1 -> result 100 (event 2) or 101 (event 3).
+        ev = [HS(0, [4, 5], '', 'X'), SW(1, 'Q', [2, 3]), RS(2, 100), RS(3, 101),
+              A(4, 'K4'), A(5, 'K5')]
+        rw = lin(ev, {'E': 0, 'X': 1})
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.links, {('entry', 'E'): 1, ('case', 1, 0): 4, ('case', 1, 1): 5,
+                                    ('next', 4): END, ('next', 5): END})
+
+    def test_kind5_without_matching_result(self):
+        ev = [HS(0, [2], '', 'X'), RS(1, 999), A(2, 'K2')]
+        self.assertEqual(lin(ev, {'E': 0, 'X': 1}).error, 'no result')
+        ev = [HS(0, [2], '', 'X'), A(1, 'K1'), A(2, 'K2')]  # X ends without a result
+        self.assertEqual(lin(ev, {'E': 0, 'X': 1}).error, 'no result')
+
+    def test_kind5_recursive_call(self):
+        self.assertEqual(lin([HS(0, [END], '', 'E')]).error, 'recursive subflow')
+
+    def test_kind5_cross_file_kept(self):
+        ev = [HS(0, [1, 2], 'Other', 'Kx'), A(1, 'K1'), A(2, 'D2')]
         rw = lin(ev)
         self.assertIsNone(rw.error)
-        self.assertEqual(rw.links, {('entry', 'E'): 0, ('next', 0): 3, ('next', 3): END})
-        self.assertEqual(rw.collapsed, {1: 1})
-        rw = lin(ev, choices={1: 0})
-        self.assertEqual(rw.links, {('entry', 'E'): 0, ('next', 0): END})
+        self.assertEqual(rw.links, {('entry', 'E'): 0, ('case', 0, 0): 1, ('case', 0, 1): END,
+                                    ('next', 1): END})
+        self.assertEqual(rw.kept, [0, 1])
+
+    def test_kind5_cross_file_dropped_needs_a_choice(self):
+        ev = [HS(0, [1, 2], 'Other', 'Dx'), A(1, 'K1'), A(2, 'K2')]
+        self.assertEqual(lin(ev).error, 'subflow switch')
+        rw = lin(ev, choices={0: 1})
+        self.assertIsNone(rw.error)
+        self.assertEqual(rw.links, {('entry', 'E'): 2, ('next', 2): END})
+        self.assertEqual(rw.collapsed, {0: 1})
+
+    def test_result_inside_a_fork_branch_is_refused(self):
+        rw = lin([FK(0, [1], 2), RS(1), JN(2)])
+        self.assertEqual(rw.error, 'result in call')
 
     def test_result_is_a_kept_terminal(self):
         # The entry's result is what its caller switches on: it stays.
