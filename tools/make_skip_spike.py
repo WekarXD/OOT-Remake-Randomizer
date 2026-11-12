@@ -1,6 +1,6 @@
 """Spike test mods: TestScenes4 (four cutscenes rewritten effects-only: no scene, same
 effects) and, with --timelines, TestTimelines (the same plus three timeline cutscenes
-shortened, see randomizer/timeline_skip.py) and, with --movies, TestMovies2 (TestTimelines plus
+shortened, see randomizer/timeline_skip.py) and, with --movies, TestMovies3 (TestTimelines plus
 three movies removed from the flows that start them, see randomizer/movie_skip.py, and the scenes
 around them: MOVIE_SPIKE_SCENES rewritten effects-only, MOVIE_SPIKE_TIMELINES shortened).
 Usage: python -I tools/make_skip_spike.py [--timelines] [--movies] <nup> <out_dir>

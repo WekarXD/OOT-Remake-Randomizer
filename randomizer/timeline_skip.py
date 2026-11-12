@@ -22,9 +22,12 @@ FADE_WINDOW = 60.0  # 2 s at 30 fps
 # The spike's timelines: Saria on the bridge, Navi just outside Link's house (before Saria),
 # the scene with Zelda and Impa after the letter.
 SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0150', 'Dm_Kokiri_0050', 'Dm_HrlCastle_0060')
-# Second spike: the Deku Tree's vision of Ganondorf, after its speech and movie.
+# Movie spikes (TestMovies2, TestMovies3): timelines chained to the movies. The Deku Tree's vision
+# of Ganondorf, Navi flying to Link's house after the intro, the Deku Tree after giving the
+# Kokiri Emerald, Zelda meeting Link in the garden.
 # (Movies are not shortened: their .webm plays on regardless, see movie_skip.py.)
-MOVIE_SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0090',)
+MOVIE_SPIKE_TIMELINES: tuple[str, ...] = ('Dm_Kokiri_0090', 'Dm_Kokiri_0030', 'Dm_Kokiri_0140',
+                                          'Dm_HrlCastle_0030')
 
 
 def new_length(tl: Timeline) -> float:

@@ -271,9 +271,9 @@ def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
 
 SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0155', 'Dm_Kokiri_0060', 'Dm_HrlCastle_0050',
                                  'Dm_MelodyGet_Zelda')
-# Second spike (TestMovies2): the scenes around two movies, the Deku Tree's speech after Gohma
-# and Zelda's first scene.
-MOVIE_SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0080', 'Dm_HrlCastle_0035')
+# Movie spikes (TestMovies2, TestMovies3): the scenes around the movies, the Deku Tree's speech
+# after Gohma, Zelda's first scene and the Deku Tree giving the Kokiri Emerald.
+MOVIE_SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0080', 'Dm_HrlCastle_0035', 'Dm_Kokiri_0130')
 
 
 def build_spike_files(nup, names=SPIKE_SCENES) -> dict[str, bytes]:

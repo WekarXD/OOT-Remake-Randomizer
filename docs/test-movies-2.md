@@ -30,4 +30,8 @@ It carries everything in TestTimelines plus:
 
 ## Results
 
-Notes: ______
+Played 2026-11-12. **Verdict: removing the transition skips movies.**
+- New game: the intro movie is gone; the loading screen is longer (the movie used to hide the forest loading). The next scene, `Dm_Kokiri_0030` (Navi flying to Link's house, a timeline), still plays: it was not in this batch.
+- After Gohma: the speech, movie and Ganondorf vision are gone. Still left: `Dm_Kokiri_0130` (the conversation that gives the Kokiri Emerald) and `Dm_Kokiri_0140` (a timeline after it).
+- Castle garden: one scene is gone, but `Dm_HrlCastle_0030` (Zelda meeting Link, a timeline before `0035`) still plays. The letter and the Lullaby are both received.
+No freezes reported. The remaining scenes are in `MOVIE_SPIKE_TIMELINES` / `MOVIE_SPIKE_SCENES` (TestMovies3, built, not played).

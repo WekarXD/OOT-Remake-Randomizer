@@ -10,7 +10,7 @@ Pending work, most important first within each section.
 - **Boomerang and the Deku Tree vine Skulltulas.** `REMAKE_RULES` only accepts the Slingshot, Bow or Hookshot for the Deku Tree upper floor; check whether the Boomerang kills those Skulltulas in the remake.
 - **Soft-soil Skulltulas** (bugs on the soil) are untested with Tokensanity (batch 17, attempt 3).
 - **Chest image and text** may still show the original item.
-- **Movie cutscenes** (26 `.webm` in `Event/Movie`): shortening their timeline does not stop them (TestMovies); removing the transition that starts them is built and waits for TestMovies2 (full-skip spec §11). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`) have no timeline and need another way. Timelines are solved (TestTimelines, 2026-11-12).
+- **Movie cutscenes** (26 `.webm` in `Event/Movie`): removing the transition that starts them works (TestMovies2, full-skip spec §11). The Royal Family Tomb wall movies (`Dm_MelodyGet_Sun_*`) have no timeline and need another way. Timelines are solved (TestTimelines, 2026-11-12).
 - **Which file plays "Mido and Saria"** in Kokiri Forest (spike: `Dm_Kokiri_0060` was rewritten but the user still saw a conversation with them).
 
 ## To test in game
