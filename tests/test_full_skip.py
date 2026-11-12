@@ -1,0 +1,162 @@
+import os
+import unittest
+from unittest import mock
+
+from randomizer import full_skip
+from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
+from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, EventFlow
+from randomizer.movie_skip import transitions_to
+from randomizer.skipflow import SkipTable, check_rewrite, reachable
+
+NUP_PATH = os.environ.get('OOT_NUP')
+
+
+def path_of(name):
+    return FLOW_DIR + name + FLOW_EXT
+
+
+def applied(report):
+    """(flow, entry) pairs the report marks applied."""
+    out = set()
+    for line in report:
+        if line.startswith('applied '):
+            flow, entry = line[len('applied '):].split('/', 1)
+            out.add((flow, entry))
+    return out
+
+
+class LoadTargetsTest(unittest.TestCase):
+    def test_phase_filter_and_fields(self):
+        t = full_skip.load_targets(1)
+        self.assertIn('EntryPoint0', t.flows['Dm_Kokiri_0155'])
+        self.assertIn('Dm_Kokiri_0150', t.timelines)
+        self.assertEqual(t.movies['Dm_HrlCastle_0045'], ['Goto_HyruleCastle'])
+        self.assertEqual(full_skip.load_targets(0).flows, {})
+        self.assertNotIn('Dm_Kokiri_0045', t.reviewed_forks)
+
+
+@unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
+class FullSkipTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from randomizer.game import GameData
+        from randomizer.nup import NupArchive
+        cls.nup = NupArchive(NUP_PATH)
+        cls.game = GameData(cls.nup)
+        cls.cache = {}
+        cls.files, cls.report = full_skip.build_full_skip_files(cls.game, 1, cls.cache)
+        cls.applied = applied(cls.report)
+        cls.targets = full_skip.load_targets(1)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.nup.close()
+
+    def original(self, name):
+        p = path_of(name)
+        return self.game.codec.decompress(p, self.nup.read(p))
+
+    def output(self, name):
+        p = path_of(name)
+        return self.game.codec.decompress(p, self.files[p])
+
+    def test_reports_applied_entries_and_wall_time(self):
+        self.assertGreater(len(self.applied), 50)
+        self.assertTrue(any(line.startswith('full skip built in ') for line in self.report))
+        self.assertIn(('Dm_Kokiri_0155', 'EntryPoint0'), self.applied)
+        # A fork dependency stays unreviewed: it falls back and is reported.
+        self.assertNotIn(('Dm_Kokiri_0045', 'EntryPoint0'), self.applied)
+        self.assertTrue(any(line.startswith('fallback Dm_Kokiri_0045/EntryPoint0: fork dependency')
+                            for line in self.report))
+
+    def test_every_applied_entry_passes_the_checker(self):
+        callers = full_skip.flow_callers(self.cache)
+        table = SkipTable.load()
+        seen = set()
+        for name, entries in self.targets.flows.items():
+            data, steps, _ = full_skip.skip_flow(
+                self.original(name), name, entries, self.targets.movies_called_by(name), table,
+                callers, self.targets.choices.get(name, {}),
+                self.targets.reviewed_forks.get(name, frozenset()))
+            for step in steps:
+                problems = check_rewrite(EventFlow(step.before), step.after, step.entry, step.rw,
+                                         step.external)
+                self.assertEqual(problems, [], (name, step.entry))
+                self.assertEqual(step.external,
+                                 full_skip.external_entries(callers, name, step.entry))
+                seen.add((name, step.entry))
+            if path_of(name) in self.files:
+                self.assertEqual(self.output(name), data, name)
+            else:
+                self.assertEqual(self.original(name), data, name)
+        self.assertEqual(seen, self.applied)
+
+    def test_goto_hyrulecastle_is_written_once_with_all_methods(self):
+        new = EventFlow(self.output('Goto_HyruleCastle'))
+        old = EventFlow(self.original('Goto_HyruleCastle'))
+        # The movie's transition is still in the file, but nothing reaches it any more.
+        (t,) = transitions_to(old, {'Dm_HrlCastle_0045'})
+        self.assertIn(t, reachable(old.events, old.entry_points, old.entry_points.values()))
+        self.assertNotIn(t, reachable(new.events, new.entry_points, new.entry_points.values()))
+        rewritten = [e for f, e in self.applied if f == 'Goto_HyruleCastle']
+        self.assertTrue(rewritten)
+        for e in rewritten:
+            self.assertNotEqual(reachable(new.events, new.entry_points, [new.entry_points[e]]),
+                                reachable(old.events, old.entry_points, [old.entry_points[e]]), e)
+
+    def test_failed_scene_falls_back_to_old_trimming(self):
+        name = 'Dm_InsideJabu_Jabu_0050'
+        only = full_skip.Targets(flows={name: ['EntryPoint0']}, timelines=[], movies={},
+                                 choices={}, reviewed_forks={})
+        with mock.patch.object(full_skip, 'load_targets', return_value=only):
+            files, report = full_skip.files_with_fallback(self.game, 1)
+        self.assertTrue(any(line.startswith(f'fallback {name}/EntryPoint0: conflict')
+                            for line in report))
+        old = build_cutscene_files(self.game)
+        self.assertEqual(files.get(path_of(name)), old.get(path_of(name)))
+        self.assertEqual(set(files), set(old))
+
+    def test_partly_rewritten_file_is_not_old_trimmed(self):
+        files, report = full_skip.files_with_fallback(self.game, 1)
+        p = path_of('Goto_HyruleCastle')
+        self.assertEqual(files[p], self.files[p])
+        self.assertTrue(any(line.startswith('full skip only Goto_HyruleCastle') for line in report))
+        # The intro's unlocked skip (a component list) still comes from the old option.
+        old = build_cutscene_files(self.game)
+        for path in old:
+            if not path.startswith(FLOW_DIR):
+                self.assertEqual(files[path], old[path])
+
+    def test_dropped_events_unreachable(self):
+        table = SkipTable.load()
+        for name, entry in sorted(self.applied):
+            flow = EventFlow(self.output(name))
+            for i in reachable(flow.events, flow.entry_points, [flow.entry_points[entry]]):
+                ev = flow.events[i]
+                if ev.kind == ACTION:
+                    self.assertTrue(table.keeps(ev.actor, ev.action), (name, entry, i, ev.action))
+                elif ev.kind in (SUBFLOW, SUBFLOW_SWITCH) and ev.sub_flow:
+                    self.assertFalse(table.drops_subflow(ev.sub_flow, ev.sub_entry),
+                                     (name, entry, i))
+
+    def test_keep_talks_reach_the_same_events(self):
+        from tools.build_cutscene_list import KEEP_TALKS
+        for name, entries in KEEP_TALKS.items():
+            if path_of(name) not in self.files:
+                continue
+            old, new = EventFlow(self.original(name)), EventFlow(self.output(name))
+            for e in entries:
+                self.assertEqual(
+                    reachable(new.events, new.entry_points, [new.entry_points[e]]),
+                    reachable(old.events, old.entry_points, [old.entry_points[e]]), (name, e))
+
+    def test_timelines_are_shortened_with_their_subtimelines(self):
+        from randomizer.formats.timeline import Timeline
+        for name in ('Dm_Kokiri_0150', 'Dm_Deku_BossIn'):
+            self.assertLess(Timeline(self.output(name)).duration,
+                            Timeline(self.original(name)).duration, name)
+        self.assertIn(path_of('Dm_Kokiri_0150_Effect'), self.files)
+
+
+if __name__ == '__main__':
+    unittest.main()

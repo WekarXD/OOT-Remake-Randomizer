@@ -7,7 +7,9 @@ Only reads the .nup. Targets (all phase 1):
   `_Adult`/`_adult` (entry `EntryPoint0`); the entries `cutscenes.json` lists for the
   childhood story flows (CUTSCENE_FLOWS); the childhood entries of `DoorOfTime`; the
   hand-kept CHILD_EXTRA scenes (neither or both ages); the NPC gifts and songs of
-  GIFT_TALKS; minus KEEP_TALKS and REVIEWED_OUT.
+  GIFT_TALKS; minus KEEP_TALKS and REVIEWED_OUT; minus entries whose rewrite keeps
+  nothing (they would start at 0xFFFF) and entries whose rewrite, applied as the builder
+  does, would change what a KEEP_TALKS entry reaches (`keep_talks_guard`).
 - `timelines`: timeline-only `Dm_*` files with the same age rule and CHILD_EXTRA, except
   `_Effect`/`_Env` (shortened with their parent) and the movies.
 - `movies`: MOVIES plus every `Dm_MelodyGet_Sun_*` in `Event/Movie/`, each with the flows
@@ -31,10 +33,10 @@ from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, load_policy  # noqa: E402
 from randomizer.flow_callers import entry_callers  # noqa: E402
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, SWITCH, EventFlow  # noqa: E402
 from randomizer.formats.zs import ZsCodec  # noqa: E402
-from randomizer.full_skip import TARGETS_PATH, external_entries  # noqa: E402
+from randomizer.full_skip import TARGETS_PATH, external_entries, skip_flow  # noqa: E402
 from randomizer.movie_skip import TRANSITION  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
-from randomizer.skipflow import SkipTable, effects_only, fork_dependencies  # noqa: E402
+from randomizer.skipflow import SkipTable, effects_only, fork_dependencies, reachable  # noqa: E402
 from tools.build_cutscene_list import KEEP_TALKS  # noqa: E402
 
 PHASE = 1
@@ -170,7 +172,44 @@ def kept_effects(flow, rw) -> list[str]:
     return out
 
 
-def build(nup):
+def keep_talks_guard(raw, flows, targets, callers, table, movies, choices, forks
+                     ) -> list[tuple[str, str, str]]:
+    """Leaves out (in place) every target whose rewrite, as the builder applies it, changes
+    what a KEEP_TALKS entry reaches: a target that calls such an entry as a same-file
+    subflow inlines it and relinks its events, which `check_rewrite` (rule 4) allows for
+    inlined entries. Returns (flow, entry, KEEP_TALKS entry) for each one left out."""
+    out = []
+    for name in sorted(set(targets) & set(KEEP_TALKS)):
+        keep = [e for e in KEEP_TALKS[name] if e in flows[name].entry_points]
+        while True:
+            called = {m for m, c in movies.items() if name in c}
+            _, steps, _ = skip_flow(raw[name], name, targets[name], called, table, callers,
+                                    choices.get(name, {}), forks.get(name, frozenset()))
+            bad = None
+            for step in steps:
+                a, b = EventFlow(step.before), EventFlow(step.after)
+                changed = [k for k in keep
+                           if reachable(a.events, a.entry_points, [a.entry_points[k]])
+                           != reachable(b.events, b.entry_points, [b.entry_points[k]])]
+                if changed:
+                    bad = (step.entry, changed[0])
+                    break
+            if bad is None:
+                break
+            targets[name].discard(bad[0])
+            out.append((name, *bad))
+    for name in [n for n, es in targets.items() if not es]:
+        del targets[name]
+    return out
+
+
+def build(nup, old: dict | None = None):
+    """(targets, timelines, movies, summary); `old` is the current JSON (its hand-edited
+    choices and reviewed_forks are used for the review)."""
+    old = old or {}
+    choices = {n: {int(k): v for k, v in r.get('choices', {}).items()}
+               for n, r in old.get('flows', {}).items()}
+    forks = {n: frozenset(v) for n, v in old.get('reviewed_forks', {}).items()}
     raw, movie_files = load_all(nup)
     flows = {n: EventFlow(d) for n, d in raw.items()}
     callers = entry_callers(flows)
@@ -241,7 +280,8 @@ def build(nup):
         flow = flows[name]
         for e in sorted(targets[name]):
             ext = external_entries(callers, name, e)
-            rw = effects_only(flow, e, table, external=ext)
+            rw = effects_only(flow, e, table, choices.get(name, {}),
+                              forks.get(name, frozenset()), ext)
             deps = fork_dependencies(flow, e)
             res = 'ok' if rw.error is None else f'{rw.error}: {rw.detail[:70]}'
             if rw.error is None and not rw.kept:
@@ -255,6 +295,10 @@ def build(nup):
     for name, e in empty:
         targets[name].discard(e)
     targets = {n: es for n, es in targets.items() if es}
+    guarded = keep_talks_guard(raw, flows, targets, callers, table, movie_targets, choices,
+                               forks)
+    for name, e, keep in guarded:
+        print(f'KEEP_TALKS guard: {name}/{e} left out (its rewrite changes {keep})')
     print('\n== Timelines (method shorten) ==')
     for name in sorted(timelines):
         print(f'{name} | {age(raw[name])}')
@@ -271,7 +315,8 @@ def build(nup):
     for name, entries in GIFT_TALKS.items():
         flow = flows[name]
         for e in entries:
-            rw = effects_only(flow, e, table, external=external_entries(callers, name, e))
+            rw = effects_only(flow, e, table, choices.get(name, {}),
+                              forks.get(name, frozenset()), external_entries(callers, name, e))
             print(f'{name}/{e}: {rw.error or "ok"} {rw.detail}')
             for line in kept_effects(flow, rw):
                 print('    ' + line)
@@ -279,7 +324,7 @@ def build(nup):
     summary = (f'{len(targets)} flows / {n_entries} entries ({stats["ok"]} rewrite cleanly; '
                + ', '.join(f'{k} {v}' for k, v in sorted(stats.items())
                            if k not in ('ok', 'EMPTY (left out)'))
-               + f'; {len(empty)} empty left out'
+               + f'; {len(empty)} empty and {len(guarded)} by the KEEP_TALKS guard left out'
                + f'), {len(timelines)} timelines, {len(movie_targets)} movies')
     return targets, sorted(timelines), movie_targets, summary
 
@@ -310,11 +355,11 @@ def main(argv):
         print(__doc__)
         return 2
     with NupArchive(argv[1]) as nup:
-        targets, timelines, movies, summary = build(nup)
-    old = {}
-    if TARGETS_PATH.exists():
-        with open(TARGETS_PATH, encoding='utf-8') as f:
-            old = json.load(f)
+        old = {}
+        if TARGETS_PATH.exists():
+            with open(TARGETS_PATH, encoding='utf-8') as f:
+                old = json.load(f)
+        targets, timelines, movies, summary = build(nup, old)
     data = merge(old, targets, timelines, movies)
     print('\n' + summary)
     if '--dry-run' in argv:
