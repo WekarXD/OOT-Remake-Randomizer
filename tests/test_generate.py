@@ -120,7 +120,7 @@ class RealTests(unittest.TestCase):
         from randomizer import patch
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.generate.files_with_fallback') as fwf, \
-                    mock.patch('randomizer.cutscenes.build_cutscene_files') as old, \
+                    mock.patch('randomizer.full_skip.build_cutscene_files') as old, \
                     mock.patch('randomizer.generate.patch.write_mod',
                                wraps=patch.write_mod) as wm:
                 r = generate(NUP_PATH, out, Settings(seed='off'))

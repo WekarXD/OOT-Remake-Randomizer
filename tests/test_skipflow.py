@@ -178,6 +178,11 @@ class LinearizeTests(unittest.TestCase):
         self.assertEqual(rw.links, {('entry', 'E'): 0, ('next', 0): 2, ('next', 2): END})
         self.assertEqual(rw.kept, [0, 2])
 
+    def test_choice_out_of_range_is_a_refusal_not_an_exception(self):
+        rw = lin([SW(0, 'C0', [1, 2]), A(1, 'K1'), A(2, 'K2')], choices={0: 5})
+        self.assertEqual(rw.error, 'bad choice')
+        self.assertIn('switch 0', rw.detail)
+
     def test_all_dropped(self):
         rw = lin([A(0, 'D0', 1), A(1, 'D1')])
         self.assertEqual(rw.links, {('entry', 'E'): END})

@@ -16,7 +16,8 @@ from .flow_callers import entry_callers
 from .formats.bfevfl import END, EventFlow
 from .formats.timeline import Timeline
 from .movie_skip import drop_transitions
-from .skipflow import Rewrite, SkipTable, apply_rewrite, check_rewrite, effects_only
+from .skipflow import (Rewrite, SkipTable, apply_rewrite, check_rewrite, effects_only,
+                       inlined_entries)
 from .timeline_skip import shorten
 
 TARGETS_PATH = Path(__file__).resolve().parent / 'data' / 'full_skip.json'
@@ -129,9 +130,17 @@ def skip_flow(data: bytes, name: str, entries, movies, table: SkipTable,
     for entry in sorted(entries):
         flow = EventFlow(data)
         ext = protected_entries(callers, name, flow, entries, entry)
+        # What an earlier sibling already inlined may share its tail with that sibling's
+        # continuation: this entry must not inline it either.
+        for step in steps:
+            ext |= inlined_entries(EventFlow(step.before), step.entry, step.external)
+        ext = ext - {entry}
         rw = effects_only(flow, entry, table, choices, reviewed_forks, ext)
         if rw.error:
             failed.append(f'{name}/{entry}: {rw.error} ({rw.detail})')
+            continue
+        if rw.links.get(('entry', entry)) == END and flow.entry_points[entry] != END:
+            failed.append(f'{name}/{entry}: empty entry (the rewrite keeps nothing)')
             continue
         ends = new_end_cases(flow, rw)
         if ends:
@@ -195,7 +204,7 @@ def build_full_skip_files(game, phase: int = 1, flows_cache=None
     while todo:
         name = todo.pop(0)
         path = FLOW_DIR + name + FLOW_EXT
-        if name in seen:
+        if name in seen or path in files:
             continue
         seen.add(name)
         if name not in raw:

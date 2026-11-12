@@ -6,7 +6,8 @@ from randomizer import full_skip
 from randomizer.cutscenes import FLOW_DIR, FLOW_EXT, build_cutscene_files
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, SUBFLOW_SWITCH, EventFlow
 from randomizer.movie_skip import transitions_to
-from randomizer.skipflow import SkipTable, check_rewrite, reachable
+from randomizer.skipflow import SkipTable, check_rewrite, effects_only, inlined_entries, reachable
+from tests.test_skipflow import A, SUB, FakeFlow, rewritten
 
 NUP_PATH = os.environ.get('OOT_NUP')
 
@@ -33,6 +34,64 @@ class LoadTargetsTest(unittest.TestCase):
         self.assertEqual(t.movies['Dm_HrlCastle_0045'], ['Goto_HyruleCastle'])
         self.assertEqual(full_skip.load_targets(0).flows, {})
         self.assertNotIn('Dm_Kokiri_0045', t.reviewed_forks)
+
+
+class FakeTable:
+    """Keeps actions named K*; nothing collapses, no other-file subflow is dropped."""
+    def keeps(self, actor, action):
+        return action.startswith('K')
+
+    def collapses(self, query):
+        return False
+
+    def drops_subflow(self, flow, entry):
+        return False
+
+
+class SkipFlowSiblingTests(unittest.TestCase):
+    """skip_flow over synthetic flows: EventFlow, apply_rewrite and check_rewrite are
+    stubbed so flows are lists of events keyed by fake "bytes"."""
+
+    def run_skip(self, events, entries, targets):
+        flows, calls = {b'v0': FakeFlow(events, entries, {})}, []
+
+        def parse(data):
+            return flows[data]
+
+        def apply(data, flow, rw):
+            ev, ent = rewritten(flow.events, flow.entry_points, rw)
+            new = b'v%d' % len(flows)
+            flows[new] = FakeFlow(ev, ent, {})
+            return new
+
+        def spy(flow, entry, table, choices, reviewed, external):
+            calls.append((entry, external))
+            return effects_only(flow, entry, table, choices, reviewed, external)
+
+        with mock.patch.object(full_skip, 'EventFlow', parse),                 mock.patch.object(full_skip, 'apply_rewrite', apply),                 mock.patch.object(full_skip, 'check_rewrite', return_value=[]),                 mock.patch.object(full_skip, 'effects_only', spy):
+            out = full_skip.skip_flow(b'v0', 'Dm_X', targets, set(), FakeTable(), {})
+        return out, calls
+
+    def test_second_target_cannot_inline_what_the_first_one_inlined(self):
+        # A and B both call the untargeted C; A inlines it and relinks C's tail to A's own
+        # continuation, so B must not walk through it.
+        events = [A(0, 'K0', 1), SUB(1, '', 'C', 2), A(2, 'K2'),
+                  A(3, 'K3', 4), SUB(4, '', 'C', 5), A(5, 'K5'),
+                  A(6, 'D6', 7), A(7, 'K7'),
+                  A(8, 'K8'), A(9, 'K9')]  # 8 and 9: free slots for private copies
+        (data, steps, report), calls = self.run_skip(events, {'A': 0, 'B': 3, 'C': 6}, ['A', 'B'])
+        self.assertEqual([s.entry for s in steps], ['A', 'B'], report)
+        self.assertNotIn('C', calls[0][1])
+        self.assertIn('C', calls[1][1])
+        self.assertIn('C', steps[1].external)
+        self.assertNotIn('C', steps[0].external)
+
+    def test_entry_that_keeps_nothing_is_refused(self):
+        (data, steps, report), _ = self.run_skip([A(0, 'D0', 1), A(1, 'D1')], {'E': 0}, ['E'])
+        self.assertEqual(steps, [])
+        self.assertEqual(data, b'v0')
+        self.assertTrue(any(line.startswith('fallback to trimming Dm_X/E: empty entry')
+                            for line in report), report)
 
 
 @unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')
@@ -83,12 +142,18 @@ class FullSkipTest(unittest.TestCase):
                                          step.external)
                 self.assertEqual(problems, [], (name, step.entry))
                 before = EventFlow(step.before)
-                self.assertEqual(step.external, full_skip.protected_entries(
-                    callers, name, before, entries, step.entry))
+                base = full_skip.protected_entries(callers, name, before, entries, step.entry)
+                self.assertTrue(base <= step.external, (name, step.entry))
+                self.assertNotIn(step.entry, step.external)
                 # Siblings and (outside Dm_ scenes) untargeted entries are never inlined.
                 self.assertTrue(set(entries) - {step.entry} <= step.external)
                 if not name.startswith('Dm_'):
                     self.assertEqual(step.external, set(before.entry_points) - {step.entry})
+                # ... and later targets never inline what an earlier step inlined.
+                for earlier in steps[:steps.index(step)]:
+                    self.assertTrue(inlined_entries(EventFlow(earlier.before), earlier.entry,
+                                                    earlier.external) - {step.entry}
+                                    <= step.external, (name, step.entry))
                 self.assertEqual(full_skip.new_end_cases(before, step.rw), [], (name, step.entry))
                 seen.add((name, step.entry))
             if path_of(name) in self.files:

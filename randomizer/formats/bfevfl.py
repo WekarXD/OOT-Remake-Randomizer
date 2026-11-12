@@ -71,7 +71,7 @@ from dataclasses import dataclass, field
 
 END = 0xFFFF
 ACTION, SWITCH, FORK, JOIN, SUBFLOW, SUBFLOW_SWITCH, RESULT = range(7)
-ACTION_POINTERS = (0x00, 0x10, 0x18, 0x20)  # pointer fields of an action slot
+ACTION_POINTERS = (0x00, 0x10, 0x18, 0x20)  # pointer fields of an action slot (+0x28 is 0 in all 45644 actions of the game)
 # Item types of a parameter container.
 (ARG, CONTAINER, INT, BOOL, FLOAT, STRING, WSTRING, INT_ARRAY, BOOL_ARRAY,
  FLOAT_ARRAY, STRING_ARRAY, WSTRING_ARRAY, ACTOR_ID) = range(13)

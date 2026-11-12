@@ -144,7 +144,7 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
         if i in choices:
             k = choices[i]
             if not 0 <= k < len(ev.cases):
-                raise ValueError(f'Switch {i} has no case {k}.')
+                raise _Fail('bad choice', f'switch {i} has no case {k}')
         else:
             reach = [reachable_chosen(events, entries, [c], collapsed) for c in ev.cases]
             cand = [k for k, r in enumerate(reach) if i not in r] or list(range(len(reach)))
