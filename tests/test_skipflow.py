@@ -484,6 +484,18 @@ class CheckRewriteTests(unittest.TestCase):
         problems = self.check(events, {'E': 0}, rw)
         self.assertTrue(any(p.startswith('rule 3') for p in problems), problems)
 
+    def test_exclusivity_rule_alone_flags_chained_cases(self):
+        # Branch 0 is a switch with cases 2 and 3; branch 1 is event 3, so the branch-end edge
+        # makes 3 follow 2 in the augmented graph: only the exclusivity rule can object.
+        events = [FK(0, [1, 3], 5), SW(1, 'Q', [2, 3]), A(2, 'K2'), A(3, 'K3'), A(4, 'D'),
+                  JN(5, 6), A(6, 'K6')]
+        rw = Rewrite({('entry', 'E'): 1, ('case', 1, 0): 2, ('case', 1, 1): 3, ('next', 2): 3,
+                      ('next', 3): 6, ('next', 6): END}, [1, 2, 3, 6])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertEqual(len(problems), 1, problems)
+        self.assertIn('exclusive cases', problems[0])
+        self.assertNotIn('does not follow', problems[0])
+
     def test_exclusive_cases_chained_outside_a_fork(self):
         events = [SW(0, 'Q', [1, 2]), A(1, 'K1'), A(2, 'K2')]
         rw = Rewrite({('entry', 'E'): 0, ('case', 0, 0): 1, ('case', 0, 1): 2,
