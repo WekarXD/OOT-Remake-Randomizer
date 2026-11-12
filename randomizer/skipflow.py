@@ -479,6 +479,135 @@ def apply_rewrite(data: bytes, flow: EventFlow, rw: Rewrite) -> bytes:
     return patch_pointers(data, {flow.link_slots[k]: v for k, v in rw.links.items()})
 
 
+# --- Rewrite checker -------------------------------------------------------
+
+FADE_OUT = ('EventEventFadeOut', 'EventLoadingFadeOut')
+FADE_IN = ('EventEventFadeIn',)
+
+
+class _Graph:
+    """Adjacency lists with memoized "reachable in one or more steps"."""
+    def __init__(self, adj):
+        self.adj, self._after = adj, {}
+
+    def after(self, i) -> set[int]:
+        if i not in self._after:
+            seen, todo = set(), list(self.adj.get(i, ()))
+            while todo:
+                j = todo.pop()
+                if j != END and j not in seen:
+                    seen.add(j)
+                    todo += self.adj.get(j, ())
+            self._after[i] = seen
+        return self._after[i]
+
+
+def _old_graphs(flow) -> tuple[_Graph, _Graph]:
+    """(plain, augmented) graphs of the old flow. Plain: `_successors`. Augmented adds an
+    edge from each JOIN to every branch of the fork that uses it, from the end of each
+    branch to the next branch (or the join after the last), from the RESULTs a same-file
+    call can end with to the matching case of its subflow switch, and from where a called
+    entry ends to what follows its SUBFLOW."""
+    events, entries = flow.events, flow.entry_points
+    plain = {i: _successors(events, entries, i) for i in range(len(events))}
+    aug = {i: list(v) for i, v in plain.items()}
+    for ev in events:
+        if ev.kind != FORK:
+            continue
+        if ev.join in aug:
+            aug[ev.join] += ev.forks
+        for k, branch in enumerate(ev.forks):  # where a branch ends, the next one runs
+            seen, todo = set(), [branch]
+            while todo:
+                n = todo.pop()
+                if n == END or n == ev.join or n in seen:
+                    continue
+                seen.add(n)
+                todo += plain[n]
+                if END in plain[n] or ev.join in plain[n]:
+                    aug[n] += ev.forks[k + 1:k + 2] or [ev.join]
+    for i, ev in enumerate(events):
+        if (ev.kind not in (SUBFLOW, SUBFLOW_SWITCH) or ev.sub_flow != ''
+                or ev.sub_entry not in entries):
+            continue
+        for n in reachable(events, entries, [entries[ev.sub_entry]]):
+            e = events[n]
+            if ev.kind == SUBFLOW:
+                ends = END in (e.cases if e.kind in SWITCHES else [e.next])
+                if ends and ev.next not in (None, END):
+                    aug[n].append(ev.next)
+            elif e.kind == RESULT and e.result in ev.case_hashes:
+                aug[n].append(ev.cases[ev.case_hashes.index(e.result)])
+    return _Graph(plain), _Graph(aug)
+
+
+def check_rewrite(old: EventFlow, new_data, entry: str, rw: Rewrite) -> list[str]:
+    """Problems found in the rewritten file (empty means OK); `new_data` is the bytes
+    `apply_rewrite` produced (or an already parsed flow). Each problem starts with its rule:
+
+    1. the kept nodes reachable from `entry` are exactly `rw.kept` (copies count as
+       their originals);
+    2. no FORK or JOIN is reachable from `entry`;
+    3. order: every new link a -> b between kept nodes follows the old flow (b after a,
+       counting a join as leading back to its fork's branches) and does not reverse it
+       (a not after b), unless a is on a cycle there;
+    4. every entry other than `entry` and the inlined ones reaches the same events as
+       before, walking the new flow through its own entry table (so a caller of a
+       rewritten entry is caught);
+    5. a kept fade-out with no later kept fade-in, where the old flow had one after it.
+    """
+    new = new_data if hasattr(new_data, 'events') else EventFlow(new_data)
+    problems: list[str] = []
+    if entry not in new.entry_points:
+        return [f'rule 1: entry {entry} is missing from the new file']
+    orig = lambda i: rw.copies.get(i, i)  # noqa: E731
+    start = new.entry_points[entry]
+    reach = reachable(new.events, new.entry_points, [start])
+    kept_new = {i for i in reach if new.events[i].kind not in (FORK, JOIN)}
+    # 1. kept nodes
+    got, want = {orig(i) for i in kept_new}, {orig(i) for i in rw.kept}
+    if got != want:
+        problems.append(f'rule 1: reachable {sorted(got - want)} not kept, '
+                        f'kept {sorted(want - got)} not reachable')
+    # 2. forks and joins
+    bad = sorted(i for i in reach if new.events[i].kind in (FORK, JOIN))
+    if bad:
+        problems.append(f'rule 2: fork/join reachable: {bad}')
+    # 3. order
+    plain, aug = _old_graphs(old)
+    for a in sorted(kept_new):
+        for b in _successors(new.events, {}, a):
+            if b == END or b not in kept_new:
+                continue
+            a0, b0 = orig(a), orig(b)
+            if b0 not in aug.after(a0):
+                problems.append(f'rule 3: link {a} -> {b} does not follow the old flow')
+            elif a0 in plain.after(b0) and a0 not in plain.after(a0):
+                problems.append(f'rule 3: link {a} -> {b} reverses the old order')
+    # 4. other entries
+    skip = inlined_entries(old, entry)
+    for other, i in old.entry_points.items():
+        if other in skip:
+            continue
+        if other not in new.entry_points:
+            problems.append(f'rule 4: entry {other} is missing from the new file')
+        elif (reachable(new.events, new.entry_points, [new.entry_points[other]])
+              != reachable(old.events, old.entry_points, [i])):
+            problems.append(f'rule 4: entry {other} reaches other events than before')
+    # 5. fades
+    for a in sorted(kept_new):
+        ev = new.events[a]
+        if ev.kind != ACTION or ev.action not in FADE_OUT:
+            continue
+        later = reachable(new.events, new.entry_points, _successors(new.events, {}, a))
+        if any(new.events[j].action in FADE_IN for j in later if new.events[j].kind == ACTION):
+            continue
+        if any(old.events[j].action in FADE_IN for j in aug.after(orig(a))
+               if old.events[j].kind == ACTION):
+            problems.append(f'rule 5: fade-out {a} has no fade-in after it')
+    return problems
+
+
 SPIKE_SCENES: tuple[str, ...] = ('Dm_Kokiri_0155', 'Dm_Kokiri_0060', 'Dm_HrlCastle_0050',
                                  'Dm_MelodyGet_Zelda')
 # Movie spikes (TestMovies2, TestMovies3): the scenes around the movies, the Deku Tree's speech

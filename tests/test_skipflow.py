@@ -9,7 +9,7 @@ from pathlib import Path
 from randomizer.formats.bfevfl import (ACTION, END, FORK, JOIN, SUBFLOW, SWITCH, Event,
                                        EventFlow)
 from randomizer.skipflow import (SPIKE_SCENES, Rewrite, SkipTable, apply_rewrite, build_spike_files,
-                                 effects_only, fork_dependencies, inlined_entries, linearize,
+                                 check_rewrite, effects_only, fork_dependencies, inlined_entries, linearize,
                                  reachable, reachable_chosen)
 
 NUP_PATH = os.environ.get('OOT_NUP')
@@ -421,6 +421,87 @@ class LinearizeTests(unittest.TestCase):
             apply_rewrite(b'', None, Rewrite({}, [], 'loop', 'x'))
 
 
+class CheckRewriteTests(unittest.TestCase):
+    def check(self, events, entries, rw, entry='E'):
+        new, new_entries = rewritten(events, entries, rw)
+        return check_rewrite(FakeFlow(events, entries, {}), FakeFlow(new, new_entries, {}),
+                             entry, rw)
+
+    def ok(self, events, entries=None, **kw):
+        entries = entries or {'E': 0}
+        rw = lin(events, entries, **kw)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(self.check(events, entries, rw), [])
+
+    def test_linearized_output_is_accepted(self):
+        self.ok([A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2')])
+        self.ok([FK(0, [1, 2], 4), A(1, 'K1', 4), A(2, 'D2', 3), A(3, 'K3', 4), JN(4, 5),
+                 A(5, 'K5')])
+        self.ok([SUB(0, '', 'X', 1), A(1, 'K1'), A(2, 'K2')], {'E': 0, 'X': 2})
+        self.ok([HS(0, [3, 4], '', 'X'), A(1, 'K1', 2), RS(2, 101), A(3, 'K3'), A(4, 'K4')],
+                {'E': 0, 'X': 1})
+        self.ok([SW(0, 'Q', [1, 2]), A(1, 'K1'), A(2, 'K2')])
+
+    def test_swapped_links_are_an_order_problem(self):
+        events = [A(0, 'K0', 1), A(1, 'K1', 2), A(2, 'K2')]
+        rw = Rewrite({('entry', 'E'): 2, ('next', 2): 1, ('next', 1): 0, ('next', 0): END},
+                     [2, 1, 0])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 3') for p in problems), problems)
+
+    def test_link_to_an_unrelated_node_is_an_order_problem(self):
+        events = [A(0, 'K0'), A(1, 'K1')]  # 1 does not follow 0
+        rw = Rewrite({('entry', 'E'): 0, ('next', 0): 1, ('next', 1): END}, [0, 1])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 3') for p in problems), problems)
+
+    def test_reachable_join_is_reported(self):
+        events = [FK(0, [1, 2], 3), A(1, 'K1', 3), A(2, 'K2', 3), JN(3, 4), A(4, 'K4')]
+        rw = Rewrite({('entry', 'E'): 1}, [1, 4])  # 1 still goes to the join
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 2') for p in problems), problems)
+
+    def test_kept_set_mismatch(self):
+        events = [A(0, 'K0', 1), A(1, 'K1')]
+        rw = Rewrite({('entry', 'E'): 0, ('next', 0): 1, ('next', 1): END}, [0])
+        self.assertTrue(any(p.startswith('rule 1') for p in self.check(events, {'E': 0}, rw)))
+
+    def test_caller_of_the_targeted_entry_is_reported(self):
+        # F (untargeted) calls the targeted entry E by name, so it reaches the rewritten events.
+        events = [A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2'), SUB(3, '', 'E')]
+        entries = {'E': 0, 'F': 3}
+        rw = lin(events, entries)
+        self.assertIsNone(rw.error, rw.detail)
+        problems = self.check(events, entries, rw)
+        self.assertTrue(any(p.startswith('rule 4') and 'F' in p for p in problems), problems)
+
+    def test_untouched_other_entry_is_fine(self):
+        events = [A(0, 'K0', 1), A(1, 'D1', 2), A(2, 'K2'), A(3, 'K3', 4), A(4, 'K4')]
+        entries = {'E': 0, 'F': 3}
+        rw = lin(events, entries)
+        self.assertEqual(self.check(events, entries, rw), [])
+
+    def test_copies_stand_in_for_their_originals(self):
+        events = [A(0, 'K', 1), A(1, 'K', 2), A(2, 'D', 3), A(3, 'K'), A(4, 'D')]
+        entries = {'E': 0, 'F': 1}
+        rw = lin(events, entries, protected=frozenset({1, 2, 3}))
+        self.assertEqual(rw.copies, {4: 1})
+        self.assertEqual(self.check(events, entries, rw), [])
+
+    def test_fade_out_without_a_later_fade_in(self):
+        events = [A(0, 'EventEventFadeOut', 1), A(1, 'D1', 2), A(2, 'EventEventFadeIn')]
+        rw = Rewrite({('entry', 'E'): 0, ('next', 0): END}, [0])
+        problems = self.check(events, {'E': 0}, rw)
+        self.assertTrue(any(p.startswith('rule 5') for p in problems), problems)
+        rw = Rewrite({('entry', 'E'): 0, ('next', 0): 2, ('next', 2): END}, [0, 2])
+        self.assertEqual(self.check(events, {'E': 0}, rw), [])
+
+    def test_fade_out_ending_the_old_flow_too_is_fine(self):
+        events = [A(0, 'EventLoadingFadeOut', 1), A(1, 'D1')]
+        rw = Rewrite({('entry', 'E'): 0, ('next', 0): END}, [0])
+        self.assertEqual(self.check(events, {'E': 0}, rw), [])
+
+
 class ReachableTests(unittest.TestCase):
     def test_follows_everything(self):
         ev = [FK(0, [1], 2), SUB(1, '', 'X', 2), JN(2, 3), SW(3, 'Q', [4, 5]), A(4, 'a'),
@@ -697,6 +778,32 @@ class PrivateCopyRealDataTests(unittest.TestCase):
                                          (flow.events[src].actor, flow.events[src].action))
                         self.assertEqual(new.action_params(dst), flow.action_params(src))
         self.assertGreaterEqual(rewrites, 100)
+
+    def test_checker_accepts_rewrites_but_for_callers_of_the_targeted_entry(self):
+        checked = 0
+        for name, (data, entries) in self.flows.items():
+            flow = EventFlow(data)
+            for entry in (list(flow.entry_points) if entries == '*' else entries):
+                rw = effects_only(flow, entry, self.table)
+                if rw.error:
+                    continue
+                checked += 1
+                problems = check_rewrite(flow, apply_rewrite(data, flow, rw), entry, rw)
+                with self.subTest(name=name, entry=entry):
+                    self.assertEqual([p for p in problems if not p.startswith('rule 4')], [])
+        self.assertGreaterEqual(checked, 100)
+
+    def test_checker_reports_an_untargeted_caller_of_the_targeted_entry(self):
+        # Npc_Hylia_Zelda_Child: the untargeted entry Talk calls the targeted Intro by name.
+        data, _ = self.flows['Npc_Hylia_Zelda_Child']
+        flow = EventFlow(data)
+        calls = [ev for ev in flow.events if ev.kind in (SUBFLOW, 5) and ev.sub_flow == ''
+                 and ev.sub_entry == 'Intro']
+        self.assertTrue(calls)
+        rw = effects_only(flow, 'Intro', self.table)
+        self.assertIsNone(rw.error, rw.detail)
+        problems = check_rewrite(flow, apply_rewrite(data, flow, rw), 'Intro', rw)
+        self.assertTrue(any(p.startswith('rule 4') for p in problems), problems)
 
     def test_apply_rewrite_writes_copies_before_links(self):
         data, _ = self.flows['Get_StoneOfFire']
