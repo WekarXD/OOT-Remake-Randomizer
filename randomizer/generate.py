@@ -10,9 +10,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import locations, patch, spoiler
-from .cutscenes import build_cutscene_files
 from .formats.bfevfl import BfevflError
+from .formats.timeline import TimelineError
 from .fill import FillError, Settings, _eligible, place
+from .full_skip import files_with_fallback
 from .game import GameData
 from . import wrappers
 from .logic.world import World, load_vanilla_settings
@@ -90,10 +91,12 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
                 extras = None
+                not_skipped = None
                 if settings.skip_cutscenes:
                     try:
-                        extras = build_cutscene_files(game)
-                    except (ValueError, BfevflError) as e:
+                        extras, report = files_with_fallback(game, 1)
+                        not_skipped = _not_skipped(report)
+                    except (ValueError, BfevflError, TimelineError) as e:
                         raise GenerationError(
                             f'Could not prepare the cutscenes: {e}') from e
                 try:
@@ -103,7 +106,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                         f'Could not prepare the item wrappers: {e}') from e
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
-                                         SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map)
+                                         SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped)
                     # '\n' line endings everywhere, so the spoiler log is the same
                     # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
@@ -124,6 +127,17 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
         shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
     return GenerateResult(settings.seed, str(mod_dir), txt_path, json_path, changed)
+
+
+_APPLIED = ('applied ', 'unchanged ', 'full skip built in ')
+
+
+def _not_skipped(report: list[str]) -> list[str]:
+    """The report lines that tell what the full skip did not do (fallbacks, untrimmed
+    files, failed movies); the successful steps and the timing are left out."""
+    return [line for line in report
+            if not line.startswith(_APPLIED)
+            and not (line.startswith('movie ') and ' dropped from ' in line)]
 
 
 def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:

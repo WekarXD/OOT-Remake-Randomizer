@@ -23,7 +23,7 @@ def _zone(banc: str) -> str:
 
 
 def build(settings, placement, chests, loc_map, game_version,
-          skulltulas=(), gs_map=None) -> dict:
+          skulltulas=(), gs_map=None, cutscenes_not_skipped=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -88,6 +88,8 @@ def build(settings, placement, chests, loc_map, game_version,
     if settings.tokensanity != 'off':
         result['settings']['tokensanity'] = settings.tokensanity
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
+    if cutscenes_not_skipped is not None and settings.skip_cutscenes:
+        result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)
     return result
 
 
@@ -135,4 +137,7 @@ def to_text(d: dict) -> str:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:
             lines.append(f'  {r["location"]} ({r["zone"]}): {r["label"]}')
+    if 'cutscenes_not_skipped' in d:
+        lines += ['', 'Cutscenes not skipped']
+        lines += [f'  {line}' for line in d['cutscenes_not_skipped']] or ['  none']
     return '\n'.join(lines) + '\n'

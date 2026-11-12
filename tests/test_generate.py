@@ -106,14 +106,57 @@ class RealTests(unittest.TestCase):
 
     def test_cutscene_errors_wrapped(self):
         from randomizer.formats.bfevfl import BfevflError
-        for exc in (ValueError('grows'), BfevflError('broken')):
+        from randomizer.formats.timeline import TimelineError
+        for exc in (ValueError('grows'), BfevflError('broken'), TimelineError('bad')):
             with tempfile.TemporaryDirectory() as out:
-                with mock.patch('randomizer.generate.build_cutscene_files',
+                with mock.patch('randomizer.generate.files_with_fallback',
                                 side_effect=exc):
                     with self.assertRaises(GenerationError) as cm:
                         generate(NUP_PATH, out, Settings(seed='cutscene', skip_cutscenes=True))
                 self.assertIn('Could not prepare the cutscenes', str(cm.exception))
                 self.assertEqual(os.listdir(out), [])
+
+    def test_option_off_never_touches_cutscene_code(self):
+        from randomizer import patch
+        with tempfile.TemporaryDirectory() as out:
+            with mock.patch('randomizer.generate.files_with_fallback') as fwf, \
+                    mock.patch('randomizer.cutscenes.build_cutscene_files') as old, \
+                    mock.patch('randomizer.generate.patch.write_mod',
+                               wraps=patch.write_mod) as wm:
+                r = generate(NUP_PATH, out, Settings(seed='off'))
+            fwf.assert_not_called()
+            old.assert_not_called()
+            self.assertIsNone(wm.call_args.args[4])  # no extra files: as before
+            text = Path(r.spoiler_txt).read_text(encoding='utf-8')
+            self.assertNotIn('Cutscenes not skipped', text)
+            data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
+            self.assertNotIn('cutscenes_not_skipped', data)
+            self.assertFalse(any(f.startswith('Event/') for f in r.changed_files))
+
+    def test_full_skip_option_on(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            on = generate(NUP_PATH, a, Settings(seed='fs', skip_cutscenes=True))
+            off = generate(NUP_PATH, b, Settings(seed='fs'))
+            self.assertIn('Event/EventFlow/OpeningEvent.bfevfl.zs', on.changed_files)
+            text = Path(on.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('\nCutscenes not skipped\n', text)
+            self.assertNotIn('\r', text)
+            d_on = json.loads(Path(on.spoiler_json).read_text(encoding='utf-8'))
+            d_off = json.loads(Path(off.spoiler_json).read_text(encoding='utf-8'))
+            # Same seed: same placement whether or not cutscenes are skipped.
+            self.assertEqual(d_on['chests'], d_off['chests'])
+            self.assertEqual(d_on['key_items'], d_off['key_items'])
+            # Only the actual not-skipped findings are listed, not the applied steps.
+            self.assertFalse([l for l in d_on['cutscenes_not_skipped']
+                              if l.startswith(('applied ', 'unchanged ', 'full skip built'))])
+
+    def test_full_skip_no_spoiler(self):
+        with tempfile.TemporaryDirectory() as out:
+            r = generate(NUP_PATH, out, Settings(seed='fs2', skip_cutscenes=True,
+                                                 spoiler=False))
+            self.assertIn('Event/EventFlow/OpeningEvent.bfevfl.zs', r.changed_files)
+            self.assertIsNone(r.spoiler_txt)
+            self.assertFalse((Path(r.mod_dir) / 'spoiler.txt').exists())
 
     def test_vanilla_with_skip_cutscenes(self):
         with tempfile.TemporaryDirectory() as out:
@@ -121,7 +164,7 @@ class RealTests(unittest.TestCase):
                                                  spoiler=False, skip_cutscenes=True))
             self.assertIsNotNone(r.mod_dir)
             self.assertTrue(r.changed_files)
-            self.assertFalse(any('Banc' in f for f in r.changed_files))
+            self.assertFalse(any(f.startswith('Banc/') for f in r.changed_files))
             self.assertNotIn(RSTB_PATH, r.changed_files)
 
     def test_spoiler_excluded_reasons(self):
@@ -354,6 +397,15 @@ class SpoilerTextTest(unittest.TestCase):
         text = spoiler.to_text(self._data('dungeons'))
         self.assertIn('Gold Skulltula Tokens (Tokensanity): Dungeons Only', text)
         self.assertIn('\nSkulltulas\n  GS House (Kokiri): Gold Skulltula Token', text)
+
+    def test_to_text_cutscenes_not_skipped(self):
+        d = self._data('off')
+        d['cutscenes_not_skipped'] = ['FALLBACK Foo/Bar: reason']
+        text = spoiler.to_text(d)
+        self.assertIn('\nCutscenes not skipped\n  FALLBACK Foo/Bar: reason\n', text)
+        d['cutscenes_not_skipped'] = []
+        self.assertIn('\nCutscenes not skipped\n  none\n', spoiler.to_text(d))
+        self.assertNotIn('Cutscenes not skipped', spoiler.to_text(self._data('off')))
 
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))
