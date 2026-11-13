@@ -14,6 +14,7 @@ Pending work, most important first within each section.
 
 ## To test in game
 
+- Batch 20 (guide `docs/test-batch-20.md`, mod `TestBatch20`): Impa and Saria swap songs (lesson `MelodyType` plus grant `Item_Melody_*`). Does a song scene still play when you already own its song? It gates "Shuffle Songs" (Song Locations, then Anywhere, then Dungeon Rewards).
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
