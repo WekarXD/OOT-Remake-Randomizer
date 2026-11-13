@@ -204,10 +204,10 @@
  },
  "12161709650443144121": {
   "location": "Dodongos Cavern Bomb Bag Chest",
-  "needs_event_patch": true,
-  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small in DodongoCavern (39.0, 115.7, -23.0); fixed: bombs cannot be thrown outside their chest (TestBatch5)",
+  "needs_event_patch": false,
+  "note": "auto: Obj_TBox_A_02 Item_BombBag_Small in DodongoCavern (39.0, 115.7, -23.0); freed by batch 19: bombs need the Goron's Bracelet, wherever the bag comes from",
   "status": "auto",
-  "strip_event": false
+  "strip_event": true
  },
  "12253889300578348965": {
   "location": null,

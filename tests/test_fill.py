@@ -72,6 +72,14 @@ class FillTest(unittest.TestCase):
         moved = sum(self._place(seed=str(i)) != self.orig for i in range(5))
         self.assertEqual(moved, 5)
 
+    def test_bomb_bag_can_leave_dodongo(self):
+        # Batch 19: the Bomb Bag works from any chest once the Goron's
+        # Bracelet is owned, so it is shuffled like the other key items.
+        dodongo = 12161709650443144121
+        homes = {h for seed in (f'B{i}' for i in range(1, 21))
+                 for h, d in self._place(seed=seed).items() if d == 'Item_BombBag_Small'}
+        self.assertTrue(homes - {dodongo})
+
     def test_beatable_many(self):
         start = time.perf_counter()
         for i in range(200):

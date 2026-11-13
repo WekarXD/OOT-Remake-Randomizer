@@ -43,6 +43,7 @@ STRIP_EVENT_HASHES: set[int] = {
     1941083939696166170,   # Ice Arrows
     17657623307936361670,  # Golden Gauntlets
     18059711820131847165,  # Longshot
+    12161709650443144121,  # Bomb Bag (batch 19: bombs need the Goron's Bracelet)
 }
 EVENT_PATCH_HASHES: set[int] = {
     6859289214373847284,   # Iron Boots (SageOfWater_MelodyGet_Water)
@@ -51,9 +52,6 @@ EVENT_PATCH_HASHES: set[int] = {
     14535080241831873137,  # Hover Boots
     16041366920820397198,  # Hookshot (Dampe race)
     5527401621172639818,   # Boomerang (Ruto)
-    # Bomb Bag: outside its chest the bombs cannot be thrown
-    # (TestBatch5, not even with its original event). Fixed for now.
-    12161709650443144121,
 }
 
 
