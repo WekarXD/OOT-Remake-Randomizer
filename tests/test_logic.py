@@ -203,3 +203,43 @@ class ReachabilityTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class BombBagTest(unittest.TestCase):
+    # Batch 19: in the remake, bombs cannot be thrown until the Goron's
+    # Bracelet is owned, wherever the Bomb Bag comes from.
+    def _compiler(self):
+        return rules.Compiler(world.load_helpers(), world.load_vanilla_settings())
+
+    def test_bombs_need_bracelet(self):
+        compiler = self._compiler()
+        # has_bombchus also needs can_refill_bombchus; it reaches the bag
+        # through Bomb_Bag, so checking that name covers it.
+        for text in ('Bombs', 'Bomb_Bag'):
+            with self.subTest(rule=text):
+                fn = compiler.compile(text)
+                s = State()
+                s.collect('Bomb Bag')
+                self.assertFalse(fn(s, 'child'))
+                s.collect('Progressive Strength Upgrade')
+                self.assertTrue(fn(s, 'child'))
+
+    def test_no_count_check_on_bomb_bag(self):
+        texts = list(ootr_data.load_helpers().values())
+        for regions in ootr_data.load_world_files().values():
+            for region in regions:
+                for kind in ('events', 'locations', 'exits'):
+                    texts.extend((region.get(kind) or {}).values())
+        for text in texts:
+            self.assertNotIn('(Bomb_Bag,', text.replace(' ', ''))
+
+    def test_early_bag_needs_bracelet(self):
+        # Bag in Mido's house: a bomb grotto stays out of reach until
+        # Darunia hands over the bracelet.
+        w = _vanilla_world()
+        fixed = w.vanilla_fixed()
+        fixed['KF Midos Top Left Chest'] = 'Item_BombBag_Small'
+        fixed['Dodongos Cavern Bomb Bag Chest'] = 'Rupees (5)'
+        self.assertIn('HF Southeast Grotto Chest', w.reachable_locations(fixed))
+        fixed['GC Darunias Joy'] = 'Rupees (5)'
+        self.assertNotIn('HF Southeast Grotto Chest', w.reachable_locations(fixed))

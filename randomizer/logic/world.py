@@ -34,6 +34,9 @@ unreachable that is reachable, never the reverse):
   Temple asks for 5 keys before the Longshot and there are only 4; the Spirit
   Temple asks for 3 as a child for the Silver Gauntlets and there are 2),
   although the real game is. It is stricter, so it is left as is.
+- Bombs (batch 19): in the remake they cannot be thrown until the Goron's
+  Bracelet is owned, so `REMAKE_HELPERS` turns `Bomb_Bag` into "Bomb Bag and
+  strength". It also gates Bombchus, which the rules tie to the Bomb Bag.
 - Items with no effect in any rule are not collected during the search (they
   do not change the result); `reachable_locations` evaluates all the
   locations at the end with the fixed-point state.
@@ -70,6 +73,20 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
 }
 
 
+# Remake helpers that replace OoTR's, applied over LogicHelpers.json. Helpers
+# take precedence over item names, so `Bomb_Bag` here gates every rule that
+# asks for the bag (`Bombs`, `has_bombchus`, the World files...). The item is
+# named as a string so the helper does not expand itself.
+REMAKE_HELPERS: dict[str, str] = {
+    'Bomb_Bag': "'Bomb Bag' and Progressive_Strength_Upgrade",
+}
+
+
+def load_helpers() -> dict[str, str]:
+    """OoTR's helpers with `REMAKE_HELPERS` applied over them."""
+    return {**ootr_data.load_helpers(), **REMAKE_HELPERS}
+
+
 def _remake_rule(region: str, kind: str, spot: str, rule: str) -> str:
     override = REMAKE_RULES.get((region, kind, spot))
     return rule if override is None else override.replace('{orig}', rule)
@@ -95,7 +112,7 @@ class _Region:
 class World:
     def __init__(self, settings: dict) -> None:
         self.settings = settings
-        compiler = Compiler(ootr_data.load_helpers(), settings)
+        compiler = Compiler(load_helpers(), settings)
         self.regions: dict[str, _Region] = {}
         for regions in ootr_data.load_world_files().values():
             for data in regions:
