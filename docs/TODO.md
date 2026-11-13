@@ -15,6 +15,8 @@ Pending work, most important first within each section.
 
 ## To test in game
 
+- Batch 19 (guide `docs/test-batch-19.md`, mod `TestBatch19`): do OoTR's missing item types (song, Din's Fire, magic, wallet, scale, bottle) work from a chest, and can the Bomb Bag throw bombs once the Goron's Bracelet is owned? It decides the order of the "OoTR items" projects.
+
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
 - Adult batch of the full skip: `AllSage` and `Get_Epona`, whose old-trim output changed when the parser began to show the case slots of subflow switches (kind 5). `Goto_HyruleCastle` and `SubEvent_GetEponaSong` changed the same way and are in the childhood guide.
