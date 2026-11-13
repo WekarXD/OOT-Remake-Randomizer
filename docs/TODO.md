@@ -14,6 +14,7 @@ Pending work, most important first within each section.
 
 ## To test in game
 
+- Batch 21 (guide `docs/test-batch-21.md`, mod `TestBatch21`, built with `tools/make_start_batch.py`): test teleport spike. On leaving Link's house you get the Fairy Ocarina and are teleported to Hyrule Field. It gates batch 20, which will be rebuilt to start right before Impa.
 - Batch 20 (guide `docs/test-batch-20.md`, mod `TestBatch20`): Impa and Saria swap songs (lesson `MelodyType` plus grant `Item_Melody_*`). Does a song scene still play when you already own its song? It gates "Shuffle Songs" (Song Locations, then Anywhere, then Dungeon Rewards).
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
