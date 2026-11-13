@@ -98,7 +98,7 @@ FORCED_TALKS = {
     'Npc_Kokiri_011_Child': [             # stops you in front of the shop
         'KokiriForest_Kokiri_011_StopInFrontOfShop_00'],
     # Kokiri Forest and Hyrule Field: Navi's notice about soft soil
-    'Field_PlantMagicBean': ['CheckSoil', 'CheckSoil_01'],
+    'Field_PlantMagicBean': ['CheckSoil', 'CheckSoil_01', 'CheckSoil_ZoraRiver'],
     # Market, Castle and Kakariko: guards who stop you (CanbeStopped)
     'NpcCommon': ['Sub_CanbeStopped_Npc_01', 'Sub_CanbeStopped_Npc_02'],
     # Market: the house owner on entering
@@ -123,6 +123,14 @@ FORCED_TALKS = {
         'InterestTalk_Zelda_Child_ChangeTheTopic'],
     # Kakariko: Navi's notices about the Gold Skulltulas
     'GatheringTokenGold': ['NaviGuide_GatheringTokenGold', 'NaviGuide_TokenGold_Over10'],
+    # Adult (2026-11-13, find_forced_talks.py --age adult): adult Mido blocks the
+    # Sacred Forest Meadow; the carpenter before Gerudo Fortress; the Gerudo before the
+    # Haunted Wasteland (Navi after the Water Temple level change is in SageOfWater, "*").
+    'Npc_Kokiri_Mido_Adult': [
+        'SageOfForest_Blocker_Talk', 'SageOfForest_Blocker_Talk_Common',
+        'SageOfForest_Blocker_Talk_OcarinaPlaying'],
+    'Npc_Hylia_012_Adult': ['GerudoValley_StopInFrontOfGerudoFortress'],
+    'Npc_Gerudo_006': ['GerudoFortress_StopInFrontOfHountedWasteland'],
 }
 
 # Round 2 (2026-11-09): conversations that are never trimmed even if they are in

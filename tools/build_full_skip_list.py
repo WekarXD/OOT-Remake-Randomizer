@@ -41,6 +41,11 @@ from randomizer.skipflow import SkipTable, effects_only, fork_dependencies, reac
 from tools.build_cutscene_list import KEEP_TALKS  # noqa: E402
 
 PHASE = 1
+ADULT_PHASE = 2  # the rest of the game (spec §6 step 3; plan 2026-11-13-full-skip-adult)
+# Spec §6 step 4, a later phase 3: Ganon's Castle and the ending.
+LATER_ZONES = frozenset({'FinalBattle', 'GanonCastle', 'InsideGanonCastle', 'Ending'})
+LATER_FLOWS = ('Defeat_Ganon', 'EscapeFromCrumblingGanonCastle')
+LATER_MOVIES = ('Dm_FinalBattle_0002',)
 # System flows, credits and title: not story scenes (as in build_cutscene_list).
 EXCLUDED_PREFIXES = ('Dm_SY_', 'Dm_StaffCredit_', 'Dm_Title_')
 SUBTIMELINE_SUFFIXES = ('_Effect', '_Env')
@@ -139,6 +144,26 @@ BOSS_ENTRIES = frozenset({
     ('Get_StoneOfWater', 'StoneOfWater_DestroyBoss'),
 })
 BOSS_TIMELINE_MARKS = ('_BossIn', '_BossOut')
+# Dm_* scenes of phase 2 left out (from NOT_CHILD_EXTRA; the others there were only
+# left out of the childhood because they are adult or both ages).
+NOT_SKIPPED = ('Dm_DeathMtTrail_0005', 'Dm_Goron_0045', 'Dm_ZoraFountain_0000', 'Dm_Zora_0020')
+# Phase 2 entries naming a boss: the user keeps boss intros and defeats (BOSS_ENTRIES
+# only lists the childhood ones).
+ADULT_BOSS = re.compile(r'Boss|PhantomGanon|Volvagia|Valvagia|Morpha|BongoBongo|Twinrova|KotakeKoume')
+# Phase 2 forced conversations and gifts (tools/find_forced_talks.py --age adult,
+# reviewed 2026-11-13; puzzle cameras, minigames, the Poe guide and the running man left
+# out).
+ADULT_TALKS: dict[str, list[str]] = {
+    'Npc_Kokiri_Mido_Adult': [            # blocks the Sacred Forest Meadow (blocker AI)
+        'SageOfForest_Blocker_Talk', 'SageOfForest_Blocker_Talk_Common',
+        'SageOfForest_Blocker_Talk_OcarinaPlaying'],
+    'Npc_Hylia_012_Adult': ['GerudoValley_StopInFrontOfGerudoFortress'],
+    'Npc_Gerudo_006': ['GerudoFortress_StopInFrontOfHountedWasteland'],
+    'SageOfWater': ['WaterTemple_WaterLevelChange_Navi'],
+    'Field_PlantMagicBean': ['CheckSoil_ZoraRiver'],
+    # The windmill man teaches the Song of Storms (starts Dm_MelodyGet_Storm).
+    'Npc_Hylia_009_Adult': ['PlayStormSong_fromBancLogic_Adult'],
+}
 
 # Entries left out of phase 1 by name (review of 2026-11-12), unless listed in GIFT_TALKS or FORCED_TALKS_ALLOW:
 # (reason, test on (flow, entry)). Checked after KEEP_TALKS.
@@ -163,6 +188,7 @@ FORCED_TALKS_ALLOW = frozenset({
     ('Npc_Kokiri_007_Child', 'Get_StoneOfForest_IsCompleted_Exp_Talk'),  # it steps aside
     ('DoorOfTime', 'Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk'),  # brief's list
     ('Get_StoneOfWater', 'Step10_Npc_Zora_Ruto_Child_001_Talk'),
+    ('Npc_Kokiri_Mido_Adult', 'SageOfForest_Blocker_Talk'),  # adult Mido blocks the way
 })
 
 # Targets removed after reviewing their kept effects: (flow, entry) -> reason.
@@ -271,36 +297,44 @@ def build(nup, old: dict | None = None):
 
     targets: dict[str, set[str]] = {}
     sources: dict[tuple[str, str], str] = {}
+    phase_of: dict[tuple[str, str], int] = {}  # the first phase that targets it wins
 
-    def add(name, entry, source):
+    def add(name, entry, source, phase=PHASE):
         if name not in flows or entry not in flows[name].entry_points:
             raise ValueError(f'{source}: {name}/{entry} does not exist')
         targets.setdefault(name, set()).add(entry)
         sources.setdefault((name, entry), source)
+        phase_of.setdefault((name, entry), phase)
 
-    timelines: set[str] = set()
-    movies = sorted(set(MOVIES) | {m for m in movie_files if m.startswith(MOVIE_PATTERN)})
+    timelines: dict[str, int] = {}
+    child_movies = set(MOVIES) | {m for m in movie_files if m.startswith(MOVIE_PATTERN)}
+    movie_phase = {m: PHASE if m in child_movies else ADULT_PHASE for m in movie_files
+                   if m in child_movies or not (m.startswith(EXCLUDED_PREFIXES)
+                                                or m in LATER_MOVIES)}
+    movies = sorted(movie_phase)
     review_rows = []  # neither/both scenes of the childhood zones
     for name in sorted(raw):
         if not name.startswith('Dm_') or name.startswith(EXCLUDED_PREFIXES):
             continue
         data = raw[name]
         tl = is_timeline(data)
-        if tl and (name.endswith(SUBTIMELINE_SUFFIXES) or name in movie_files
-                   or any(m in name for m in BOSS_TIMELINE_MARKS)):
+        if tl and (name.endswith(SUBTIMELINE_SUFFIXES) or name in movie_files):
+            continue
+        if any(m in name for m in BOSS_TIMELINE_MARKS):
             continue
         a = age(data)
-        if a in ('none', 'both'):
-            if zone(name) in CHILD_ZONES or name in CHILD_EXTRA:
-                review_rows.append((name, 'timeline' if tl else 'flow', a))
-            if name not in CHILD_EXTRA:
-                continue
-        elif a != 'child':
+        if a in ('none', 'both') and (zone(name) in CHILD_ZONES or name in CHILD_EXTRA):
+            review_rows.append((name, 'timeline' if tl else 'flow', a))
+        if a == 'child' or name in CHILD_EXTRA:
+            phase, source = PHASE, ('age' if a == 'child' else 'CHILD_EXTRA')
+        elif zone(name) in LATER_ZONES or name in NOT_SKIPPED:
             continue
+        else:
+            phase, source = ADULT_PHASE, f'rest ({a})'
         if tl:
-            timelines.add(name)
+            timelines[name] = phase
         elif 'EntryPoint0' in flows[name].entry_points:
-            add(name, 'EntryPoint0', 'age' if a == 'child' else 'CHILD_EXTRA')
+            add(name, 'EntryPoint0', source, phase)
         else:
             print(f'NOTE {name}: no EntryPoint0, not targeted')
     for name in CUTSCENE_FLOWS:
@@ -315,13 +349,33 @@ def build(nup, old: dict | None = None):
     for name, entries in FORCED_TALKS_EXTRA.items():
         for e in entries:
             add(name, e, 'FORCED_TALKS_EXTRA')
+    # Phase 2: the other story flows, the rest of the Door of Time and the adult talks.
+    adult = set()
+    for name, spec in sorted(policy.items()):
+        if (name.startswith('Dm_') or name in CUTSCENE_FLOWS or name in LATER_FLOWS
+                or name not in flows):
+            continue
+        for e in (sorted(flows[name].entry_points) if spec == '*' else spec):
+            if name == 'DoorOfTime' and e in DOOR_OF_TIME_CHILD:
+                continue
+            add(name, e, 'cutscenes.json (phase 2)', ADULT_PHASE)
+            adult.add((name, e))
+    for name, entries in ADULT_TALKS.items():
+        for e in entries:
+            add(name, e, 'ADULT_TALKS', ADULT_PHASE)
+    print('== Phase 2 boss entries left out (kept by the user) ==')
+    for name, e in sorted(adult):
+        if ADULT_BOSS.search(e) and phase_of[(name, e)] == ADULT_PHASE:
+            print(f'    {name}/{e}')
+            targets[name].discard(e)
     for name, entries in KEEP_TALKS.items():
         for e in entries:
             targets.get(name, set()).discard(e)
     for (name, e) in REVIEWED_OUT:
         targets.get(name, set()).discard(e)
     gifts = ({(n, e) for n, es in GIFT_TALKS.items() for e in es} | FORCED_TALKS_ALLOW
-             | {(n, e) for n, es in FORCED_TALKS_EXTRA.items() for e in es})
+             | {(n, e) for n, es in FORCED_TALKS_EXTRA.items() for e in es}
+             | {(n, e) for n, es in ADULT_TALKS.items() for e in es})
     print('== Entries left out by name ==')
     for reason, test in EXCLUDED_ENTRIES:
         out = sorted((n, e) for n, es in targets.items() for e in es
@@ -370,10 +424,10 @@ def build(nup, old: dict | None = None):
         print(f'KEEP_TALKS guard: {name}/{e} left out (its rewrite changes {keep})')
     print('\n== Timelines (method shorten) ==')
     for name in sorted(timelines):
-        print(f'{name} | {age(raw[name])}')
+        print(f'{name} | {age(raw[name])} | phase {timelines[name]}')
     print('\n== Movies (method drop transition) ==')
     for m in movies:
-        print(f'{m} | callers {mcallers[m] or "NONE (not targeted)"}')
+        print(f'{m} | phase {movie_phase[m]} | callers {mcallers[m] or "NONE (not targeted)"}')
     print('\n== Neither/both Dm_ scenes of the childhood zones ==')
     tcallers = transition_callers(flows, [n for n, _, _ in review_rows])
     for name, kind, a in review_rows:
@@ -399,25 +453,42 @@ def build(nup, old: dict | None = None):
                + ', '.join(f'{k} {v}' for k, v in sorted(stats.items()) if k != 'ok')
                + f'; {len(empty)} empty and {len(guarded)} by the KEEP_TALKS guard left out'
                + f'), {len(timelines)} timelines, {len(movie_targets)} movies')
-    return targets, sorted(timelines), movie_targets, summary
+    phases = {'flows': phase_of, 'timelines': timelines,
+              'movies': {m: movie_phase[m] for m in movie_targets}}
+    return targets, sorted(timelines), movie_targets, summary, phases
 
 
-def merge(old: dict, targets, timelines, movies) -> dict:
-    """The new JSON, keeping hand-edited `choices` and `reviewed_forks` (and the phase of
-    targets that already had one)."""
+def merge(old: dict, targets, timelines, movies, phases=None) -> dict:
+    """The new JSON, keeping hand-edited `choices` and `reviewed_forks`. An entry, timeline
+    or movie the old JSON had keeps its phase; a new one takes the phase `build` gave it
+    (`phases`, default PHASE). A flow record takes its old phase, else the lowest of its
+    entries; entries of another phase go in `entry_phases`."""
+    phases = phases or {}
+    new_entry = phases.get('flows', {})
     old_flows = old.get('flows', {})
     flows = {}
     for name in sorted(targets):
         prev = old_flows.get(name, {})
-        rec = {'phase': prev.get('phase', PHASE), 'entries': sorted(targets[name])}
+        prev_phase = prev.get('phase', PHASE)
+        prev_entries = set(prev.get('entries', ()))
+        prev_later = prev.get('entry_phases', {})
+        ep = {e: (prev_later.get(e, prev_phase) if e in prev_entries
+                  else new_entry.get((name, e), PHASE)) for e in targets[name]}
+        phase = prev_phase if prev else min(ep.values())
+        rec = {'phase': phase, 'entries': sorted(targets[name])}
+        later = {e: p for e, p in sorted(ep.items()) if p != phase}
+        if later:
+            rec['entry_phases'] = later
         if prev.get('choices'):
             rec['choices'] = prev['choices']
         flows[name] = rec
     old_tl, old_mv = old.get('timelines', {}), old.get('movies', {})
+    new_tl, new_mv = phases.get('timelines', {}), phases.get('movies', {})
     return {
         'flows': flows,
-        'timelines': {n: old_tl.get(n, PHASE) for n in timelines},
-        'movies': {m: {'phase': old_mv.get(m, {}).get('phase', PHASE), 'callers': c}
+        'timelines': {n: old_tl.get(n, new_tl.get(n, PHASE)) for n in timelines},
+        'movies': {m: {'phase': old_mv.get(m, {}).get('phase', new_mv.get(m, PHASE)),
+                       'callers': c}
                    for m, c in sorted(movies.items())},
         'reviewed_forks': old.get('reviewed_forks', {}),
     }
@@ -432,8 +503,8 @@ def main(argv):
         if TARGETS_PATH.exists():
             with open(TARGETS_PATH, encoding='utf-8') as f:
                 old = json.load(f)
-        targets, timelines, movies, summary = build(nup, old)
-    data = merge(old, targets, timelines, movies)
+        targets, timelines, movies, summary, phases = build(nup, old)
+    data = merge(old, targets, timelines, movies, phases)
     print('\n' + summary)
     if '--dry-run' in argv:
         return 0

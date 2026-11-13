@@ -36,11 +36,16 @@ class Targets:
 
 
 def load_targets(phase: int = 1, path=TARGETS_PATH) -> Targets:
-    """The targets of phases 1..`phase`."""
+    """The targets of phases 1..`phase`. A flow record has a phase; `entry_phases`
+    (entry -> phase) overrides it for single entries added in a later phase."""
     with open(path, encoding='utf-8') as f:
         data = json.load(f)
-    flows = {n: list(r['entries']) for n, r in data.get('flows', {}).items()
-             if r.get('phase', 1) <= phase}
+    flows = {}
+    for n, r in data.get('flows', {}).items():
+        default, later = r.get('phase', 1), r.get('entry_phases', {})
+        entries = [e for e in r['entries'] if later.get(e, default) <= phase]
+        if entries:
+            flows[n] = entries
     return Targets(
         flows=flows,
         timelines=sorted(n for n, p in data.get('timelines', {}).items() if p <= phase),

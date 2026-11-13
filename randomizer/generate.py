@@ -15,6 +15,9 @@ from .formats.bfevfl import BfevflError
 from .formats.timeline import TimelineError
 from .fill import FillError, Settings, _eligible, place
 from .full_skip import files_with_fallback
+
+# Phases of full_skip.json the "Skip cutscenes" option builds (1 childhood, 2 adult).
+FULL_SKIP_PHASE = 2
 from .game import GameData
 from . import wrappers
 from .logic.world import World, load_vanilla_settings
@@ -96,7 +99,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 rstb_report: list[str] = []
                 if settings.skip_cutscenes:
                     try:
-                        extras, report, sizes = files_with_fallback(game, 1)
+                        extras, report, sizes = files_with_fallback(game, FULL_SKIP_PHASE)
                         not_skipped = _not_skipped(report)
                     except (ValueError, BfevflError, TimelineError) as e:
                         raise GenerationError(

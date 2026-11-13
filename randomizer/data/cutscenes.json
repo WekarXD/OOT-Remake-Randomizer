@@ -470,7 +470,8 @@
   "EscapeFromCrumblingGanonCastle": "*",
   "Field_PlantMagicBean": [
    "CheckSoil",
-   "CheckSoil_01"
+   "CheckSoil_01",
+   "CheckSoil_ZoraRiver"
   ],
   "GatheringTokenGold": [
    "NaviGuide_GatheringTokenGold",
@@ -621,6 +622,12 @@
    "Sub_CanbeStopped_Npc_01",
    "Sub_CanbeStopped_Npc_02"
   ],
+  "Npc_Gerudo_006": [
+   "GerudoFortress_StopInFrontOfHountedWasteland"
+  ],
+  "Npc_Hylia_012_Adult": [
+   "GerudoValley_StopInFrontOfGerudoFortress"
+  ],
   "Npc_Hylia_052_Child": [
    "isPlayerInHouse"
   ],
@@ -652,6 +659,11 @@
   ],
   "Npc_Kokiri_011_Child": [
    "KokiriForest_Kokiri_011_StopInFrontOfShop_00"
+  ],
+  "Npc_Kokiri_Mido_Adult": [
+   "SageOfForest_Blocker_Talk",
+   "SageOfForest_Blocker_Talk_Common",
+   "SageOfForest_Blocker_Talk_OcarinaPlaying"
   ],
   "Npc_Kokiri_Mido_Child": [
    "KokiriForest_Get_StoneOfForest_Completed_Event",

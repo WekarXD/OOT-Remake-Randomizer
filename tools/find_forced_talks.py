@@ -1,6 +1,6 @@
 """Finds forced conversations (the "Skip cutscenes" option, extension 1).
 
-Usage: python -I tools/find_forced_talks.py <nup> [--zones Z1,Z2,...]
+Usage: python -I tools/find_forced_talks.py <nup> [--age child|adult] [--zones Z1,Z2,...]
 
 Only reads the .nup. Prints, per zone, the candidate (flow, entry) pairs,
 how they are triggered, and which actions the phase 1 trim would remove if
@@ -53,6 +53,18 @@ from randomizer.nup import NupArchive, NupError  # noqa: E402
 
 CHILD_ZONES = ('KokiriForest', 'InsideTheDekuTree', 'HyruleField', 'Market',
                'HyruleCastle', 'KakarikoVillage')
+# Adult rollout (full-skip spec §6 step 3): the zones Link visits as an adult, without
+# Ganon's Castle (step 4) and the boss rooms (DreamWorld: boss scenes are kept). Lake Hylia
+# and Lon Lon Ranch are part of HyruleField. Bancs with no age in their name (temples)
+# count for both ages.
+ADULT_ZONES = ('KokiriForest', 'LostWood', 'SacredForestMeadow', 'ForestTemple',
+               'HyruleField', 'Market', 'KakarikoVillage', 'Graveyard', 'ShadowTemple',
+               'BottomOfTheWell', 'DeathMountainTrail', 'DeathMountainCrater', 'GoronCity',
+               'FireTemple', 'ZoraRiver', 'ZoraDomain', 'ZoraFountain', 'IceCavern',
+               'WaterTemple', 'GerudoValley', 'GerudoFortress',
+               'GerudoTrainingGround', 'HountedWasteland', 'DesertColossus', 'SpiritTemple',
+               'SageRoom', 'HyruleCastle')
+OTHER_AGE = {'child': '_Adult', 'adult': '_Child'}  # banc name mark of the other age
 RSDB = 'RSDB/EventSetting.Product.111.rstbl.byml.zs'
 FORCED_PARAMS = {'RequestEventName', 'PlayerDiscoveredEventName',
                  'JumpSlushTutorialEventName'}
@@ -83,12 +95,12 @@ def _strings(obj, key=''):
         yield key, obj
 
 
-def banc_triggers(game, rows, zones):
-    """(zone, actor, parameter, row) of the child bancs of the zones."""
+def banc_triggers(game, rows, zones, age='child'):
+    """(zone, actor, parameter, row) of the zones' bancs of that age (and ageless ones)."""
     out = []
     for path in game.nup.list('Banc/'):
         parts = path.split('/')
-        if (len(parts) != 3 or parts[1] not in zones or '_Adult' in parts[2]
+        if (len(parts) != 3 or parts[1] not in zones or OTHER_AGE[age] in parts[2]
                 or not path.endswith('.bcett.byml.zs')):
             continue
         _ver, root = game.load_banc(path)
@@ -101,18 +113,18 @@ def banc_triggers(game, rows, zones):
     return out
 
 
-def zone_npcs(game, zones):
-    """Zone -> `Npc_*` actor names (no adults) from its bancs."""
+def zone_npcs(game, zones, age='child'):
+    """Zone -> `Npc_*` actor names of that age (or ageless) from its bancs of that age."""
     out = defaultdict(set)
     for path in game.nup.list('Banc/'):
         parts = path.split('/')
-        if (len(parts) != 3 or parts[1] not in zones or '_Adult' in parts[2]
+        if (len(parts) != 3 or parts[1] not in zones or OTHER_AGE[age] in parts[2]
                 or not path.endswith('.bcett.byml.zs')):
             continue
         _ver, root = game.load_banc(path)
         for a in (root.get('Actors') if isinstance(root, dict) else None) or []:
             g = str(a.get('Gyaml', '')) if isinstance(a, dict) else ''
-            if g.startswith('Npc_') and not g.endswith('_Adult'):
+            if g.startswith('Npc_') and not g.endswith(OTHER_AGE[age]):
                 out[parts[1]].add(g)
     return out
 
@@ -171,7 +183,7 @@ def trim_effect(raw: bytes, entry: str, pairs) -> Counter:
                    for i in before - after if fo.events[i].kind == ACTION)
 
 
-def find(game, zones=CHILD_ZONES):
+def find(game, zones=CHILD_ZONES, age='child'):
     rows = load_rows(game)
     policy = load_policy()
     pairs = active_actions(policy)
@@ -189,7 +201,7 @@ def find(game, zones=CHILD_ZONES):
         c['how'].add(how)
 
     forced_rows = set()
-    for zone, actor, param, rid in banc_triggers(game, rows, zones):
+    for zone, actor, param, rid in banc_triggers(game, rows, zones, age):
         if classify(param) != 'forced':
             continue
         r = rows[rid]
@@ -203,7 +215,7 @@ def find(game, zones=CHILD_ZONES):
             forced_rows.add(rid)
             add(_base(r.get('FlowchartFileName')), r.get('EntryPointName'), zone,
                 f'engine={rid} [{_base(r.get("EventSettingComponentList"))}]')
-    for zone, npcs in zone_npcs(game, zones).items():
+    for zone, npcs in zone_npcs(game, zones, age).items():
         for npc in sorted(npcs):
             raw = flows.raw(npc)
             if raw is None:
@@ -244,12 +256,14 @@ def find(game, zones=CHILD_ZONES):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument('nup')
-    ap.add_argument('--zones', default=','.join(CHILD_ZONES))
+    ap.add_argument('--age', choices=sorted(OTHER_AGE), default='child')
+    ap.add_argument('--zones', default=None, help='default: the zones of that age')
     ap.add_argument('--json', action='store_true')
     args = ap.parse_args(argv)
-    zones = tuple(z for z in args.zones.split(',') if z)
+    default = CHILD_ZONES if args.age == 'child' else ADULT_ZONES
+    zones = tuple(z for z in args.zones.split(',') if z) if args.zones else default
     with NupArchive(args.nup) as nup:
-        report = find(GameData(nup), zones)
+        report = find(GameData(nup), zones, args.age)
     if args.json:
         print(json.dumps(report, indent=1, ensure_ascii=False))
         return 0

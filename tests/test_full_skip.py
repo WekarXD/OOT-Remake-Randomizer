@@ -38,6 +38,26 @@ class LoadTargetsTest(unittest.TestCase):
         self.assertEqual(full_skip.load_targets(0).flows, {})
         self.assertNotIn('Dm_Kokiri_0045', t.reviewed_forks)
 
+    def test_entry_phases_filter_single_entries(self):
+        # A phase 1 flow may gain phase 2 entries (entry_phases); a phase 2 flow is dropped
+        # whole before phase 2, and the choices of a dropped flow go with it.
+        data = {'flows': {
+            'F': {'phase': 1, 'entries': ['A', 'B'], 'entry_phases': {'B': 2}},
+            'G': {'phase': 2, 'entries': ['C'], 'choices': {'3': 1}}}}
+        import json
+        import tempfile
+        with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False,
+                                         encoding='utf-8') as f:
+            json.dump(data, f)
+        try:
+            one, two = full_skip.load_targets(1, f.name), full_skip.load_targets(2, f.name)
+        finally:
+            os.unlink(f.name)
+        self.assertEqual(one.flows, {'F': ['A']})
+        self.assertEqual(one.choices, {})
+        self.assertEqual(two.flows, {'F': ['A', 'B'], 'G': ['C']})
+        self.assertEqual(two.choices, {'G': {3: 1}})
+
 
 class FakeTable:
     """Keeps actions named K*; nothing collapses, no other-file subflow is dropped."""
@@ -378,6 +398,20 @@ class FullSkipTest(unittest.TestCase):
                             ('Npc_Kokiri_007_Child', 'GoToDekuTree'),
                             ('Npc_Kokiri_Mido_Child', 'Talk')):
             self.assertIn((flow, entry), self.applied)
+
+    def test_adult_phase_keeps_the_childhood_and_adds_the_adult_game(self):
+        from randomizer.generate import FULL_SKIP_PHASE
+        self.assertEqual(FULL_SKIP_PHASE, 2)
+        files, report, _ = full_skip.build_full_skip_files(self.game, 2, self.cache)
+        adult = applied(report)
+        self.assertEqual(self.applied - adult, set())
+        self.assertIn(('Npc_Kokiri_Mido_Adult', 'SageOfForest_Blocker_Talk'), adult)
+        # Boss scenes stay (user decision), Ganon's Castle is a later phase.
+        targets = full_skip.load_targets(2)
+        self.assertNotIn('ForestTemple_SageOfForest_PhantomGanonAppearance',
+                         targets.flows['SageOfForest'])
+        self.assertFalse(any(n.startswith(('Dm_InsideGanonCastle_', 'Dm_FinalBattle_'))
+                             for n in list(targets.flows) + targets.timelines))
 
     def test_conflicting_scenes_get_a_copy_per_call_site(self):
         # A kept event inside a same-file subflow called twice continued differently

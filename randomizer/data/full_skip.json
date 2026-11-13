@@ -1,5 +1,108 @@
 {
  "flows": {
+  "AllSage": {
+   "entries": [
+    "Check_ShadowTempleStep",
+    "GetArrowLight_OcarinaBackTimeTemple",
+    "GoneSheik_And_Meet",
+    "Market_Adult_AllSage_Start",
+    "Market_Adult_Field_GetArrowLight",
+    "Market_Adult_Field_GetLightPrelude",
+    "MeetSheik_And_Gone",
+    "MelodyOfShine",
+    "MelodyOfSpirit_01",
+    "MelodyOfSpirit_02",
+    "NaviTalk",
+    "Navi_GuideSheik_SpiritTemple",
+    "Navi_GuideSheik_UnderWell",
+    "SageRoom_AllSage_LastSage"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Fire_Get": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Fire_Get.110": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Forest_Get": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Forest_Get.110": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Shadow_Get": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Shadow_Get.110": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Spirit_Get": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Spirit_Get.110": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Water_Get": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Awake_Water_Get.110": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_DeathMtCrater_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_DeathMtTrail_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_DeathMtTrail_0006": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_DeathMtTrail_0007": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_DeathMtTrail_0010": {
    "entries": [
     "EntryPoint0"
@@ -24,6 +127,18 @@
    ],
    "phase": 1
   },
+  "Dm_DeathMtTrail_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_DeathMtTrail_0050": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_Deku_0000": {
    "entries": [
     "EntryPoint0"
@@ -42,11 +157,23 @@
    ],
    "phase": 1
   },
+  "Dm_DesertColossus_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_DesertColossus_0025": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_DesertColossus_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_DodongoCave_0000": {
    "entries": [
@@ -96,6 +223,12 @@
    ],
    "phase": 1
   },
+  "Dm_FairyFountain_Nayru": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_FairyFountain_Power": {
    "entries": [
     "EntryPoint0"
@@ -107,6 +240,186 @@
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_FireTemple_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_FireTemple_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_FireTemple_0025": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_FireTemple_0026": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_FireTemple_0029": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_FireTemple_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0005": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0007": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0011": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0012": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0013": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0014": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0015": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0016": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0017": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0021": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0022": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0031": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ForestTemple_0032": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_GerudoValley_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_GerudoValley_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_GerudoValley_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Gerudo_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Gerudo_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Gerudo_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Gerudo_0025": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_Gerudo_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_Goron_0000": {
    "entries": [
@@ -144,11 +457,23 @@
    ],
    "phase": 1
   },
+  "Dm_Graveyard_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_Graveyard_0010": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_Graveyard_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_HrlCastle_0000": {
    "entries": [
@@ -342,11 +667,29 @@
    ],
    "phase": 1
   },
+  "Dm_Kokiri_0162": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_Kokiri_0170": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_Kokiri_0175": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LakeHrl_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_LakeHrl_0003": {
    "entries": [
@@ -366,11 +709,41 @@
    ],
    "phase": 1
   },
+  "Dm_LakeHrl_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LakeHrl_0035": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_LonLon_0010": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_LonLon_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LonLon_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LonLon_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_LostWood_0010": {
    "entries": [
@@ -378,17 +751,71 @@
    ],
    "phase": 1
   },
+  "Dm_LostWood_0015": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LostWood_0025": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_LostWood_0030": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_MelodyGet_Epona": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
   },
+  "Dm_MelodyGet_Fire": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_MelodyGet_Forest": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_MelodyGet_Saria": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_MelodyGet_Shadow": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_MelodyGet_Shine": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_MelodyGet_Spilit": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_MelodyGet_Storm": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_MelodyGet_Sun": {
    "entries": [
@@ -408,17 +835,95 @@
    ],
    "phase": 1
   },
+  "Dm_MelodyGet_Water": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_MelodyGet_Zelda": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
   },
+  "Dm_SacredForest_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_SageRoom_0005": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ShadowTemple_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ShadowTemple_0010": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ShadowTemple_0015": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_ShadowTemple_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_SpiritTemple_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_SpiritTemple_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Dm_TimeTemple_0030": {
    "entries": [
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_TimeTemple_0055": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0065": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0070": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_TimeTemple_0075": {
    "entries": [
@@ -431,6 +936,60 @@
     "EntryPoint0"
    ],
    "phase": 1
+  },
+  "Dm_TimeTemple_0085": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0088": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0130": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0000": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0015": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0020": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0021": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0022": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Dm_WaterTemple_0040": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "Dm_ZoraFountain_0030": {
    "entries": [
@@ -478,11 +1037,83 @@
    "entries": [
     "Dm_MelodyGet_Time_After",
     "Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk",
+    "DoorOfTime_AreaOut",
+    "DoorOfTime_CheckStoneNum",
+    "DoorOfTime_DiscoverySword",
+    "DoorOfTime_Draw",
+    "DoorOfTime_Escape",
     "DoorOfTime_GetOcarinaOfTime",
     "DoorOfTime_GetOcarinaOfTime_AreaOut",
+    "DoorOfTime_NaviRepeat",
+    "DoorOfTime_OpenDoor",
+    "DoorOfTime_SendOff",
+    "Recovery",
+    "SageRoom_MeetGanondorf",
+    "SageRoom_MeetRauru",
     "Step01_Npc_Hylia_Impa_Child_Talk"
    ],
+   "entry_phases": {
+    "DoorOfTime_AreaOut": 2,
+    "DoorOfTime_CheckStoneNum": 2,
+    "DoorOfTime_DiscoverySword": 2,
+    "DoorOfTime_Draw": 2,
+    "DoorOfTime_Escape": 2,
+    "DoorOfTime_NaviRepeat": 2,
+    "DoorOfTime_OpenDoor": 2,
+    "DoorOfTime_SendOff": 2,
+    "Recovery": 2,
+    "SageRoom_MeetGanondorf": 2,
+    "SageRoom_MeetRauru": 2
+   },
    "phase": 1
+  },
+  "Field_PlantMagicBean": {
+   "entries": [
+    "CheckSoil",
+    "CheckSoil_01",
+    "CheckSoil_ZoraRiver"
+   ],
+   "phase": 2
+  },
+  "GatheringTokenGold": {
+   "entries": [
+    "NaviGuide_GatheringTokenGold",
+    "NaviGuide_TokenGold_Over10"
+   ],
+   "phase": 2
+  },
+  "Get_Epona": {
+   "entries": [
+    "AfterTalkMalon_IngoTalk",
+    "Get_Epona_LonLonRanchGuide",
+    "Get_Epona_LonLonRanchGuide_Market",
+    "Get_Epona_ReadyForGetEponaSong",
+    "HorseRidingPlaying_FallOffFromEpona",
+    "HorseRidingPlaying_RideOnEpona",
+    "HorseRiding_End",
+    "ReadyForGambleRace_HorseRiding",
+    "Sleep1Move",
+    "SubEvent_AfterWonGambleRace_OcarinaWarp",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromA",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromA_Warp",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromB",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromB_Warp",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromC",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromC_Warp",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromMainGate",
+    "Sub_Get_Epona_EscapeRanch_EscapeFromMainGate_Warp",
+    "Sub_Get_Epona_GambleRaceAfter",
+    "Sub_Get_Epona_GambleRace_AfterEnd",
+    "Sub_Get_Epona_GambleRace_End",
+    "Sub_Get_Epona_GambleRace_Start",
+    "Sub_Get_Epona_HorseRiding",
+    "Sub_Get_Epona_HorseRidingStart_Common",
+    "Sub_Get_Epona_RambleRace_Clean",
+    "Sub_Get_Epona_RambleRace_Ready",
+    "Sub_Get_Epona_RidingAndRambleRace_Clean",
+    "Sub_HorseRidingFinish"
+   ],
+   "phase": 2
   },
   "Get_StoneOfFire": {
    "entries": [
@@ -537,6 +1168,18 @@
    ],
    "phase": 1
   },
+  "Goto_FireTemple": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_GerudoTrainingGround": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
   "Goto_HyruleCastle": {
    "entries": [
     "EggHatch",
@@ -550,6 +1193,48 @@
     "aboutCucco"
    ],
    "phase": 1
+  },
+  "Goto_IceCave": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_KakarikoWells": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_SacredForest": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_ShadowTemple": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_SpiritTemple": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_WaterTemple": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
+  },
+  "Goto_ZoraRiver": {
+   "entries": [
+    "EntryPoint0"
+   ],
+   "phase": 2
   },
   "HyruleCastle_FoundBySecurity": {
    "entries": [
@@ -588,6 +1273,31 @@
     "Spirit_Sharp_Off"
    ],
    "phase": 1
+  },
+  "NpcCommon": {
+   "entries": [
+    "Sub_CanbeStopped_Npc_01",
+    "Sub_CanbeStopped_Npc_02"
+   ],
+   "phase": 2
+  },
+  "Npc_Gerudo_006": {
+   "entries": [
+    "GerudoFortress_StopInFrontOfHountedWasteland"
+   ],
+   "phase": 2
+  },
+  "Npc_Hylia_009_Adult": {
+   "entries": [
+    "PlayStormSong_fromBancLogic_Adult"
+   ],
+   "phase": 2
+  },
+  "Npc_Hylia_012_Adult": {
+   "entries": [
+    "GerudoValley_StopInFrontOfGerudoFortress"
+   ],
+   "phase": 2
   },
   "Npc_Hylia_052_Child": {
    "entries": [
@@ -656,6 +1366,14 @@
    ],
    "phase": 1
   },
+  "Npc_Kokiri_Mido_Adult": {
+   "entries": [
+    "SageOfForest_Blocker_Talk",
+    "SageOfForest_Blocker_Talk_Common",
+    "SageOfForest_Blocker_Talk_OcarinaPlaying"
+   ],
+   "phase": 2
+  },
   "Npc_Kokiri_Mido_Child": {
    "entries": [
     "KokiriForest_Get_StoneOfForest_Completed_Event",
@@ -676,6 +1394,180 @@
    ],
    "phase": 1
   },
+  "SageOfFire": {
+   "entries": [
+    "FireTemple_DaruniaDemo",
+    "SageOfFire_CityIn",
+    "SageOfFire_CityInFromCrater",
+    "SageOfFire_CityInFromDeathMt",
+    "SageOfFire_CityIn_01",
+    "SageOfFire_CityIn_02",
+    "SageOfFire_CityIn_03",
+    "SageOfFire_CityIn_04",
+    "SageOfFire_CityIn_CrackWall",
+    "SageOfFire_CityIn_CrackWall_01",
+    "SageOfFire_MelodyGetFire",
+    "Step01_Npc_Goron_DaruniaJr_Adult_BombHit",
+    "Step02_DaruniaJr_FirstTalk",
+    "Step02_DoorOpen",
+    "Step02_Npc_Goron_DaruniaJr_Adult_AfterTalk"
+   ],
+   "phase": 2
+  },
+  "SageOfForest": {
+   "entries": [
+    "ForestTemple_SageOfForest_BlockerMove",
+    "ForestTemple_SageOfForest_MelodyGet",
+    "ForestTemple_SageOfForest_StartingElevator",
+    "OcarinaPlaying_InitTalk_Blocker",
+    "StartTalking_DuringPlayerTurn_MidoOnly",
+    "TreasureBoxDM_NaviChat_Bow"
+   ],
+   "phase": 2
+  },
+  "SageOfShadow": {
+   "entries": [
+    "Gimmick_Departure",
+    "Gimmick_Ocarina",
+    "SageOfShdawo_GetHoverBoots"
+   ],
+   "phase": 2
+  },
+  "SageOfSpirit": {
+   "entries": [
+    "GerudoFortress_GotoPrison",
+    "GerudoFortress_GotoPrison_004",
+    "GerudoFortress_GotoPrison_Alert",
+    "GerudoFortress_GotoPrison_Pair",
+    "GerudoFortress_GotoPrison_Pair_",
+    "GerudoFortress_GotoPrison_Pair_0",
+    "GerudoFortress_GotoPrison_Pair_014",
+    "GerudoFortress_GotoPrison_Pair_015",
+    "GerudoFortress_GotoPrison_Pair_017",
+    "GerudoFortress_GotoPrison_Pair_018",
+    "GerudoFortress_GotoPrison_Suprise",
+    "GerudoFortress_GotoPrison_sub",
+    "MaskTalk_FirstTalk",
+    "Meet_FourCarpenter_ClearEvent",
+    "NPC_FocusCamera",
+    "Navi_LeaveDungeon",
+    "Npc_Hylia_016_Adult_GerudoFortress_PlayerNear",
+    "Obj_SpiritTemple_StoneTablet_A_01",
+    "Obj_SpiritTemple_StoneTablet_A_02",
+    "SageOfSpirit_GetShield",
+    "SageOfSpirit_MeetNabooru",
+    "SageOfSpirit_NaboorIsTakenAway",
+    "SageOfSpirit_Navi_CrawlTunnel",
+    "SageOfSpirit_OcarinaBackTimeTemple",
+    "SageOfSpirit_WalkBackTimeTemple",
+    "Step02_Npc_Gerudo_001_NearActorsNear",
+    "Step02_Npc_Gerudo_001_NearActorsTalk",
+    "Step02_Npc_Gerudo_001_Near_001"
+   ],
+   "phase": 2
+  },
+  "SageOfSpirit_FocusOnGimmick": {
+   "entries": [
+    "DesertColossus_LeftHand_AppearTreasureBox",
+    "DesertColossus_SecretHole_AppearTreasureBox",
+    "DessertColossus_IsStormSongPlayed",
+    "HountedWasteland_Ruins_AppearTreasureBox",
+    "Room_08_SwitchOn_01",
+    "Room_10_SwitchOn_01",
+    "SageOfSpirit_FaceIsBroken",
+    "SageOfSpirit_LiftGoesDown",
+    "SageOfSpirit_LiftGoesDown_Next",
+    "SpiritTemple_Level_Room_03_BoardNetFall",
+    "SpiritTemple_Level_Room_04_EyeSwitchOn",
+    "SpiritTemple_Level_Room_05_SilverToken_Unlock",
+    "SpiritTemple_Level_Room_07_SunSwitchOn",
+    "SpiritTemple_Level_Room_08_Ocarina",
+    "SpiritTemple_Level_Room_10_SilverToken_Unlock",
+    "SpiritTemple_Level_Room_15_Ocarina",
+    "SpiritTemple_Level_Room_16_SilverToken_Unlock",
+    "SpiritTemple_Level_Room_19_SwitchOn_01",
+    "SpiritTemple_Level_Room_19_wallmaster",
+    "SpiritTemple_Level_Room_29_Ocarina",
+    "SpiritTemple_Level_Room_30_BoardNetFall",
+    "SpiritTemple_Level_Room_32_SwitchOn_01",
+    "SpiritTemple_Room19_SunSwitchShutterOpen",
+    "SpritTemple_Room03_OpenShutter",
+    "SpritTemple_Room04_OpenShutter",
+    "SpritTemple_Room05_AppearTreasure",
+    "SpritTemple_Room07_AppearTreasure",
+    "SpritTemple_Room08_AppearTreasureBox",
+    "SpritTemple_Room08_OpenShutter",
+    "SpritTemple_Room12_OpenShutter",
+    "SpritTemple_Room14_OpenShutter",
+    "SpritTemple_Room22_OpenShutter",
+    "SpritTemple_Room22_StepSwitch",
+    "SpritTemple_Room23_StepSwitch",
+    "SpritTemple_Room23_SunSwitch",
+    "SpritTemple_Room25_OpenShutter",
+    "SpritTemple_Room30_StepSwitch",
+    "SpritTemple_Room31_OpenShutter"
+   ],
+   "phase": 2
+  },
+  "SageOfSpirit_RescueCarpenter": {
+   "entries": [
+    "CheckRestrictedDoor",
+    "Check_NumOfCarpenterHelped",
+    "GerudoFortress_DestroyGerudoThief01",
+    "GerudoFortress_DestroyGerudoThief02",
+    "GerudoFortress_DestroyGerudoThief03",
+    "GerudoFortress_DestroyGerudoThief04",
+    "GerudoFortress_DoDoor_AnotherKey_Hylia013",
+    "GerudoFortress_DoDoor_AnotherKey_Hylia014",
+    "GerudoFortress_DoDoor_AnotherKey_Hylia015",
+    "GerudoFortress_DoDoor_AnotherKey_Hylia016",
+    "GerudoFortress_GerudoThiefLose",
+    "GerudoFortress_Npc_Hylia_014_Adult_Near_BeforeTalking",
+    "GerudoFortress_Npc_Hylia_015_Adult_Near_BeforeTalking",
+    "GerudoFortress_Npc_Hylia_016_Adult_IsCallingHelp_Talk_OnOutdoor",
+    "GerudoFortress_Npc_Hylia_016_Adult_Near_BeforeTalking",
+    "GerudoThiefDropKey",
+    "GerudoThiefReAppear",
+    "GerudoThief_DefineLevel",
+    "GerudoThief_LevelUp",
+    "NaviEvent_CarpenterNumber",
+    "Process_GotoPrison",
+    "StepCheck_Clear"
+   ],
+   "phase": 2
+  },
+  "SageOfWater": {
+   "entries": [
+    "Dm_MelodyGet_WaterAfter",
+    "HowToGoToWaterTemple",
+    "IceCavern_WaterSerenade",
+    "KingZora_IrregularTalk",
+    "KingZora_IsMelted_Ice",
+    "Safety_Entry",
+    "SignboardCheck_FireArrow_LakeHylia_01",
+    "Talk_Nearby",
+    "WaterTemple_DarkLink_Movement",
+    "WaterTemple_RutoDemo",
+    "WaterTemple_WaterLevelChange01",
+    "WaterTemple_WaterLevelChange02",
+    "WaterTemple_WaterLevelChange03"
+   ],
+   "phase": 2
+  },
+  "SageOfWater_FocusGimmick": {
+   "entries": [
+    "Room18_TreasureBoxAppear_Enemy",
+    "WaterTemple_EyeSwitch_Focus",
+    "WaterTemple_FocusonGimmick_02",
+    "WaterTemple_Room06_Waterlevelrise_FocusOnGimmick",
+    "WaterTemple_Room07_LongHook",
+    "WaterTemple_Room17_FocusOnGimmick",
+    "WaterTemple_Room22_Clear",
+    "WaterTemple_Room22_Close",
+    "WaterTemple_Waterlevelrise_FocusOnGimmick"
+   ],
+   "phase": 2
+  },
   "SubEvent_GetEponaSong": {
    "entries": [
     "GetEponaSong_MelodyGet_Epona",
@@ -686,6 +1578,44 @@
     "SayHello"
    ],
    "phase": 1
+  },
+  "SubEvent_GetFireArrow": {
+   "entries": [
+    "FireArrow_Appear",
+    "GetFireArrow"
+   ],
+   "phase": 2
+  },
+  "SubEvent_GetIceArrow": {
+   "entries": [
+    "SubEvent_GetIceArrow_OpenTBox"
+   ],
+   "phase": 2
+  },
+  "SubEvent_GetSwordBigGoron": {
+   "entries": [
+    "BigGoronTimerStop",
+    "BigGoronTimer_Step04",
+    "BigGoronTimer_Step09",
+    "BigGoronTimer_Step10",
+    "EggHatch_PocketEgg",
+    "GetSwordBiggoron_HandOver_PlayerToNpc_ForYou",
+    "GetSwordBiggoron_HandOver_PlayerToNpc_ShowItem",
+    "GetSwordBiggoron_HandOver_PlayerToNpc_ShowItem_NoNavi",
+    "InitTalk_OnEvent_ShowItemOnly",
+    "ShowItemSuccess_NoCamera_SwordBigGoron",
+    "ShowItemSuccess_NoCamera_SwordBigGoron_NoNavi",
+    "SubEvent_TimerCheck",
+    "SubEvent_TimerCheck_Demo",
+    "SubEvent_TimerCheck_Demo_CloseTimer",
+    "SubEvent_TimerCheck_Demo_DeleteItem",
+    "SubEvent_TimerCheck_Sleep",
+    "SubEvent_TimerCheck_ToChild",
+    "SubEvent_TimerCheck_Warp",
+    "Sub_ShowItem_SwordBigGoron",
+    "WaitEggHatch_Npc_Navi_StepStart"
+   ],
+   "phase": 2
   }
  },
  "movies": {
@@ -694,6 +1624,12 @@
     "Goto_HyruleCastle"
    ],
    "phase": 1
+  },
+  "Dm_Kakariko_0025": {
+   "callers": [
+    "Dm_SY_BancChange_EscapeDungeon"
+   ],
+   "phase": 2
   },
   "Dm_Kokiri_0000": {
    "callers": [
@@ -706,6 +1642,18 @@
     "Dm_SY_BancChange_EscapeDungeon"
    ],
    "phase": 1
+  },
+  "Dm_Kokiri_0160": {
+   "callers": [
+    "Dm_SY_BancChange_EscapeDungeon"
+   ],
+   "phase": 2
+  },
+  "Dm_LostWood_0021": {
+   "callers": [
+    "SageOfForest"
+   ],
+   "phase": 2
   },
   "Dm_MelodyGet_Sun_01": {
    "callers": [
@@ -754,33 +1702,78 @@
     "GimmickFlow_RoyalFamilyTomb"
    ],
    "phase": 1
+  },
+  "Dm_SageRoom_0020": {
+   "callers": [
+    "Defeat_Ganon"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0095": {
+   "callers": [
+    "AllSage"
+   ],
+   "phase": 2
+  },
+  "Dm_TimeTemple_0115": {
+   "callers": [
+    "AllSage"
+   ],
+   "phase": 2
   }
  },
  "reviewed_forks": {},
  "timelines": {
+  "Dm_Awake_Fire": 2,
+  "Dm_Awake_Forest": 2,
+  "Dm_Awake_Shadow": 2,
+  "Dm_Awake_Spirit": 2,
+  "Dm_Awake_Water": 2,
   "Dm_DeathMtTrail_0020": 1,
   "Dm_DeathMtTrail_0030": 1,
   "Dm_DesertColossus_0020": 1,
   "Dm_DesertColossus_0030": 1,
+  "Dm_FireTemple_0000": 2,
   "Dm_Goron_0020": 1,
   "Dm_Goron_0025": 1,
   "Dm_HrlCastle_0030": 1,
   "Dm_HrlCastle_0060": 1,
   "Dm_HrlField_0005": 1,
   "Dm_HrlField_0060": 1,
+  "Dm_HrlField_0070": 2,
+  "Dm_HrlField_0071": 2,
+  "Dm_HrlField_0072": 2,
+  "Dm_HrlField_0073": 2,
   "Dm_InsideJabu_Jabu_0010": 1,
+  "Dm_Kakariko_0030": 2,
+  "Dm_Kakariko_0040": 2,
   "Dm_Kokiri_0030": 1,
   "Dm_Kokiri_0050": 1,
   "Dm_Kokiri_0070": 1,
   "Dm_Kokiri_0090": 1,
   "Dm_Kokiri_0140": 1,
   "Dm_Kokiri_0150": 1,
+  "Dm_Kokiri_0158": 2,
   "Dm_LakeHrl_0010": 1,
+  "Dm_LakeHrl_0020": 2,
+  "Dm_SageRoom_0000": 2,
+  "Dm_SageRoom_0010": 2,
+  "Dm_SageRoom_0025": 2,
+  "Dm_SageRoom_0027": 2,
+  "Dm_SpiritTemple_0010": 2,
+  "Dm_SpiritTemple_0020": 2,
+  "Dm_SpiritTemple_0030": 2,
   "Dm_TimeTemple_0010": 1,
   "Dm_TimeTemple_0020": 1,
   "Dm_TimeTemple_0040": 1,
+  "Dm_TimeTemple_0050": 2,
   "Dm_TimeTemple_0086": 1,
   "Dm_TimeTemple_0087": 1,
+  "Dm_TimeTemple_0090": 2,
+  "Dm_TimeTemple_0110": 2,
+  "Dm_TimeTemple_0125": 2,
+  "Dm_TimeTemple_0135": 2,
+  "Dm_WaterTemple_0010": 2,
   "Dm_ZoraFountain_0010": 1,
   "Dm_ZoraFountain_0020": 1
  }
