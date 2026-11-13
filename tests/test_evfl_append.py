@@ -141,6 +141,14 @@ class AppendEventsTest(unittest.TestCase):
             with self.subTest(spec=spec), self.assertRaises(BfevflError):
                 append_events(self.data, [spec])
 
+    def test_dic_root_uses_pool_empty_string(self):
+        # As in the game: the root of each DIC names the pool's empty string.
+        out, idx = append_events(self.data, [FLAG])
+        new = EventFlow(out)
+        pool, _ = new._pool()
+        dic = new._u64(new._params[idx[0]] + 8)
+        self.assertEqual(new._u64(dic + 8 + 8), pool + 0x14)
+
     def test_relt_covers_new_pointers(self):
         out, idx = append_events(self.data, [FLAG, TELEPORT])
         new = EventFlow(out)

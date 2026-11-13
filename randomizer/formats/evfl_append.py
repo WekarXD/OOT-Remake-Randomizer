@@ -124,6 +124,8 @@ class _Writer:
         """Offset of a string with that text: an existing one, or a new one."""
         if text in self._strings:
             return self._strings[text]
+        if text == '':  # the pool's empty string, as the game's DIC roots use
+            return self.flow._pool()[0] + 0x14
         found = self.flow._find_string(text.encode('utf-8'))
         if found is None:
             _align(self.out, 2)
