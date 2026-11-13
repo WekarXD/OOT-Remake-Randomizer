@@ -201,10 +201,6 @@ class ReachabilityTest(unittest.TestCase):
         self.assertLess((time.perf_counter() - start) / 20, 0.1)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class BombBagTest(unittest.TestCase):
     # Batch 19: in the remake, bombs cannot be thrown until the Goron's
     # Bracelet is owned, wherever the Bomb Bag comes from.
@@ -243,3 +239,7 @@ class BombBagTest(unittest.TestCase):
         self.assertIn('HF Southeast Grotto Chest', w.reachable_locations(fixed))
         fixed['GC Darunias Joy'] = 'Rupees (5)'
         self.assertNotIn('HF Southeast Grotto Chest', w.reachable_locations(fixed))
+
+
+if __name__ == '__main__':
+    unittest.main()
