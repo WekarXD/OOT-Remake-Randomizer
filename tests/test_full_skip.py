@@ -412,6 +412,9 @@ class FullSkipTest(unittest.TestCase):
                          targets.flows['SageOfForest'])
         self.assertFalse(any(n.startswith(('Dm_InsideGanonCastle_', 'Dm_FinalBattle_'))
                              for n in list(targets.flows) + targets.timelines))
+        # Not even a movie drop may touch the ending's flows.
+        self.assertNotIn(path_of('Defeat_Ganon'), files)
+        self.assertNotIn(path_of('EscapeFromCrumblingGanonCastle'), files)
 
     def test_conflicting_scenes_get_a_copy_per_call_site(self):
         # A kept event inside a same-file subflow called twice continued differently

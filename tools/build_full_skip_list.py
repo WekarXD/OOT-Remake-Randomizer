@@ -45,7 +45,7 @@ ADULT_PHASE = 2  # the rest of the game (spec §6 step 3; plan 2026-11-13-full-s
 # Spec §6 step 4, a later phase 3: Ganon's Castle and the ending.
 LATER_ZONES = frozenset({'FinalBattle', 'GanonCastle', 'InsideGanonCastle', 'Ending'})
 LATER_FLOWS = ('Defeat_Ganon', 'EscapeFromCrumblingGanonCastle')
-LATER_MOVIES = ('Dm_FinalBattle_0002',)
+LATER_MOVIES = ('Dm_FinalBattle_0002', 'Dm_SageRoom_0020')  # the second starts in Defeat_Ganon
 # System flows, credits and title: not story scenes (as in build_cutscene_list).
 EXCLUDED_PREFIXES = ('Dm_SY_', 'Dm_StaffCredit_', 'Dm_Title_')
 SUBTIMELINE_SUFFIXES = ('_Effect', '_Env')

@@ -1703,12 +1703,6 @@
    ],
    "phase": 1
   },
-  "Dm_SageRoom_0020": {
-   "callers": [
-    "Defeat_Ganon"
-   ],
-   "phase": 2
-  },
   "Dm_TimeTemple_0095": {
    "callers": [
     "AllSage"
