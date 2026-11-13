@@ -378,6 +378,18 @@ class FullSkipTest(unittest.TestCase):
                             ('Npc_Kokiri_Mido_Child', 'Talk')):
             self.assertIn((flow, entry), self.applied)
 
+    def test_exit_kokiri_lets_link_pass_without_talking(self):
+        # After the Deku Tree the exit Kokiri stops Link, talks and steps aside
+        # (round 3: the talk still played). The rewrite keeps stepping aside.
+        name, entry = 'Npc_Kokiri_007_Child', 'Get_StoneOfForest_IsCompleted_Exp_Talk'
+        self.assertIn((name, entry), self.applied)
+        flow = EventFlow(self.output(name))
+        actions = {flow.events[i].action
+                   for i in reachable(flow.events, flow.entry_points,
+                                      [flow.entry_points[entry]])}
+        self.assertNotIn('EventTalk', actions)
+        self.assertIn('EventNpcBlockerEndBlockerAI', actions)
+
     def test_entry_called_by_a_sibling_target_is_tolerated(self):
         # Talk calls GoToDekuTree by name: rewriting GoToDekuTree changes what Talk
         # reaches, which is allowed only when Talk is itself a target of the file.

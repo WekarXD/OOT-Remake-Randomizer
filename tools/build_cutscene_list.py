@@ -89,7 +89,10 @@ FORCED_TALKS = {
         # zone trigger (EventRequestActor.RequestEventName in
         # KokiriForest_Child_Static, SubEvent row). It is a single bubble that
         # ends in "end", so the end-pointer rule keeps it.
-        'Near_FirstReaction'],
+        'Near_FirstReaction',
+        # Round 4: after the Deku Tree it stops Link, talks and steps aside
+        # (InitTalk_Blocker + EventNpcBlockerEndBlockerAI).
+        'Get_StoneOfForest_IsCompleted_Exp_Talk'],
     'Npc_Kokiri_010_Child': [             # target-locking tutorial
         'FocusOnAttentionRock_ShieldDeku', 'FocusOnAttentionRock_ShieldDeku_Short'],
     'Npc_Kokiri_011_Child': [             # stops you in front of the shop

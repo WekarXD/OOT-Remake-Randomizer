@@ -160,6 +160,7 @@ EXCLUDED_ENTRIES = (
 FORCED_TALKS_ALLOW = frozenset({
     ('Npc_Kokiri_Mido_Child', 'Talk'),         # Mido blocks the way
     ('Npc_Kokiri_007_Child', 'Talk'),          # a Kokiri blocks the exit
+    ('Npc_Kokiri_007_Child', 'Get_StoneOfForest_IsCompleted_Exp_Talk'),  # it steps aside
     ('DoorOfTime', 'Dm_MelodyGet_Zelda_After_Npc_Hylia_Impa_Child_Talk'),  # brief's list
     ('Get_StoneOfWater', 'Step10_Npc_Zora_Ruto_Child_001_Talk'),
 })

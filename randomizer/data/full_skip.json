@@ -634,6 +634,7 @@
   },
   "Npc_Kokiri_007_Child": {
    "entries": [
+    "Get_StoneOfForest_IsCompleted_Exp_Talk",
     "GoToDekuTree",
     "GoToMido",
     "Near_FirstReaction",
