@@ -141,6 +141,9 @@ class EventFlow:
         self._params: dict[int, int] = {}  # event -> parameter container
         self._flowchart = None
         self._events_p = 0
+        # (name, actions, queries) of each actor; an action event's actor and action
+        # are indices into this list and the actor's actions.
+        self.actors: list[tuple[str, list[str], list[str]]] = []
         if self._u16(0x20) == 0:
             return  # file without a flowchart (empty marker)
         f = self._u64(self._u64(0x28))
@@ -158,6 +161,8 @@ class EventFlow:
                 [self._str(self._u64(acts_p + 8 * j)) for j in range(self._u16(a + 0x30))],
                 [self._str(self._u64(qs_p + 8 * j)) for j in range(self._u16(a + 0x32))],
             ))
+
+        self.actors = actors
 
         def slot(off, key):
             v = self._u16(off)
