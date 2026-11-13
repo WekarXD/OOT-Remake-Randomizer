@@ -49,4 +49,17 @@ In general:
 
 ## Results
 
-(To be filled in after testing.)
+In-game results (2026-11-13): **every type works from a chest.**
+
+- **Din's Fire:** reaches the inventory and can be cast. In the remake, the first magic item also gives the magic meter.
+- **`Item_FairyBless_MP`** is not the magic meter: it gives the **spin attack** (Great Fairy blessing).
+- **Song of Storms:** the chest shows a rupee, but the song is learned and works (the known chest image issue).
+- **Wallet:** works. The remake's wallets are larger: 200 at the start, 500 with the first upgrade.
+- **Silver Scale** and **bottle:** reach the inventory and work.
+- **Bomb Bag:** taken at the start; bombs could not be thrown until the **Goron's Bracelet** was obtained, and then they could. The v1 failure was not the chest: in the remake, bombs need the bracelet.
+
+Consequences:
+
+1. The Bomb Bag can be shuffled again, provided the logic requires the Goron's Bracelet to use bombs.
+2. Magic: no item gives only the meter. The logic should treat any magic item (Din's, Farore's, Nayru's, the magic arrows) as also giving it.
+3. Songs, Great Fairy gifts, wallets, scales and bottles can go in chests.

@@ -6,7 +6,7 @@ Pending work, most important first within each section.
 
 - **Chests outside the logic.** 61 unmapped chests now take part in the fill with minor items only (`filler_sites` in `randomizer/fill.py`), so their ammo moves to chests that require its container. Still to do: identify the 39 ambiguous ones in game (most are small keys in the Fire Temple, Gerudo Training Ground and Water Temple) so they can also hold key items, and find out whether the remake-only DreamWorld chests can be revisited.
 - **Everything a Skulltula drops should float** (built, waiting for test batch 18). Key items and tokens float (token-clone wrappers), but rupees and other minor items use the game's own drop actor and fall to the floor like an enemy drop (batch 17: the purple rupee from the Deku Tree basement vines). On a wall above water or a pit the drop can be lost (the Skulltula then respawns and drops it again, but it may never be reachable). Find a way to make every drop float where the Skulltula was. In batch 12 the rupee clones could not be picked up, before the PouchActorInfo row was understood; retry with the batch 14 recipe.
-- **Bomb Bag outside its vanilla chest** cannot throw bombs, so it stays fixed for now.
+- **Bomb Bag outside its vanilla chest:** solved by batch 19. In the remake, bombs cannot be thrown until the Goron's Bracelet is owned, wherever the bag comes from. To free it, the logic must require the bracelet to use bombs.
 - **Boomerang and the Deku Tree vine Skulltulas.** `REMAKE_RULES` only accepts the Slingshot, Bow or Hookshot for the Deku Tree upper floor; check whether the Boomerang kills those Skulltulas in the remake.
 - **Soft-soil Skulltulas** (bugs on the soil) are untested with Tokensanity (batch 17, attempt 3).
 - **Chest image and text** may still show the original item.
@@ -15,7 +15,6 @@ Pending work, most important first within each section.
 
 ## To test in game
 
-- Batch 19 (guide `docs/test-batch-19.md`, mod `TestBatch19`): do OoTR's missing item types (song, Din's Fire, magic, wallet, scale, bottle) work from a chest, and can the Bomb Bag throw bombs once the Goron's Bracelet is owned? It decides the order of the "OoTR items" projects.
 
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
