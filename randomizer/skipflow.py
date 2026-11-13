@@ -255,63 +255,105 @@ def linearize(events: list[Event], entries: dict[str, int], entry: str,
             else:
                 raise _Fail('dead end', f'event {i} (kind {ev.kind})')
 
-    links: dict[tuple, int] = {}
-    kept: list[int] = []
     try:
         if entry not in entries:
             raise _Fail('missing entry', entry)
-        expanded = set()
-        todo = [(('entry', entry), entries[entry], ())]
-        while todo:
-            key, i, stack = todo.pop()
-            n, stack = advance(i, stack)
-            if links.get(key, n) != n:
-                raise _Fail('conflict', f'{key}: {links[key]} or {n}')
-            links[key] = n
-            if n == END:
-                continue
-            if n not in kept:
-                kept.append(n)
-            if (n, stack) in expanded:
-                continue
-            expanded.add((n, stack))
-            ev = events[n]
-            if ev.kind == RESULT:
-                continue
-            if ev.kind in SWITCHES:
-                todo += [(('case', n, k), c, stack)
-                         for k, c in reversed(list(enumerate(ev.cases)))]
-            else:
-                todo.append((('next', n), ev.next, stack))
-        # The output must be able to end from every kept node: a cycle through
-        # kept nodes with no way out would hang the scene.
-        preds: dict[int, set[int]] = {}
-        for key, target in links.items():
-            if key[0] != 'entry':
-                preds.setdefault(target, set()).add(key[1])
-        ends = {n for n in kept if events[n].kind == RESULT}
-        todo2 = [END, *ends]
-        while todo2:
-            for p in preds.get(todo2.pop(), ()):
-                if p not in ends:
-                    ends.add(p)
-                    todo2.append(p)
-        stuck = [n for n in kept if n not in ends]
-        if stuck:
-            raise _Fail('loop', f'cannot end from {stuck[:10]}')
+        try:
+            links, kept, clones = _relink(events, entries, entry, advance, split=False)
+        except _Fail as e:
+            # A kept node reached from two call sites needs a copy per call site.
+            if e.error != 'conflict' or not grow:
+                raise
+            links, kept, clones = _relink(events, entries, entry, advance, split=True)
+        _check_can_end(events, links, kept, clones)
         links, copies, grown = _private_copies(events, entries, links, protected, can_copy,
-                                               grow)
+                                               grow, clones)
     except _Fail as e:
         return Rewrite({}, [], e.error, e.detail, collapsed)
     return Rewrite(links, kept, None, '', collapsed, copies, grown)
 
 
+def _relink(events, entries, entry, advance, split):
+    """(links, kept, clones): the walk's links between kept nodes. Without `split` a kept
+    node is its event, and two walks through it that continue differently are a
+    'conflict'. With `split` a kept node is its (event, stack): the first stack seen uses
+    the event itself and every other stack a clone, a placeholder len(events) + j listed
+    in `clones` (placeholder -> event) that `_private_copies` places like its copies."""
+    links: dict[tuple, int] = {}
+    kept: list[int] = []  # original events, in walk order
+    clones: dict[int, int] = {}
+    node_of: dict[tuple, int] = {}
+    used: set[int] = set()
+
+    def node(n, stack):
+        if not split:
+            return n
+        if (n, stack) not in node_of:
+            if n in used:
+                c = len(events) + len(clones)
+                clones[c] = n
+                node_of[(n, stack)] = c
+            else:
+                used.add(n)
+                node_of[(n, stack)] = n
+        return node_of[(n, stack)]
+
+    expanded = set()
+    todo = [(('entry', entry), entries[entry], ())]
+    while todo:
+        key, i, stack = todo.pop()
+        n, stack = advance(i, stack)
+        if n != END:
+            n = node(n, stack)
+        if links.get(key, n) != n:
+            raise _Fail('conflict', f'{key}: {links[key]} or {n}')
+        links[key] = n
+        if n == END:
+            continue
+        src = clones.get(n, n)
+        if src not in kept:
+            kept.append(src)
+        if (n, stack) in expanded:
+            continue
+        expanded.add((n, stack))
+        ev = events[src]
+        if ev.kind == RESULT:
+            continue
+        if ev.kind in SWITCHES:
+            todo += [(('case', n, k), c, stack)
+                     for k, c in reversed(list(enumerate(ev.cases)))]
+        else:
+            todo.append((('next', n), ev.next, stack))
+    return links, kept, clones
+
+
+def _check_can_end(events, links, kept, clones):
+    """The output must be able to end from every kept node: a cycle through kept nodes
+    with no way out would hang the scene."""
+    nodes = {k[1] for k in links if k[0] != 'entry'} | set(kept)
+    preds: dict[int, set[int]] = {}
+    for key, target in links.items():
+        if key[0] != 'entry':
+            preds.setdefault(target, set()).add(key[1])
+    ends = {n for n in nodes if events[clones.get(n, n)].kind == RESULT}
+    todo = [END, *ends]
+    while todo:
+        for p in preds.get(todo.pop(), ()):
+            if p not in ends:
+                ends.add(p)
+                todo.append(p)
+    stuck = sorted(n for n in nodes if n not in ends)
+    if stuck:
+        raise _Fail('loop', f'cannot end from {stuck[:10]}')
+
+
 COPIED_WHEN_GROWING = (ACTION, SWITCH, SUBFLOW, SUBFLOW_SWITCH)
 
 
-def _private_copies(events, entries, links, protected, can_copy, grow=False):
+def _private_copies(events, entries, links, protected, can_copy, grow=False, clones=None):
     """(links, copies, grown): `links` with every protected event whose link changes
-    replaced, on the targeted path, by a private copy (spec 8.1).
+    replaced, on the targeted path, by a private copy (spec 8.1). `clones` (placeholder
+    -> event, from `_relink` with split) are copies already made, placed like the others.
 
     Fixpoint: a protected action whose link differs from the original gets a copy
     that carries the new link, and every link of the rewrite that pointed at the
@@ -332,7 +374,7 @@ def _private_copies(events, entries, links, protected, can_copy, grow=False):
     links = dict(links)
     n_events = len(events)
     kinds = COPIED_WHEN_GROWING if grow else (ACTION,)
-    originals: dict[int, int] = {}  # placeholder -> original
+    originals: dict[int, int] = dict(clones or {})  # placeholder -> original
     changed = True
     while changed:
         changed = False

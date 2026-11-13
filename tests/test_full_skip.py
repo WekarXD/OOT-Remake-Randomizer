@@ -201,13 +201,13 @@ class FullSkipTest(unittest.TestCase):
                                 reachable(old.events, old.entry_points, [old.entry_points[e]]), e)
 
     def test_failed_scene_falls_back_to_old_trimming(self):
-        name = 'Dm_InsideJabu_Jabu_0050'
+        name = 'Dm_Goron_0028'  # refused: its rewrite adds END cases
         only = full_skip.Targets(flows={name: ['EntryPoint0']}, timelines=[], movies={},
                                  choices={}, reviewed_forks={})
         with mock.patch.object(full_skip, 'load_targets', return_value=only):
             files, report, sizes = full_skip.files_with_fallback(self.game, 1)
         self.assertEqual(sizes, {})
-        self.assertTrue(any(line.startswith(f'fallback to trimming {name}/EntryPoint0: conflict')
+        self.assertTrue(any(line.startswith(f'fallback to trimming {name}/EntryPoint0: new END case')
                             for line in report))
         old = build_cutscene_files(self.game)
         self.assertEqual(files.get(path_of(name)), old.get(path_of(name)))
@@ -216,13 +216,14 @@ class FullSkipTest(unittest.TestCase):
     def test_partly_rewritten_file_is_not_old_trimmed(self):
         files, report, sizes = full_skip.files_with_fallback(self.game, 1)
         self.assertEqual(sizes, self.sizes)
-        p = path_of('Goto_HyruleCastle')
+        name = 'HyruleCastle_FoundBySecurity'
+        p = path_of(name)
         self.assertEqual(files[p], self.files[p])
-        self.assertTrue(any(line.startswith('full skip only Goto_HyruleCastle') for line in report))
+        self.assertTrue(any(line.startswith(f'full skip only {name}') for line in report))
         # Its failed entries are reported as untrimmed, not as falling back to trimming.
-        self.assertTrue(any(line.startswith('untrimmed (file partly rewritten) Goto_HyruleCastle/')
+        self.assertTrue(any(line.startswith(f'untrimmed (file partly rewritten) {name}/')
                             for line in report))
-        self.assertFalse(any(line.startswith('fallback to trimming Goto_HyruleCastle/')
+        self.assertFalse(any(line.startswith(f'fallback to trimming {name}/')
                              for line in report))
         # The intro's unlocked skip (a component list) still comes from the old option.
         old = build_cutscene_files(self.game)
@@ -377,6 +378,15 @@ class FullSkipTest(unittest.TestCase):
                             ('Npc_Kokiri_007_Child', 'GoToDekuTree'),
                             ('Npc_Kokiri_Mido_Child', 'Talk')):
             self.assertIn((flow, entry), self.applied)
+
+    def test_conflicting_scenes_get_a_copy_per_call_site(self):
+        # A kept event inside a same-file subflow called twice continued differently
+        # after each call ('conflict'); now each call site gets its own copy (Din's
+        # copies grow the file, Jabu-Jabu's fit in unreachable donor slots).
+        for name in ('Dm_FairyFountain_Din', 'Dm_InsideJabu_Jabu_0050'):
+            self.assertIn((name, 'EntryPoint0'), self.applied)
+        self.assertIn(path_of('Dm_FairyFountain_Din'), self.sizes)
+        self.assertNotIn(path_of('Dm_InsideJabu_Jabu_0050'), self.sizes)
 
     def test_exit_kokiri_lets_link_pass_without_talking(self):
         # After the Deku Tree the exit Kokiri stops Link, talks and steps aside

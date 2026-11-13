@@ -334,6 +334,45 @@ class LinearizeTests(unittest.TestCase):
         rw = lin(ev, {'E': 0, 'X': 3})
         self.assertEqual(rw.error, 'conflict')
 
+    def test_conflict_grows_one_copy_per_call(self):
+        # With growth, the second call of X gets its own copy of K3.
+        ev = [SUB(0, '', 'X', 1), SUB(1, '', 'X', 2), A(2, 'K2'), A(3, 'K3')]
+        entries = {'E': 0, 'X': 3}
+        rw = lin(ev, entries, grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual(rw.grown, [3])
+        self.assertEqual(rw.kept, [3, 2])
+        new, new_entries = rewritten(ev, entries, rw)
+        path = walk(new, new_entries['E'])
+        self.assertEqual(path, [3, 4, 2])
+        self.assertEqual([new[i].action for i in path], ['K3', 'K3', 'K2'])
+
+    def test_conflict_copy_takes_a_donor_first(self):
+        # An unreachable action (4) is overwritten instead of growing the file.
+        ev = [SUB(0, '', 'X', 1), SUB(1, '', 'X', 2), A(2, 'K2'), A(3, 'K3'), A(4, 'D')]
+        entries = {'E': 0, 'X': 3}
+        rw = lin(ev, entries, grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        self.assertEqual((rw.copies, rw.grown), ({4: 3}, []))
+        new, new_entries = rewritten(ev, entries, rw)
+        self.assertEqual(walk(new, new_entries['E']), [3, 4, 2])
+
+    def test_conflict_copies_a_kept_switch_with_its_cases(self):
+        # X is a kept switch whose cases both end X; each call continues elsewhere.
+        ev = [SUB(0, '', 'X', 1), SUB(1, '', 'X', 2), A(2, 'K2'),
+              SW(3, 'S', [4, 5]), A(4, 'K4'), A(5, 'K5')]
+        entries = {'E': 0, 'X': 3}
+        rw = lin(ev, entries, grow=True)
+        self.assertIsNone(rw.error, rw.detail)
+        new, new_entries = rewritten(ev, entries, rw)
+        first = new[new_entries['E']]
+        self.assertEqual(first.query, 'S')
+        for case in first.cases:
+            second = new[new[case].next]
+            self.assertEqual(second.query, 'S')
+            for c2 in second.cases:
+                self.assertEqual(walk(new, new[c2].next), [2])
+
     def test_loop(self):
         self.assertEqual(lin([A(0, 'D0', 1), A(1, 'D1', 0)]).error, 'loop')
 
