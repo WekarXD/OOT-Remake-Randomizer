@@ -49,6 +49,11 @@ FROZEN_LINK = frozenset({
     'Dm_Deku_0003', 'Dm_HrlField_0020', 'Dm_HrlCastle_0000', 'Dm_HrlCastle_0020',
     'Dm_HrlCastle_0020.110', 'Dm_HrlCastle_0035', 'Dm_HrlCastle_0050',
     'Dm_LonLon_0020', 'Dm_Kakariko_0010'})
+# Scenes that must play whole: Din's Great Fairy left the full skip after batch 26e
+# (its rewrite took the rupees and gave nothing; untouched it gives her item, 26d).
+# Without a full-skip rewrite a flow falls back to this trimming, so it is left out here
+# too: whether the trimming keeps her grant is untested.
+PLAY_WHOLE = frozenset({'Dm_FairyFountain_Din'})
 
 # Manual review (2026-11-09): candidate entries that are normal or
 # repeatable chatter (random topics, choices, masks, auxiliary cameras,
@@ -258,7 +263,7 @@ def build(nup) -> dict:
              if p.endswith(FLOW_EXT)]
     story: dict = {}
     for name in names:
-        if name in FROZEN_LINK:
+        if name in FROZEN_LINK or name in PLAY_WHOLE:
             continue
         if name.startswith(STORY_PREFIXES) and not name.startswith(EXCLUDED_PREFIXES):
             story[name] = '*'

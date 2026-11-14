@@ -418,12 +418,19 @@ class FullSkipTest(unittest.TestCase):
 
     def test_conflicting_scenes_get_a_copy_per_call_site(self):
         # A kept event inside a same-file subflow called twice continued differently
-        # after each call ('conflict'); now each call site gets its own copy (Din's
-        # copies grow the file, Jabu-Jabu's fit in unreachable donor slots).
-        for name in ('Dm_FairyFountain_Din', 'Dm_InsideJabu_Jabu_0050'):
-            self.assertIn((name, 'EntryPoint0'), self.applied)
-        self.assertIn(path_of('Dm_FairyFountain_Din'), self.sizes)
+        # after each call ('conflict'); now each call site gets its own copy (Jabu-Jabu's
+        # fit in unreachable donor slots).
+        self.assertIn(('Dm_InsideJabu_Jabu_0050', 'EntryPoint0'), self.applied)
         self.assertNotIn(path_of('Dm_InsideJabu_Jabu_0050'), self.sizes)
+
+    def test_din_fountain_plays_whole(self):
+        # Batch 26e (2026-11-14): with the rewrite of Din's fountain (copies per call
+        # site) the fairy took the 25 rupees and gave nothing; without the skip it gives
+        # its item (26d). Neither the full skip nor the old trimming touches it.
+        self.assertNotIn('Dm_FairyFountain_Din', self.targets.flows)
+        from randomizer.cutscenes import load_policy
+        self.assertNotIn('Dm_FairyFountain_Din', load_policy()['story_flows'])
+        self.assertNotIn(path_of('Dm_FairyFountain_Din'), self.files)
 
     def test_exit_kokiri_lets_link_pass_without_talking(self):
         # After the Deku Tree the exit Kokiri stops Link, talks and steps aside

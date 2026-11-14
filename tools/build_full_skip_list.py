@@ -86,7 +86,6 @@ CHILD_EXTRA: dict[str, str] = {
     'Dm_MelodyGet_Epona': 'Epona\'s Song from Malon (child song)',
     'Dm_MelodyGet_Sun': 'Royal Family Tomb wall, Sun\'s Song (child song)',
     'Dm_MelodyGet_Sun_03': 'Sun\'s Song granted (GetPouchContent) after the tomb wall',
-    'Dm_FairyFountain_Din': 'Great Fairy gives Din\'s Fire (childhood spell)',
     'Dm_FairyFountain_Frore': 'Great Fairy gives Farore\'s Wind (childhood spell)',
     'Dm_HrlField_0030': 'Kaepora Gaebora (the owl only meets child Link)',
     'Dm_HrlField_0040': 'Kaepora Gaebora (the owl only meets child Link)',
@@ -105,6 +104,8 @@ NOT_CHILD_EXTRA: dict[str, str] = {
     'Dm_Kakariko_0040': 'flashback timeline with Sheik (KakarikoVillage_FlashbackScenes, adult)',
     'Dm_Kokiri_0162': 'after the Forest Temple (ForestTemple_SageOfForest_..., adult)',
     'Dm_Zora_0020': 'diving minigame (MiniGame_Diving)',
+    'Dm_FairyFountain_Din': ('Great Fairy of Din: her rewrite (copies per call site) took '
+                             'the rupees and gave nothing (batch 26e, 2026-11-14)'),
 }
 
 # NPC gifts and songs in conversations the player starts (spec §4.3): flow -> entries.
@@ -146,7 +147,8 @@ BOSS_ENTRIES = frozenset({
 BOSS_TIMELINE_MARKS = ('_BossIn', '_BossOut')
 # Dm_* scenes of phase 2 left out (from NOT_CHILD_EXTRA; the others there were only
 # left out of the childhood because they are adult or both ages).
-NOT_SKIPPED = ('Dm_DeathMtTrail_0005', 'Dm_Goron_0045', 'Dm_ZoraFountain_0000', 'Dm_Zora_0020')
+NOT_SKIPPED = ('Dm_DeathMtTrail_0005', 'Dm_Goron_0045', 'Dm_ZoraFountain_0000', 'Dm_Zora_0020',
+               'Dm_FairyFountain_Din')
 # Phase 2 entries naming a boss: the user keeps boss intros and defeats (BOSS_ENTRIES
 # only lists the childhood ones).
 ADULT_BOSS = re.compile(r'Boss|PhantomGanon|Volvagia|Valvagia|Morpha|BongoBongo|Twinrova|KotakeKoume')
