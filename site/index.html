@@ -67,14 +67,23 @@
             <label class="switch"><input type="checkbox" id="skip-cutscenes"><span class="slider" aria-hidden="true"></span> Skip cutscenes <span class="badge">in development</span></label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-skip" aria-label="About Skip cutscenes">ⓘ</button>
           </div>
-          <p class="tip-text" id="tip-skip">Childhood cutscenes and forced conversations are skipped (items and songs are still given). From the Temple of Time on, scenes are only shortened. Boss intros and defeats are kept.</p>
+          <div class="tip-text" id="tip-skip">
+            <p>This shortens the story scenes.</p>
+            <ul><li>Childhood cutscenes and forced conversations are skipped. Items and songs are still given.</li>
+            <li>From the Temple of Time on, scenes are only shortened.</li>
+            <li>Boss intros and defeats are kept.</li></ul>
+            <p>Still in development: some scenes may not be skipped yet.</p>
+          </div>
         </div>
         <div class="field">
           <div class="field-head">
             <label class="switch"><input type="checkbox" id="spoiler" checked><span class="slider" aria-hidden="true"></span> Include the spoiler log in the zip</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-spoiler" aria-label="About the spoiler log">ⓘ</button>
           </div>
-          <p class="tip-text" id="tip-spoiler">Adds <code>spoiler.txt</code> to the mod folder: the list of where every item went. Leave it off if you don't want to be tempted.</p>
+          <div class="tip-text" id="tip-spoiler">
+            <p>This adds <code>spoiler.txt</code> to the mod folder.</p>
+            <p>It lists where every item went. Turn it off if you don't want to be tempted.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -91,9 +100,15 @@
             <option value="vanilla">Vanilla</option>
             <option value="any_chest" selected>Any chest</option>
           </select>
-          <p class="tip-text" id="tip-mode">Vanilla: key items stay where they are in the original game. Any chest: key items are shuffled among chests (and among the Skulltulas or song spots you turn on in Shuffle).</p>
+          <div class="tip-text" id="tip-mode">
+            <p>This decides where key items can appear.</p>
+            <p>'Vanilla': every key item stays in its original location.</p>
+            <p>'Any chest': key items are shuffled among chests. With Tokensanity or Shuffle Songs turned on, they can also be on those Gold Skulltulas or song locations.</p>
+            <p>These chests never get a key item in this version:</p>
+            <ul><li>The Market Treasure Chest Game chests</li>
+            <li>Chests that hold small keys, maps or compasses</li></ul>
+          </div>
         </div>
-        <p class="note">The Market Treasure Chest Game chests and those holding keys, maps or compasses do not receive key items in this version.</p>
       </div>
 
       <div class="card">
@@ -109,7 +124,13 @@
             <option value="overworld">Overworld Only</option>
             <option value="all">All Tokens</option>
           </select>
-          <p class="tip-text" id="tip-tokens">The selected Gold Skulltulas can drop any item, and their tokens are distributed among chests and other Skulltulas.</p>
+          <div class="tip-text" id="tip-tokens">
+            <p>This shuffles the Gold Skulltula Tokens.</p>
+            <p>'Off': every Gold Skulltula gives its own token.</p>
+            <p>'Dungeons Only': the Gold Skulltulas inside dungeons can drop any item, and their tokens are spread among chests and other Skulltulas.</p>
+            <p>'Overworld Only': the same, for the Gold Skulltulas outside dungeons.</p>
+            <p>'All Tokens': every Gold Skulltula.</p>
+          </div>
         </div>
 
         <div class="field">
@@ -122,7 +143,17 @@
             <option value="song_locations">Song Locations</option>
             <option value="anywhere">Anywhere</option>
           </select>
-          <p class="tip-text" id="tip-songs">Song Locations: the 12 songs are shuffled among the places that teach a song (Impa, Saria, Malon, the Royal Family's Tomb, the Ocarina of Time, the windmill and Sheik). The scenes still name their original song. Anywhere: songs can be in any chest or song scene (never on a Skulltula), and the song scenes can give any item except Gold Skulltula tokens; needs key items shuffled.</p>
+          <div class="tip-text" id="tip-songs">
+            <p>This restricts where songs can appear.</p>
+            <p>'Off': every song is taught where it normally is.</p>
+            <p>'Song Locations': the 12 songs are shuffled among the places that normally teach a song:</p>
+            <ul><li>Impa, Saria and Malon</li>
+            <li>The Royal Family's Tomb and the windmill</li>
+            <li>The Ocarina of Time</li>
+            <li>Sheik's songs</li></ul>
+            <p>The scenes still name their original song.</p>
+            <p>'Anywhere': songs can be in any chest or song location, never on a Gold Skulltula. Song locations can give any item except Gold Skulltula tokens. Needs key items set to 'Any chest'.</p>
+          </div>
         </div>
       </div>
 
@@ -141,7 +172,10 @@
             <label class="switch disabled"><input type="checkbox" checked disabled><span class="slider" aria-hidden="true"></span> No glitches</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-logic" aria-label="About the logic">ⓘ</button>
           </div>
-          <p class="tip-text" id="tip-logic">Every generated seed is beatable with OoTR's glitchless logic, plus a few rules where the remake is stricter.</p>
+          <div class="tip-text" id="tip-logic">
+            <p>Every generated seed can be finished without glitches.</p>
+            <p>It uses OoTR's glitchless logic, plus a few rules where the remake is stricter (for example, the Deku Tree's upper floor needs a ranged item).</p>
+          </div>
         </div>
       </div>
     </section>

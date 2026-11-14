@@ -96,11 +96,19 @@ input[type="text"], input[type="file"], select { width: 100%; padding: 9px 10px;
    (it never pushes the page) when the pointer is over the option or ⓘ is tapped. */
 .field { position: relative; }
 .tip-text { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20; margin: 0;
-  padding: 10px 12px; font-size: .9rem; font-weight: normal; border-radius: 8px; background: var(--panel);
-  border: 1px solid var(--border); border-left: 3px solid var(--gold); box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
+  padding: 14px 18px; font-size: .9rem; font-weight: normal; line-height: 1.45; border-radius: 10px;
+  background: var(--panel); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0, 0, 0, .35); }
+.tip-text p { margin: 0 0 .7em; }
+.tip-text ul { margin: -.4em 0 .7em; padding-left: 1.2em; }
+.tip-text > :last-child { margin-bottom: 0; }
 .tip-text.open { display: block; }
 @media (hover: hover) {
   .field:hover .tip-text { display: block; }
+}
+/* Wide screens: narrow controls, help panel beside them (OoTR style). */
+@media (min-width: 900px) {
+  .field select { max-width: 320px; }
+  .tip-text { left: 340px; right: auto; width: min(420px, calc(100% - 340px)); top: -8px; }
 }
 
 /* Presets */
