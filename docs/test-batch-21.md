@@ -28,4 +28,6 @@ The events are built from scratch by the new tool (`randomizer/formats/evfl_appe
 
 Attempt 1 (2026-11-14): the door opened, then Link froze (music and leaves kept moving). Cause: every entry point lists the subflow events it reaches (true for all 5512 entries of the game), and the chain's calls were not listed. Fixed with `set_entry_subflows`; the mod was rebuilt for attempt 2.
 
-Attempt 2: (to be filled in after testing.)
+Attempt 2 (2026-11-14): pressing the button did not open the door, and nothing froze (the event did not start). Cause: each event's row in `RSDB/GameAnalyzedEventInfo` lists in `SubFlowList` every flow its entries reach (recursively, sorted; 340 of 350 rows match exactly), and the hook's row had none. The batch now also writes that table.
+
+Attempt 3: (to be filled in after testing.)

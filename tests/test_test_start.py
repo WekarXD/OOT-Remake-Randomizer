@@ -5,7 +5,9 @@ from pathlib import Path
 from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
-from randomizer.test_start import HOOK_ENTRY, HOOK_FLAGS, HOOK_FLOW, StartPreset, apply_start
+from randomizer.formats import byml
+from randomizer.test_start import (ANALYZED_INFO, HOOK_ENTRY, HOOK_FLAGS, HOOK_FLOW, StartPreset,
+                                   apply_start, chain_calls, subflow_closure, with_subflow_list)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 PRESET = StartPreset('HyruleField_Child', 'HyruleField_FrontOfLostWoodBridge',
@@ -67,6 +69,43 @@ class ApplyStartTest(unittest.TestCase):
             i = new.events[i].next
         self.assertEqual(len(reached), 2)
         self.assertEqual(new.entry_subflows(HOOK_ENTRY), reached)
+
+    def test_subflow_closure_matches_game(self):
+        # GameAnalyzedEventInfo lists, per event, every flow its entries reach
+        # through subflow calls (recursively), sorted.
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            rows = byml.load(codec.decompress(ANALYZED_INFO, nup.read(ANALYZED_INFO)))[1]
+
+            def load(name):
+                p = f'Event/EventFlow/{name}.bfevfl.zs'
+                return EventFlow(codec.decompress(p, nup.read(p))) if nup.has(p) else None
+
+            for event in ('Dm_LostWood_0040', 'Dm_DeathMtTrail_0050', 'Dm_FairyFountain_Din'):
+                row = next(r for r in rows if r['__RowId'] == event)
+                flow = load(event)
+                calls = [(event, e) for e in flow.entry_points]
+                self.assertEqual(subflow_closure(load, calls, skip=event),
+                                 row.get('SubFlowList', []), event)
+
+    def test_with_subflow_list(self):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            raw = codec.decompress(ANALYZED_INFO, nup.read(ANALYZED_INFO))
+        out = with_subflow_list(raw, HOOK_FLOW, ['B', 'A'])
+        old, new = byml.load(raw)[1], byml.load(out)[1]
+        self.assertEqual(len(old), len(new))
+        for a, b in zip(old, new):
+            if a['__RowId'] == HOOK_FLOW:
+                self.assertEqual(b, {**a, 'SubFlowList': ['A', 'B']})
+            else:
+                self.assertEqual(a, b)
+        with self.assertRaises(KeyError):
+            with_subflow_list(raw, 'NoSuchEvent', ['A'])
+
+    def test_chain_calls(self):
+        self.assertEqual(chain_calls(PRESET), [('Dm_SY_GetInEvent', 'GetInEvent'),
+                                               ('Dm_SY_BancChangeGo', 'EntryPoint0')])
 
     def test_original_events_untouched(self):
         new = EventFlow(apply_start(self.data, PRESET))

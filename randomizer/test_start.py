@@ -4,10 +4,18 @@ On a new game, the scene where Link first leaves his house (`HOOK_FLOW`) is
 replaced by a chain: the flags that scene sets (so it does not replay), the
 preset's flags, one item gift per item and a teleport. Built with
 `formats.evfl_append`. See docs/superpowers/specs/2026-11-13-test-teleport-design.md.
+
+The game also needs to know which flows an event calls before it starts it:
+the entry's own subflow list (`set_entry_subflows`) and the event's
+`SubFlowList` row in `ANALYZED_INFO`. Without the first Link freezes at the
+first call; without the second the event does not start (batch 21).
 """
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
+
+from randomizer.formats import byml
 
 from randomizer.formats.bfevfl import EventFlow, patch_pointers
 from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, append_events,
@@ -17,6 +25,7 @@ HOOK_FLOW = 'Dm_Kokiri_0045'
 HOOK_ENTRY = 'EntryPoint0'
 # Flags the hook scene sets itself (events 39 and 45).
 HOOK_FLAGS = ('KokiriForest_LinkHouseDoor_Open', 'Dm_Kokiri_0050_After_Near_End')
+ANALYZED_INFO = 'RSDB/GameAnalyzedEventInfo.Product.111.rstbl.byml.zs'
 
 
 @dataclass(frozen=True)
@@ -41,6 +50,46 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
         'NextBanc': preset.banc, 'NextStartPos': preset.start_pos, 'BootEventName': '',
         'IsCheckAir': False, 'NextStartPosAir': preset.start_pos}))
     return specs
+
+
+def chain_calls(preset: StartPreset) -> list[tuple[str, str]]:
+    """(flow, entry) of each subflow call of the preset chain, in order."""
+    return [(s.flow, s.entry) for s in _chain(preset) if isinstance(s, SubflowSpec)]
+
+
+def subflow_closure(load: Callable[[str], EventFlow | None],
+                    calls: Iterable[tuple[str, str]], skip: str = '') -> list[str]:
+    """Sorted names of every flow reached from `calls` ((flow, entry) pairs),
+    following each entry's subflow list recursively; `load(name)` gives a flow
+    (None if missing) and `skip` is left out (the event's own flow). This is the
+    event's `SubFlowList` in `ANALYZED_INFO`."""
+    flows: dict[str, EventFlow | None] = {}
+    seen: set[tuple[str, str]] = set()
+    stack = list(calls)
+    while stack:
+        name, entry = stack.pop()
+        if (name, entry) in seen:
+            continue
+        seen.add((name, entry))
+        if name not in flows:
+            flows[name] = load(name)
+        flow = flows[name]
+        if flow is None or entry not in flow.entry_points:
+            continue
+        for i in flow.entry_subflows(entry):
+            ev = flow.events[i]
+            stack.append((ev.sub_flow or name, ev.sub_entry))
+    return sorted({name for name, _ in seen} - {skip})
+
+
+def with_subflow_list(info: bytes, event: str, names: Sequence[str]) -> bytes:
+    """`ANALYZED_INFO` (decompressed) with event's `SubFlowList` set to `names`
+    (sorted, as in the game). Raises KeyError if the event has no row."""
+    ver, rows = byml.load(info)
+    if not any(r['__RowId'] == event for r in rows):
+        raise KeyError(event)
+    rows = [{**r, 'SubFlowList': sorted(names)} if r['__RowId'] == event else r for r in rows]
+    return byml.dump(rows, ver)
 
 
 def apply_start(flow_bytes: bytes, preset: StartPreset) -> bytes:

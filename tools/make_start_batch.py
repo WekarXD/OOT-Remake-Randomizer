@@ -14,24 +14,39 @@ from randomizer.formats.rstb import Rstb  # noqa: E402
 from randomizer.formats.zs import ZsCodec  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.patch import RSTB_PATH  # noqa: E402
-from randomizer.test_start import HOOK_FLOW, StartPreset, apply_start  # noqa: E402
+from randomizer.formats.bfevfl import EventFlow  # noqa: E402
+from randomizer.test_start import (ANALYZED_INFO, HOOK_FLOW, StartPreset, apply_start,  # noqa: E402
+                                   chain_calls, subflow_closure, with_subflow_list)
 
 PRESET = StartPreset('HyruleField_Child', 'HyruleField_FrontOfLostWoodBridge',
                      items=('Item_Ocarina_Fairy',))
 
 
-def build(nup: NupArchive, preset: StartPreset) -> dict[str, bytes]:
-    """{romfs path: compressed bytes} of the hook flow and the RSTB."""
-    codec = ZsCodec.from_archive(nup)
-    rel = f'Event/EventFlow/{HOOK_FLOW}.bfevfl'
-    raw = codec.decompress(rel + '.zs', nup.read(rel + '.zs'))
-    new = apply_start(raw, preset)
-    rstb = Rstb.load(codec.decompress(RSTB_PATH, nup.read(RSTB_PATH)))
+def _grow(rstb: Rstb, rel: str, old_len: int, new_len: int) -> None:
     orig = rstb.get(rel)
     if orig is None:
         raise SystemExit(f'FAIL: the RSTB does not have {rel}')
-    rstb.set(rel, orig + ((len(new) - len(raw) + 0xFF) & ~0xFF) + 0x1000)
+    rstb.set(rel, orig + ((max(new_len - old_len, 0) + 0xFF) & ~0xFF) + 0x1000)
+
+
+def build(nup: NupArchive, preset: StartPreset) -> dict[str, bytes]:
+    """{romfs path: compressed bytes} of the hook flow, the event info table and the RSTB."""
+    codec = ZsCodec.from_archive(nup)
+
+    def load(name: str) -> EventFlow | None:
+        p = f'Event/EventFlow/{name}.bfevfl.zs'
+        return EventFlow(codec.decompress(p, nup.read(p))) if nup.has(p) else None
+
+    rel = f'Event/EventFlow/{HOOK_FLOW}.bfevfl'
+    raw = codec.decompress(rel + '.zs', nup.read(rel + '.zs'))
+    new = apply_start(raw, preset)
+    info = codec.decompress(ANALYZED_INFO, nup.read(ANALYZED_INFO))
+    new_info = with_subflow_list(info, HOOK_FLOW, subflow_closure(load, chain_calls(preset)))
+    rstb = Rstb.load(codec.decompress(RSTB_PATH, nup.read(RSTB_PATH)))
+    _grow(rstb, rel, len(raw), len(new))
+    _grow(rstb, ANALYZED_INFO[:-3], len(info), len(new_info))
     return {rel + '.zs': codec.compress(rel + '.zs', new),
+            ANALYZED_INFO: codec.compress(ANALYZED_INFO, new_info),
             RSTB_PATH: codec.compress(RSTB_PATH, rstb.dump())}
 
 
