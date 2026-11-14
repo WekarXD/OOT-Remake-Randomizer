@@ -21,4 +21,4 @@ Built with `tools/make_song_batch.py <nup> <out> 25`, on the full skip. Leaving 
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 1 (2026-11-14): the Slingshot came without ammo, so it could not shoot. The preset now also gives the Bullet Bag (`Item_BulletBag_Small`) and Deku Seeds (`TBox_DekuSeedBundle`). Rebuilt for attempt 2.

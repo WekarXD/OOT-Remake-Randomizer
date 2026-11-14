@@ -70,8 +70,10 @@ VARIANTS = {
 # Gohma's room (InsideTheDekuTree 'DefeatBoss', next to her Heart Container), with the
 # Kokiri Sword, the Deku Shield and the Slingshot for the fight.
 GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
+                    # The Slingshot alone has no ammo (batch 25, attempt 1): the bag and seeds.
                     items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
-                           'Item_Range_SlingShot'))
+                           'Item_Range_SlingShot', 'Item_BulletBag_Small',
+                           'TBox_DekuSeedBundle'))
 VARIANTS['25'] = (GOHMA, VANILLA, True)
 # Variants that put a song on a boss Heart Container: OoTR location -> song.
 HEART_SONGS = {'25': {'Deku Tree Queen Gohma Heart': 'Item_Melody_StormSong'}}
