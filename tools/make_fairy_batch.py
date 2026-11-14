@@ -106,13 +106,15 @@ def patch_fountain(data: bytes, name: str, item: str) -> bytes:
 
 
 def make_free(data: bytes) -> bytes:
-    """The flow without charging: every rupee check (`HasRuppe`, including the copies
-    the full skip inlines, which skip the pay question) goes to its "enough" case, and
-    every payment (`IncreaseRupee`, also inlined from `Pay`) is skipped. Batch 26
-    attempt 1: patching only the pay question left the skip's direct path, and the
-    fairy said Link had too few rupees."""
+    """The flow without charging: every pay question (`TalkChoice2`) goes to its "yes"
+    case, every rupee check (`HasRuppe`, including the copies the full skip inlines,
+    which skip the question) to its "enough" case, and every payment (`IncreaseRupee`,
+    also inlined from `Pay`) is skipped. Batch 26 attempt 1 patched only the question
+    (the skip's direct path still checked the rupees); attempt 2 only the checks ("No"
+    still led to DontPay1, whose line also says Link has too few rupees)."""
     flow = EventFlow(data)
-    for check in [i for i, ev in enumerate(flow.events) if ev.query == 'EventQueryHasRuppe']:
+    for check in [i for i, ev in enumerate(flow.events)
+                  if ev.query in ('EventQueryTalkChoice2', 'EventQueryHasRuppe')]:
         data = _retarget(data, check, _switch_case_targets(EventFlow(data), check)[0])
     flow = EventFlow(data)
     return bypass(data, [i for i, ev in enumerate(flow.events)
