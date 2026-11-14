@@ -296,7 +296,16 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
         placed[h] = rest[i]
     taken = set(allowed)
     rest = [drop for i, drop in enumerate(rest) if i not in taken]
-    open_chests = [h for h in open_sites if h not in gs]
+    # Song scenes (Anywhere, negative ids) never give a token: untested in game.
+    open_scenes = [h for h in open_sites if h < 0]
+    allowed = [i for i, drop in enumerate(rest) if drop != TOKEN][:len(open_scenes)]
+    if len(allowed) < len(open_scenes):
+        raise FillError('Not enough items that the song scenes can give')
+    for h, i in zip(open_scenes, allowed, strict=True):
+        placed[h] = rest[i]
+    taken = set(allowed)
+    rest = [drop for i, drop in enumerate(rest) if i not in taken]
+    open_chests = [h for h in open_sites if h not in gs and h >= 0]
     for h, drop in zip(open_chests, rest, strict=True):
         placed[h] = drop
 

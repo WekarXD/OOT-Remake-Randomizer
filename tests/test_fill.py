@@ -307,6 +307,15 @@ class AnywhereFillTest(unittest.TestCase):
                           skulltulas, gs_map, forbidden)
             self.assertFalse([h for h, d in r.chests.items() if h in sk and d in SONG_BY_ACTOR])
 
+    def test_anywhere_no_token_from_a_song_scene(self):
+        # A song scene giving a Gold Skulltula token is untested in game (review).
+        skulltulas, gs_map = _gs_data()
+        for i in range(15):
+            r = place_all(self.chests, self.loc_map, self.world,
+                          Settings(seed=f'T{i}', shuffle_songs='anywhere', tokensanity='all'),
+                          skulltulas, gs_map, frozenset(VANILLA_SONGS.values()))
+            self.assertNotIn(TOKEN, r.songs.values(), f'seed {i}')
+
 
 def _gs_data():
     if not hasattr(_gs_data, 'cached'):

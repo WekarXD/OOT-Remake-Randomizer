@@ -25,6 +25,7 @@ Pending work, most important first within each section.
 
 ## To build
 
+- **Gold Skulltula tokens from song scenes (Anywhere):** the fill never puts a token on a song scene, because a token given by a scene's `GetPouchContentByActorName` grant is untested in game (a token is a counter, not a pouch item). To allow it: a test batch where a song scene gives `Obj_Token_Gold`, then drop the rule in `fill._attempt` (the `open_scenes` block).
 - **Shuffle Songs: Dungeon Rewards** (after Anywhere; design `docs/superpowers/specs/2026-11-14-song-locations-design.md`). Dungeon Rewards needs the boss heart containers and the BotW/GTG chests, which are in `NO_KEY_TARGET_ZONES`.
 - **Remaining full-skip failures** (shared forced talks are done by growing, pending the round 3 test): the targeting tutorial `ActionTutorial_1st_Talk` (conflict), Din's fairy (conflict), `Dm_InsideJabu_Jabu_0050` (conflict). Compounding growth (copy of a copy) could be optimised by growing in place.
 - **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.

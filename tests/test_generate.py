@@ -16,6 +16,7 @@ from randomizer.formats.bfevfl import SUBFLOW, EventFlow
 from randomizer.formats.rstb import Rstb, banc_rstb_size
 from randomizer.formats.zs import ZsCodec
 from randomizer.songs import SONGS
+from randomizer.items import KEY_ITEMS
 from randomizer.game import GameData, load_chests_fixture, load_skulltulas_fixture
 from randomizer.generate import GenerationError, generate, safe_seed_name
 from randomizer.nup import NupArchive
@@ -481,9 +482,14 @@ class RealTests(unittest.TestCase):
                         granted |= {f.action_params(i).get('ActorName')
                                     for i in range(len(f.events))}
                     self.assertIn(scenes[row.location], granted, row.location)
-                elsewhere = [k for k in data['key_items'] if k['item'].startswith('Item_Melody_')]
-                self.assertEqual(len(elsewhere) + sum(
-                    a.startswith('Item_Melody_') for a in scenes.values()), 12)
+                # Every song and key item is in "Key items", song scenes included (review).
+                songs = [k['item'] for k in data['key_items'] if k['item'].startswith('Item_Melody_')]
+                self.assertEqual(len(songs), 12)
+                self.assertEqual(len(set(songs)), 12)
+                listed = {k['location'] for k in data['key_items']}
+                for loc, actor in scenes.items():
+                    if actor.startswith('Item_Melody_') or actor in KEY_ITEMS:
+                        self.assertIn(loc, listed, loc)
                 in_chests = {r['placed'] for r in data['chests'] if r['changed']}
                 self.assertTrue(any(a.startswith('Item_Melody_') for a in in_chests))
                 sk = {r['placed'] for r in data.get('skulltulas', [])}

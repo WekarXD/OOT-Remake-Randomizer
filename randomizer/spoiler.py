@@ -60,7 +60,8 @@ def build(settings, placement, chests, loc_map, game_version,
             reason = 'story event'
         if reason:
             excluded.append({**row, 'reason': reason})
-        if (placed in KEY_ITEMS or placed in SONG_BY_ACTOR) and e is not None                 and not e.needs_event_patch:
+        is_key = placed in KEY_ITEMS or placed in SONG_BY_ACTOR
+        if is_key and e is not None and not e.needs_event_patch:
             key_items.append({'item': placed, 'label': _label(placed),
                               'location': e.location, 'zone': _zone(c.banc),
                               'hash': str(h)})
@@ -76,6 +77,12 @@ def build(settings, placement, chests, loc_map, game_version,
         key_items.append({'item': placement[s.hash], 'label': _label(placement[s.hash]),
                           'location': e.location, 'zone': _zone(s.banc),
                           'hash': str(s.hash)})
+    if settings.shuffle_songs == 'anywhere':
+        # Song scenes are item locations too: list the key items and songs they give.
+        for loc, actor in sorted((songs or {}).items()):
+            if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
+                key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
+                                  'zone': 'Song scene', 'hash': ''})
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
     result = {
         'seed': settings.seed,
