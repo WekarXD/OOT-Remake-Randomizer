@@ -25,7 +25,7 @@ Builder: scratchpad `batch23.py` (throwaway), `a` or `b`.
 Impa:
 
 - [ ] Does her scene end cleanly, with no hang? ______
-- [ ] Do you get the **red rupee** (+20 rupees)? Is there a "you got" message, and what does it show? ______
+- [x] Do you get the **red rupee** (+20 rupees)? Is there a "you got" message, and what does it show? Yes: the message names the red rupee and it is received (attempt 1).
 - [ ] Do you **not** get Zelda's Lullaby? ______
 
 Saria:
@@ -40,4 +40,6 @@ In general:
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 1 (2026-11-14):
+- **23a works:** Impa's scene gives the red rupee, with its "you got" message. A minor item can be granted just by renaming the grant's item, so the grant call does not need to change.
+- **23b:** Saria was not in the meadow. Cause: `DoorOfTime` depends on `Goto_HyruleCastle_IsCompleted_Exp` (`DependFlagName` in `RSDB/Challenge`), so its steps did not advance while the castle quest was not completed. The 23b preset now completes the castle quest first (every step up to `Complete`) and then advances `DoorOfTime`. Rebuilt for attempt 2 (23b only).
