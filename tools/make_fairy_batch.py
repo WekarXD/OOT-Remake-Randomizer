@@ -12,9 +12,9 @@ Zelda's Lullaby, and patches the fountains the way the shuffle would:
 - TriForcePoint no longer needs Din's Fire to summon the other fairies;
 - the Power fairy's spin attack guide is skipped when she gives something else.
 
-26a: Hyrule Castle (Din) gives Farore's Wind; Link already has the double magic and
+26a: Death Mountain Trail (Din) gives Farore's Wind; Link already has the double magic and
      no rupees.
-26b: Death Mountain Trail (Power) gives the Boomerang; no magic, no Din's Fire.
+26b: Hyrule Castle (Power) gives the Boomerang; no magic, no Din's Fire.
 26c: Death Mountain Crater (Wisdom), adult, gives Nayru's Love; no magic.
 Usage: python -I tools/make_fairy_batch.py <nup> <out_mod_dir> [26a|26b|26c]
 """
@@ -41,10 +41,13 @@ DIN_GATE = 'IsGet.Item_DinFire'
 BOOL_QUERY = 'EventQueryIsGameDataBool'
 # fountain -> (vanilla reward, map, Triforce point, fountain basin centre)
 FOUNTAINS = {
-    'Din': ('Item_DinFire', 'HyruleCastle',
-            (118.5, 108.8, -76.8), (120.5, 107.7, -77.4)),
-    'Power': ('Item_FairyBless_MP', 'DeathMountainTrail_Child',
-              (-34.0, 211.2, -189.2), (-34.7, 210.1, -191.1)),
+    # The remake swaps these two against the N64: Din's fountain is at the top of Death
+    # Mountain and Power's by Hyrule Castle (each flow's camera warps there; batch 26
+    # attempts 1-3 sent 26a to the castle, which is Power's, still charging).
+    'Din': ('Item_DinFire', 'DeathMountainTrail_Child',
+            (-34.0, 211.2, -189.2), (-34.7, 210.1, -191.1)),
+    'Power': ('Item_FairyBless_MP', 'HyruleCastle',
+              (118.5, 108.8, -76.8), (120.5, 107.7, -77.4)),
     'Wisdom': ('Item_FairyBless_MPDouble', 'DeathMountainCrater_Adult',
                (-76.6, 122.2, 46.6), (-78.4, 121.1, 47.6)),
 }

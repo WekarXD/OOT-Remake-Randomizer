@@ -14,8 +14,8 @@ Pouch data (`PouchActorInfo`): Din's Fire, Farore's Wind, Nayru's Love and `Item
 
 | Variant | Fountain | Gives | Start |
 |---|---|---|---|
-| 26a | Hyrule Castle (Din), child | Farore's Wind | Double magic (`Item_FairyBless_MPDouble`), no rupees |
-| 26b | Death Mountain Trail (Power), child | Boomerang | No magic, no Din's Fire |
+| 26a | Death Mountain Trail (Din), child | Farore's Wind | Double magic (`Item_FairyBless_MPDouble`), no rupees |
+| 26b | Hyrule Castle (Power), child | Boomerang | No magic, no Din's Fire |
 | 26c | Death Mountain Crater (Wisdom), adult | Nayru's Love | No magic; Goron Tunic |
 
 ## Setup
@@ -40,3 +40,5 @@ Pouch data (`PouchActorInfo`): Din's Fire, Farore's Wind, Nayru's Love and `Item
 Attempt 1 (2026-11-14), 26a: the fairy says Link **has too few rupees** and gives nothing. Only the pay question had been patched, but the full skip goes straight to the rupee check (event 676 -> 17, no question) and inlines `Pay`'s body (`IncreaseRupee` at 677 and 265, a second check at 602). The batch now passes every `HasRuppe` and skips every `IncreaseRupee` instead. Rebuilt for attempt 2 (all three variants).
 
 Attempt 2 (2026-11-14), 26a: the same line. The rewrite for attempt 2 had dropped the question patch, and answering "No" leads to `DontPay1`, whose line also says Link has too few rupees. Every `TalkChoice2` now goes to "yes" as well. Checked by walking each fountain's flow from `EntryPoint0`: no question, rupee check, payment or refusal is reachable, and the grant is. Rebuilt for attempt 3 (all three variants).
+
+Attempt 3 (2026-11-14), 26a: the same line. Its label is `Dm_FairyFountain_0600_01` (in `Mals/EUes`, `EventFlowMsg/Dm_FairyFountain_Din.msbt`), reached only from Din's `DontPay2` entry, which the *other* fountains call. **The remake swaps Din's and Power's fountains against the N64.** Power's flow warps its camera to the castle's Triforce point and Din's to the mountain's, so the castle fountain is Power's and the top of Death Mountain is Din's. The other four are where expected. 26a had teleported to the castle, which is Power's fountain and was not patched, so it still charged. Fixed: 26a now goes to the top of Death Mountain (Din) and 26b to the castle (Power). This also matches what the user saw before: the mountain fairy first (Din, no gate), then the castle (Power, which needs Din's Fire). Rebuilt for attempt 4 (26a and 26b; 26c unchanged).
