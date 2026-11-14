@@ -39,3 +39,5 @@ As far as is practical. The childhood ones come first:
 ## Results
 
 Partial (2026-11-14): the three childhood swaps work (Saria → Serenade, Malon → Song of Time, Royal Family's Tomb → Requiem), including warp songs taught by normal-song scenes. The Ocarina of Time scene and the adult scenes are still to be checked.
+
+**Accepted** by the user on 2026-11-14 without checking the rest (batch 22 covers the adult patches); released on `main` (8496244).
