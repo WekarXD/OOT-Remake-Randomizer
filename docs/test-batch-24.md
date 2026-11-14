@@ -26,10 +26,10 @@ Built with `tools/make_song_batch.py <nup> <out> 24a|24b`. Each variant teleport
 
 24a, Impa (without the skip):
 
-- [ ] Does her scene play without a lesson (no notes to watch or repeat)? ______
-- [ ] Does it end cleanly, with no hang? ______
-- [ ] Do you get the **Deku Shield** (message, then equipped or in the inventory)? ______
-- [ ] Do you **not** get Zelda's Lullaby (check the song list)? ______
+- [x] Does her scene play without a lesson (no notes to watch or repeat)? Yes.
+- [x] Does it end cleanly, with no hang? Yes.
+- [x] Do you get the **Deku Shield** (message, then equipped or in the inventory)? Yes: "You got a Deku Shield!".
+- [x] Do you **not** get Zelda's Lullaby (check the song list)? Correct: the song list is empty.
 
 24b, crater:
 
@@ -43,4 +43,4 @@ In general:
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with no lesson, ends cleanly and gives the Deku Shield, and no song is added. The lesson bypass works, including the emptied fork branches pointing at their join. 24b is pending.
