@@ -27,6 +27,7 @@ from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABE
                               NON_EXCLUDABLE)
 from randomizer.locations import GsEntry, LocationEntry
 from randomizer.logic.world import World
+from randomizer.songs import SHUFFLE_SONGS, SONG_BY_ACTOR, SONGS
 
 MODES = ('vanilla', 'any_chest')
 TOKENSANITY = ('off', 'dungeons', 'overworld', 'all')
@@ -62,10 +63,47 @@ class Settings:
     spoiler: bool = True
     skip_cutscenes: bool = False
     tokensanity: str = 'off'  # see TOKENSANITY
+    shuffle_songs: str = 'off'  # see SHUFFLE_SONGS
 
 
 class FillError(Exception):
     pass
+
+
+@dataclass(frozen=True)
+class Placement:
+    chests: dict[int, str]  # Hash -> Drop__DropActor (chests and qualifying Skulltulas)
+    songs: dict[str, str]  # OoTR song location -> song actor (all 12)
+
+
+VANILLA_SONGS: dict[str, str] = {s.location: s.actor for s in SONGS}
+
+
+def _with_songs(fixed: dict[str, str], songs: dict[str, str]) -> dict[str, str]:
+    out = dict(fixed)
+    out.update((loc, SONG_BY_ACTOR[actor].song) for loc, actor in songs.items())
+    return out
+
+
+def _place_songs(rng: random.Random, world: World, base: dict[str, str],
+                 owned: list[str]) -> dict[str, str] | None:
+    """Assumed fill of the 12 songs over the 12 song locations (Song Locations),
+    before the key items: each song, in shuffled order, goes to a random free song
+    location reachable while owning the songs still to place and `owned` (the key
+    items still to place). None if some song has nowhere to go."""
+    songs = [s.actor for s in SONGS]
+    rng.shuffle(songs)
+    empty = {s.location: FILLER for s in SONGS}
+    placed: dict[str, str] = {}
+    for i, actor in enumerate(songs):
+        fixed = _with_songs({**base, **empty}, placed)
+        rest = [SONG_BY_ACTOR[a].song for a in songs[i + 1:]]
+        reach = world.reachable_locations(fixed, owned=rest + owned)
+        free = [s.location for s in SONGS if s.location not in placed and s.location in reach]
+        if not free:
+            return None
+        placed[rng.choice(free)] = actor
+    return placed
 
 
 def _settings_key(settings: Settings) -> str:
@@ -76,6 +114,8 @@ def _settings_key(settings: Settings) -> str:
     data['excluded_items'] = sorted(settings.excluded_items)
     if settings.tokensanity == 'off':
         del data['tokensanity']  # the key stays as it was before the option existed
+    if settings.shuffle_songs == 'off':
+        del data['shuffle_songs']  # same
     return json.dumps(data, sort_keys=True)
 
 
@@ -168,17 +208,35 @@ def _fixed(world_base: dict[str, str], site_loc: dict[int, str],
     return fixed
 
 
+def _complete(world: World, fixed: dict[str, str], vanilla_keys: bool) -> bool:
+    """Whether the placement is good: beatable, or with the key items in their vanilla
+    places (which OoTR's key logic never calls beatable, see world.py) every song
+    location reachable, so every song is obtained and the rest is the original game."""
+    if not vanilla_keys:
+        return world.can_beat(fixed)
+    return set(VANILLA_SONGS) <= world.reachable_locations(fixed)
+
+
 def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
              moving: list[int], site_loc: dict[int, str], world: World,
              base: dict[str, str], no_key: frozenset[int] = frozenset(),
              gs: frozenset[int] = frozenset(),
-             gs_forbidden: frozenset[str] = frozenset()) -> dict[int, str] | None:
+             gs_forbidden: frozenset[str] = frozenset(),
+             shuffle_songs: bool = False,
+             vanilla_keys: bool = False) -> tuple[dict[int, str], dict[str, str]] | None:
     # Eligible sites that stay fixed: those of excluded key items.
     pinned = {h: original[h] for h in eligible
               if original[h] in KEY_ITEMS and h not in moving}
     free = [h for h in eligible if h not in pinned]
 
     to_place = [original[h] for h in moving]
+    songs = VANILLA_SONGS
+    if shuffle_songs:
+        # Songs gate key items (Requiem opens the Spirit Temple...), so they go first.
+        songs = _place_songs(rng, world, _fixed(base, site_loc, pinned), to_place)
+        if songs is None:
+            return None
+        base = _with_songs(base, songs)
     rng.shuffle(to_place)
     # Stable: higher-level progressives first, the rest in shuffled order.
     to_place.sort(key=lambda a: -ITEM_LEVEL[a][1] if a in ITEM_LEVEL else 0)
@@ -231,11 +289,11 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     for h, drop in zip(open_chests, rest, strict=True):
         placed[h] = drop
 
-    if not world.can_beat(_fixed(base, site_loc, placed)):
+    if not _complete(world, _fixed(base, site_loc, placed), vanilla_keys):
         return None
     result = dict(original)
     result.update(placed)
-    return result
+    return result, songs
 
 
 def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
@@ -246,21 +304,42 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     """Hash -> Drop__DropActor map for all chests in `chests` and the
     Skulltulas that qualify under `settings.tokensanity` (see `gs_sites`).
     `gs_forbidden`: contents that cannot go to a Skulltula."""
+    return place_all(chests, loc_map, world, settings, skulltulas, gs_map, gs_forbidden).chests
+
+
+def _check_settings(settings: Settings) -> None:
     if settings.key_items_mode not in MODES:
         raise FillError(f'Unknown key item mode: {settings.key_items_mode!r}')
+    if settings.shuffle_songs not in SHUFFLE_SONGS:
+        raise FillError(f'Unknown Shuffle Songs value: {settings.shuffle_songs!r}')
     bad = settings.excluded_items & NON_EXCLUDABLE
     if bad:
         label = ', '.join(LABELS.get(a, a) for a in sorted(bad))
         raise FillError(f'Cannot exclude {label}: the logic needs to move it '
                         'for the game to be beatable.')
+
+
+def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
+              world: World, settings: Settings,
+              skulltulas: list[SkulltulaActor] = (),
+              gs_map: dict[int, GsEntry] | None = None,
+              gs_forbidden: frozenset[str] = frozenset()) -> Placement:
+    """`place`'s chest map plus the songs (OoTR song location -> song actor), which
+    are shuffled with `settings.shuffle_songs == 'song_locations'` (even with the
+    key items in `vanilla` mode: the two settings are independent)."""
+    _check_settings(settings)
     gs = gs_sites(skulltulas, gs_map, settings.tokensanity)
     original = _original_drops(chests)
     for h in gs:
         if h in original:
             raise FillError(f'Hash {h} is both a chest and a Skulltula')
         original[h] = TOKEN
+    songs_on = settings.shuffle_songs != 'off'
     if settings.key_items_mode == 'vanilla':
-        return dict(original)
+        if not songs_on:
+            return Placement(dict(original), dict(VANILLA_SONGS))
+        return _run(settings, world, original, [], [], {}, world.vanilla_fixed(),
+                    vanilla_keys=True)
 
     chest_sites = _eligible(chests, loc_map, original)
     filler = filler_sites(chests, loc_map)
@@ -279,10 +358,19 @@ def place(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     for h in eligible:
         if h in site_loc:
             base[site_loc[h]] = FILLER
+    return _run(settings, world, original, eligible, moving, site_loc, base, no_key,
+                frozenset(gs), gs_forbidden)
 
+
+def _run(settings: Settings, world: World, original: dict[int, str], eligible: list[int],
+         moving: list[int], site_loc: dict[int, str], base: dict[str, str],
+         no_key: frozenset[int] = frozenset(), gs: frozenset[int] = frozenset(),
+         gs_forbidden: frozenset[str] = frozenset(), vanilla_keys: bool = False) -> Placement:
+    """The first beatable attempt, retried with a new RNG up to MAX_ATTEMPTS."""
     for attempt in range(MAX_ATTEMPTS + 1):
-        result = _attempt(_rng(settings, attempt), original, eligible, moving,
-                          site_loc, world, base, no_key, frozenset(gs), gs_forbidden)
+        result = _attempt(_rng(settings, attempt), original, eligible, moving, site_loc,
+                          world, base, no_key, gs, gs_forbidden,
+                          settings.shuffle_songs != 'off', vanilla_keys)
         if result is not None:
-            return result
+            return Placement(*result)
     raise FillError('Could not generate a beatable seed with these settings')

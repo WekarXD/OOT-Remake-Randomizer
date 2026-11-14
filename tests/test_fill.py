@@ -5,7 +5,9 @@ from pathlib import Path
 
 from randomizer import items, locations
 from randomizer.fill import (AMMO_CONTAINER, NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN,
-                              FillError, Settings, filler_sites, gs_sites, place)
+                              FillError, Settings, _settings_key, filler_sites, gs_sites, place,
+                              place_all)
+from randomizer.songs import SONG_BY_ACTOR, SONGS
 from randomizer.game import load_chests_fixture, load_skulltulas_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
@@ -189,6 +191,65 @@ class FillTest(unittest.TestCase):
     def test_unknown_mode_raises(self):
         with self.assertRaises(FillError):
             self._place(seed='ABC', key_items_mode='nope')
+
+
+VANILLA_SONGS = {s.location: s.actor for s in SONGS}
+
+
+class SongFillTest(unittest.TestCase):
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+        self.orig = _original(self.chests)
+
+    def _all(self, **kw):
+        return place_all(self.chests, self.loc_map, self.world, Settings(**kw))
+
+    def _fixed(self, result):
+        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world)
+        fixed.update((loc, SONG_BY_ACTOR[a].song) for loc, a in result.songs.items())
+        return fixed
+
+    def test_songs_off_identical(self):
+        for seed in ('A', 'B'):
+            result = self._all(seed=seed, shuffle_songs='off')
+            self.assertEqual(result.chests, place(self.chests, self.loc_map, self.world,
+                                                  Settings(seed=seed)))
+            self.assertEqual(result.songs, VANILLA_SONGS)
+
+    def test_songs_not_in_key_when_off(self):
+        self.assertEqual(_settings_key(Settings(seed='A', shuffle_songs='off')),
+                         _settings_key(Settings(seed='A')))
+        self.assertNotIn('shuffle_songs', _settings_key(Settings(seed='A')))
+
+    def test_songs_permutation(self):
+        moved = 0
+        for i in range(5):
+            result = self._all(seed=f'S{i}', shuffle_songs='song_locations')
+            self.assertEqual(set(result.songs), set(VANILLA_SONGS))
+            self.assertEqual(sorted(result.songs.values()), sorted(VANILLA_SONGS.values()))
+            moved += result.songs != VANILLA_SONGS
+            self.assertEqual(result, self._all(seed=f'S{i}', shuffle_songs='song_locations'))
+        self.assertGreater(moved, 0)
+
+    def test_songs_beatable_many(self):
+        for i in range(20):
+            result = self._all(seed=f'B{i}', shuffle_songs='song_locations')
+            self.assertTrue(self.world.can_beat(self._fixed(result)), f'seed {i}')
+
+    def test_songs_with_vanilla_key_items(self):
+        # OoTR's key logic never calls the vanilla key placement beatable (world.py), so
+        # the check here is that every song location can be reached.
+        for i in range(5):
+            result = self._all(seed=f'V{i}', key_items_mode='vanilla',
+                               shuffle_songs='song_locations')
+            self.assertEqual(result.chests, self.orig)
+            self.assertEqual(sorted(result.songs.values()), sorted(VANILLA_SONGS.values()))
+            reach = self.world.reachable_locations(self._fixed(result))
+            self.assertLessEqual(set(VANILLA_SONGS), reach)
+
+    def test_songs_unknown_value_raises(self):
+        with self.assertRaises(FillError):
+            self._all(seed='A', shuffle_songs='anywhere')
 
 
 def _gs_data():
