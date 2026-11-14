@@ -4,6 +4,8 @@ Pending work, most important first within each section.
 
 ## To investigate
 
+- **Song wrappers look like a rupee** (Dungeon Rewards boss hearts, batch 25): songs have no world model, so the wrapper keeps the token's look; the boss drop cutscene still shows a Heart Container. Cosmetic.
+- **`Item_BulletBag_Small` or `TBox_DekuSeedBundle` hang `Dm_SY_GetInEvent:GetInEvent`** (batch 25, attempts 2-4): if a song scene can give them (Anywhere, Dungeon Rewards), check that path too.
 - **Ammo with a Slingshot or Bow from a song scene** (Anywhere, Dungeon Rewards): given through `Dm_SY_GetInEvent:GetInEvent` (the start preset), the Slingshot comes without its Bullet Bag or seeds (batch 25, attempt 1). Song scenes give with `GetPouchContentByActorName`; check whether the Slingshot and the Bow come with their ammo that way, otherwise keep them off song scenes.
 - **Chests outside the logic.** 61 unmapped chests now take part in the fill with minor items only (`filler_sites` in `randomizer/fill.py`), so their ammo moves to chests that require its container. Still to do: identify the 39 ambiguous ones in game (most are small keys in the Fire Temple, Gerudo Training Ground and Water Temple) so they can also hold key items, and find out whether the remake-only DreamWorld chests can be revisited.
 - **Everything a Skulltula drops should float** (built, waiting for test batch 18). Key items and tokens float (token-clone wrappers), but rupees and other minor items use the game's own drop actor and fall to the floor like an enemy drop (batch 17: the purple rupee from the Deku Tree basement vines). On a wall above water or a pit the drop can be lost (the Skulltula then respawns and drops it again, but it may never be reachable). Find a way to make every drop float where the Skulltula was. In batch 12 the rupee clones could not be picked up, before the PouchActorInfo row was understood; retry with the batch 14 recipe.
@@ -15,7 +17,7 @@ Pending work, most important first within each section.
 
 ## To test in game
 
-- Batch 25 (guide `docs/test-batch-25.md`, mod `TestBatch25`): a song on Gohma's Heart Container (song wrapper). Then the Dungeon Rewards acceptance seed (guide `docs/test-songs-dungeon-rewards.md`, `Rando_MAZMORRAS1`).
+- Dungeon Rewards acceptance seed (guide `docs/test-songs-dungeon-rewards.md`, `Rando_MAZMORRAS1`); batch 25 confirmed a song on Gohma's heart.
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
