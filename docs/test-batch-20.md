@@ -36,13 +36,13 @@ Impa:
 
 With Saria's Song from Impa:
 
-- [ ] Can you play it? Does it work where it should (Saria on the ocarina, Darunia)? ______
+- [x] Can you play it? Does it work where it should (Saria on the ocarina, Darunia)? Yes, it works with Darunia.
 
 Saria, at the Sacred Forest Meadow:
 
-- [ ] **Does her scene play even though you already have Saria's Song?** ______
-- [ ] Do you get Zelda's Lullaby? (With the full skip there are no notes to repeat.) ______
-- [ ] Does the lullaby work (for example the Triforce blocks, or Zora's Domain)? ______
+- [x] **Does her scene play even though you already have Saria's Song?** Yes (she gives her song, so the scene runs).
+- [x] Do you get Zelda's Lullaby? (With the full skip there are no notes to repeat.) Yes.
+- [x] Does the lullaby work (for example the Triforce blocks, or Zora's Domain)? Yes, it opens Darunia's area.
 
 In general:
 
@@ -51,4 +51,4 @@ In general:
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 4 (2026-11-14): **works.** Saria's scene plays even though her song is already owned, and it gives Zelda's Lullaby, which works (opens Darunia's area). Saria's Song from Impa works with Darunia. Conclusion: a song scene grants whatever its `ActorName` says, regardless of the songs owned; this is the basis for Song Locations.
