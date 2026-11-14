@@ -372,6 +372,12 @@ class DungeonRewardsFillTest(unittest.TestCase):
         with self.assertRaisesRegex(FillError, 'needs key items shuffled'):
             self._all(seed='V', key_items_mode='vanilla')
 
+    def test_excluding_a_reward_chest_item_raises(self):
+        # Their chests are dungeon-reward sites and always get a song (review).
+        for item in ('Item_GlassTruth', 'Item_Arrow_Ice'):
+            with self.assertRaisesRegex(FillError, 'Dungeon Rewards'):
+                self._all(seed='X', excluded_items=frozenset({item}))
+
     def test_other_modes_have_no_hearts(self):
         for mode in ('off', 'song_locations', 'anywhere'):
             r = place_all(self.chests, self.loc_map, self.world,

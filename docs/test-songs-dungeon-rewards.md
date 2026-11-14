@@ -24,6 +24,7 @@ The other song scenes give: Saria Bombchus, Malon a purple rupee, the Royal Fami
 - [ ] Impa gives **Song of Storms**. ______
 - [ ] Gohma's heart gives **Zelda's Lullaby**; King Dodongo's gives the **Nocturne**; Barinade's gives **Epona's Song**. ______
 - [ ] Saria gives Bombchus, with no song. ______
+- [ ] A chest giving a **Heart Container** (never in a chest in the original game): several unmapped chests in Dodongo's Cavern and Goron City hold one in this seed (see the spoiler's "All chests"). Does it add a heart? ______
 - [ ] Did any scene hang, or any heart not appear? ______
 
 ## Results

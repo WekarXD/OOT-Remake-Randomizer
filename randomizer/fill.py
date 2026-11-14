@@ -425,6 +425,12 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
             raise FillError(f'Dungeon-reward chests not in the fill: {missing}')
         reward_sites = tuple(sorted(HEART_SITE_IDS.values())) + tuple(
             by_loc[loc] for loc in REWARD_SCENES + REWARD_CHESTS)
+        kept = sorted(original[by_loc[loc]] for loc in REWARD_CHESTS
+                      if original[by_loc[loc]] in settings.excluded_items)
+        if kept:  # its chest must take a song, so the item cannot stay there
+            label = ', '.join(LABELS.get(a, a) for a in kept)
+            raise FillError(f'Dungeon Rewards puts a song in the chest of {label}: '
+                            'that item cannot be excluded with it.')
     moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR)
               and original[h] not in settings.excluded_items]
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
