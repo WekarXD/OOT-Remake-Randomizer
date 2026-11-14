@@ -5,7 +5,7 @@ from randomizer.formats.bfevfl import SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.logic import ootr_data
 from randomizer.nup import NupArchive
-from randomizer.songs import (AUTO_NORMAL, AUTO_WARP, CRATER_FLOW, SHUFFLE_SONGS, SONG_BY_ACTOR,
+from randomizer.songs import (AUTO_NORMAL, AUTO_PLAIN, AUTO_WARP, CRATER_FLOW, SHUFFLE_SONGS, SONG_BY_ACTOR,
                               SONG_BY_LOCATION, SONGS, WINDMILL_FLOW, bypass, song_flow_patches)
 
 NUP_PATH = os.environ.get('OOT_NUP')
@@ -137,10 +137,11 @@ class SongPatchTest(unittest.TestCase):
         out = self._patch(placement)
         self.assertEqual(set(out), {'Dm_MelodyGet_Zelda'})
         flow, seen = self._reached(out['Dm_MelodyGet_Zelda'], 'Dm_MelodyGet_Zelda')
-        # Only the lesson's end (PlayAuto, which adds the melody played) goes: the rest
-        # of the lesson stays, as other parts of a scene can depend on it (batch 24b).
+        # The lesson stays; its end becomes the plain PlayAuto, which closes it and plays
+        # the tune back without adding a song (batch 24b froze without any end).
         entries = {flow.events[i].sub_entry for i in seen if flow.events[i].kind == SUBFLOW}
         self.assertFalse({AUTO_NORMAL, AUTO_WARP} & entries)
+        self.assertIn(AUTO_PLAIN, entries)
         self.assertIn('LearningOcarinaPlayExample', entries)
         self.assertIn('LearningOcarinaFollowExample', entries)
         grants = {flow.action_params(i).get('ActorName') for i in seen}
@@ -156,7 +157,8 @@ class SongPatchTest(unittest.TestCase):
         self.assertIn('Item_Hookshot', {flow.action_params(i).get('ActorName') for i in seen})
         entries = {flow.events[i].sub_entry for i in seen if flow.events[i].kind == SUBFLOW}
         self.assertFalse({AUTO_NORMAL, AUTO_WARP} & entries)
-        self.assertIn('LearningOcarinaPlayExample', entries)  # Navi waits on it (batch 24b)
+        self.assertIn(AUTO_PLAIN, entries)
+        self.assertIn('LearningOcarinaPlayExample', entries)
 
     def test_storm_elsewhere_patches_windmill(self):
         out = self._patch(dict(VANILLA, **{'Sheik in Crater': 'Item_Melody_StormSong',

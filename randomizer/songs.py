@@ -16,6 +16,9 @@ SHUFFLE_SONGS = ('off', 'song_locations')
 GRANT_CALL = ('GetPouchContent', 'GetPouchContentByActorName')
 LESSON_FLOW, LESSON_PREFIX = 'Dm_SY_Ocarina', 'LearningOcarina'
 AUTO_NORMAL, AUTO_WARP = 'LearningOcarinaPlayAuto', 'LearningOcarinaPlayAutoForSeek'
+# Ends an ocarina sequence (success, the tune played back, the ocarina put away) without
+# adding any song; the frogs' minigame uses it.
+AUTO_PLAIN = 'PlayAuto'
 FIRST_WARP_MELODY = 6  # Minuet; 6-11 are the warp songs
 # The crater's scene sets its song's flag itself (event 0, entry C21).
 CRATER_FLOW = 'Dm_MelodyGet_Fire'
@@ -160,14 +163,15 @@ def _lesson_ends(flow: EventFlow) -> list[int]:
 
 def _give_item(data: bytes, old: SongLocation, actor: str) -> tuple[bytes, int]:
     """The flow giving `actor` (not a song) instead of `old`'s song, and the number of
-    grants found. The lesson's end goes, since it adds the melody just played to the
-    pouch and the original song would come along. The rest of the lesson stays: other
-    parts of a scene can wait on it (the crater's Navi, batch 24b), so the teacher still
-    plays the original notes and Link repeats them without getting the song."""
+    grants found. The lesson's end adds the melody just played to the pouch, so the
+    original song would come along: it becomes the plain `PlayAuto`, which still closes
+    the lesson and plays the tune back (without an end the scene froze, batch 24b).
+    The teacher still plays the original notes and Link repeats them."""
     flow = EventFlow(data)
     grants = [i for i in range(len(flow.events))
               if flow.action_params(i).get('ActorName') == old.actor]
-    data = bypass(data, _lesson_ends(flow))
+    for i in _lesson_ends(flow):
+        data = set_subflow_entry(data, i, AUTO_PLAIN)
     for i in grants:
         data = set_string_param(data, i, 'ActorName', actor)
     return data, len(grants)

@@ -49,3 +49,8 @@ Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with
 - Cause: bypassing the *whole* lesson breaks things that other branches of the scene wait on. In the crater, Navi looks at the Ocarina of Time (`EventNaviLookAtObject`, waits to end) in the same fork as Sheik's example. The Prelude scene has the same pattern; Impa's scene has nothing like it, which is why 24a worked.
 - New approach: only the lesson's **end** is bypassed (`LearningOcarinaPlayAuto` / `PlayAutoForSeek`, the one part that adds the melody played to the pouch). The teacher still plays and Link repeats the **original** notes, without getting that song, then receives the new item.
 - Rebuilt for attempt 2. **Both** variants need retesting: 24a now keeps Impa's lesson too.
+
+24b, attempt 2 (2026-11-14): Sheik plays, you repeat the notes, then it **freezes**, so Navi was not the cause.
+- The lesson's end does more than add the song. `LearningOcarinaPlayAutoForSeek` closes the lesson's dialog (`EventCloseMessageDialog`), adds the song, and ends the ocarina sequence (`EventTriggerPlayAutoFixedTune`). Without it, the scene waits forever. (Attempt 1 froze earlier for the same reason, inside the bypassed lesson.)
+- Fix: the end is retargeted to the plain `Dm_SY_Ocarina:PlayAuto`, which the frogs' minigame uses. It plays the success sound and the tune back and ends the sequence, **without adding any song**.
+- Rebuilt for attempt 3 (both variants).
