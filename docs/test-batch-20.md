@@ -20,6 +20,8 @@ The rest of the game is vanilla.
 - [ ] Walk up to Zelda (the meeting triggers on approach, it is not a normal talk), then go to Impa. If Impa reacts before Zelda, note it.
 
 Attempt 1 (2026-11-14): Zelda's meeting would not start. Cause: it only triggers with the castle quest at Step04, which the teleport skipped. Rebuilt for attempt 2 with the quest steps and the full skip. The lesson's second half (`LearningOcarinaFollowExample`, the notes you repeat) is now swapped too; attempt 1 only swapped the notes you are shown.
+
+Attempt 2 (2026-11-14): Zelda's meeting worked. **Impa teaches and gives Saria's Song**, and it plays correctly. Going back from Hyrule Field to the forest left a black screen: the bridge triggers Saria's farewell (`KokiriForest_ArriveLostWood`), which the teleport had skipped, and Saria is not there. Presets now mark that farewell as played (`FOREST_EXIT_FLAGS`). Rebuilt for attempt 3, which only needs the Saria half.
 - [ ] Afterwards, to reach Saria: go back to Kokiri Forest from Hyrule Field, then Lost Woods → Sacred Forest Meadow.
 
 ## Check

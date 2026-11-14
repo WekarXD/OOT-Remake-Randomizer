@@ -6,7 +6,8 @@ from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 from randomizer.formats import byml
-from randomizer.test_start import (ANALYZED_INFO, HOOK_ENTRY, HOOK_FLAGS, HOOK_FLOW, START_POS,
+from randomizer.test_start import (ANALYZED_INFO, FOREST_EXIT_FLAGS, HOOK_ENTRY, HOOK_FLAGS,
+                                   HOOK_FLOW, START_POS,
                                    NewStartPos, StartPreset, apply_start, chain_calls,
                                    subflow_closure, with_start_pos, with_subflow_list)
 
@@ -47,7 +48,9 @@ class ApplyStartTest(unittest.TestCase):
             i = ev.next
         flags = [(p['GameDataName'], p['Value']) for ev, p in seen
                  if ev.kind == ACTION and ev.action == 'EventTriggerSetGameDataBool']
-        self.assertEqual(flags, [(f, True) for f in HOOK_FLAGS] + [('Foo', True)])
+        self.assertEqual(flags, [(f, True) for f in HOOK_FLAGS + FOREST_EXIT_FLAGS]
+                         + [('Foo', True)])
+        self.assertIn('HavePlayedEvent.Dm_Kokiri_0150', FOREST_EXIT_FLAGS)
         calls = [(ev.sub_flow, ev.sub_entry, p) for ev, p in seen if ev.kind == SUBFLOW]
         self.assertEqual(calls[0], ('Dm_SY_GetInEvent', 'GetInEvent',
                                     {'ActorName': 'Item_Ocarina_Fairy'}))
@@ -55,7 +58,7 @@ class ApplyStartTest(unittest.TestCase):
         self.assertEqual((flow, entry), ('Dm_SY_BancChangeGo', 'EntryPoint0'))
         self.assertEqual(params['NextBanc'], 'HyruleField_Child')
         self.assertEqual(params['NextStartPos'], 'HyruleField_FrontOfLostWoodBridge')
-        self.assertEqual(len(seen), len(HOOK_FLAGS) + 1 + 1 + 1)
+        self.assertEqual(len(seen), len(HOOK_FLAGS) + len(FOREST_EXIT_FLAGS) + 1 + 1 + 1)
         self.assertEqual((seen[-1][0].sub_flow, seen[-1][0].next), ('Dm_SY_BancChangeGo', 0xFFFF))
 
     def test_entry_lists_chain_subflows(self):
