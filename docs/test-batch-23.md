@@ -31,7 +31,7 @@ Impa:
 Saria:
 
 - [ ] Does her scene end cleanly? ______
-- [ ] Do you get **Deku Nuts** (usable)? What message? ______
+- [x] Do you get **Deku Nuts** (usable)? What message? Yes: "You got 3 Deku Nuts!" (attempt 2).
 - [ ] Do you **not** get Saria's Song? ______
 
 In general:
@@ -43,3 +43,5 @@ In general:
 Attempt 1 (2026-11-14):
 - **23a works:** Impa's scene gives the red rupee, with its "you got" message. A minor item can be granted just by renaming the grant's item, so the grant call does not need to change.
 - **23b:** Saria was not in the meadow. Cause: `DoorOfTime` depends on `Goto_HyruleCastle_IsCompleted_Exp` (`DependFlagName` in `RSDB/Challenge`), so its steps did not advance while the castle quest was not completed. The 23b preset now completes the castle quest first (every step up to `Complete`) and then advances `DoorOfTime`. Rebuilt for attempt 2 (23b only).
+
+Attempt 2 (2026-11-14): **23b works.** Saria is on her stump, her scene plays and gives Deku Nuts ("You got 3 Deku Nuts!"). Conclusion: a song scene can give any kind of item (song, key item, rupee, ammo) by renaming its grant's `ActorName`; this unblocks Shuffle Songs: Anywhere.
