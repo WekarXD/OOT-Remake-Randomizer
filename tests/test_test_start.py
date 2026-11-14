@@ -48,9 +48,11 @@ class ApplyStartTest(unittest.TestCase):
             i = ev.next
         flags = [(p['GameDataName'], p['Value']) for ev, p in seen
                  if ev.kind == ACTION and ev.action == 'EventTriggerSetGameDataBool']
-        self.assertEqual(flags, [(f, True) for f in HOOK_FLAGS + FOREST_EXIT_FLAGS]
+        self.assertEqual(flags, [(f, True) for f in HOOK_FLAGS] + list(FOREST_EXIT_FLAGS)
                          + [('Foo', True)])
-        self.assertIn('HavePlayedEvent.Dm_Kokiri_0150', FOREST_EXIT_FLAGS)
+        self.assertIn(('HavePlayedEvent.Dm_Kokiri_0150', True), FOREST_EXIT_FLAGS)
+        # The exit guard's air wall stands while this flag is on (batch 20).
+        self.assertIn(('KokiriForest_Npc_Kokiri_007_Child_Blocker_00', False), FOREST_EXIT_FLAGS)
         calls = [(ev.sub_flow, ev.sub_entry, p) for ev, p in seen if ev.kind == SUBFLOW]
         self.assertEqual(calls[0], ('Dm_SY_GetInEvent', 'GetInEvent',
                                     {'ActorName': 'Item_Ocarina_Fairy'}))

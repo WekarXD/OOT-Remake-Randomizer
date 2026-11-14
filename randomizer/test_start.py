@@ -25,12 +25,17 @@ HOOK_FLOW = 'Dm_Kokiri_0045'
 HOOK_ENTRY = 'EntryPoint0'
 # Flags the hook scene sets itself (events 39 and 45).
 HOOK_FLAGS = ('KokiriForest_LinkHouseDoor_Open', 'Dm_Kokiri_0050_After_Near_End')
-# Saria's farewell on the bridge (KokiriForest_ArriveLostWood -> Dm_Kokiri_0150/0155),
-# which the teleport skips: without these, walking back to the bridge triggers it with
-# Saria absent and the screen stays black (batch 20). The last flag is the one it sets.
-FOREST_EXIT_FLAGS = ('HavePlayedEvent.KokiriForest_ArriveLostWood',
-                     'HavePlayedEvent.Dm_Kokiri_0150', 'HavePlayedEvent.Dm_Kokiri_0155',
-                     'HyruleField_ChangeENV')
+# (GameDataName, value) for leaving the forest, which the teleport skips (batch 20):
+# - Saria's farewell on the bridge (KokiriForest_ArriveLostWood -> Dm_Kokiri_0150/0155):
+#   otherwise walking back to the bridge triggers it with Saria absent and the screen
+#   stays black. HyruleField_ChangeENV is the flag it sets.
+# - the exit guard (Npc_Kokiri_007_Child): his air wall on the bridge path is present
+#   while this flag is on; he clears it himself after the Deku Tree.
+FOREST_EXIT_FLAGS = (('HavePlayedEvent.KokiriForest_ArriveLostWood', True),
+                     ('HavePlayedEvent.Dm_Kokiri_0150', True),
+                     ('HavePlayedEvent.Dm_Kokiri_0155', True),
+                     ('HyruleField_ChangeENV', True),
+                     ('KokiriForest_Npc_Kokiri_007_Child_Blocker_00', False))
 ANALYZED_INFO = 'RSDB/GameAnalyzedEventInfo.Product.111.rstbl.byml.zs'
 # Named start positions per map ({banc: {name: {'Rot': [x, y, z], 'Trans': [x, y, z]}}});
 # the teleport's NextStartPos must be one of them.
@@ -64,8 +69,8 @@ def _flag(name: str, value: bool) -> ActionSpec:
 
 
 def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
-    specs: list[ActionSpec | SubflowSpec] = [_flag(f, True) for f in HOOK_FLAGS + FOREST_EXIT_FLAGS]
-    specs += [_flag(name, value) for name, value in preset.flags]
+    specs: list[ActionSpec | SubflowSpec] = [_flag(f, True) for f in HOOK_FLAGS]
+    specs += [_flag(name, value) for name, value in FOREST_EXIT_FLAGS + preset.flags]
     specs += [ActionSpec('ChallengeSystemActor', 'EventExecuteProgressChallengeStep', {
         'ChallengeName': challenge, 'IsIgnoreCompletedChallenge': False,
         'IsIgnoreChallengeProgressUI': True, 'IsWaitEnd': True, 'StepName': step})
