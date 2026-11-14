@@ -56,6 +56,15 @@ From batch 19:
 
 What each fountain reward really does, and where the magic meter comes from, is to be checked in the test batch.
 
+## Findings for batch 26 (2026-11-14)
+
+- **Where the fountains are:** inside the overworld maps, not in maps of their own (`DeathMountainTrail_*`, `HyruleCastle`, `DeathMountainCrater_*`, `ZoraFountain_*`, `DesertColossus_*`, `GanonCastle`). Each has an `Obj_TriForcePoint_A_*` actor at the spot where Link stands.
+- **The order is Din first, not the mountain first.** `TriForcePoint:Sub_PlayOcarinaSequence_FairyFountain` takes `SpecialAbility` (Power 1, Din 2, Frore 3, Wisdom 4, Nayru 5, Courage 6). For every ability except Din's it checks `IsGet.Item_DinFire`; without it, Navi talks and the fairy does not come. The quest steps at the mountain (`GoToFountain`, `GetFairyBreath`, set by `DeathMountainTrail_Common_*` logic) only send you on and stop the falling rocks. The Din visit sets `GoToHyruleCastle`. `HyruleCastle_Prefab_b02d` reads `HavePlayedEvent.Dm_FairyFountain_Power`, which may be what the user saw at the castle.
+- **Magic:** in `PouchActorInfo`, Din's Fire, Farore's Wind, Nayru's Love and `Item_FairyBless_MP` each have `MPMaxUP` with `MPMax` 24, and `MPDouble` has 48. The Power fairy shows the spin attack guide (`ActionGuide` type 5) after her grant.
+- **Din's entry** reads `GreatFairy_MeetFirst` (first fairy ever), then `IsGet.Item_DinFire`, not `HavePlayedEvent`. The other fountains read `HavePlayedEvent.Dm_FairyFountain_<name>`, then `IsGet.<reward>`.
+- **`HavePlayedEvent` is set when the event ends**, whichever path it took. With the price kept, refusing to pay would mark the fountain as visited. GameDataList is a big-endian BYML v7 with hashed names, so there is no cheap new per-fountain flag. That is why batch 26 makes the fairies free, as OoTR does.
+- **The full skip copies some events**, for example Din's grant at 308 and 615. It also puts its new data between the string pool and the RELT. `bfevfl` now appends new strings after the relocated data and rebuilds the RELT in that case.
+
 ## Next
 
 1. Confirm in game what each reward gives, and what gates each fountain (test batch 26, a teleport next to each fountain).

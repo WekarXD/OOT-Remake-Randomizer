@@ -418,6 +418,8 @@ def _point_to_string(data: bytes, flow: 'EventFlow', slot: int, raw: bytes) -> b
 
     pool, end = flow._pool()
     reloc = flow._u32(0x18)
+    if (data[reloc:reloc + 4] == b'RELT' and reloc >= end and any(data[end:reloc])):
+        return _append_after_relocated(data, slot, raw)
     if (data[reloc:reloc + 4] != b'RELT' or reloc < end or any(data[end:reloc])
             or flow._u32(reloc + 0x10 + 0xC) != end):
         raise BfevflError('Unexpected structure between the pool and the RELT.')
@@ -431,6 +433,26 @@ def _point_to_string(data: bytes, flow: 'EventFlow', slot: int, raw: bytes) -> b
     struct.pack_into('<I', out, new_reloc + 4, new_reloc)
     struct.pack_into('<I', out, new_reloc + 0x10 + 0xC, new_end)
     struct.pack_into('<Q', out, slot, end)
+    return bytes(out)
+
+
+def _append_after_relocated(data: bytes, slot: int, raw: bytes) -> bytes:
+    """`_point_to_string` for a file that grew (`grow_events`: data after the pool): the
+    text goes after the relocated data (2-aligned, outside the pool, like the game's own
+    parameter strings) and the RELT is rebuilt with the same pointers."""
+    at, size, pointers = relocation_table(data)
+    if any(data[size:at]):
+        raise BfevflError('Unexpected data between the relocated data and the RELT.')
+    if slot not in pointers:
+        raise BfevflError(f'The string pointer at {slot:#x} is not relocated.')
+    pos = size + (size & 1)
+    out = bytearray(data[:size]) + bytes(pos - size)
+    out += struct.pack('<H', len(raw)) + raw + b'\0'
+    struct.pack_into('<Q', out, slot, pos)
+    end = len(out)
+    reloc = (end + 0xF) & ~0xF
+    out += bytes(reloc - end) + build_relocation_table(reloc, end, pointers)
+    struct.pack_into('<II', out, 0x18, reloc, len(out))
     return bytes(out)
 
 

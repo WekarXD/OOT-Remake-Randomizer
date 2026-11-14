@@ -280,6 +280,22 @@ class StringParamTests(unittest.TestCase):
         self.assertEqual(len(again), len(new))
         self.assertEqual(EventFlow(again).action_params(52)['ActorName'], LONG_VALUE)
 
+    def test_new_string_in_grown_flow(self):
+        # The full skip grows flows (events after the pool), then the shuffle patches
+        # them: a new text goes after the relocated data and the RELT is rebuilt.
+        grown = grow_events(self.data, [51])
+        self.assertNotIn(LONG_VALUE.encode(), grown)
+        new = set_string_param(grown, 52, 'ActorName', LONG_VALUE)
+        flow = _assert_valid(self, new)
+        self.assertEqual(flow.action_params(52)['ActorName'], LONG_VALUE)
+        expect = _all_params(EventFlow(grown))
+        expect[52] = {**expect[52], 'ActorName': LONG_VALUE}
+        self.assertEqual(_all_params(flow), expect)
+        self.assertEqual(relocation_table(new)[2], relocation_table(grown)[2])
+        entry = set_subflow_entry(new, next(i for i, e in enumerate(flow.events)
+                                            if e.kind == SUBFLOW), 'NoSuchEntryYet')
+        _assert_valid(self, entry)
+
     def test_other_events_untouched(self):
         self.assertEqual(string_param_owners(self.data, 52, 'ActorName'), [52])
         self.assertEqual(string_param_owners(self.data, 0, 'ASCommand'), [0])
