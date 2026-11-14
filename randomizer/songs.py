@@ -150,20 +150,24 @@ def bypass(data: bytes, events: Iterable[int]) -> bytes:
     return patch_pointers(data, links)
 
 
-def _lesson_calls(flow: EventFlow) -> list[int]:
+def _lesson_ends(flow: EventFlow) -> list[int]:
+    """The lesson's `PlayAuto` / `PlayAutoForSeek` calls: the only part of a lesson that
+    adds a song to the pouch (the melody just played)."""
     return [i for i, ev in enumerate(flow.events)
             if ev.kind == SUBFLOW and ev.sub_flow == LESSON_FLOW
-            and (ev.sub_entry or '').startswith(LESSON_PREFIX)]
+            and ev.sub_entry in (AUTO_NORMAL, AUTO_WARP)]
 
 
 def _give_item(data: bytes, old: SongLocation, actor: str) -> tuple[bytes, int]:
     """The flow giving `actor` (not a song) instead of `old`'s song, and the number of
-    grants found. The lesson goes: its end adds the melody just played to the pouch,
-    so the original song would come along."""
+    grants found. The lesson's end goes, since it adds the melody just played to the
+    pouch and the original song would come along. The rest of the lesson stays: other
+    parts of a scene can wait on it (the crater's Navi, batch 24b), so the teacher still
+    plays the original notes and Link repeats them without getting the song."""
     flow = EventFlow(data)
     grants = [i for i in range(len(flow.events))
               if flow.action_params(i).get('ActorName') == old.actor]
-    data = bypass(data, _lesson_calls(flow))
+    data = bypass(data, _lesson_ends(flow))
     for i in grants:
         data = set_string_param(data, i, 'ActorName', actor)
     return data, len(grants)

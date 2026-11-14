@@ -33,7 +33,7 @@ Built with `tools/make_song_batch.py <nup> <out> 24a|24b`. Each variant teleport
 
 24b, crater:
 
-- [ ] Does Sheik appear and his scene play without a lesson? ______
+- [ ] Does Sheik appear, play, and let you repeat the Bolero's notes (the lesson stays now)? ______
 - [ ] Do you get the **Hookshot**, and can you use it to leave the warp pad's ledge? ______
 - [ ] Do you **not** get the Bolero of Fire? ______
 
@@ -44,3 +44,8 @@ In general:
 ## Results
 
 Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with no lesson, ends cleanly and gives the Deku Shield, and no song is added. The lesson bypass works, including the emptied fork branches pointing at their join. 24b is pending.
+
+24b, attempt 1 (2026-11-14): Sheik starts playing and the game **freezes**.
+- Cause: bypassing the *whole* lesson breaks things that other branches of the scene wait on. In the crater, Navi looks at the Ocarina of Time (`EventNaviLookAtObject`, waits to end) in the same fork as Sheik's example. The Prelude scene has the same pattern; Impa's scene has nothing like it, which is why 24a worked.
+- New approach: only the lesson's **end** is bypassed (`LearningOcarinaPlayAuto` / `PlayAutoForSeek`, the one part that adds the melody played to the pouch). The teacher still plays and Link repeats the **original** notes, without getting that song, then receives the new item.
+- Rebuilt for attempt 2. **Both** variants need retesting: 24a now keeps Impa's lesson too.

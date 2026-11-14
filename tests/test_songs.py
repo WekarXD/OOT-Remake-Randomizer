@@ -5,8 +5,8 @@ from randomizer.formats.bfevfl import SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.logic import ootr_data
 from randomizer.nup import NupArchive
-from randomizer.songs import (CRATER_FLOW, SHUFFLE_SONGS, SONG_BY_ACTOR, SONG_BY_LOCATION,
-                              SONGS, WINDMILL_FLOW, song_flow_patches)
+from randomizer.songs import (AUTO_NORMAL, AUTO_WARP, CRATER_FLOW, SHUFFLE_SONGS, SONG_BY_ACTOR,
+                              SONG_BY_LOCATION, SONGS, WINDMILL_FLOW, bypass, song_flow_patches)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 VANILLA = {s.location: s.actor for s in SONGS}
@@ -137,8 +137,12 @@ class SongPatchTest(unittest.TestCase):
         out = self._patch(placement)
         self.assertEqual(set(out), {'Dm_MelodyGet_Zelda'})
         flow, seen = self._reached(out['Dm_MelodyGet_Zelda'], 'Dm_MelodyGet_Zelda')
-        self.assertEqual([i for i in seen if 'LearningOcarina' in (flow.events[i].sub_entry or '')],
-                         [])
+        # Only the lesson's end (PlayAuto, which adds the melody played) goes: the rest
+        # of the lesson stays, as other parts of a scene can depend on it (batch 24b).
+        entries = {flow.events[i].sub_entry for i in seen if flow.events[i].kind == SUBFLOW}
+        self.assertFalse({AUTO_NORMAL, AUTO_WARP} & entries)
+        self.assertIn('LearningOcarinaPlayExample', entries)
+        self.assertIn('LearningOcarinaFollowExample', entries)
         grants = {flow.action_params(i).get('ActorName') for i in seen}
         self.assertIn('TBox_Shield_Deku', grants)
         self.assertNotIn('Item_Melody_ZeldaLullaby', grants)
@@ -150,8 +154,9 @@ class SongPatchTest(unittest.TestCase):
         names = [flow.action_params(i).get('GameDataName') for i in seen]
         self.assertNotIn('IsGet.Item_Melody_FireBolero', names)
         self.assertIn('Item_Hookshot', {flow.action_params(i).get('ActorName') for i in seen})
-        self.assertEqual([i for i in seen if 'LearningOcarina' in (flow.events[i].sub_entry or '')],
-                         [])
+        entries = {flow.events[i].sub_entry for i in seen if flow.events[i].kind == SUBFLOW}
+        self.assertFalse({AUTO_NORMAL, AUTO_WARP} & entries)
+        self.assertIn('LearningOcarinaPlayExample', entries)  # Navi waits on it (batch 24b)
 
     def test_storm_elsewhere_patches_windmill(self):
         out = self._patch(dict(VANILLA, **{'Sheik in Crater': 'Item_Melody_StormSong',
@@ -173,8 +178,7 @@ class SongPatchTest(unittest.TestCase):
         emptied = [(f, k) for f, ev in enumerate(old.events) if ev.forks
                    for k, b in enumerate(ev.forks) if b in lessons]
         self.assertTrue(emptied)
-        out = self._patch(dict(VANILLA, **{'Song from Malon': 'Obj_Rupee_Red'}))
-        new = EventFlow(out['Dm_MelodyGet_Epona'])
+        new = EventFlow(bypass(self.flows['Dm_MelodyGet_Epona'], lessons))
         for f, k in emptied:
             self.assertNotIn(new.events[f].forks[k], lessons | {0xFFFF}, (f, k))
         self.assertTrue(any(new.events[f].forks[k] == new.events[f].join for f, k in emptied))
