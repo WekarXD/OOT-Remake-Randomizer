@@ -54,3 +54,7 @@ Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with
 - The lesson's end does more than add the song. `LearningOcarinaPlayAutoForSeek` closes the lesson's dialog (`EventCloseMessageDialog`), adds the song, and ends the ocarina sequence (`EventTriggerPlayAutoFixedTune`). Without it, the scene waits forever. (Attempt 1 froze earlier for the same reason, inside the bypassed lesson.)
 - Fix: the end is retargeted to the plain `Dm_SY_Ocarina:PlayAuto`, which the frogs' minigame uses. It plays the success sound and the tune back and ends the sequence, **without adding any song**.
 - Rebuilt for attempt 3 (both variants).
+
+24b, attempt 3 (2026-11-14): **works.** Sheik plays, you repeat the notes, the scene ends, and you get the Hookshot, which works. The plain `PlayAuto` end is confirmed. 24a with the kept lesson is still to be retested.
+
+**24c (experiment, the user's question):** can the example and the repeat go too, keeping only the fixed end? `TestBatch24c` is 24b with `LearningOcarinaPlayExample` and `LearningOcarinaFollowExample` bypassed in the patched scene. Only `PlayAuto` stays reachable. If it works, scenes giving a non-song lose their whole lesson except the fixed end; if it hangs, the lesson stays.

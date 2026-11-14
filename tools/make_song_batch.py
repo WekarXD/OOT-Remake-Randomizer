@@ -8,7 +8,8 @@ and teleports him to the crater's warp pad, with the fire quest at the step wher
 Sheik appears. Getting Storm there first is what used to stop the windmill scene.
 24a: without the full skip (to check the lesson bypass), Impa gives a Deku Shield.
 24b: on the full skip, the crater's Sheik gives the Hookshot (checks the crater bypass).
-Usage: python -I tools/make_song_batch.py <nup> <out_mod_dir> [22|24a|24b]
+24c: as 24b, but without the lesson's example and repeat (experiment: only its fixed end).
+Usage: python -I tools/make_song_batch.py <nup> <out_mod_dir> [22|24a|24b|24c]
 """
 import os
 import sys
@@ -20,7 +21,8 @@ from randomizer.full_skip import files_with_fallback  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
-from randomizer.songs import SONGS, song_flow_patches  # noqa: E402
+from randomizer.formats.bfevfl import SUBFLOW, EventFlow  # noqa: E402
+from randomizer.songs import LESSON_FLOW, SONGS, bypass, song_flow_patches  # noqa: E402
 from randomizer.test_start import NewStartPos, StartPreset  # noqa: E402
 
 # SageOfFire's steps in order (RSDB/Challenge); the crater's logic starts Sheik's scene
@@ -56,7 +58,17 @@ VARIANTS = {
     '22': (PRESET, PLACEMENT, True),
     '24a': (CASTLE, VANILLA | {'Song from Impa': 'TBox_Shield_Deku'}, False),
     '24b': (CRATER_NO_HOOKSHOT, VANILLA | {'Sheik in Crater': 'Item_Hookshot'}, True),
+    '24c': (CRATER_NO_HOOKSHOT, VANILLA | {'Sheik in Crater': 'Item_Hookshot'}, True),
 }
+# Variants whose patched song scenes also skip the lesson's example and repeat.
+NO_REPEAT = {'24c'}
+EXAMPLE_AND_REPEAT = ('LearningOcarinaPlayExample', 'LearningOcarinaFollowExample')
+
+
+def _without_repeat(data: bytes) -> bytes:
+    flow = EventFlow(data)
+    return bypass(data, [i for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
+                         and ev.sub_flow == LESSON_FLOW and ev.sub_entry in EXAMPLE_AND_REPEAT])
 
 
 def build(nup: NupArchive, variant: str = '22') -> dict[str, bytes]:
@@ -71,6 +83,8 @@ def build(nup: NupArchive, variant: str = '22') -> dict[str, bytes]:
         return batch.read(FLOW_DIR + name + FLOW_EXT)
 
     for name, data in song_flow_patches(read, placement).items():
+        if variant in NO_REPEAT and name.startswith('Dm_MelodyGet_'):
+            data = _without_repeat(data)
         batch.files[FLOW_DIR + name + FLOW_EXT] = data
     add_start(batch, preset)
     return batch.compressed()
