@@ -26,6 +26,18 @@ HOOK_ENTRY = 'EntryPoint0'
 # Flags the hook scene sets itself (events 39 and 45).
 HOOK_FLAGS = ('KokiriForest_LinkHouseDoor_Open', 'Dm_Kokiri_0050_After_Near_End')
 ANALYZED_INFO = 'RSDB/GameAnalyzedEventInfo.Product.111.rstbl.byml.zs'
+# Named start positions per map ({banc: {name: {'Rot': [x, y, z], 'Trans': [x, y, z]}}});
+# the teleport's NextStartPos must be one of them.
+START_POS = 'Banc/BancBasedResource/StartPos.byml.zs'
+
+
+@dataclass(frozen=True)
+class NewStartPos:
+    """A start position to add to `START_POS` for a preset whose map has none
+    where the test must begin."""
+    name: str
+    trans: tuple[float, float, float]
+    rot: tuple[float, float, float]
 
 
 @dataclass(frozen=True)
@@ -34,6 +46,7 @@ class StartPreset:
     start_pos: str  # named start position in that map
     items: tuple[str, ...] = ()  # actors to give, e.g. 'Item_Ocarina_Fairy'
     flags: tuple[tuple[str, bool], ...] = ()  # (GameDataName, value)
+    new_pos: NewStartPos | None = None  # added to `banc`; start_pos must name it
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -90,6 +103,18 @@ def with_subflow_list(info: bytes, event: str, names: Sequence[str]) -> bytes:
         raise KeyError(event)
     rows = [{**r, 'SubFlowList': sorted(names)} if r['__RowId'] == event else r for r in rows]
     return byml.dump(rows, ver)
+
+
+def with_start_pos(data: bytes, banc: str, pos: NewStartPos) -> bytes:
+    """`START_POS` (decompressed) with `pos` added to map `banc`. Raises KeyError
+    for an unknown map and ValueError if the name already exists there."""
+    ver, root = byml.load(data)
+    if banc not in root:
+        raise KeyError(banc)
+    if pos.name in root[banc]:
+        raise ValueError(f'{banc} already has a start position {pos.name!r}.')
+    entry = {'Rot': list(pos.rot), 'Trans': list(pos.trans)}
+    return byml.dump({**root, banc: {**root[banc], pos.name: entry}}, ver)
 
 
 def apply_start(flow_bytes: bytes, preset: StartPreset) -> bytes:

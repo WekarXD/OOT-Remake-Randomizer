@@ -15,7 +15,9 @@ The rest of the game is vanilla.
 
 - [ ] Remove any other `Rando_*`, `TestBatch*` or `TestScenes*` mod.
 - [ ] Copy `test-mod/0400486024DEC000/TestBatch20` to `load/0400486024DEC000/`.
-- [ ] Start a **new game** and play normally up to Zelda and Impa.
+- [ ] Start a **new game** and walk out of Link's house. You get the **Fairy Ocarina** and are teleported to the **Hyrule Castle courtyard**, next to Impa, with Zelda further ahead (start preset, see batch 21).
+- [ ] Talk to Zelda first (the meeting scene plays and gives Zelda's Letter), then go to Impa. If Impa reacts before Zelda, note it.
+- [ ] Afterwards, to reach Saria: go back to Kokiri Forest from Hyrule Field, then Lost Woods → Sacred Forest Meadow.
 
 ## Check
 

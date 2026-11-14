@@ -6,8 +6,9 @@ from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 from randomizer.formats import byml
-from randomizer.test_start import (ANALYZED_INFO, HOOK_ENTRY, HOOK_FLAGS, HOOK_FLOW, StartPreset,
-                                   apply_start, chain_calls, subflow_closure, with_subflow_list)
+from randomizer.test_start import (ANALYZED_INFO, HOOK_ENTRY, HOOK_FLAGS, HOOK_FLOW, START_POS,
+                                   NewStartPos, StartPreset, apply_start, chain_calls,
+                                   subflow_closure, with_start_pos, with_subflow_list)
 
 NUP_PATH = os.environ.get('OOT_NUP')
 PRESET = StartPreset('HyruleField_Child', 'HyruleField_FrontOfLostWoodBridge',
@@ -102,6 +103,24 @@ class ApplyStartTest(unittest.TestCase):
                 self.assertEqual(a, b)
         with self.assertRaises(KeyError):
             with_subflow_list(raw, 'NoSuchEvent', ['A'])
+
+    def test_with_start_pos(self):
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            raw = codec.decompress(START_POS, nup.read(START_POS))
+        pos = NewStartPos('RandoTest', (1.0, 2.0, 3.0), (0.0, 0.5, 0.0))
+        out = with_start_pos(raw, 'HyruleCastle', pos)
+        old, new = byml.load(raw)[1], byml.load(out)[1]
+        self.assertEqual(new['HyruleCastle']['RandoTest'],
+                         {'Rot': [0.0, 0.5, 0.0], 'Trans': [1.0, 2.0, 3.0]})
+        self.assertEqual({k: v for k, v in new['HyruleCastle'].items() if k != 'RandoTest'},
+                         old['HyruleCastle'])
+        self.assertEqual({k: v for k, v in new.items() if k != 'HyruleCastle'},
+                         {k: v for k, v in old.items() if k != 'HyruleCastle'})
+        with self.assertRaises(KeyError):
+            with_start_pos(raw, 'NoSuchBanc', pos)
+        with self.assertRaises(ValueError):
+            with_start_pos(raw, 'HyruleCastle', NewStartPos('EntrancePos', (0.0,) * 3, (0.0,) * 3))
 
     def test_chain_calls(self):
         self.assertEqual(chain_calls(PRESET), [('Dm_SY_GetInEvent', 'GetInEvent'),
