@@ -497,6 +497,29 @@ class RealTests(unittest.TestCase):
             text = Path(res.spoiler_txt).read_text(encoding='utf-8')
             self.assertIn('Shuffle Songs: Anywhere', text)
 
+    def test_generate_songs_dungeon_rewards(self):
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, Settings(seed='rewards', shuffle_songs='dungeon_rewards',
+                                                   skip_cutscenes=True))
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            self.assertEqual(data['settings']['shuffle_songs'], 'dungeon_rewards')
+            hearts = {r['location']: r['item'] for r in data['boss_hearts']}
+            self.assertEqual(len(hearts), 8)
+            root = Path(res.mod_dir) / 'romfs'
+            with NupArchive(NUP_PATH) as nup:
+                game = GameData(nup)
+                for heart in game.boss_hearts():
+                    song = hearts[heart.location]
+                    self.assertTrue(song.startswith('Item_Melody_'), heart.location)
+                    _v, banc = byml.load(game.codec.decompress(
+                        heart.banc, (root / Path(*heart.banc.split('/'))).read_bytes()))
+                    actor = next(x for x in banc['Actors'] if x.get('Hash') == heart.hash)
+                    self.assertEqual(actor['Gyaml'], f'Obj_Rando_{song}', heart.location)
+                    self.assertTrue((root / 'Pack' / 'Actor' / f'Obj_Rando_{song}.pack.zs').exists())
+            text = Path(res.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('Shuffle Songs: Dungeon Rewards', text)
+            self.assertIn('Boss hearts', text)
+
     def test_wrapper_error_becomes_generation_error(self):
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.patch.build_wrapper_files',

@@ -10,7 +10,9 @@ Sheik appears. Getting Storm there first is what used to stop the windmill scene
 24b: on the full skip, the crater's Sheik gives the Hookshot (checks the crater bypass).
 24c: as 24b, but without the lesson's example and repeat (experiment: only its fixed end).
      FAILED in game (Sheik plays, then the scene freezes): the lesson stays.
-Usage: python -I tools/make_song_batch.py <nup> <out_mod_dir> [22|24a|24b|24c]
+25: Dungeon Rewards: Gohma's Heart Container gives Song of Storms (a song wrapper on
+    the floor); teleport into Gohma's room with what the fight needs.
+Usage: python -I tools/make_song_batch.py <nup> <out_mod_dir> [22|24a|24b|24c|25]
 """
 import os
 import sys
@@ -22,7 +24,11 @@ from randomizer.full_skip import files_with_fallback  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
+from randomizer.formats import byml  # noqa: E402
 from randomizer.formats.bfevfl import SUBFLOW, EventFlow  # noqa: E402
+from randomizer.formats.rstb import Rstb  # noqa: E402
+from randomizer.patch import RSTB_PATH  # noqa: E402
+from randomizer.wrappers import WRAPPER_PREFIX, build_wrapper_files, wrap_sources  # noqa: E402
 from randomizer.songs import LESSON_FLOW, SONGS, bypass, song_flow_patches  # noqa: E402
 from randomizer.test_start import NewStartPos, StartPreset  # noqa: E402
 
@@ -61,6 +67,14 @@ VARIANTS = {
     '24b': (CRATER_NO_HOOKSHOT, VANILLA | {'Sheik in Crater': 'Item_Hookshot'}, True),
     '24c': (CRATER_NO_HOOKSHOT, VANILLA | {'Sheik in Crater': 'Item_Hookshot'}, True),
 }
+# Gohma's room (InsideTheDekuTree 'DefeatBoss', next to her Heart Container), with the
+# Kokiri Sword, the Deku Shield and the Slingshot for the fight.
+GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
+                    items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
+                           'Item_Range_SlingShot'))
+VARIANTS['25'] = (GOHMA, VANILLA, True)
+# Variants that put a song on a boss Heart Container: OoTR location -> song.
+HEART_SONGS = {'25': {'Deku Tree Queen Gohma Heart': 'Item_Melody_StormSong'}}
 # Variants whose patched song scenes also skip the lesson's example and repeat.
 NO_REPEAT = {'24c'}
 EXAMPLE_AND_REPEAT = ('LearningOcarinaPlayExample', 'LearningOcarinaFollowExample')
@@ -88,7 +102,22 @@ def build(nup: NupArchive, variant: str = '22') -> dict[str, bytes]:
             data = _without_repeat(data)
         batch.files[FLOW_DIR + name + FLOW_EXT] = data
     add_start(batch, preset)
-    return batch.compressed()
+    hearts = HEART_SONGS.get(variant, {})
+    swaps = {h.hash: (h.banc, hearts[h.location]) for h in game.boss_hearts()
+             if h.location in hearts}
+    for banc in sorted({b for b, _ in swaps.values()}):
+        ver, root = byml.load(batch.read(banc))
+        for a in root['Actors']:
+            if isinstance(a, dict) and a.get('Hash') in swaps:
+                a['Gyaml'] = WRAPPER_PREFIX + swaps[a['Hash']][1]
+        batch.files[banc] = byml.dump(root, ver)
+    files = batch.compressed()
+    if swaps:  # the song wrappers, with their RSTB entries
+        rstb = Rstb.load(game.codec.decompress(RSTB_PATH, files[RSTB_PATH]))
+        files.update(build_wrapper_files(game, wrap_sources(game, [c for _, c in swaps.values()]),
+                                         rstb))
+        files[RSTB_PATH] = game.codec.compress(RSTB_PATH, rstb.dump())
+    return files
 
 
 def main() -> None:

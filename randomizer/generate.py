@@ -117,8 +117,11 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(f'Could not prepare the songs: {e}') from e
                 try:
+                    swaps = ({h.hash: (h.banc, placed.hearts[h.location])
+                              for h in game.boss_hearts()} if placed.hearts else None)
                     changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras,
-                                              extra_sizes=sizes, report=rstb_report)
+                                              extra_sizes=sizes, report=rstb_report,
+                                              actor_swaps=swaps)
                 except ValueError as e:
                     raise GenerationError(
                         f'Could not prepare the item wrappers: {e}') from e
@@ -131,7 +134,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped,
-                                         placed.songs)
+                                         placed.songs, placed.hearts)
                     # '\n' line endings everywhere, so the spoiler log is the same
                     # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),

@@ -43,7 +43,9 @@ class SettingsTest(unittest.TestCase):
         self.assertEqual(s.shuffle_songs, 'song_locations')
         self.assertEqual(browser.parse_settings({'shuffle_songs': 'anywhere'}).shuffle_songs,
                          'anywhere')
-        for bad in ('dungeon_rewards', 3, None):
+        self.assertEqual(browser.parse_settings({'shuffle_songs': 'dungeon_rewards'}).shuffle_songs,
+                         'dungeon_rewards')
+        for bad in ('nope', 3, None):
             with self.subTest(bad=bad):
                 with self.assertRaisesRegex(ValueError, 'Invalid Shuffle Songs value.'):
                     browser.parse_settings({'shuffle_songs': bad})

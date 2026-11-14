@@ -5,7 +5,8 @@ from .formats import byml
 from .formats.rstb import Rstb, banc_rstb_size
 from .game import GameData
 from .locations import LocationEntry
-from .wrappers import TOKEN, build_wrapper_files, drop_actor, pouch_rows, wrap_sources
+from .wrappers import (TOKEN, WRAPPER_PREFIX, build_wrapper_files, drop_actor, pouch_rows,
+                       wrap_sources)
 
 RSTB_PATH = 'System/Resource/ResourceSizeTable.Product.111.Nin_Ounce_NVN2.rsizetable.zs'
 
@@ -20,13 +21,16 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
               loc_map: dict[int, LocationEntry],
               extra_files: dict[str, bytes] | None = None,
               extra_sizes: dict[str, int] | None = None,
-              report: list[str] | None = None) -> list[str]:
+              report: list[str] | None = None,
+              actor_swaps: dict[int, tuple[str, str]] | None = None) -> list[str]:
     """Writes the mod under `mod_root` and returns the romfs paths written.
 
     `extra_files` (romfs path -> compressed bytes) are written as they are;
     `extra_sizes` (romfs path -> size change of a grown file) adds each change to the
     file's RSTB entry. A path with no RSTB entry is left alone and a line is appended to
-    `report`. The RSTB is written only when a banc changed or a size changed."""
+    `report`. The RSTB is written only when a banc changed or a size changed.
+    `actor_swaps` (Hash -> (banc, content)) replaces those actors, e.g. the boss Heart
+    Containers under Dungeon Rewards, with a wrapper that gives `content`."""
     chests = game.chests()
     original = {c.hash: c.drop for c in chests}
     changed = {h for h, d in placement.items() if original.get(h) != d}
@@ -40,8 +44,10 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     # Changed sites that lose their GetEventName (an event that only hands
     # over the original item). Other chests' events are never touched.
     strip = {h for h in changed if h in loc_map and loc_map[h].strip_event}
+    swaps = dict(actor_swaps or {})
     bancs = sorted({c.banc for c in chests if c.hash in changed}
-                   | {s.banc for s in skulls if s.hash in sk_changed})
+                   | {s.banc for s in skulls if s.hash in sk_changed}
+                   | {banc for banc, _ in swaps.values()})
     written = []
     for rel, data in (extra_files or {}).items():
         _write(mod_root, rel, data)
@@ -52,8 +58,12 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     rs_raw = game.codec.decompress(RSTB_PATH, game.nup.read(RSTB_PATH))
     rstb = Rstb.load(rs_raw)
     rows = pouch_rows(game) if sk_changed else None
-    sources = wrap_sources(game, sk_changed.values()) if sk_changed else {}
+    wrapped = list(sk_changed.values()) + [c for _, c in swaps.values()]
+    sources = wrap_sources(game, wrapped) if wrapped else {}
     wrappable = frozenset(sources)
+    unwrappable = sorted({c for _, c in swaps.values()} - wrappable)
+    if unwrappable:
+        raise ValueError(f'No wrapper can be built for {unwrappable}')
     for path in bancs:
         ver, root = game.load_banc(path)
         for a in root['Actors']:
@@ -61,6 +71,9 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
                 continue
             h = a.get('Hash')
             dyn = a.get('Dynamic')
+            if h in swaps:
+                a['Gyaml'] = WRAPPER_PREFIX + swaps[h][1]
+                continue
             if h in sk_changed:
                 if not isinstance(dyn, dict):
                     dyn = a['Dynamic'] = {}
@@ -74,7 +87,7 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
         _write(mod_root, path, game.codec.compress(path, raw))
         rstb.set(path[:-3], banc_rstb_size(len(raw)))
         written.append(path)
-    if sk_changed:
+    if sources:
         wrappers = build_wrapper_files(game, sources, rstb)
         for rel, data in wrappers.items():
             _write(mod_root, rel, data)

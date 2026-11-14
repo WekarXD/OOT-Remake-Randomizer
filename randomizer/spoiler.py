@@ -18,7 +18,8 @@ def _label(drop: str) -> str:
 MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
 TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
                       'overworld': 'Overworld Only', 'all': 'All Tokens'}
-SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations', 'anywhere': 'Anywhere'}
+SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations', 'anywhere': 'Anywhere',
+                        'dungeon_rewards': 'Dungeon Rewards'}
 
 
 def _zone(banc: str) -> str:
@@ -27,7 +28,8 @@ def _zone(banc: str) -> str:
 
 
 def build(settings, placement, chests, loc_map, game_version,
-          skulltulas=(), gs_map=None, cutscenes_not_skipped=None, songs=None) -> dict:
+          skulltulas=(), gs_map=None, cutscenes_not_skipped=None, songs=None,
+          hearts=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -77,12 +79,15 @@ def build(settings, placement, chests, loc_map, game_version,
         key_items.append({'item': placement[s.hash], 'label': _label(placement[s.hash]),
                           'location': e.location, 'zone': _zone(s.banc),
                           'hash': str(s.hash)})
-    if settings.shuffle_songs == 'anywhere':
-        # Song scenes are item locations too: list the key items and songs they give.
-        for loc, actor in sorted((songs or {}).items()):
+    if settings.shuffle_songs in ('anywhere', 'dungeon_rewards'):
+        # Song scenes (and boss hearts) are item locations too: list the key items and
+        # songs they give.
+        sites = [(loc, a, 'Song scene') for loc, a in sorted((songs or {}).items())]
+        sites += [(loc, a, 'Boss heart') for loc, a in sorted((hearts or {}).items())]
+        for loc, actor, zone in sites:
             if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
                 key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
-                                  'zone': 'Song scene', 'hash': ''})
+                                  'zone': zone, 'hash': ''})
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
     result = {
         'seed': settings.seed,
@@ -105,6 +110,9 @@ def build(settings, placement, chests, loc_map, game_version,
         result['songs'] = [{'location': loc, 'song': actor,
                             'label': _label(actor)}
                            for loc, actor in sorted((songs or {}).items())]
+    if hearts:
+        result['boss_hearts'] = [{'location': loc, 'item': a, 'label': _label(a)}
+                                 for loc, a in sorted(hearts.items())]
     if cutscenes_not_skipped is not None and settings.skip_cutscenes:
         result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)
     return result
@@ -156,6 +164,9 @@ def to_text(d: dict) -> str:
     if 'songs' in d:
         lines += ['', 'Songs']
         lines += [f'  {r["location"]}: {r["label"]}' for r in d['songs']]
+    if 'boss_hearts' in d:
+        lines += ['', 'Boss hearts']
+        lines += [f'  {r["location"]}: {r["label"]}' for r in d['boss_hearts']]
     if 'skulltulas' in d:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:

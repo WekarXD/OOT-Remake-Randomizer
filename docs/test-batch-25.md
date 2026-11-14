@@ -1,0 +1,24 @@
+# Test batch 25: a song on a boss Heart Container (Dungeon Rewards)
+
+Part of "Shuffle Songs: Dungeon Rewards" (plan `docs/superpowers/plans/2026-11-14-songs-dungeon-rewards.md`). The boss Heart Containers give songs. Each one's actor (`Obj_Heart_Container`) is swapped for a **song wrapper** (`Obj_Rando_Item_Melody_*`): a clone of the Gold Skulltula token carrying the song's identity, with the token's animation and parameter table, since songs have none. Its `Hash` and links stay, so it should still appear when the boss dies. This is untested.
+
+Built with `tools/make_song_batch.py <nup> <out> 25`, on the full skip. Leaving Link's house teleports you into **Gohma's room** (`InsideTheDekuTree` start position `DefeatBoss`, next to her Heart Container). You get the Fairy Ocarina, the Kokiri Sword, a Deku Shield and the Fairy Slingshot. Gohma's heart gives **Song of Storms**.
+
+## Setup
+
+- [ ] Remove any other `Rando_*`, `TestBatch*` or `TestScenes*` mod.
+- [ ] Copy `test-mod/0400486024DEC000/TestBatch25` to `load/0400486024DEC000/`, start a **new game** and leave the house.
+- [ ] Equip the sword and the shield if they are not, and assign the Slingshot.
+
+## Check
+
+- [ ] Do you appear in Gohma's room? Does Gohma's fight start (or is she already gone)? ______
+- [ ] After beating Gohma, does something appear where the Heart Container would be? What does it look like? ______
+- [ ] Picking it up: do you get **Song of Storms** (message, song list), and **not** a Heart Container? ______
+- [ ] Does Song of Storms play? ______
+- [ ] Does the usual exit (blue warp) still appear and work? ______
+- [ ] Did the game hang or show a black screen? When? ______
+
+## Results
+
+(To be filled in after testing.)
