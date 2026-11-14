@@ -18,6 +18,7 @@ Open the page, choose your `.nup`, the seed and the settings, then click **Gener
 
 - **Skip cutscenes** (in development): the childhood cutscenes and forced conversations are skipped entirely; their effects stay (items, songs, flags, warps). Boss intros and defeats are kept. From the Temple of Time on (adult), scenes are only shortened for now; the adult full skip is built and waiting for its in-game test.
 - **Gold Skulltula Tokens (Tokensanity)**: Off, Dungeons Only, Overworld Only or All Tokens. The Gold Skulltulas in that area join the fill: they can drop key items (which stay floating and are picked up by walking over them or with the Hookshot or Boomerang) or minor items, and their tokens are spread across chests and Skulltulas. The 27 Skulltulas that are not yet identified with certainty do not receive key items.
+- **Shuffle Songs**: Off or Song Locations. With Song Locations, the 12 songs are shuffled among the 12 places that teach one (Impa, Saria, Malon, the Royal Family's Tomb, the Ocarina of Time, the windmill and the six Sheik scenes), as OoTR's setting does. Each scene teaches the new song's notes (only visible with Skip cutscenes off, which drops the lessons) and gives it, but its text still names the original song. OoTR's other values (Anywhere, Dungeon Rewards) are not available yet.
 
 Source code: https://github.com/WekarXD/OOT-Remake-Randomizer
 
@@ -35,7 +36,7 @@ To play it following a checklist, see `docs/acceptance.md`.
 - **6 stay in place:** Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield, because their chests carry story events.
 - Bombs and Bombchus cannot be used until you have the Goron's Bracelet (remake behaviour); the logic accounts for it. Seeds generated before the Bomb Bag was freed place items differently.
 - 104 of the 203 chests are mapped to OoTR locations and can hold anything. Another 61 have no OoTR equivalent (most are new in the remake) and take part in the fill with minor items only. The remaining 38 keep their original contents: small keys, the remake-only dream area, and a few event or shop chests.
-- Keys, maps, compasses, songs and NPC items are not randomized.
+- Keys, maps, compasses and NPC items are not randomized. Songs are, among the song locations, with Shuffle Songs.
 - The chest image and text may still show the original item (accepted in v1); what you receive is the new item.
 - Ice Arrows also unlock the magic meter.
 - Key items are not placed in the Water Temple, the Fire Temple, the Well or the Gerudo Training Ground in this version.

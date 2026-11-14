@@ -14,6 +14,7 @@ Pending work, most important first within each section.
 
 ## To test in game
 
+- Song Locations (guide `docs/test-song-locations.md`, seed `Rando_CANCIONES1` with Skip cutscenes): the acceptance seed. Batch 22 already confirmed the windmill and crater patches, the lesson-end retarget and the adult preset.
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
@@ -24,6 +25,7 @@ Pending work, most important first within each section.
 
 ## To build
 
+- **Shuffle Songs: Anywhere, then Dungeon Rewards** (after Song Locations; design `docs/superpowers/specs/2026-11-14-song-locations-design.md`). Dungeon Rewards needs the boss heart containers and the BotW/GTG chests, which are in `NO_KEY_TARGET_ZONES`.
 - **Remaining full-skip failures** (shared forced talks are done by growing, pending the round 3 test): the targeting tutorial `ActionTutorial_1st_Talk` (conflict), Din's fairy (conflict), `Dm_InsideJabu_Jabu_0050` (conflict). Compounding growth (copy of a copy) could be optimised by growing in place.
 - **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.
 - **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
