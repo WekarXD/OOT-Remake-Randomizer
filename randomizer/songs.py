@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from randomizer.formats.bfevfl import (SUBFLOW, EventFlow, patch_pointers, set_int_param,
                                        set_string_param, set_subflow_entry)
 
-SHUFFLE_SONGS = ('off', 'song_locations')
+SHUFFLE_SONGS = ('off', 'song_locations', 'anywhere')
 GRANT_CALL = ('GetPouchContent', 'GetPouchContentByActorName')
 LESSON_FLOW, LESSON_PREFIX = 'Dm_SY_Ocarina', 'LearningOcarina'
 AUTO_NORMAL, AUTO_WARP = 'LearningOcarinaPlayAuto', 'LearningOcarinaPlayAutoForSeek'

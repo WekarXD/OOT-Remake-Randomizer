@@ -249,7 +249,63 @@ class SongFillTest(unittest.TestCase):
 
     def test_songs_unknown_value_raises(self):
         with self.assertRaises(FillError):
-            self._all(seed='A', shuffle_songs='anywhere')
+            self._all(seed='A', shuffle_songs='nope')
+
+
+class AnywhereFillTest(unittest.TestCase):
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+        self.orig = _original(self.chests)
+
+    def _all(self, **kw):
+        return place_all(self.chests, self.loc_map, self.world,
+                         Settings(shuffle_songs='anywhere', **kw))
+
+    def _fixed(self, result):
+        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world)
+        for h, drop in result.chests.items():  # songs in chests
+            if drop in SONG_BY_ACTOR and h in self.loc_map and self.loc_map[h].location:
+                fixed[self.loc_map[h].location] = SONG_BY_ACTOR[drop].song
+        for loc, drop in result.songs.items():
+            fixed[loc] = (SONG_BY_ACTOR[drop].song if drop in SONG_BY_ACTOR
+                          else drop if drop in items.KEY_ITEMS else 'Rupees (5)')
+        return fixed
+
+    def test_anywhere_moves_songs(self):
+        in_chests = non_song_scenes = 0
+        for i in range(10):
+            r = self._all(seed=f'A{i}')
+            in_chests += any(d in SONG_BY_ACTOR for d in r.chests.values())
+            non_song_scenes += any(d not in SONG_BY_ACTOR for d in r.songs.values())
+        self.assertGreater(in_chests, 0)
+        self.assertGreater(non_song_scenes, 0)
+
+    def test_anywhere_multiset(self):
+        r = self._all(seed='M')
+        self.assertEqual(set(r.chests), set(self.orig))
+        self.assertEqual(set(r.songs), set(VANILLA_SONGS))
+        self.assertEqual(Counter(r.chests.values()) + Counter(r.songs.values()),
+                         Counter(self.orig.values()) + Counter(VANILLA_SONGS.values()))
+        self.assertEqual(r, self._all(seed='M'))
+
+    def test_anywhere_beatable_many(self):
+        for i in range(20):
+            r = self._all(seed=f'B{i}')
+            self.assertTrue(self.world.can_beat(self._fixed(r)), f'seed {i}')
+
+    def test_anywhere_vanilla_keys_raises(self):
+        with self.assertRaisesRegex(FillError, 'Anywhere needs key items shuffled'):
+            self._all(seed='V', key_items_mode='vanilla')
+
+    def test_anywhere_with_tokensanity_keeps_songs_off_skulltulas(self):
+        skulltulas, gs_map = _gs_data()
+        forbidden = frozenset(VANILLA_SONGS.values())
+        sk = {s.hash for s in skulltulas}
+        for i in range(5):
+            r = place_all(self.chests, self.loc_map, self.world,
+                          Settings(seed=f'T{i}', shuffle_songs='anywhere', tokensanity='all'),
+                          skulltulas, gs_map, forbidden)
+            self.assertFalse([h for h, d in r.chests.items() if h in sk and d in SONG_BY_ACTOR])
 
 
 def _gs_data():

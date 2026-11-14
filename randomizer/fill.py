@@ -203,9 +203,20 @@ def _fixed(world_base: dict[str, str], site_loc: dict[int, str],
         drop = placed[h]
         if drop in KEY_ITEMS:
             fixed[site_loc[h]] = drop
+        elif drop in SONG_BY_ACTOR:  # Shuffle Songs: Anywhere
+            fixed[site_loc[h]] = SONG_BY_ACTOR[drop].song
         elif drop == TOKEN:
             fixed[site_loc[h]] = OOTR_TOKEN
     return fixed
+
+
+def _logic_name(item: str) -> str:
+    """How the logic names a moving item: songs by their OoTR name."""
+    return SONG_BY_ACTOR[item].song if item in SONG_BY_ACTOR else item
+
+
+# Shuffle Songs: Anywhere: the song scenes join the fill as sites with these ids.
+SONG_SITE_IDS: dict[str, int] = {s.location: -(k + 1) for k, s in enumerate(SONGS)}
 
 
 def _complete(world: World, fixed: dict[str, str], vanilla_keys: bool) -> bool:
@@ -244,7 +255,7 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     placed: dict[int, str] = dict(pinned)
     for i, item in enumerate(to_place):
         reach = world.reachable_locations(_fixed(base, site_loc, placed),
-                                          owned=to_place[i + 1:])
+                                          owned=[_logic_name(a) for a in to_place[i + 1:]])
         candidates = [h for h in free if h not in placed and h not in no_key
                       and site_loc[h] in reach
                       and not (h in gs and item in gs_forbidden)]
@@ -335,6 +346,9 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
             raise FillError(f'Hash {h} is both a chest and a Skulltula')
         original[h] = TOKEN
     songs_on = settings.shuffle_songs != 'off'
+    anywhere = settings.shuffle_songs == 'anywhere'
+    if anywhere and settings.key_items_mode == 'vanilla':
+        raise FillError('Anywhere needs key items shuffled.')
     if settings.key_items_mode == 'vanilla':
         if not songs_on:
             return Placement(dict(original), dict(VANILLA_SONGS))
@@ -346,7 +360,12 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     eligible = sorted(chest_sites + gs + filler)
     site_loc = {h: loc_map[h].location for h in chest_sites}
     site_loc.update((h, gs_map[h].location) for h in gs)
-    moving = [h for h in eligible if original[h] in KEY_ITEMS
+    if anywhere:  # the song scenes become sites holding their songs
+        for s in SONGS:
+            original[SONG_SITE_IDS[s.location]] = s.actor
+            site_loc[SONG_SITE_IDS[s.location]] = s.location
+        eligible = sorted(eligible + list(SONG_SITE_IDS.values()))
+    moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR)
               and original[h] not in settings.excluded_items]
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
     no_key = frozenset(h for h, banc in bancs
@@ -358,8 +377,12 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     for h in eligible:
         if h in site_loc:
             base[site_loc[h]] = FILLER
-    return _run(settings, world, original, eligible, moving, site_loc, base, no_key,
-                frozenset(gs), gs_forbidden)
+    placed = _run(settings, world, original, eligible, moving, site_loc, base, no_key,
+                  frozenset(gs), gs_forbidden)
+    if not anywhere:
+        return placed
+    return Placement({h: d for h, d in placed.chests.items() if h >= 0},
+                     {loc: placed.chests[h] for loc, h in SONG_SITE_IDS.items()})
 
 
 def _run(settings: Settings, world: World, original: dict[int, str], eligible: list[int],
@@ -370,7 +393,7 @@ def _run(settings: Settings, world: World, original: dict[int, str], eligible: l
     for attempt in range(MAX_ATTEMPTS + 1):
         result = _attempt(_rng(settings, attempt), original, eligible, moving, site_loc,
                           world, base, no_key, gs, gs_forbidden,
-                          settings.shuffle_songs != 'off', vanilla_keys)
+                          settings.shuffle_songs == 'song_locations', vanilla_keys)
         if result is not None:
             return Placement(*result)
     raise FillError('Could not generate a beatable seed with these settings')
