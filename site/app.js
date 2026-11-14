@@ -125,11 +125,18 @@
     });
   }
 
+  // Until the engine sends the item list there are no checkboxes: the excluded
+  // items live here, and renderItems starts from them.
+  let itemsRendered = false;
+  let pendingExcluded = [];
+
   function options() {
     return {
       seed: $('seed').value.trim(),
       key_items_mode: $('mode').value,
-      excluded_items: Array.from($('items').querySelectorAll('input:checked:not(:disabled)')).map((c) => c.value),
+      excluded_items: itemsRendered
+        ? Array.from($('items').querySelectorAll('input:checked:not(:disabled)')).map((c) => c.value)
+        : pendingExcluded.slice(),
       spoiler: $('spoiler').checked,
       skip_cutscenes: $('skip-cutscenes').checked,
       tokensanity: $('tokensanity').value,
@@ -146,6 +153,7 @@
     $('skip-cutscenes').checked = o.skip_cutscenes;
     $('tokensanity').value = o.tokensanity;
     $('shuffle_songs').value = o.shuffle_songs;
+    if (!itemsRendered) pendingExcluded = o.excluded_items.slice();
     $('items').querySelectorAll('input:not(:disabled)').forEach((c) => {
       c.checked = o.excluded_items.includes(c.value);
     });
@@ -177,6 +185,9 @@
   }
 
   const saved = loadSaved();
+  if (Array.isArray(saved.excluded_items)) {
+    pendingExcluded = saved.excluded_items.filter((a) => typeof a === 'string');
+  }
   $('seed').value = typeof saved.seed === 'string' && saved.seed ? saved.seed : randomSeed();
   if (saved.key_items_mode === 'vanilla' || saved.key_items_mode === 'any_chest') $('mode').value = saved.key_items_mode;
   if (typeof saved.spoiler === 'boolean') $('spoiler').checked = saved.spoiler;
@@ -217,7 +228,8 @@
     } else if (m.type === 'ready') {
       engineReady = true;
       setStatus($('engine'), '✔ Randomizer ready.', 'ok');
-      renderItems(m.items, Array.isArray(saved.excluded_items) ? saved.excluded_items : []);
+      renderItems(m.items, pendingExcluded);
+      itemsRendered = true;
       syncPreset();
       if ($('nup').files.length) checkNup();
       refreshButton();
