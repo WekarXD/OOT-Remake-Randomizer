@@ -49,14 +49,15 @@ class ApplyStartTest(unittest.TestCase):
         return seen
 
     def test_adult_chain(self):
-        # Mirrors Market_Child_Field_ChildToAdult: flag, era change, then the teleport.
+        # Mirrors Market_Child_Field_ChildToAdult: the era change (which reads the
+        # childhood flag), then the flag, then the teleport.
         preset = StartPreset('DeathMountainCrater_Adult', 'FireBolero', adult=True)
         seen = self._walk(preset)
         tail = seen[-3:]
-        self.assertEqual((tail[0][0].action, tail[0][1]['GameDataName'], tail[0][1]['Value']),
-                         ('EventTriggerSetGameDataBool', CHILDHOOD_FLAG, False))
-        self.assertEqual((tail[1][0].kind, tail[1][0].sub_flow, tail[1][0].sub_entry),
+        self.assertEqual((tail[0][0].kind, tail[0][0].sub_flow, tail[0][0].sub_entry),
                          (SUBFLOW, *ERA_CHANGE))
+        self.assertEqual((tail[1][0].action, tail[1][1]['GameDataName'], tail[1][1]['Value']),
+                         ('EventTriggerSetGameDataBool', CHILDHOOD_FLAG, False))
         self.assertEqual(tail[2][0].sub_flow, 'Dm_SY_BancChangeGo')
         self.assertIn(ERA_CHANGE, chain_calls(preset))
 

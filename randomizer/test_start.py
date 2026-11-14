@@ -86,7 +86,8 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
     if preset.adult:
         if not preset.banc.endswith('_Adult'):
             raise ValueError(f'An adult preset needs an *_Adult map, not {preset.banc!r}.')
-        specs += [_flag(CHILDHOOD_FLAG, False), SubflowSpec(*ERA_CHANGE, {})]
+        # The era change reads the childhood flag, so it runs before the flag changes.
+        specs += [SubflowSpec(*ERA_CHANGE, {}), _flag(CHILDHOOD_FLAG, False)]
     specs.append(SubflowSpec('Dm_SY_BancChangeGo', 'EntryPoint0', {
         'NextBanc': preset.banc, 'NextStartPos': preset.start_pos, 'BootEventName': '',
         'IsCheckAir': False, 'NextStartPosAir': preset.start_pos}))
