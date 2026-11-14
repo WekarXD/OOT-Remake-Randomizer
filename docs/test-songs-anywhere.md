@@ -55,4 +55,4 @@ As far as is practical, childhood first:
 
 ## Results
 
-(To be filled in after testing.)
+2026-11-14: **works.** The user played `CUALQUIERA1` and the songs come out right. Anywhere is accepted (released on `main` in f464f9e).

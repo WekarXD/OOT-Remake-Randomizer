@@ -15,7 +15,6 @@ Pending work, most important first within each section.
 ## To test in game
 
 - Batch 25 (guide `docs/test-batch-25.md`, mod `TestBatch25`): a song on Gohma's Heart Container (song wrapper). Then the Dungeon Rewards acceptance seed (guide `docs/test-songs-dungeon-rewards.md`, `Rando_MAZMORRAS1`).
-- Shuffle Songs: Anywhere (guide `docs/test-songs-anywhere.md`, seed `Rando_CUALQUIERA1` with Skip cutscenes): the acceptance seed.
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
