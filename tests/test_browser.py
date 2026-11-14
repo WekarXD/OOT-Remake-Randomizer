@@ -37,6 +37,15 @@ class SettingsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             browser.parse_settings([])
 
+    def test_shuffle_songs(self):
+        self.assertEqual(browser.parse_settings({}).shuffle_songs, 'off')
+        s = browser.parse_settings({'shuffle_songs': 'song_locations'})
+        self.assertEqual(s.shuffle_songs, 'song_locations')
+        for bad in ('anywhere', 3, None):
+            with self.subTest(bad=bad):
+                with self.assertRaisesRegex(ValueError, 'Invalid Shuffle Songs value.'):
+                    browser.parse_settings({'shuffle_songs': bad})
+
     def test_non_excludable_rejected(self):
         from randomizer.items import NON_EXCLUDABLE
         item = sorted(NON_EXCLUDABLE)[0]

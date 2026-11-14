@@ -4,6 +4,7 @@
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
   const STORE = 'oot-remake-rando-settings';
   const TOKENSANITY = ['off', 'dungeons', 'overworld', 'all'];
+  const SHUFFLE_SONGS = ['off', 'song_locations'];
 
   function selectTab(tab, focus) {
     tabs.forEach((t) => {
@@ -78,6 +79,7 @@
       spoiler: $('spoiler').checked,
       skip_cutscenes: $('skip-cutscenes').checked,
       tokensanity: $('tokensanity').value,
+      shuffle_songs: $('shuffle_songs').value,
     };
   }
 
@@ -95,6 +97,7 @@
   if (typeof saved.spoiler === 'boolean') $('spoiler').checked = saved.spoiler;
   if (typeof saved.skip_cutscenes === 'boolean') $('skip-cutscenes').checked = saved.skip_cutscenes;
   if (TOKENSANITY.includes(saved.tokensanity)) $('tokensanity').value = saved.tokensanity;
+  if (SHUFFLE_SONGS.includes(saved.shuffle_songs)) $('shuffle_songs').value = saved.shuffle_songs;
 
   let worker;
   try {
