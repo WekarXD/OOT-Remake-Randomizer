@@ -69,18 +69,14 @@ VARIANTS = {
 }
 # Gohma's room (InsideTheDekuTree 'DefeatBoss', next to her Heart Container), with the
 # Kokiri Sword, the Deku Shield and the Slingshot for the fight.
-# Attempts 2-3: teleporting to 'DefeatBoss' left a black screen; attempt 4 tries the
-# dungeon's own entrance position to tell a dungeon problem from a position problem.
-GOHMA = StartPreset('InsideTheDekuTree', 'Entrance',
-                    # The Slingshot alone has no ammo (batch 25, attempt 1): the bag and seeds.
+# Gohma's room (InsideTheDekuTree 'DefeatBoss', next to her Heart Container), with what
+# the fight needs. Attempt 1 reached the room but the Slingshot had no ammo; attempts 2-4
+# hung on a black screen while handing over the items: Item_BulletBag_Small or
+# TBox_DekuSeedBundle cannot be given through GetInEvent. Item_BulletBag_Medium is (the
+# Lost Woods scrub gives it that way, Dm_LostWood_0040).
+GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
                     items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
-                           'Item_Range_SlingShot', 'Item_BulletBag_Small',
-                           'TBox_DekuSeedBundle'),
-                    # Its map entrance passes this arrival event and plays the Deku Tree's
-                    # intro until Dm_Deku_0000 is marked played (batch 25, attempt 2:
-                    # black screen without them).
-                    flags=(('HavePlayedEvent.Dm_Deku_0000', True),),
-                    boot_event='Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
+                           'Item_Range_SlingShot', 'Item_BulletBag_Medium'))
 VARIANTS['25'] = (GOHMA, VANILLA, True)
 # Variants that put a song on a boss Heart Container: OoTR location -> song.
 HEART_SONGS = {'25': {'Deku Tree Queen Gohma Heart': 'Item_Melody_StormSong'}}
