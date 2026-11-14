@@ -25,7 +25,8 @@ FIRE_STEPS = ('Ready', 'StopDaruniaJr', 'TalkDaruniaJr', 'MoveStatue', 'EnterCra
               'MeetSheik')
 PRESET = StartPreset(
     'DeathMountainCrater_Adult', 'FireBolero',
-    items=('Item_Ocarina_Time', 'Obj_Armor_Goron'),
+    # The Hookshot is the way out of the warp pad's ledge (batch 22, attempt 1).
+    items=('Item_Ocarina_Time', 'Obj_Armor_Goron', 'Item_Hookshot'),
     challenge_steps=tuple(('SageOfFire', s) for s in FIRE_STEPS)
     + (('SubEvent_GetStormSong', 'Ready'),),
     adult=True)

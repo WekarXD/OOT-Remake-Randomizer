@@ -18,7 +18,7 @@ The batch is built on the full cutscene skip (childhood phase, as seeds use it) 
 
 - [ ] Remove any other `Rando_*`, `TestBatch*` or `TestScenes*` mod.
 - [ ] Copy `test-mod/0400486024DEC000/TestBatch22` to `load/0400486024DEC000/`.
-- [ ] Start a **new game** and walk out of Link's house. You receive the **Ocarina of Time** and the **Goron Tunic**, become an **adult**, and are teleported to the **Death Mountain Crater warp pad** (start position `FireBolero`).
+- [ ] Start a **new game** and walk out of Link's house. You receive the **Ocarina of Time**, the **Goron Tunic** and the **Hookshot**, become an **adult**, and are teleported to the **Death Mountain Crater warp pad** (start position `FireBolero`).
 - [ ] What the preset sets (sources):
   - the fire quest `SageOfFire` is advanced Ready → StopDaruniaJr → TalkDaruniaJr → MoveStatue → EnterCrater → **MeetSheik**. The order comes from `RSDB/Challenge`; the crater's logic graphs (`DeathMountainCrater_Adult_Prefab_a0e2`, `e63c`) start Sheik's scene around MeetSheik, while `HavePlayedEvent.Dm_MelodyGet_Fire` is unset.
   - the storm quest `SubEvent_GetStormSong` is set to `Ready`. This is a guess: the windmill man's talk checks `SubEvent_GetStormSong_IsAfter_Ready_Exp`, and his talk advances it to `ReadyForGetStormSong` himself.
@@ -28,9 +28,9 @@ The batch is built on the full cutscene skip (childhood phase, as seeds use it) 
 
 Crater:
 
-- [ ] Are you an adult, with the Master Sword? ______
-- [ ] Does Sheik appear (on arrival, or when you step off the warp pad)? ______
-- [ ] Does he give you **Song of Storms** (not the Bolero)? ______
+- [x] Are you an adult, with the Master Sword? Yes (attempt 1).
+- [x] Does Sheik appear (on arrival, or when you step off the warp pad)? Yes, on arrival (attempt 1).
+- [x] Does he give you **Song of Storms** (not the Bolero)? Yes (attempt 1).
 
 Windmill (walk down Death Mountain Trail to Kakariko and enter the windmill):
 
@@ -45,4 +45,4 @@ In general:
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 1 (2026-11-14): becoming an adult works (Master Sword included). Sheik appears on arrival at the crater and gives **Song of Storms**, so the crater patch works. The crater could not be left: the warp pad's ledge needs the Hookshot. Rebuilt for attempt 2 with the Hookshot; only the windmill half is left (needs a new game).
