@@ -58,3 +58,5 @@ Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with
 24b, attempt 3 (2026-11-14): **works.** Sheik plays, you repeat the notes, the scene ends, and you get the Hookshot, which works. The plain `PlayAuto` end is confirmed. 24a with the kept lesson is still to be retested.
 
 **24c (experiment, the user's question):** can the example and the repeat go too, keeping only the fixed end? `TestBatch24c` is 24b with `LearningOcarinaPlayExample` and `LearningOcarinaFollowExample` bypassed in the patched scene. Only `PlayAuto` stays reachable. If it works, scenes giving a non-song lose their whole lesson except the fixed end; if it hangs, the lesson stays.
+
+24c, attempt 1 (2026-11-14): **freezes** after Sheik plays. The scene needs the example and the repeat too, so **the lesson stays**: a scene giving a non-song keeps its lesson, with the plain `PlayAuto` end (24b).

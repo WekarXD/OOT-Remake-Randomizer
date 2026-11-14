@@ -9,6 +9,7 @@ Sheik appears. Getting Storm there first is what used to stop the windmill scene
 24a: without the full skip (to check the lesson bypass), Impa gives a Deku Shield.
 24b: on the full skip, the crater's Sheik gives the Hookshot (checks the crater bypass).
 24c: as 24b, but without the lesson's example and repeat (experiment: only its fixed end).
+     FAILED in game (Sheik plays, then the scene freezes): the lesson stays.
 Usage: python -I tools/make_song_batch.py <nup> <out_mod_dir> [22|24a|24b|24c]
 """
 import os
