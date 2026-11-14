@@ -5,7 +5,7 @@ Zelda's Lullaby, and patches the fountains the way the shuffle would:
 - the fountain's grant (Dm_SY_GetInEvent call) gives another item; the special grant
   entries (Din, Wisdom, Courage: their own gauge/defense animation) are pointed at the
   generic one;
-- the fairies are free, as in OoTR: the pay question is ignored and the payment is 0
+- the fairies are free, as in OoTR: every rupee check passes and nothing is charged
   (so the first visit always grants, and a refused payment cannot lose the item);
 - the revisit check reads HavePlayedEvent.<fountain event> instead of IsGet.<own
   reward> (as the windmill), so a revisit only heals;
@@ -30,7 +30,7 @@ from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.formats.bfevfl import (SUBFLOW, SWITCH, EventFlow, patch_pointers,  # noqa: E402
-                                       set_int_param, set_string_param, set_subflow_entry)
+                                       set_string_param, set_subflow_entry)
 from randomizer.songs import _rename_flag, bypass  # noqa: E402
 from randomizer.test_start import NewStartPos, StartPreset  # noqa: E402
 
@@ -102,18 +102,21 @@ def patch_fountain(data: bytes, name: str, item: str) -> bytes:
     data, n = _rename_flag(data, BOOL_QUERY, 'IsGet.' + reward,
                            'HavePlayedEvent.Dm_FairyFountain_' + name)
     _some(list(range(n)), f'own-reward checks in {name}')
-    # Free: whatever the answer, straight to the payment, of 0 rupees.
+    return make_free(data)
+
+
+def make_free(data: bytes) -> bytes:
+    """The flow without charging: every rupee check (`HasRuppe`, including the copies
+    the full skip inlines, which skip the pay question) goes to its "enough" case, and
+    every payment (`IncreaseRupee`, also inlined from `Pay`) is skipped. Batch 26
+    attempt 1: patching only the pay question left the skip's direct path, and the
+    fairy said Link had too few rupees."""
     flow = EventFlow(data)
-    choices = _some([i for i, ev in enumerate(flow.events)
-                     if ev.query == 'EventQueryTalkChoice2'], f'{name} pay questions')
-    pays = _some([i for i, ev in enumerate(flow.events)
-                  if ev.kind == SUBFLOW and ev.sub_entry == 'Pay'], f'{name} payments')
-    if len(choices) != len(pays):
-        raise SystemExit(f'FAIL: {name} has {len(choices)} questions, {len(pays)} payments')
-    for choice, pay in zip(choices, pays):  # in event order: each copy with its own
-        data = _retarget(data, choice, pay)
-        data = set_int_param(data, pay, 'Value', 0)
-    return data
+    for check in [i for i, ev in enumerate(flow.events) if ev.query == 'EventQueryHasRuppe']:
+        data = _retarget(data, check, _switch_case_targets(EventFlow(data), check)[0])
+    flow = EventFlow(data)
+    return bypass(data, [i for i, ev in enumerate(flow.events)
+                         if ev.action == 'EventTriggerIncreaseRupee'])
 
 
 def patch_triforce(data: bytes) -> bytes:
@@ -141,6 +144,9 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
     batch.files.update(batch.unpack(skip))
     path = FLOW_DIR + 'Dm_FairyFountain_' + fountain + FLOW_EXT
     batch.files[path] = patch_fountain(batch.read(path), fountain, item)
+    if fountain != 'Din':  # the other fountains call Din's shared Pay entries
+        path = FLOW_DIR + 'Dm_FairyFountain_Din' + FLOW_EXT
+        batch.files[path] = make_free(batch.read(path))
     path = FLOW_DIR + TRIFORCE_FLOW + FLOW_EXT
     batch.files[path] = patch_triforce(batch.read(path))
     add_start(batch, _preset(fountain, extra, adult))

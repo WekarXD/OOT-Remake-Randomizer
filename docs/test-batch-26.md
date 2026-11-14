@@ -5,7 +5,7 @@ Groundwork for shuffling the Great Fairy rewards (`docs/great-fairies-research.m
 Every variant patches the fountains the way the shuffle would:
 
 - **Another item:** the fountain's `Dm_SY_GetInEvent` call gives another item. The special grant entries (`GetInEvent_GreatFairyDin`, `_Wisdom`, `_Courge`) add their own animations (a new gauge, the double gauge, defense), so they are pointed at the generic `GetInEvent_Demo_NotLookatObjectEntry`. The full skip copies Din's grant (events 308 and 615), and both copies are patched.
-- **Free fairies, as in OoTR:** the pay question's answer is ignored and the payment is 0. The first visit always grants, so refusing to pay cannot lose the item. `HavePlayedEvent` is set when the event ends, whichever path it took.
+- **Free fairies, as in OoTR:** every rupee check (`HasRuppe`) goes to its "enough" case and every payment (`IncreaseRupee`) is skipped, in the fountain's flow and in Din's (the others call its shared `Pay`). The first visit always grants, so refusing to pay cannot lose the item. `HavePlayedEvent` is set when the event ends, whichever path it took.
 - **Revisits:** the fountain reads `HavePlayedEvent.Dm_FairyFountain_<name>` instead of `IsGet.<own reward>`, so a revisit only heals, even when the vanilla reward was found elsewhere.
 - **No Din gate:** `TriForcePoint` summons every fairy without `IsGet.Item_DinFire`. Vanilla needs Din's Fire for all fairies but Din, because Din's Fire brings the magic meter.
 - **No spin guide:** the Power fairy's spin attack guide (`ActionGuide`) is skipped when she gives something else.
@@ -37,4 +37,4 @@ Pouch data (`PouchActorInfo`): Din's Fire, Farore's Wind, Nayru's Love and `Item
 
 ## Results
 
-Pending.
+Attempt 1 (2026-11-14), 26a: the fairy says Link **has too few rupees** and gives nothing. Only the pay question had been patched, but the full skip goes straight to the rupee check (event 676 -> 17, no question) and inlines `Pay`'s body (`IncreaseRupee` at 677 and 265, a second check at 602). The batch now passes every `HasRuppe` and skips every `IncreaseRupee` instead. Rebuilt for attempt 2 (all three variants).
