@@ -5,7 +5,7 @@ import unittest
 from randomizer.formats.bfevfl import (ACTION, FORK, JOIN, RESULT, SWITCH, BfevflError, Event,
                                        EventFlow, build_relocation_table, compact, copy_event,
                                        grow_events, patch_pointers, relocation_table,
-                                       set_string_param, string_param_owners)
+                                       set_int_param, set_string_param, string_param_owners)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -183,6 +183,25 @@ class StringParamTests(unittest.TestCase):
         self.assertIs(p51['IsGetEvent'], False)
         self.assertEqual(EventFlow(self.gold).action_params(250),
                          {'TakenRewardActor': 'Obj_Rupee_Gold'})
+
+    def test_set_int_param(self):
+        with NupArchive(NUP_PATH) as nup:
+            data = _load(nup, ZsCodec.from_archive(nup), 'Dm_MelodyGet_Zelda.bfevfl.zs')
+        flow = EventFlow(data)
+        self.assertEqual(flow.action_params(4)['MelodyType'], 0)  # lesson, Zelda's Lullaby
+        new = set_int_param(data, 4, 'MelodyType', 2)
+        self.assertEqual(len(new), len(data))
+        after = EventFlow(new)
+        self.assertEqual(after.action_params(4)['MelodyType'], 2)
+        expect = _all_params(flow)
+        expect[4] = {**expect[4], 'MelodyType': 2}
+        self.assertEqual(_all_params(after), expect)
+        grant = next(i for i in range(len(flow.events))
+                     if flow.action_params(i).get('ActorName') == 'Item_Melody_ZeldaLullaby')
+        with self.assertRaises(BfevflError):
+            set_int_param(data, grant, 'ActorName', 1)  # a string parameter
+        with self.assertRaises(BfevflError):
+            set_int_param(data, 4, 'NoSuchKey', 1)
 
     def test_set_string_param_roundtrip(self):
         before = _all_params(self.flow)

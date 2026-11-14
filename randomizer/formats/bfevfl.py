@@ -345,6 +345,21 @@ class EventFlow:
         return None
 
 
+def set_int_param(data: bytes, event_index: int, key: str, value: int) -> bytes:
+    """Return the file with the event's int parameter `key` set to `value` (in place:
+    same size). Raises BfevflError if the event has no such parameter or it is not
+    an int."""
+    flow = EventFlow(data)
+    for k, it in flow._items(event_index):
+        if k == key:
+            if data[it] != INT:
+                raise BfevflError(f'Parameter {key!r} of event {event_index} is not an int.')
+            out = bytearray(data)
+            struct.pack_into('<i', out, it + 0x10, value)
+            return bytes(out)
+    raise BfevflError(f'Event {event_index} has no parameter {key!r}.')
+
+
 def set_string_param(data: bytes, event_index: int, key: str, value: str) -> bytes:
     """Return the file with the event's string parameter `key` changed.
 
