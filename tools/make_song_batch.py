@@ -69,7 +69,9 @@ VARIANTS = {
 }
 # Gohma's room (InsideTheDekuTree 'DefeatBoss', next to her Heart Container), with the
 # Kokiri Sword, the Deku Shield and the Slingshot for the fight.
-GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
+# Attempts 2-3: teleporting to 'DefeatBoss' left a black screen; attempt 4 tries the
+# dungeon's own entrance position to tell a dungeon problem from a position problem.
+GOHMA = StartPreset('InsideTheDekuTree', 'Entrance',
                     # The Slingshot alone has no ammo (batch 25, attempt 1): the bag and seeds.
                     items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
                            'Item_Range_SlingShot', 'Item_BulletBag_Small',
