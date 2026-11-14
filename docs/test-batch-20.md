@@ -22,15 +22,17 @@ The rest of the game is vanilla.
 Attempt 1 (2026-11-14): Zelda's meeting would not start. Cause: it only triggers with the castle quest at Step04, which the teleport skipped. Rebuilt for attempt 2 with the quest steps and the full skip. The lesson's second half (`LearningOcarinaFollowExample`, the notes you repeat) is now swapped too; attempt 1 only swapped the notes you are shown.
 
 Attempt 2 (2026-11-14): Zelda's meeting worked. **Impa teaches and gives Saria's Song**, and it plays correctly. Going back from Hyrule Field to the forest left a black screen: the bridge triggers Saria's farewell (`KokiriForest_ArriveLostWood`), which the teleport had skipped, and Saria is not there. Presets now mark that farewell as played (`FOREST_EXIT_FLAGS`). Rebuilt for attempt 3, which only needs the Saria half.
+
+Attempt 3 (2026-11-14): Impa gives Saria's Song and the scene ends cleanly, but there are **no notes to repeat**. Expected: the full skip drops the ocarina lessons (`subflows_drop` has `Dm_SY_Ocarina/LearningOcarina*`), so the note swap only shows without the skip. The song plays; Darunia was not reachable (needs Zelda's Lullaby). Going back into the forest, an **invisible wall** by the exit guard (`Npc_Kokiri_007_Child`) blocked the way: a `FldObj_AirWall_Player_GenerateNavMesh` whose Presence is `KokiriForest_Npc_Kokiri_007_Child_Blocker_00`, which he clears after the Deku Tree. Presets now set it to false (`FOREST_EXIT_FLAGS`, 156e078). Rebuilt for attempt 4 (Saria half only).
 - [ ] Afterwards, to reach Saria: go back to Kokiri Forest from Hyrule Field, then Lost Woods → Sacred Forest Meadow.
 
 ## Check
 
 Impa:
 
-- [ ] Do the notes you are asked to repeat belong to **Saria's Song** (↓ → ← ↓ → ←)? ______
-- [ ] Do you end up with Saria's Song in the song list, and **not** Zelda's Lullaby? ______
-- [ ] Does the scene end cleanly, with no hang? ______
+- [x] Do the notes you are asked to repeat belong to **Saria's Song** (↓ → ← ↓ → ←)? No notes: the full skip drops the lesson.
+- [x] Do you end up with Saria's Song in the song list, and **not** Zelda's Lullaby? Yes.
+- [x] Does the scene end cleanly, with no hang? Yes.
 
 With Saria's Song from Impa:
 
@@ -39,7 +41,7 @@ With Saria's Song from Impa:
 Saria, at the Sacred Forest Meadow:
 
 - [ ] **Does her scene play even though you already have Saria's Song?** ______
-- [ ] Do the notes belong to **Zelda's Lullaby** (← ↑ → ← ↑ →)? Do you get Zelda's Lullaby? ______
+- [ ] Do you get Zelda's Lullaby? (With the full skip there are no notes to repeat.) ______
 - [ ] Does the lullaby work (for example the Triforce blocks, or Zora's Domain)? ______
 
 In general:
