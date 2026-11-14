@@ -16,6 +16,7 @@ is the token (`TOKEN`). Tokens enter the fill like the rest of the content.
 from __future__ import annotations
 
 import dataclasses
+from dataclasses import field
 import hashlib
 import json
 import random
@@ -27,7 +28,7 @@ from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABE
                               NON_EXCLUDABLE)
 from randomizer.locations import GsEntry, LocationEntry
 from randomizer.logic.world import World
-from randomizer.songs import SHUFFLE_SONGS, SONG_BY_ACTOR, SONGS
+from randomizer.songs import BOSS_HEARTS, HEART_GYAML, SHUFFLE_SONGS, SONG_BY_ACTOR, SONGS
 
 MODES = ('vanilla', 'any_chest')
 TOKENSANITY = ('off', 'dungeons', 'overworld', 'all')
@@ -73,7 +74,8 @@ class FillError(Exception):
 @dataclass(frozen=True)
 class Placement:
     chests: dict[int, str]  # Hash -> Drop__DropActor (chests and qualifying Skulltulas)
-    songs: dict[str, str]  # OoTR song location -> song actor (all 12)
+    songs: dict[str, str]  # OoTR song location -> what its scene gives (all 12)
+    hearts: dict[str, str] = field(default_factory=dict)  # boss heart -> item (Dungeon Rewards)
 
 
 VANILLA_SONGS: dict[str, str] = {s.location: s.actor for s in SONGS}
@@ -217,6 +219,32 @@ def _logic_name(item: str) -> str:
 
 # Shuffle Songs: Anywhere: the song scenes join the fill as sites with these ids.
 SONG_SITE_IDS: dict[str, int] = {s.location: -(k + 1) for k, s in enumerate(SONGS)}
+# Shuffle Songs: Dungeon Rewards: the boss Heart Containers join as sites with these ids.
+HEART_SITE_IDS: dict[str, int] = {loc: -(101 + k) for k, loc in enumerate(BOSS_HEARTS.values())}
+# OoTR's dungeon-reward song locations besides the boss hearts (non-MQ, OoTR Fill.py).
+REWARD_SCENES = ('Song from Impa', 'Sheik in Ice Cavern')
+REWARD_CHESTS = ('Gerudo Training Ground Maze Path Final Chest',
+                 'Bottom of the Well Lens of Truth Chest')
+
+
+def _place_rewards(rng: random.Random, world: World, fixed: dict[str, str],
+                   site_loc: dict[int, str], songs: list[str], owned: list[str],
+                   sites: tuple[int, ...]) -> dict[int, str] | None:
+    """Assumed fill of `songs` over the dungeon-reward `sites` (one song each), owning
+    the songs still to place and `owned` (the key items still to place)."""
+    songs = list(songs)
+    rng.shuffle(songs)
+    placed: dict[int, str] = {}
+    for i, actor in enumerate(songs):
+        now = dict(fixed)
+        now.update((site_loc[h], SONG_BY_ACTOR[a].song) for h, a in placed.items())
+        rest = [SONG_BY_ACTOR[a].song for a in songs[i + 1:]]
+        reach = world.reachable_locations(now, owned=rest + owned)
+        free = [h for h in sites if h not in placed and site_loc[h] in reach]
+        if not free:
+            return None
+        placed[rng.choice(free)] = actor
+    return placed
 
 
 def _complete(world: World, fixed: dict[str, str], vanilla_keys: bool) -> bool:
@@ -234,7 +262,8 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
              gs: frozenset[int] = frozenset(),
              gs_forbidden: frozenset[str] = frozenset(),
              shuffle_songs: bool = False,
-             vanilla_keys: bool = False) -> tuple[dict[int, str], dict[str, str]] | None:
+             vanilla_keys: bool = False,
+             reward_sites: tuple[int, ...] = ()) -> tuple[dict[int, str], dict[str, str]] | None:
     # Eligible sites that stay fixed: those of excluded key items.
     pinned = {h: original[h] for h in eligible
               if original[h] in KEY_ITEMS and h not in moving}
@@ -248,11 +277,19 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
         if songs is None:
             return None
         base = _with_songs(base, songs)
+    rewards: dict[int, str] = {}
+    if reward_sites:  # Dungeon Rewards: the songs go to those sites first
+        songs_left = [a for a in to_place if a in SONG_BY_ACTOR]
+        to_place = [a for a in to_place if a not in SONG_BY_ACTOR]
+        rewards = _place_rewards(rng, world, _fixed(base, site_loc, pinned), site_loc,
+                                 songs_left, [_logic_name(a) for a in to_place], reward_sites)
+        if rewards is None:
+            return None
     rng.shuffle(to_place)
     # Stable: higher-level progressives first, the rest in shuffled order.
     to_place.sort(key=lambda a: -ITEM_LEVEL[a][1] if a in ITEM_LEVEL else 0)
 
-    placed: dict[int, str] = dict(pinned)
+    placed: dict[int, str] = dict(pinned) | rewards
     for i, item in enumerate(to_place):
         reach = world.reachable_locations(_fixed(base, site_loc, placed),
                                           owned=[_logic_name(a) for a in to_place[i + 1:]])
@@ -355,9 +392,11 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
             raise FillError(f'Hash {h} is both a chest and a Skulltula')
         original[h] = TOKEN
     songs_on = settings.shuffle_songs != 'off'
-    anywhere = settings.shuffle_songs == 'anywhere'
+    dungeon = settings.shuffle_songs == 'dungeon_rewards'
+    anywhere = settings.shuffle_songs == 'anywhere' or dungeon
     if anywhere and settings.key_items_mode == 'vanilla':
-        raise FillError('Anywhere needs key items shuffled.')
+        name = 'Dungeon Rewards' if dungeon else 'Anywhere'
+        raise FillError(f'{name} needs key items shuffled.')
     if settings.key_items_mode == 'vanilla':
         if not songs_on:
             return Placement(dict(original), dict(VANILLA_SONGS))
@@ -374,6 +413,18 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
             original[SONG_SITE_IDS[s.location]] = s.actor
             site_loc[SONG_SITE_IDS[s.location]] = s.location
         eligible = sorted(eligible + list(SONG_SITE_IDS.values()))
+    reward_sites: tuple[int, ...] = ()
+    if dungeon:  # the boss hearts become sites too; the songs go to the reward sites
+        for loc, h in HEART_SITE_IDS.items():
+            original[h] = HEART_GYAML
+            site_loc[h] = loc
+        eligible = sorted(eligible + list(HEART_SITE_IDS.values()))
+        by_loc = {loc: h for h, loc in site_loc.items()}
+        missing = [loc for loc in REWARD_CHESTS if loc not in by_loc]
+        if missing:
+            raise FillError(f'Dungeon-reward chests not in the fill: {missing}')
+        reward_sites = tuple(sorted(HEART_SITE_IDS.values())) + tuple(
+            by_loc[loc] for loc in REWARD_SCENES + REWARD_CHESTS)
     moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR)
               and original[h] not in settings.excluded_items]
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
@@ -387,22 +438,24 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         if h in site_loc:
             base[site_loc[h]] = FILLER
     placed = _run(settings, world, original, eligible, moving, site_loc, base, no_key,
-                  frozenset(gs), gs_forbidden)
+                  frozenset(gs), gs_forbidden, reward_sites=reward_sites)
     if not anywhere:
         return placed
+    hearts = {loc: placed.chests[h] for loc, h in HEART_SITE_IDS.items()} if dungeon else {}
     return Placement({h: d for h, d in placed.chests.items() if h >= 0},
-                     {loc: placed.chests[h] for loc, h in SONG_SITE_IDS.items()})
+                     {loc: placed.chests[h] for loc, h in SONG_SITE_IDS.items()}, hearts)
 
 
 def _run(settings: Settings, world: World, original: dict[int, str], eligible: list[int],
          moving: list[int], site_loc: dict[int, str], base: dict[str, str],
          no_key: frozenset[int] = frozenset(), gs: frozenset[int] = frozenset(),
-         gs_forbidden: frozenset[str] = frozenset(), vanilla_keys: bool = False) -> Placement:
+         gs_forbidden: frozenset[str] = frozenset(), vanilla_keys: bool = False,
+         reward_sites: tuple[int, ...] = ()) -> Placement:
     """The first beatable attempt, retried with a new RNG up to MAX_ATTEMPTS."""
     for attempt in range(MAX_ATTEMPTS + 1):
         result = _attempt(_rng(settings, attempt), original, eligible, moving, site_loc,
                           world, base, no_key, gs, gs_forbidden,
-                          settings.shuffle_songs == 'song_locations', vanilla_keys)
+                          settings.shuffle_songs == 'song_locations', vanilla_keys, reward_sites)
         if result is not None:
             return Placement(*result)
     raise FillError('Could not generate a beatable seed with these settings')

@@ -7,7 +7,7 @@ from randomizer import items, locations
 from randomizer.fill import (AMMO_CONTAINER, NO_KEY_TARGET_ZONES, OOTR_TOKEN, TOKEN,
                               FillError, Settings, _settings_key, filler_sites, gs_sites, place,
                               place_all)
-from randomizer.songs import SONG_BY_ACTOR, SONGS
+from randomizer.songs import BOSS_HEARTS, SONG_BY_ACTOR, SONGS
 from randomizer.game import load_chests_fixture, load_skulltulas_fixture
 from randomizer.logic.world import World, load_vanilla_settings
 
@@ -315,6 +315,68 @@ class AnywhereFillTest(unittest.TestCase):
                           Settings(seed=f'T{i}', shuffle_songs='anywhere', tokensanity='all'),
                           skulltulas, gs_map, frozenset(VANILLA_SONGS.values()))
             self.assertNotIn(TOKEN, r.songs.values(), f'seed {i}')
+
+
+REWARD_CHESTS = ('Gerudo Training Ground Maze Path Final Chest',
+                 'Bottom of the Well Lens of Truth Chest')
+REWARD_SCENES = ('Song from Impa', 'Sheik in Ice Cavern')
+
+
+class DungeonRewardsFillTest(unittest.TestCase):
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+        self.orig = _original(self.chests)
+        self.by_loc = {e.location: h for h, e in self.loc_map.items() if e.location}
+
+    def _all(self, **kw):
+        return place_all(self.chests, self.loc_map, self.world,
+                         Settings(shuffle_songs='dungeon_rewards', **kw))
+
+    def _fixed(self, r):
+        fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world)
+        for h, drop in r.chests.items():
+            if drop in SONG_BY_ACTOR and h in self.loc_map and self.loc_map[h].location:
+                fixed[self.loc_map[h].location] = SONG_BY_ACTOR[drop].song
+        for loc, drop in list(r.songs.items()) + list(r.hearts.items()):
+            fixed[loc] = (SONG_BY_ACTOR[drop].song if drop in SONG_BY_ACTOR
+                          else drop if drop in items.KEY_ITEMS else 'Rupees (5)')
+        return fixed
+
+    def test_songs_only_on_reward_sites(self):
+        for i in range(10):
+            r = self._all(seed=f'D{i}')
+            self.assertEqual(set(r.hearts), set(BOSS_HEARTS.values()))
+            self.assertTrue(all(a in SONG_BY_ACTOR for a in r.hearts.values()))
+            for loc in REWARD_SCENES:
+                self.assertIn(r.songs[loc], SONG_BY_ACTOR)
+            for loc in REWARD_CHESTS:
+                self.assertIn(r.chests[self.by_loc[loc]], SONG_BY_ACTOR)
+            others = [a for loc, a in r.songs.items() if loc not in REWARD_SCENES]
+            others += [d for h, d in r.chests.items()
+                       if self.loc_map.get(h) is None or self.loc_map[h].location not in REWARD_CHESTS]
+            self.assertFalse([a for a in others if a in SONG_BY_ACTOR], f'seed {i}')
+
+    def test_multiset_and_hearts_moved(self):
+        r = self._all(seed='M')
+        got = Counter(r.chests.values()) + Counter(r.songs.values()) + Counter(r.hearts.values())
+        want = (Counter(self.orig.values()) + Counter(VANILLA_SONGS.values())
+                + Counter({'Obj_Heart_Container': 8}))
+        self.assertEqual(got, want)
+        self.assertEqual(r, self._all(seed='M'))
+
+    def test_beatable_many(self):
+        for i in range(20):
+            self.assertTrue(self.world.can_beat(self._fixed(self._all(seed=f'B{i}'))), i)
+
+    def test_vanilla_keys_raises(self):
+        with self.assertRaisesRegex(FillError, 'needs key items shuffled'):
+            self._all(seed='V', key_items_mode='vanilla')
+
+    def test_other_modes_have_no_hearts(self):
+        for mode in ('off', 'song_locations', 'anywhere'):
+            r = place_all(self.chests, self.loc_map, self.world,
+                          Settings(seed='H', shuffle_songs=mode))
+            self.assertEqual(r.hearts, {}, mode)
 
 
 def _gs_data():
