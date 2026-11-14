@@ -17,7 +17,9 @@ from .fill import FillError, Settings, _eligible, place
 from .full_skip import files_with_fallback
 
 # Phases of full_skip.json the "Skip cutscenes" option builds (1 childhood, 2 adult).
-FULL_SKIP_PHASE = 2
+# The adult phase is built and unit-tested but not yet tested in game: releases ship the
+# childhood only (the site says the option is in development).
+FULL_SKIP_PHASE = 1
 from .game import GameData
 from . import wrappers
 from .logic.world import World, load_vanilla_settings

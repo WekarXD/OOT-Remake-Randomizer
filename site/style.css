@@ -48,3 +48,4 @@ input[type="file"] { width: 100%; padding: 8px; font: inherit; color: var(--text
 code { font-size: .92em; overflow-wrap: anywhere; }
 a { color: var(--focus); }
 ol { padding-left: 1.3em; }
+.badge { font-size: .75rem; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); }

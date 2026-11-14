@@ -16,7 +16,7 @@ It runs entirely in your browser: the Python generator runs in [Pyodide](https:/
 
 Open the page, choose your `.nup`, the seed and the settings, then click **Generate and download**. You get `Rando_<seed>.zip`, which contains the `Rando_<seed>` mod folder (with the spoiler log inside if you leave it enabled).
 
-- **Skip cutscenes**: removes the visual steps of the cutscenes in phase 1 (the rest of the game is unchanged).
+- **Skip cutscenes** (in development): the childhood cutscenes and forced conversations are skipped entirely; their effects stay (items, songs, flags, warps). Boss intros and defeats are kept. From the Temple of Time on (adult), scenes are only shortened for now; the adult full skip is built and waiting for its in-game test.
 - **Gold Skulltula Tokens (Tokensanity)**: Off, Dungeons Only, Overworld Only or All Tokens. The Gold Skulltulas in that area join the fill: they can drop key items (which stay floating and are picked up by walking over them or with the Hookshot or Boomerang) or minor items, and their tokens are spread across chests and Skulltulas. The 27 Skulltulas that are not yet identified with certainty do not receive key items.
 
 Source code: https://github.com/WekarXD/OOT-Remake-Randomizer

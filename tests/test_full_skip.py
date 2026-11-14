@@ -401,7 +401,7 @@ class FullSkipTest(unittest.TestCase):
 
     def test_adult_phase_keeps_the_childhood_and_adds_the_adult_game(self):
         from randomizer.generate import FULL_SKIP_PHASE
-        self.assertEqual(FULL_SKIP_PHASE, 2)
+        self.assertEqual(FULL_SKIP_PHASE, 1)  # the adult phase is not released yet
         files, report, _ = full_skip.build_full_skip_files(self.game, 2, self.cache)
         adult = applied(report)
         self.assertEqual(self.applied - adult, set())
