@@ -46,3 +46,5 @@ In general:
 ## Results
 
 Attempt 1 (2026-11-14): becoming an adult works (Master Sword included). Sheik appears on arrival at the crater and gives **Song of Storms**, so the crater patch works. The crater could not be left: the warp pad's ledge needs the Hookshot. Rebuilt for attempt 2 with the Hookshot; only the windmill half is left (needs a new game).
+
+Attempt 2 (2026-11-14): the windmill scene **starts** although Song of Storms is owned, so the windmill patch works, and it teaches the Bolero's notes. After you play them back, the game hangs. Cause: the lesson ends with `Dm_SY_Ocarina:LearningOcarinaPlayAuto`, whose switch on the melody just played only has cases for melodies 0–5 (and 12); the warp songs 6–11 have their own entry, `LearningOcarinaPlayAutoForSeek`, used by the Sheik scenes. A melody without its case stops the flow. The song patch now retargets that call when the new song is of the other group (`set_subflow_entry`). With the full skip this never shows (the lessons are dropped), but without it any normal↔warp swap would have hung. Rebuilt for attempt 3.

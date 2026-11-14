@@ -9,11 +9,14 @@ already own its original song.
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from randomizer.formats.bfevfl import SUBFLOW, EventFlow, set_int_param, set_string_param
+from randomizer.formats.bfevfl import (SUBFLOW, EventFlow, set_int_param, set_string_param,
+                                       set_subflow_entry)
 
 SHUFFLE_SONGS = ('off', 'song_locations')
 GRANT_CALL = ('GetPouchContent', 'GetPouchContentByActorName')
 LESSON_FLOW, LESSON_PREFIX = 'Dm_SY_Ocarina', 'LearningOcarina'
+AUTO_NORMAL, AUTO_WARP = 'LearningOcarinaPlayAuto', 'LearningOcarinaPlayAutoForSeek'
+FIRST_WARP_MELODY = 6  # Minuet; 6-11 are the warp songs
 # The crater's scene sets its song's flag itself (event 0, entry C21).
 CRATER_FLOW = 'Dm_MelodyGet_Fire'
 # The windmill man reads Song of Storms' flag four times, and the song-not-owned branch
@@ -84,7 +87,20 @@ def _swap_scene(data: bytes, old: SongLocation, new: SongLocation) -> tuple[byte
         data = set_int_param(data, i, 'MelodyType', new.melody)
     for i in grants:
         data = set_string_param(data, i, 'ActorName', new.actor)
+    old_auto, new_auto = _auto_entry(old.melody), _auto_entry(new.melody)
+    if old_auto != new_auto:
+        for i, ev in enumerate(flow.events):
+            if ev.kind == SUBFLOW and ev.sub_flow == LESSON_FLOW and ev.sub_entry == old_auto:
+                data = set_subflow_entry(data, i, new_auto)
     return data, len(grants)
+
+
+def _auto_entry(melody: int) -> str:
+    """The `Dm_SY_Ocarina` entry that ends a lesson of `melody`: Link plays the song
+    back and it is added. `PlayAuto` only has cases for melodies 0-5 (and the
+    scarecrow's), `PlayAutoForSeek` only for the warp songs 6-11; a melody without its
+    case hangs the game (batch 22)."""
+    return AUTO_WARP if melody >= FIRST_WARP_MELODY else AUTO_NORMAL
 
 
 def _rename_flag(data: bytes, kind: str, old: str, new: str) -> tuple[bytes, int]:

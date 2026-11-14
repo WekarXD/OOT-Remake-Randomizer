@@ -2,10 +2,11 @@ import os
 import struct
 import unittest
 
-from randomizer.formats.bfevfl import (ACTION, FORK, JOIN, RESULT, SWITCH, BfevflError, Event,
-                                       EventFlow, build_relocation_table, compact, copy_event,
-                                       grow_events, patch_pointers, relocation_table,
-                                       set_int_param, set_string_param, string_param_owners)
+from randomizer.formats.bfevfl import (ACTION, FORK, JOIN, RESULT, SUBFLOW, SWITCH, BfevflError,
+                                       Event, EventFlow, build_relocation_table, compact,
+                                       copy_event, grow_events, patch_pointers, relocation_table,
+                                       set_int_param, set_string_param, set_subflow_entry,
+                                       string_param_owners)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -202,6 +203,29 @@ class StringParamTests(unittest.TestCase):
             set_int_param(data, grant, 'ActorName', 1)  # a string parameter
         with self.assertRaises(BfevflError):
             set_int_param(data, 4, 'NoSuchKey', 1)
+
+    def test_set_subflow_entry(self):
+        with NupArchive(NUP_PATH) as nup:
+            data = _load(nup, ZsCodec.from_archive(nup), 'Dm_MelodyGet_Storm.bfevfl.zs')
+        flow = EventFlow(data)
+        auto = [i for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
+                and ev.sub_entry == 'LearningOcarinaPlayAuto']
+        self.assertEqual(len(auto), 1)
+        new = set_subflow_entry(data, auto[0], 'LearningOcarinaPlayAutoForSeek')
+        _assert_valid(self, new)
+        after = EventFlow(new)
+        self.assertEqual((after.events[auto[0]].sub_flow, after.events[auto[0]].sub_entry),
+                         ('Dm_SY_Ocarina', 'LearningOcarinaPlayAutoForSeek'))
+        others = [(e.kind, e.actor, e.action, e.query, e.next, e.cases, e.sub_flow, e.sub_entry)
+                  for k, e in enumerate(flow.events) if k != auto[0]]
+        self.assertEqual(others, [(e.kind, e.actor, e.action, e.query, e.next, e.cases,
+                                   e.sub_flow, e.sub_entry)
+                                  for k, e in enumerate(after.events) if k != auto[0]])
+        self.assertEqual(_all_params(after), _all_params(flow))
+        self.assertEqual(after.entry_points, flow.entry_points)
+        action = next(i for i, e in enumerate(flow.events) if e.kind == ACTION)
+        with self.assertRaises(BfevflError):
+            set_subflow_entry(data, action, 'X')
 
     def test_set_string_param_roundtrip(self):
         before = _all_params(self.flow)

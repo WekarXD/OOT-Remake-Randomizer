@@ -99,6 +99,23 @@ class SongPatchTest(unittest.TestCase):
             self.assertIn(rotated[s.location], granted, s.location)
             self.assertNotIn(s.actor, granted, s.location)
 
+    def _autos(self, data):
+        flow = EventFlow(data)
+        return [ev.sub_entry for ev in flow.events if ev.kind == SUBFLOW
+                and ev.sub_flow == 'Dm_SY_Ocarina' and 'PlayAuto' in (ev.sub_entry or '')]
+
+    def test_lesson_end_follows_song_group(self):
+        # PlayAuto only handles melodies 0-5 (and 12), PlayAutoForSeek only the warp
+        # songs 6-11: teaching a song of the other group hung the game (batch 22).
+        out = self._patch(_swap('Sheik in Crater', 'Song from Windmill'))
+        self.assertEqual(self._autos(out['Dm_MelodyGet_Storm']),
+                         ['LearningOcarinaPlayAutoForSeek'])
+        self.assertEqual(self._autos(out[CRATER_FLOW]), ['LearningOcarinaPlayAuto'])
+
+    def test_lesson_end_kept_within_group(self):
+        out = self._patch(_swap('Song from Impa', 'Song from Saria'))
+        self.assertEqual(self._autos(out['Dm_MelodyGet_Zelda']), ['LearningOcarinaPlayAuto'])
+
     def test_bad_placement_raises(self):
         bad = dict(VANILLA)
         bad['Song from Impa'] = 'Item_Melody_SariaSong'

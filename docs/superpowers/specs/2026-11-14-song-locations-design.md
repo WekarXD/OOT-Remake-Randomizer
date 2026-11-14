@@ -90,6 +90,7 @@ Every flow that reads a song flag (`IsGet.Item_Melody_*`, `EventQueryCheckIsGet`
 - Crater: the `IsGet.Item_Melody_FireBolero` set in `Dm_MelodyGet_Fire` names the new song's flag instead.
 - Windmill: all four `IsGet.Item_Melody_StormSong` queries in `Npc_Hylia_009_Adult` (events 4, 17, 51 and 54) read the location's own flag, `HavePlayedEvent.Dm_MelodyGet_Storm`, instead. They are found by value, and the build fails if there are not exactly four.
 - Royal Family's Tomb: the lessons are in `Dm_MelodyGet_Sun` and the grant in `Dm_MelodyGet_Sun_03`.
+- Lesson end (found in batch 22): a lesson ends with `Dm_SY_Ocarina:LearningOcarinaPlayAuto` for melodies 0–5 and `LearningOcarinaPlayAutoForSeek` for the warp songs 6–11. Each handles only its own group, and any other melody hangs the game. When the new song is of the other group, the call is retargeted (`bfevfl.set_subflow_entry`).
 
 **Logic.** OoTR's world files already treat these 12 locations as song locations (`shuffle_song_items: "song"` in `vanilla_settings.json`). Their rules are used as they are. The remake starts the Sheik scenes through quest steps that may differ from OoTR's conditions. The in-game test is meant to catch that; any difference found becomes a `REMAKE_RULES` entry.
 

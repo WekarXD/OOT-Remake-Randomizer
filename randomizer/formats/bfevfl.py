@@ -388,7 +388,28 @@ def set_string_param(data: bytes, event_index: int, key: str, value: str) -> byt
         out = bytearray(data)
         out[old:storage_end] = (struct.pack('<H', len(raw)) + raw).ljust(storage_end - old, b'\0')
         return bytes(out)
-    # 2) Repoint to an identical string that already exists.
+    return _point_to_string(data, flow, slot, raw)
+
+
+def set_subflow_entry(data: bytes, event_index: int, entry: str) -> bytes:
+    """Return the file with subflow event `event_index` calling entry `entry` of the
+    same flow. The name is a pool string, shared with other events, so it is never
+    edited in place: the event is repointed to an identical string or to a new one
+    appended to the pool (see `set_string_param`). The entry's subflow list and the
+    event info table list events and flows, not entry names, so they stay valid."""
+    flow = EventFlow(data)
+    if not 0 <= event_index < len(flow.events) or flow.events[event_index].kind != SUBFLOW:
+        raise BfevflError(f'Event {event_index} is not a subflow call.')
+    raw = entry.encode('utf-8')
+    if not raw or len(raw) > 0xFFFF or b'\0' in raw:
+        raise BfevflError(f'Invalid entry name: {entry!r}')
+    return _point_to_string(data, flow, flow._events_p + 0x30 * event_index + 0x20, raw)
+
+
+def _point_to_string(data: bytes, flow: 'EventFlow', slot: int, raw: bytes) -> bytes:
+    """The file with the string pointer at `slot` pointing to text `raw`: an identical
+    existing string if there is one, otherwise a new one appended to the pool (the
+    string count, the RELT, its section size and the file size are adjusted)."""
     target = flow._find_string(raw)
     if target is not None:
         out = bytearray(data)
