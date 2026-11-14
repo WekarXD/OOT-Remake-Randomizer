@@ -74,6 +74,15 @@ class ApplyStartTest(unittest.TestCase):
         self.assertEqual(last[1]['BootEventName'], 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
         self.assertEqual(self._walk(PRESET)[-1][1]['BootEventName'], '')
 
+    def test_rupees(self):
+        # Batch 26e: a fountain left untouched still charges, so the preset gives
+        # rupees with the action the fountains' own payment uses.
+        seen = self._walk(StartPreset('HyruleCastle', 'X', rupees=100))
+        gifts = [(ev.actor, p) for ev, p in seen if ev.action == 'EventTriggerIncreaseRupee']
+        self.assertEqual(gifts, [('PouchSystemActor', {'Value': 100})])
+        self.assertFalse(any(ev.action == 'EventTriggerIncreaseRupee'
+                             for ev, _ in self._walk(PRESET)))
+
     def test_child_chain_unchanged(self):
         self.assertNotIn(ERA_CHANGE, chain_calls(PRESET))
         flags = [p.get('GameDataName') for _, p in self._walk(PRESET)]

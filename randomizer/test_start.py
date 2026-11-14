@@ -70,6 +70,7 @@ class StartPreset:
     # Event started on arrival. A dungeon's map entrance passes its arrival event
     # (e.g. 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01').
     boot_event: str = ''
+    rupees: int = 0  # rupees to add (as the fountains' payment does, with a sign)
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -86,6 +87,9 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
         for challenge, step in preset.challenge_steps]
     specs += [SubflowSpec('Dm_SY_GetInEvent', 'GetInEvent', {'ActorName': item})
               for item in preset.items]
+    if preset.rupees:
+        specs.append(ActionSpec('PouchSystemActor', 'EventTriggerIncreaseRupee',
+                                {'Value': preset.rupees}))
     if preset.adult:
         if not preset.banc.endswith('_Adult'):
             raise ValueError(f'An adult preset needs an *_Adult map, not {preset.banc!r}.')

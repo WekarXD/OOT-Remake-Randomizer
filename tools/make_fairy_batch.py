@@ -17,7 +17,8 @@ Zelda's Lullaby, and patches the fountains the way the shuffle would:
 26b: Hyrule Castle (Power) gives the Boomerang; no magic, no Din's Fire.
 26c: Death Mountain Crater (Wisdom), adult, gives Nayru's Love; no magic.
 26d: 26a without the full skip.
-Usage: python -I tools/make_fairy_batch.py <nup> <out_mod_dir> [26a|26b|26c|26d]
+26e: the full skip, Din's fountain untouched; 100 rupees.
+Usage: python -I tools/make_fairy_batch.py <nup> <out_mod_dir> [26a|26b|26c|26d|26e]
 """
 import math
 import os
@@ -59,7 +60,12 @@ VARIANTS = {
     '26b': ('Power', 'Item_Boomerang', (), False),
     '26c': ('Wisdom', 'Item_NayruLove', ('Obj_Armor_Goron',), True),
     '26d': ('Din', 'Item_FaroreWind', ('Item_FairyBless_MPDouble',), False),
+    '26e': ('Din', None, (), False),
 }
+# 26e: the full skip and Din's fountain left untouched (it charges: the preset gives
+# 100 rupees). 26d gave Farore's Wind without the skip; this tells whether the skip's
+# rewrite of Din (copies per call site, the file grows) loses the grant, or the batch's
+# own patch of the grown file does (new strings after the relocated data).
 # Variants built without the full skip. 26d = 26a without it: attempt 4 of 26a played
 # Din's scene but gave nothing, and Din keeps the skip's old trimming (its rewrite
 # fails with a conflict), so this tells the trimming from the patch.
@@ -139,12 +145,13 @@ def patch_triforce(data: bytes) -> bytes:
     return _retarget(data, gate, _switch_case_targets(flow, gate)[0])
 
 
-def _preset(fountain: str, extra: tuple[str, ...], adult: bool) -> StartPreset:
+def _preset(fountain: str, extra: tuple[str, ...], adult: bool, rupees: int) -> StartPreset:
     _, banc, point, basin = FOUNTAINS[fountain]
     yaw = math.atan2(basin[0] - point[0], basin[2] - point[2])  # facing the basin
     pos = NewStartPos(f'RandoTest_Fairy{fountain}', (point[0], point[1] + 0.2, point[2]),
                       (0.0, yaw, 0.0))
-    return StartPreset(banc, pos.name, items=SONGS + extra, new_pos=pos, adult=adult)
+    return StartPreset(banc, pos.name, items=SONGS + extra, new_pos=pos, adult=adult,
+                       rupees=rupees)
 
 
 def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
@@ -155,13 +162,14 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
         skip, _, _ = files_with_fallback(game, FULL_SKIP_PHASE)
         batch.files.update(batch.unpack(skip))
     path = FLOW_DIR + 'Dm_FairyFountain_' + fountain + FLOW_EXT
-    batch.files[path] = patch_fountain(batch.read(path), fountain, item)
-    if fountain != 'Din':  # the other fountains call Din's shared Pay entries
+    if item is not None:
+        batch.files[path] = patch_fountain(batch.read(path), fountain, item)
+    if item is not None and fountain != 'Din':  # the other fountains call Din's shared Pay entries
         path = FLOW_DIR + 'Dm_FairyFountain_Din' + FLOW_EXT
         batch.files[path] = make_free(batch.read(path))
     path = FLOW_DIR + TRIFORCE_FLOW + FLOW_EXT
     batch.files[path] = patch_triforce(batch.read(path))
-    add_start(batch, _preset(fountain, extra, adult))
+    add_start(batch, _preset(fountain, extra, adult, 100 if item is None else 0))
     return batch.compressed()
 
 
