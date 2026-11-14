@@ -26,7 +26,7 @@ Built with `tools/make_song_batch.py <nup> <out> 24a|24b`. Each variant teleport
 
 24a, Impa (without the skip):
 
-- [ ] Does her scene teach the Lullaby's notes and make you repeat them, **without** giving you the Lullaby? (Attempt 1, with the whole lesson bypassed: no lesson, fine.) ______
+- [x] Does her scene teach the Lullaby's notes and make you repeat them, **without** giving you the Lullaby? Yes (attempt 2).
 - [x] Does it end cleanly, with no hang? Yes.
 - [x] Do you get the **Deku Shield** (message, then equipped or in the inventory)? Yes: "You got a Deku Shield!".
 - [x] Do you **not** get Zelda's Lullaby (check the song list)? Correct: the song list is empty.
@@ -60,3 +60,5 @@ Attempt 1 (2026-11-14): **24a works.** Without the skip, Impa's scene plays with
 **24c (experiment, the user's question):** can the example and the repeat go too, keeping only the fixed end? `TestBatch24c` is 24b with `LearningOcarinaPlayExample` and `LearningOcarinaFollowExample` bypassed in the patched scene. Only `PlayAuto` stays reachable. If it works, scenes giving a non-song lose their whole lesson except the fixed end; if it hangs, the lesson stays.
 
 24c, attempt 1 (2026-11-14): **freezes** after Sheik plays. The scene needs the example and the repeat too, so **the lesson stays**: a scene giving a non-song keeps its lesson, with the plain `PlayAuto` end (24b).
+
+24a, attempt 2 (2026-11-14): **works.** Impa makes you repeat the Lullaby, the scene ends, and you get the Deku Shield. Batch 24 is done: a scene giving a non-song keeps its lesson and ends it with the plain `PlayAuto`.

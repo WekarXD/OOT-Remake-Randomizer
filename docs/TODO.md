@@ -14,7 +14,6 @@ Pending work, most important first within each section.
 
 ## To test in game
 
-- Batch 24 (guide `docs/test-batch-24.md`, mods `TestBatch24a` Impa without the skip, `TestBatch24b` crater): song scenes giving non-song items (lesson bypass, crater bypass). Shuffle Songs: Anywhere (plan `docs/superpowers/plans/2026-11-14-songs-anywhere.md`, tasks 3-4) waits for it.
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
