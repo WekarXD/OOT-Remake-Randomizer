@@ -6,11 +6,11 @@ notes you repeat), and the grant is a `GetPouchContent:GetPouchContentByActorNam
 with an `ActorName`. Batch 20: a scene gives whatever its grant names, even when you
 already own its original song.
 """
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 
-from randomizer.formats.bfevfl import (SUBFLOW, EventFlow, set_int_param, set_string_param,
-                                       set_subflow_entry)
+from randomizer.formats.bfevfl import (SUBFLOW, EventFlow, patch_pointers, set_int_param,
+                                       set_string_param, set_subflow_entry)
 
 SHUFFLE_SONGS = ('off', 'song_locations')
 GRANT_CALL = ('GetPouchContent', 'GetPouchContentByActorName')
@@ -115,11 +115,75 @@ def _rename_flag(data: bytes, kind: str, old: str, new: str) -> tuple[bytes, int
     return data, len(hits)
 
 
+END = 0xFFFF
+
+
+def bypass(data: bytes, events: Iterable[int]) -> bytes:
+    """The flow with `events` skipped: every pointer to one of them (next, case, fork,
+    join, entry) goes to the first event after it that is not skipped, or to the end
+    when there is none. Nothing else changes (same size, same events)."""
+    skipped = set(events)
+    if not skipped:
+        return data
+    flow = EventFlow(data)
+
+    def after(i: int) -> int:
+        seen = set()
+        while i in skipped:
+            if i in seen:
+                return END  # a loop made only of skipped events
+            seen.add(i)
+            nxt = flow.events[i].next
+            i = nxt if isinstance(nxt, int) else END
+        return i
+
+    links = {}
+    for key, off in flow.link_slots.items():
+        if flow._u16(off) not in skipped:
+            continue
+        target = after(flow._u16(off))
+        if target == END and key[0] == 'fork':
+            # An emptied branch goes straight to its fork's join, like the game's own
+            # empty branches (Dm_MelodyGet_Storm fork 39 -> join 40).
+            target = flow.events[key[1]].join
+        links[off] = target
+    return patch_pointers(data, links)
+
+
+def _lesson_calls(flow: EventFlow) -> list[int]:
+    return [i for i, ev in enumerate(flow.events)
+            if ev.kind == SUBFLOW and ev.sub_flow == LESSON_FLOW
+            and (ev.sub_entry or '').startswith(LESSON_PREFIX)]
+
+
+def _give_item(data: bytes, old: SongLocation, actor: str) -> tuple[bytes, int]:
+    """The flow giving `actor` (not a song) instead of `old`'s song, and the number of
+    grants found. The lesson goes: its end adds the melody just played to the pouch,
+    so the original song would come along."""
+    flow = EventFlow(data)
+    grants = [i for i in range(len(flow.events))
+              if flow.action_params(i).get('ActorName') == old.actor]
+    data = bypass(data, _lesson_calls(flow))
+    for i in grants:
+        data = set_string_param(data, i, 'ActorName', actor)
+    return data, len(grants)
+
+
+def _flag_events(data: bytes, kind: str, name: str) -> list[int]:
+    flow = EventFlow(data)
+    return [i for i, ev in enumerate(flow.events)
+            if kind in (ev.action, ev.query) and flow.action_params(i).get('GameDataName') == name]
+
+
 def _check_placement(placement: dict[str, str]) -> None:
-    if set(placement) != set(SONG_BY_LOCATION) or sorted(placement.values()) != sorted(
-            SONG_BY_ACTOR):
-        raise ValueError('The song placement must put each of the 12 songs on one of '
-                         'the 12 song locations.')
+    if set(placement) != set(SONG_BY_LOCATION):
+        raise ValueError('The song placement must give an item to each of the 12 song '
+                         'locations.')
+    if any(not isinstance(a, str) or not a for a in placement.values()):
+        raise ValueError('Every song location needs an item.')
+    songs = [a for a in placement.values() if a in SONG_BY_ACTOR]
+    if len(songs) != len(set(songs)):
+        raise ValueError('A song is placed on two song locations.')
 
 
 def song_flow_patches(read: Callable[[str], bytes],
@@ -137,22 +201,22 @@ def song_flow_patches(read: Callable[[str], bytes],
         return out[name] if name in out else read(name)
 
     for row in SONGS:
-        new = SONG_BY_ACTOR[placement[row.location]]
-        if new is row:
+        actor = placement[row.location]
+        if actor == row.actor:
             continue
         found = 0
         for name in row.flows:
-            data, grants = _swap_scene(current(name), row, new)
+            if actor in SONG_BY_ACTOR:
+                data, grants = _swap_scene(current(name), row, SONG_BY_ACTOR[actor])
+            else:
+                data, grants = _give_item(current(name), row, actor)
             found += grants
             out[name] = data
         if not found:
             raise ValueError(f'{row.location}: no grant of {row.actor} in {row.flows}.')
-    bolero = SONG_BY_LOCATION['Sheik in Crater'].actor
-    if placement['Sheik in Crater'] != bolero:
-        out[CRATER_FLOW], _ = _rename_flag(current(CRATER_FLOW), 'EventTriggerSetGameDataBool',
-                                           _flag(bolero), _flag(placement['Sheik in Crater']))
+    _patch_crater(placement['Sheik in Crater'], current, out)
     storm = SONG_BY_LOCATION['Song from Windmill'].actor
-    if placement['Song from Windmill'] != storm:
+    if placement['Song from Windmill'] != storm:  # wherever Storm went
         data, n = _rename_flag(current(WINDMILL_FLOW), 'EventQueryIsGameDataBool',
                                _flag(storm), WINDMILL_FLAG)
         if n != WINDMILL_QUERIES:
@@ -160,3 +224,20 @@ def song_flow_patches(read: Callable[[str], bytes],
                              f'not {WINDMILL_QUERIES}.')
         out[WINDMILL_FLOW] = data
     return out
+
+
+def _patch_crater(actor: str, current: Callable[[str], bytes], out: dict[str, bytes]) -> None:
+    """The crater's scene sets its song's flag itself: it follows a new song, and is
+    skipped for an item that is not a song. Raises ValueError unless the set is found
+    exactly once."""
+    bolero = SONG_BY_LOCATION['Sheik in Crater'].actor
+    if actor == bolero:
+        return
+    data = current(CRATER_FLOW)
+    sets = _flag_events(data, 'EventTriggerSetGameDataBool', _flag(bolero))
+    if len(sets) != 1:
+        raise ValueError(f'{CRATER_FLOW} sets {_flag(bolero)} {len(sets)} times, not once.')
+    if actor in SONG_BY_ACTOR:
+        out[CRATER_FLOW] = set_string_param(data, sets[0], 'GameDataName', _flag(actor))
+    else:
+        out[CRATER_FLOW] = bypass(data, sets)

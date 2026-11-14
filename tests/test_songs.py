@@ -116,6 +116,79 @@ class SongPatchTest(unittest.TestCase):
         out = self._patch(_swap('Song from Impa', 'Song from Saria'))
         self.assertEqual(self._autos(out['Dm_MelodyGet_Zelda']), ['LearningOcarinaPlayAuto'])
 
+    def _reached(self, data, name):
+        """Events reached from every entry, following same-file subflow calls."""
+        flow = EventFlow(data)
+        seen, stack = set(), list(flow.entry_points.values())
+        while stack:
+            i = stack.pop()
+            if i in seen or i == 0xFFFF:
+                continue
+            seen.add(i)
+            ev = flow.events[i]
+            stack += [n for n in (ev.next, ev.join) if isinstance(n, int)]
+            stack += list(ev.cases or []) + list(ev.forks or [])
+            if ev.kind == SUBFLOW and ev.sub_flow in ('', name) and ev.sub_entry in flow.entry_points:
+                stack.append(flow.entry_points[ev.sub_entry])
+        return flow, seen
+
+    def test_impa_gives_shield(self):
+        placement = dict(VANILLA, **{'Song from Impa': 'TBox_Shield_Deku'})
+        out = self._patch(placement)
+        self.assertEqual(set(out), {'Dm_MelodyGet_Zelda'})
+        flow, seen = self._reached(out['Dm_MelodyGet_Zelda'], 'Dm_MelodyGet_Zelda')
+        self.assertEqual([i for i in seen if 'LearningOcarina' in (flow.events[i].sub_entry or '')],
+                         [])
+        grants = {flow.action_params(i).get('ActorName') for i in seen}
+        self.assertIn('TBox_Shield_Deku', grants)
+        self.assertNotIn('Item_Melody_ZeldaLullaby', grants)
+
+    def test_crater_gives_hookshot(self):
+        out = self._patch(dict(VANILLA, **{'Sheik in Crater': 'Item_Hookshot'}))
+        self.assertNotIn(WINDMILL_FLOW, out)
+        flow, seen = self._reached(out[CRATER_FLOW], CRATER_FLOW)
+        names = [flow.action_params(i).get('GameDataName') for i in seen]
+        self.assertNotIn('IsGet.Item_Melody_FireBolero', names)
+        self.assertIn('Item_Hookshot', {flow.action_params(i).get('ActorName') for i in seen})
+        self.assertEqual([i for i in seen if 'LearningOcarina' in (flow.events[i].sub_entry or '')],
+                         [])
+
+    def test_storm_elsewhere_patches_windmill(self):
+        out = self._patch(dict(VANILLA, **{'Sheik in Crater': 'Item_Melody_StormSong',
+                                           'Song from Windmill': 'Obj_Rupee_Red'}))
+        names = [p.get('GameDataName') for p in _params(EventFlow(out[WINDMILL_FLOW]))]
+        self.assertEqual(names.count(WINDMILL_FLAG), 4)
+        grants = {p.get('ActorName') for p in _params(EventFlow(out['Dm_MelodyGet_Storm']))}
+        self.assertIn('Obj_Rupee_Red', grants)
+        # The crater gives a song: its flag follows the song, as in Song Locations.
+        crater = [p.get('GameDataName') for p in _params(EventFlow(out[CRATER_FLOW]))]
+        self.assertIn('IsGet.Item_Melody_StormSong', crater)
+
+    def test_emptied_fork_branch_goes_to_join(self):
+        # A lesson is often the whole of a fork branch; an empty branch points at its
+        # fork's join, as the game's own empty branches do (Dm_MelodyGet_Storm fork 39).
+        old = EventFlow(self.flows['Dm_MelodyGet_Epona'])
+        lessons = {i for i, ev in enumerate(old.events) if ev.kind == SUBFLOW
+                   and (ev.sub_entry or '').startswith('LearningOcarina')}
+        emptied = [(f, k) for f, ev in enumerate(old.events) if ev.forks
+                   for k, b in enumerate(ev.forks) if b in lessons]
+        self.assertTrue(emptied)
+        out = self._patch(dict(VANILLA, **{'Song from Malon': 'Obj_Rupee_Red'}))
+        new = EventFlow(out['Dm_MelodyGet_Epona'])
+        for f, k in emptied:
+            self.assertNotIn(new.events[f].forks[k], lessons | {0xFFFF}, (f, k))
+        self.assertTrue(any(new.events[f].forks[k] == new.events[f].join for f, k in emptied))
+
+    def test_song_twice_raises(self):
+        with self.assertRaises(ValueError):
+            self._patch(dict(VANILLA, **{'Song from Impa': 'Item_Melody_SariaSong'}))
+
+    def test_missing_location_raises(self):
+        placement = dict(VANILLA)
+        del placement['Song from Impa']
+        with self.assertRaises(ValueError):
+            self._patch(placement)
+
     def test_bad_placement_raises(self):
         bad = dict(VANILLA)
         bad['Song from Impa'] = 'Item_Melody_SariaSong'
