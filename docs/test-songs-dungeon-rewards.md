@@ -29,4 +29,4 @@ The other song scenes give: Saria Bombchus, Malon a purple rupee, the Royal Fami
 
 ## Results
 
-(To be filled in after testing.)
+**Accepted** by the user on 2026-11-14 without playing this seed. Batch 25 confirmed a song on a boss heart; batches 23-24 confirmed the song scenes giving other items.
