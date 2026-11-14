@@ -16,7 +16,8 @@ Zelda's Lullaby, and patches the fountains the way the shuffle would:
      no rupees.
 26b: Hyrule Castle (Power) gives the Boomerang; no magic, no Din's Fire.
 26c: Death Mountain Crater (Wisdom), adult, gives Nayru's Love; no magic.
-Usage: python -I tools/make_fairy_batch.py <nup> <out_mod_dir> [26a|26b|26c]
+26d: 26a without the full skip.
+Usage: python -I tools/make_fairy_batch.py <nup> <out_mod_dir> [26a|26b|26c|26d]
 """
 import math
 import os
@@ -57,7 +58,12 @@ VARIANTS = {
     '26a': ('Din', 'Item_FaroreWind', ('Item_FairyBless_MPDouble',), False),
     '26b': ('Power', 'Item_Boomerang', (), False),
     '26c': ('Wisdom', 'Item_NayruLove', ('Obj_Armor_Goron',), True),
+    '26d': ('Din', 'Item_FaroreWind', ('Item_FairyBless_MPDouble',), False),
 }
+# Variants built without the full skip. 26d = 26a without it: attempt 4 of 26a played
+# Din's scene but gave nothing, and Din keeps the skip's old trimming (its rewrite
+# fails with a conflict), so this tells the trimming from the patch.
+NO_SKIP = {'26d'}
 
 
 def _switch_case_targets(flow: EventFlow, index: int) -> dict[int, int]:
@@ -145,8 +151,9 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
     fountain, item, extra, adult = VARIANTS[variant]
     game = GameData(nup)
     batch = Batch(nup)
-    skip, _, _ = files_with_fallback(game, FULL_SKIP_PHASE)
-    batch.files.update(batch.unpack(skip))
+    if variant not in NO_SKIP:
+        skip, _, _ = files_with_fallback(game, FULL_SKIP_PHASE)
+        batch.files.update(batch.unpack(skip))
     path = FLOW_DIR + 'Dm_FairyFountain_' + fountain + FLOW_EXT
     batch.files[path] = patch_fountain(batch.read(path), fountain, item)
     if fountain != 'Din':  # the other fountains call Din's shared Pay entries
