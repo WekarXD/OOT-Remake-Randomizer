@@ -28,6 +28,11 @@ Pending work, most important first within each section.
 ## To build
 
 - **Gold Skulltula tokens from song scenes (Anywhere):** the fill never puts a token on a song scene, because a token given by a scene's `GetPouchContentByActorName` grant is untested in game (a token is a counter, not a pouch item). To allow it: a test batch where a song scene gives `Obj_Token_Gold`, then drop the rule in `fill._attempt` (the `open_scenes` block).
+- **Bring back the Great Fairies' price** (the remake charges: Din 25, Power 50, Farore 100, Wisdom 200, Nayru 300, Courage 500). Batch 26 makes the fairies free, as in OoTR. `HavePlayedEvent.Dm_FairyFountain_<name>` is set even when the payment is refused, so with the price kept a refusal would mark the fountain as visited and lose its item. There is no cheap per-fountain flag either: `GameDataList` is a big-endian BYML v7 with hashed names. Possible ways:
+  - `TriForcePoint` only summons the fairy when Link has enough rupees (an `EventQueryHasRuppe` before the transition), and the fountain then always charges.
+  - Add a new flag to `GameDataList`.
+
+  The logic would then need rupees and the wallet: Courage costs 500, more than the starting wallet of 200 holds. See `docs/great-fairies-research.md`.
 - **Remaining full-skip failures** (shared forced talks are done by growing, pending the round 3 test): the targeting tutorial `ActionTutorial_1st_Talk` (conflict), Din's fairy (conflict), `Dm_InsideJabu_Jabu_0050` (conflict). Compounding growth (copy of a copy) could be optimised by growing in place.
 - **"No result" hash `0xa6da0479`** (event 28 of `SubEvent_GetEponaSong`, not a case of its switch 32): find out what produces it.
 - **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
