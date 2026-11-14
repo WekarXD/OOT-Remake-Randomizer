@@ -1,4 +1,5 @@
 import json
+import re
 import shutil
 import subprocess
 import unittest
@@ -26,6 +27,21 @@ class PresetsTest(unittest.TestCase):
                 s = browser.parse_settings({**p['settings'], 'seed': 'x'})
                 for key, value in p['settings'].items():
                     self.assertEqual(getattr(s, key), value)
+
+
+class MarkupTest(unittest.TestCase):
+    def test_markup_has_every_id_app_uses(self):
+        app = (ROOT / 'site' / 'app.js').read_text(encoding='utf-8')
+        html = (ROOT / 'site' / 'index.html').read_text(encoding='utf-8')
+        ids = set(re.findall(r"\$\('([\w-]+)'\)", app))
+        ids |= {'panel-general', 'panel-items', 'panel-logic', 'panel-help', 'preset', 'preset-desc', 'theme'}
+        missing = sorted(i for i in ids if f'id="{i}"' not in html)
+        self.assertEqual(missing, [])
+
+    def test_presets_script_loads_before_app(self):
+        html = (ROOT / 'site' / 'index.html').read_text(encoding='utf-8')
+        self.assertIn('<script src="presets.js"></script>', html)
+        self.assertLess(html.index('src="presets.js"'), html.index('src="app.js"'))
 
 
 if __name__ == '__main__':
