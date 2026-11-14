@@ -10,13 +10,15 @@ TOKEN_LABEL = 'Gold Skulltula Token'
 def _label(drop: str) -> str:
     if drop == TOKEN:
         return TOKEN_LABEL
+    if drop in SONG_BY_ACTOR:
+        return SONG_BY_ACTOR[drop].song
     return LABELS.get(drop, drop)
 
 
 MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
 TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
                       'overworld': 'Overworld Only', 'all': 'All Tokens'}
-SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations'}
+SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations', 'anywhere': 'Anywhere'}
 
 
 def _zone(banc: str) -> str:
@@ -58,7 +60,7 @@ def build(settings, placement, chests, loc_map, game_version,
             reason = 'story event'
         if reason:
             excluded.append({**row, 'reason': reason})
-        if placed in KEY_ITEMS and e is not None and not e.needs_event_patch:
+        if (placed in KEY_ITEMS or placed in SONG_BY_ACTOR) and e is not None                 and not e.needs_event_patch:
             key_items.append({'item': placed, 'label': _label(placed),
                               'location': e.location, 'zone': _zone(c.banc),
                               'hash': str(h)})
@@ -67,7 +69,8 @@ def build(settings, placement, chests, loc_map, game_version,
     seen_gs = set()
     for s in skulltulas:
         e = (gs_map or {}).get(s.hash)
-        if s.hash in seen_gs or e is None or placement.get(s.hash) not in KEY_ITEMS:
+        if s.hash in seen_gs or e is None or (placement.get(s.hash) not in KEY_ITEMS
+                                              and placement.get(s.hash) not in SONG_BY_ACTOR):
             continue
         seen_gs.add(s.hash)
         key_items.append({'item': placement[s.hash], 'label': _label(placement[s.hash]),
@@ -93,7 +96,7 @@ def build(settings, placement, chests, loc_map, game_version,
     if settings.shuffle_songs != 'off':
         result['settings']['shuffle_songs'] = settings.shuffle_songs
         result['songs'] = [{'location': loc, 'song': actor,
-                            'label': SONG_BY_ACTOR[actor].song}
+                            'label': _label(actor)}
                            for loc, actor in sorted((songs or {}).items())]
     if cutscenes_not_skipped is not None and settings.skip_cutscenes:
         result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)

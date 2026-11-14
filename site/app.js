@@ -4,7 +4,7 @@
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
   const STORE = 'oot-remake-rando-settings';
   const TOKENSANITY = ['off', 'dungeons', 'overworld', 'all'];
-  const SHUFFLE_SONGS = ['off', 'song_locations'];
+  const SHUFFLE_SONGS = ['off', 'song_locations', 'anywhere'];
 
   function selectTab(tab, focus) {
     tabs.forEach((t) => {

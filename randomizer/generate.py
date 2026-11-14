@@ -92,6 +92,9 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     skulltulas = game.skulltulas()
                     gs_map = locations.load_gs_map()
                     gs_forbidden = _gs_forbidden(game, chests, loc_map)
+                    if settings.shuffle_songs == 'anywhere':
+                        # No Skulltula can drop a song (no wrapper or world actor).
+                        gs_forbidden |= frozenset(VANILLA_SONGS.values())
                 placed = place_all(chests, loc_map, World(world_settings), settings,
                                    skulltulas, gs_map, gs_forbidden)
                 placement = placed.chests

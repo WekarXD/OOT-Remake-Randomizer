@@ -218,4 +218,4 @@ class SongTableTest(unittest.TestCase):
         self.assertTrue(all(r.actor.startswith('Item_Melody_') and r.flows for r in SONGS))
 
     def test_shuffle_values(self):
-        self.assertEqual(SHUFFLE_SONGS, ('off', 'song_locations'))
+        self.assertEqual(SHUFFLE_SONGS, ('off', 'song_locations', 'anywhere'))

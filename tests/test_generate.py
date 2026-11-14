@@ -461,6 +461,36 @@ class RealTests(unittest.TestCase):
         for flow, calls in skip_only.items():
             self.assertEqual(with_songs[flow], calls, flow)
 
+    def test_generate_songs_anywhere(self):
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, Settings(seed='anywhere', shuffle_songs='anywhere',
+                                                   skip_cutscenes=True, tokensanity='all'))
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            self.assertEqual(data['settings']['shuffle_songs'], 'anywhere')
+            scenes = {r['location']: r['song'] for r in data['songs']}
+            root = Path(res.mod_dir) / 'romfs'
+            with NupArchive(NUP_PATH) as nup:
+                codec = ZsCodec.from_archive(nup)
+                for row in SONGS:
+                    granted = set()
+                    for flow in row.flows:
+                        rel = f'Event/EventFlow/{flow}.bfevfl.zs'
+                        p = root / Path(*rel.split('/'))
+                        f = EventFlow(codec.decompress(rel, p.read_bytes() if p.exists()
+                                                       else nup.read(rel)))
+                        granted |= {f.action_params(i).get('ActorName')
+                                    for i in range(len(f.events))}
+                    self.assertIn(scenes[row.location], granted, row.location)
+                elsewhere = [k for k in data['key_items'] if k['item'].startswith('Item_Melody_')]
+                self.assertEqual(len(elsewhere) + sum(
+                    a.startswith('Item_Melody_') for a in scenes.values()), 12)
+                in_chests = {r['placed'] for r in data['chests'] if r['changed']}
+                self.assertTrue(any(a.startswith('Item_Melody_') for a in in_chests))
+                sk = {r['placed'] for r in data.get('skulltulas', [])}
+                self.assertFalse(any(a.startswith('Item_Melody_') for a in sk))
+            text = Path(res.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('Shuffle Songs: Anywhere', text)
+
     def test_wrapper_error_becomes_generation_error(self):
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.patch.build_wrapper_files',
