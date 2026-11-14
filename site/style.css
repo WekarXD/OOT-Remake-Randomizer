@@ -22,7 +22,8 @@
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; overflow-x: hidden; }
+/* clip, not hidden: hidden makes body a scroll container and breaks the sticky bar */
+html, body { margin: 0; overflow-x: clip; }
 body { background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, "Segoe UI", sans-serif;
   min-height: 100vh; display: flex; flex-direction: column; }
 [hidden] { display: none !important; }
@@ -134,7 +135,8 @@ label.check input { accent-color: var(--accent); width: 17px; height: 17px; }
 /* Phones and narrow windows */
 @media (max-width: 720px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-top: 12px; }
-  .side { flex-direction: row; overflow-x: auto; position: static; border-bottom: 1px solid var(--border); }
+  .side { flex-direction: row; overflow-x: auto; scrollbar-width: none; position: static;
+    border-bottom: 1px solid var(--border); }
   .side button { border-left: 0; border-bottom: 3px solid transparent; border-radius: 8px 8px 0 0; white-space: nowrap;
     flex: 0 0 auto; }
   .side button[aria-selected="true"] { border-bottom-color: var(--gold); box-shadow: none; }

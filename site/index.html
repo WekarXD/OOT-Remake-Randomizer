@@ -6,6 +6,9 @@
 <title>OoT Remake Randomizer</title>
 <meta name="description" content="Item randomizer for the Switch 2 remake of Ocarina of Time. Runs in your browser; your game file never leaves your computer.">
 <link rel="stylesheet" href="style.css">
+<script>
+  try { var t = localStorage.getItem('oot-remake-rando-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) { /* storage blocked */ }
+</script>
 </head>
 <body>
 <header class="top">
