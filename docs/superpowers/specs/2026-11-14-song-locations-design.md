@@ -104,6 +104,19 @@ Every flow that reads a song flag (`IsGet.Item_Melody_*`, `EventQueryCheckIsGet`
 - Patching a scene changes only its grant, its lesson values and, for the crater and the windmill, those flags. The other events stay identical.
 - After the windmill patch, `Npc_Hylia_009_Adult` no longer reads `IsGet.Item_Melody_StormSong` anywhere.
 
+**Adult start presets (for batch 22; the user's choice, 2026-11-14).** The test teleport (`randomizer/test_start.py`) learns to make Link an adult. It copies what the game does when the Master Sword is drawn again (`Market_Child_Field_ChildToAdult`):
+
+1. call `ReplaceEquipmentForEraChange:ReplaceEquipmentForEraChange`, which swaps the equipment;
+2. set `Sequence_IsChildhood` to false;
+3. change to an `*_Adult` map.
+
+- `StartPreset` gains `adult: bool = False`. When it is true, the chain runs steps 1 and 2 right before the teleport, whose `banc` must then be an `*_Adult` map (checked).
+- The subflow call goes through the existing entry-list and `SubFlowList` handling (`chain_calls`, `subflow_closure`).
+- Batch 22 uses two adult presets:
+  - Kakariko by the windmill, with the `SubEvent_GetStormSong` steps it needs;
+  - the crater's `FireBolero` start position, with the `SageOfFire` steps that make Sheik appear.
+- Either preset may also give the Master Sword and an ocarina. Which quest steps and `HavePlayedEvent` flags each scene needs is found while building the batch, as the castle quest was for batch 20.
+
 **In game.**
 
 - **Test batch 22:** the windmill and the crater given swapped songs, with the full skip, to check the two patches. Either a hand-built batch, or a seed with a chosen placement.
@@ -114,4 +127,4 @@ Every flow that reads a song flag (`IsGet.Item_Melody_*`, `EventQueryCheckIsGet`
 - The module and function names.
 - How the placement reaches `patch.write_mod` and the spoiler.
 - The sample size for the beatable-seed test.
-- How the tester reaches the adult scenes for batch 22. Start presets are child-only for now.
+- Each adult preset's start position, quest steps and flags (see Adult start presets).
