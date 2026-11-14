@@ -23,48 +23,73 @@ PRESET = StartPreset('HyruleField_Child', 'HyruleField_FrontOfLostWoodBridge',
                      items=('Item_Ocarina_Fairy',))
 
 
-def _grow(rstb: Rstb, rel: str, old_len: int, new_len: int) -> None:
-    orig = rstb.get(rel)
-    if orig is None:
-        raise SystemExit(f'FAIL: the RSTB does not have {rel}')
-    rstb.set(rel, orig + ((max(new_len - old_len, 0) + 0xFF) & ~0xFF) + 0x1000)
+FLOW_DIR, FLOW_EXT = 'Event/EventFlow/', '.bfevfl.zs'
 
 
-def start_files(nup: NupArchive, codec: ZsCodec, preset: StartPreset,
-                rstb: Rstb) -> dict[str, bytes]:
-    """{romfs path: compressed bytes} of the hook flow, the event info table and,
-    if the preset adds a start position, the start position table. Grows their
-    sizes in `rstb` (the caller writes it)."""
+class Batch:
+    """The decompressed files a test batch changes, built on the game's files or on
+    a given base (e.g. the full skip's flows)."""
+
+    def __init__(self, nup: NupArchive, base: dict[str, bytes] | None = None) -> None:
+        self.nup = nup
+        self.codec = ZsCodec.from_archive(nup)
+        self.files: dict[str, bytes] = dict(base or {})  # romfs path -> decompressed
+
+    def original(self, path: str) -> bytes:
+        raw = self.nup.read(path)
+        return self.codec.decompress(path, raw) if path.endswith('.zs') else raw
+
+    def unpack(self, files: dict[str, bytes]) -> dict[str, bytes]:
+        """`files` (romfs path -> bytes as written to the mod) decompressed."""
+        return {p: self.codec.decompress(p, d) if p.endswith('.zs') else d
+                for p, d in files.items()}
+
+    def read(self, path: str) -> bytes:
+        """The batch's current version of `path` (the game's if unchanged)."""
+        return self.files[path] if path in self.files else self.original(path)
+
+    def flow(self, name: str) -> EventFlow | None:
+        path = FLOW_DIR + name + FLOW_EXT
+        return EventFlow(self.read(path)) if path in self.files or self.nup.has(path) else None
+
+    def compressed(self) -> dict[str, bytes]:
+        """{romfs path: compressed bytes} of every changed file plus the RSTB, whose
+        entry for each file that grew (against the game's) is raised to fit it."""
+        rstb = Rstb.load(self.original(RSTB_PATH))
+        out = {}
+        for path, data in sorted(self.files.items()):
+            key = path[:-3] if path.endswith('.zs') else path
+            grow = len(data) - len(self.original(path))
+            if grow > 0:
+                size = rstb.get(key)
+                if size is None:
+                    print(f'WARNING: no RSTB entry for grown {path}', file=sys.stderr)
+                else:
+                    rstb.set(key, size + ((grow + 0xFF) & ~0xFF) + 0x1000)
+            out[path] = self.codec.compress(path, data) if path.endswith('.zs') else data
+        out[RSTB_PATH] = self.codec.compress(RSTB_PATH, rstb.dump())
+        return out
+
+
+def add_start(batch: Batch, preset: StartPreset) -> None:
+    """Applies `preset` to the batch: the hook flow, the event info table and, if
+    the preset adds a start position, the start position table."""
     if preset.new_pos is not None and preset.new_pos.name != preset.start_pos:
         raise SystemExit('FAIL: start_pos must name the new start position')
-
-    def load(name: str) -> EventFlow | None:
-        p = f'Event/EventFlow/{name}.bfevfl.zs'
-        return EventFlow(codec.decompress(p, nup.read(p))) if nup.has(p) else None
-
-    rel = f'Event/EventFlow/{HOOK_FLOW}.bfevfl.zs'
-    raw = codec.decompress(rel, nup.read(rel))
-    info = codec.decompress(ANALYZED_INFO, nup.read(ANALYZED_INFO))
-    out = {rel: (raw, apply_start(raw, preset)),
-           ANALYZED_INFO: (info, with_subflow_list(info, HOOK_FLOW,
-                                                   subflow_closure(load, chain_calls(preset))))}
+    hook = FLOW_DIR + HOOK_FLOW + FLOW_EXT
+    batch.files[hook] = apply_start(batch.read(hook), preset)
+    batch.files[ANALYZED_INFO] = with_subflow_list(
+        batch.read(ANALYZED_INFO), HOOK_FLOW, subflow_closure(batch.flow, chain_calls(preset)))
     if preset.new_pos is not None:
-        pos = codec.decompress(START_POS, nup.read(START_POS))
-        out[START_POS] = (pos, with_start_pos(pos, preset.banc, preset.new_pos))
-    files = {}
-    for path, (old, new) in out.items():
-        _grow(rstb, path[:-3], len(old), len(new))
-        files[path] = codec.compress(path, new)
-    return files
+        batch.files[START_POS] = with_start_pos(batch.read(START_POS), preset.banc,
+                                                preset.new_pos)
 
 
 def build(nup: NupArchive, preset: StartPreset) -> dict[str, bytes]:
-    """{romfs path: compressed bytes} of `start_files` plus the RSTB."""
-    codec = ZsCodec.from_archive(nup)
-    rstb = Rstb.load(codec.decompress(RSTB_PATH, nup.read(RSTB_PATH)))
-    files = start_files(nup, codec, preset, rstb)
-    files[RSTB_PATH] = codec.compress(RSTB_PATH, rstb.dump())
-    return files
+    """{romfs path: compressed bytes} of the preset's files plus the RSTB."""
+    batch = Batch(nup)
+    add_start(batch, preset)
+    return batch.compressed()
 
 
 def write_mod(out: str, files: dict[str, bytes]) -> None:

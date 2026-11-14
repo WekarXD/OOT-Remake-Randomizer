@@ -4,7 +4,8 @@ import unittest
 
 from randomizer.formats.bfevfl import (ACTION, SUBFLOW, BfevflError, EventFlow, grow_events,
                                        relocation_table)
-from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, append_events, build_dic,
+from randomizer.formats.evfl_append import (SYSTEM_ACTOR_PARAMS, ActionSpec, SubflowSpec,
+                                            add_actions, append_events, build_dic,
                                             set_entry_subflows)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
@@ -77,6 +78,12 @@ TELEPORT = SubflowSpec('Dm_SY_BancChangeGo', 'EntryPoint0', {
     'NextBanc': 'HyruleField_Child', 'NextStartPos': 'HyruleField_FrontOfLostWoodBridge',
     'BootEventName': '', 'IsCheckAir': False,
     'NextStartPosAir': 'HyruleField_FrontOfLostWoodBridge'})
+
+
+CHALLENGE_ACTION = ('ChallengeSystemActor', 'EventExecuteProgressChallengeStep')
+STEP = ActionSpec(*CHALLENGE_ACTION, {
+    'ChallengeName': 'Goto_HyruleCastle', 'IsIgnoreCompletedChallenge': False,
+    'IsIgnoreChallengeProgressUI': True, 'IsWaitEnd': True, 'StepName': 'Step04'})
 
 
 def _valid(test, data):
@@ -189,6 +196,59 @@ class AppendEventsTest(unittest.TestCase):
         entry = new._entry_offset('EntryPoint0')
         self.assertEqual(new._u64(entry), 0)
         self.assertNotIn(entry, relocation_table(out)[2])
+
+    def _actor_params(self, flow, index):
+        c = flow._u64(flow._u64(flow._flowchart + 0x28) + 0x38 * index + 0x28)
+        n, dic = flow._u16(c + 2), flow._u64(c + 8)
+        return {flow._str(flow._u64(dic + 8 + 0x10 * (j + 1) + 8)):
+                flow._value(flow._u64(c + 0x10 + 8 * j)) for j in range(n)}
+
+    def _header_counts(self, flow):
+        fl = flow._flowchart
+        return [flow._u16(fl + 0x10 + 2 * i) for i in range(3)]
+
+    def test_add_actions_new_actor(self):
+        out = add_actions(self.data, [CHALLENGE_ACTION])
+        new = _valid(self, out)
+        self._check_original(new)
+        old_actors = self.flow.actors
+        self.assertEqual(new.actors[:len(old_actors)], old_actors)
+        self.assertEqual(new.actors[-1], ('ChallengeSystemActor',
+                                          ['EventExecuteProgressChallengeStep'], []))
+        self.assertEqual(self._actor_params(new, len(new.actors) - 1), SYSTEM_ACTOR_PARAMS)
+        for i in range(len(old_actors)):
+            self.assertEqual(self._actor_params(new, i), self._actor_params(self.flow, i))
+        n, acts, qs = self._header_counts(self.flow)
+        self.assertEqual(self._header_counts(new), [n + 1, acts + 1, qs])
+        pointers = relocation_table(out)[2]
+        a = new._u64(new._flowchart + 0x28) + 0x38 * (len(new.actors) - 1)
+        for off in (0x00, 0x08, 0x10, 0x18, 0x28):
+            self.assertIn(a + off, pointers, off)
+        self.assertIn(new._flowchart + 0x28, pointers)
+
+    def test_add_actions_existing_actor(self):
+        out = add_actions(self.data, [('GameDataActor', 'EventTriggerSetGameDataInt')])
+        new = _valid(self, out)
+        self._check_original(new)
+        for (name, acts, qs), (oname, oacts, oqs) in zip(new.actors, self.flow.actors):
+            if name == 'GameDataActor' and oacts == ['EventTriggerSetGameDataBool']:
+                self.assertEqual(acts, oacts + ['EventTriggerSetGameDataInt'])
+            else:
+                self.assertEqual((name, acts, qs), (oname, oacts, oqs))
+        n, acts, qs = self._header_counts(self.flow)
+        self.assertEqual(self._header_counts(new), [n, acts + 1, qs])
+
+    def test_add_actions_present_is_noop(self):
+        self.assertEqual(add_actions(self.data, [('GameDataActor', 'EventTriggerSetGameDataBool')]),
+                         self.data)
+
+    def test_append_after_add_actions(self):
+        out = add_actions(self.data, [CHALLENGE_ACTION])
+        out, idx = append_events(out, [STEP])
+        new = _valid(self, out)
+        ev = new.events[idx[0]]
+        self.assertEqual((ev.actor, ev.action), CHALLENGE_ACTION)
+        self.assertEqual(new.action_params(idx[0]), STEP.params)
 
     def test_set_entry_subflows_unknown_entry_raises(self):
         with self.assertRaises(BfevflError):

@@ -126,6 +126,22 @@ class ApplyStartTest(unittest.TestCase):
         self.assertEqual(chain_calls(PRESET), [('Dm_SY_GetInEvent', 'GetInEvent'),
                                                ('Dm_SY_BancChangeGo', 'EntryPoint0')])
 
+    def test_challenge_steps(self):
+        preset = StartPreset('HyruleCastle', 'X', challenge_steps=(
+            ('Goto_HyruleCastle', 'Step01'), ('Goto_HyruleCastle', 'Step02')))
+        new = EventFlow(apply_start(self.data, preset))
+        i = new.entry_points[HOOK_ENTRY]
+        steps = []
+        while i != 0xFFFF:
+            ev = new.events[i]
+            if ev.action == 'EventExecuteProgressChallengeStep':
+                self.assertEqual(ev.actor, 'ChallengeSystemActor')
+                p = new.action_params(i)
+                steps.append((p['ChallengeName'], p['StepName']))
+                self.assertEqual((p['IsIgnoreChallengeProgressUI'], p['IsWaitEnd']), (True, True))
+            i = ev.next
+        self.assertEqual(steps, list(preset.challenge_steps))
+
     def test_original_events_untouched(self):
         new = EventFlow(apply_start(self.data, PRESET))
         for i in range(len(self.flow.events)):

@@ -15,8 +15,11 @@ The rest of the game is vanilla.
 
 - [ ] Remove any other `Rando_*`, `TestBatch*` or `TestScenes*` mod.
 - [ ] Copy `test-mod/0400486024DEC000/TestBatch20` to `load/0400486024DEC000/`.
-- [ ] Start a **new game** and walk out of Link's house. You get the **Fairy Ocarina** and are teleported to the **Hyrule Castle courtyard**, next to Impa, with Zelda further ahead (start preset, see batch 21).
-- [ ] Talk to Zelda first (the meeting scene plays and gives Zelda's Letter), then go to Impa. If Impa reacts before Zelda, note it.
+- [ ] Start a **new game** and walk out of Link's house. You get the **Fairy Ocarina** and are teleported to the **Hyrule Castle courtyard**, next to Impa, with Zelda further ahead (start preset, see batch 21). The castle quest is moved to its last step (Step04), which Zelda's meeting needs.
+- [ ] The batch also has the **full cutscene skip**, as a seed with "Skip cutscenes" would.
+- [ ] Walk up to Zelda (the meeting triggers on approach, it is not a normal talk), then go to Impa. If Impa reacts before Zelda, note it.
+
+Attempt 1 (2026-11-14): Zelda's meeting would not start. Cause: it only triggers with the castle quest at Step04, which the teleport skipped. Rebuilt for attempt 2 with the quest steps and the full skip. The lesson's second half (`LearningOcarinaFollowExample`, the notes you repeat) is now swapped too; attempt 1 only swapped the notes you are shown.
 - [ ] Afterwards, to reach Saria: go back to Kokiri Forest from Hyrule Field, then Lost Woods → Sacred Forest Meadow.
 
 ## Check

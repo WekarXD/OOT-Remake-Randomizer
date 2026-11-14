@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from randomizer.formats import byml
 
 from randomizer.formats.bfevfl import EventFlow, patch_pointers
-from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, append_events,
+from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, add_actions, append_events,
                                             set_entry_subflows)
 
 HOOK_FLOW = 'Dm_Kokiri_0045'
@@ -47,6 +47,9 @@ class StartPreset:
     items: tuple[str, ...] = ()  # actors to give, e.g. 'Item_Ocarina_Fairy'
     flags: tuple[tuple[str, bool], ...] = ()  # (GameDataName, value)
     new_pos: NewStartPos | None = None  # added to `banc`; start_pos must name it
+    # (ChallengeName, StepName) quest steps to progress, in order (e.g. the castle
+    # quest must be at Step04 for Zelda's meeting to trigger).
+    challenge_steps: tuple[tuple[str, str], ...] = ()
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -57,6 +60,10 @@ def _flag(name: str, value: bool) -> ActionSpec:
 def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
     specs: list[ActionSpec | SubflowSpec] = [_flag(f, True) for f in HOOK_FLAGS]
     specs += [_flag(name, value) for name, value in preset.flags]
+    specs += [ActionSpec('ChallengeSystemActor', 'EventExecuteProgressChallengeStep', {
+        'ChallengeName': challenge, 'IsIgnoreCompletedChallenge': False,
+        'IsIgnoreChallengeProgressUI': True, 'IsWaitEnd': True, 'StepName': step})
+        for challenge, step in preset.challenge_steps]
     specs += [SubflowSpec('Dm_SY_GetInEvent', 'GetInEvent', {'ActorName': item})
               for item in preset.items]
     specs.append(SubflowSpec('Dm_SY_BancChangeGo', 'EntryPoint0', {
@@ -121,7 +128,9 @@ def apply_start(flow_bytes: bytes, preset: StartPreset) -> bytes:
     """`HOOK_FLOW` with its entry pointing to the preset chain (the original events
     stay, unreachable from the entry) and listing the chain's subflow calls."""
     specs = _chain(preset)
-    data, idx = append_events(flow_bytes, specs)
+    data = add_actions(flow_bytes, [(s.actor, s.action) for s in specs
+                                    if isinstance(s, ActionSpec)])
+    data, idx = append_events(data, specs)
     flow = EventFlow(data)
     links = {flow.link_slots[('entry', HOOK_ENTRY)]: idx[0]}
     for a, b in zip(idx, idx[1:]):

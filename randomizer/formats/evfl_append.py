@@ -101,6 +101,15 @@ class SubflowSpec:
     params: dict[str, ParamValue] = field(default_factory=dict)
 
 
+# The parameters every system actor (GameDataActor, ChallengeSystemActor, ...) has
+# in the game's flows, in their order.
+SYSTEM_ACTOR_PARAMS: dict[str, ParamValue] = {
+    'EventMemberCreateMethod': 0, 'IsBindNearestActor': False, 'IsGrounding': False,
+    'IsWorld': False, 'UseEventModelAnime': '使用しない', 'UseEventAS': '使用しない'}
+_ACTOR = 0x38  # actor slot: name, secondary name, argument name, actions, queries,
+#                parameters (u64 pointers), then u16 actions, u16 queries, u16 0xFFFF, u8 1, u8 0
+
+
 def _string_bytes(text: str) -> bytes:
     raw = text.encode('utf-8')
     if len(raw) > 0xFFFF or b'\0' in raw:
@@ -254,3 +263,72 @@ def set_entry_subflows(data: bytes, entry: str, indices: Sequence[int]) -> bytes
     out += bytes(reloc - end) + bfevfl.build_relocation_table(reloc, end, pointers)
     struct.pack_into('<II', out, 0x18, reloc, len(out))
     return bytes(out)
+
+
+def _finish(out: bytearray, pointers: set[int]) -> bytes:
+    """`out` with a rebuilt RELT after it and the header pointing to it."""
+    end = len(out)
+    reloc = (end + 0xF) & ~0xF
+    out += bytes(reloc - end) + bfevfl.build_relocation_table(reloc, end, pointers)
+    struct.pack_into('<II', out, 0x18, reloc, len(out))
+    return bytes(out)
+
+
+def add_actions(data: bytes, pairs: Sequence[tuple[str, str]]) -> bytes:
+    """The file with each (actor, action) available to `ActionSpec`: the action is
+    added to the first actor with that name, and an actor that is missing is added
+    as a system actor (`SYSTEM_ACTOR_PARAMS`, no queries). Existing actor and event
+    indices do not change; the file is returned unchanged if nothing is missing."""
+    flow = EventFlow(data)
+    if flow._flowchart is None:
+        raise BfevflError('The file has no flowchart.')
+    names = [name for name, _, _ in flow.actors]
+    need: dict[str, list[str]] = {}
+    for actor, action in pairs:
+        if actor in names and action in flow.actors[names.index(actor)][1]:
+            continue
+        need.setdefault(actor, [])
+        if action not in need[actor]:
+            need[actor].append(action)
+    if not need:
+        return data
+    _, size, pointers = bfevfl.relocation_table(data)
+    out = bytearray(data[:size])
+    pointers = set(pointers)
+    w = _Writer(flow, out, pointers)
+    fl, n = flow._flowchart, len(flow.actors)
+    actors_p = flow._u64(fl + 0x28)
+    added = [a for a in need if a not in names]
+    if added:
+        _align(out, 8)
+        new_p = len(out)
+        out += data[actors_p:actors_p + _ACTOR * n] + bytes(_ACTOR * len(added))
+        for k in range(_ACTOR * n):
+            if actors_p + k in pointers:
+                pointers.add(new_p + k)
+        w.pointer(fl + 0x28, new_p)
+        struct.pack_into('<H', out, fl + 0x10, n + len(added))
+        actors_p = new_p
+    for actor, actions in need.items():
+        i = names.index(actor) if actor in names else n + added.index(actor)
+        a = actors_p + _ACTOR * i
+        old = flow.actors[i][1] if actor in names else []
+        if actor not in names:
+            w.pointer(a, w.string(actor))
+            w.pointer(a + 0x08, w.string(''))
+            w.pointer(a + 0x10, w.string(''))
+            w.pointer(a + 0x28, w.container(SYSTEM_ACTOR_PARAMS))
+            struct.pack_into('<HHHBB', out, a + 0x30, 0, 0, 0xFFFF, 1, 0)
+        old_arr = struct.unpack_from('<Q', out, a + 0x18)[0]
+        _align(out, 8)
+        arr = len(out)
+        out += bytes(8 * (len(old) + len(actions)))
+        for j in range(len(old)):
+            w.pointer(arr + 8 * j, struct.unpack_from('<Q', out, old_arr + 8 * j)[0])
+        for j, action in enumerate(actions):
+            w.pointer(arr + 8 * (len(old) + j), w.string(action))
+        w.pointer(a + 0x18, arr)
+        struct.pack_into('<H', out, a + 0x30, len(old) + len(actions))
+    total = flow._u16(fl + 0x12) + sum(len(v) for v in need.values())
+    struct.pack_into('<H', out, fl + 0x12, total)
+    return _finish(out, pointers)
