@@ -50,7 +50,7 @@ This is OoTR's second "Shuffle Songs" value. The 12 songs join the general item 
 - **New item is a song:** as today. The grant is renamed, the lessons get the new melody, and the lesson end is retargeted.
 - **New item is not a song:**
   - the grant is renamed;
-  - every `Dm_SY_Ocarina:LearningOcarina*` call is bypassed: every pointer to it (next, case, fork, entry) is relinked to the event after it;
+  - the lesson's **end** (`LearningOcarinaPlayAuto` / `PlayAutoForSeek`, the only part that adds the melody played to the pouch) is bypassed: every pointer to it (next, case, fork, entry) is relinked to the event after it, and an emptied fork branch goes to its fork's join. The rest of the lesson stays, because other branches of a scene can wait on it: in batch 24b, bypassing the whole lesson froze the crater, where Navi looks at the Ocarina of Time during Sheik's example. The teacher therefore plays the original notes and Link repeats them without getting that song;
   - in the crater, the `IsGet` set is bypassed the same way.
 
   Bypassing changes no event, string or size. Entry subflow lists may still name a bypassed call, which is a harmless superset.

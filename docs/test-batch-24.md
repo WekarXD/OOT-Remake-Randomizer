@@ -26,7 +26,7 @@ Built with `tools/make_song_batch.py <nup> <out> 24a|24b`. Each variant teleport
 
 24a, Impa (without the skip):
 
-- [x] Does her scene play without a lesson (no notes to watch or repeat)? Yes.
+- [ ] Does her scene teach the Lullaby's notes and make you repeat them, **without** giving you the Lullaby? (Attempt 1, with the whole lesson bypassed: no lesson, fine.) ______
 - [x] Does it end cleanly, with no hang? Yes.
 - [x] Do you get the **Deku Shield** (message, then equipped or in the inventory)? Yes: "You got a Deku Shield!".
 - [x] Do you **not** get Zelda's Lullaby (check the song list)? Correct: the song list is empty.
