@@ -66,6 +66,19 @@ SONGS: tuple[SongLocation, ...] = (
                  ('Dm_MelodyGet_Shine',)),
 )
 SONG_BY_LOCATION: dict[str, SongLocation] = {s.location: s for s in SONGS}
+# Boss Heart Containers (dungeon zone -> OoTR location), dungeon-reward sites for
+# Shuffle Songs: Dungeon Rewards. Each zone's *_Static banc has one Obj_Heart_Container.
+BOSS_HEARTS: dict[str, str] = {
+    'InsideTheDekuTree': 'Deku Tree Queen Gohma Heart',
+    'DodongoCavern': 'Dodongos Cavern King Dodongo Heart',
+    'InsideJabuJabuBelly': 'Jabu Jabus Belly Barinade Heart',
+    'ForestTemple': 'Forest Temple Phantom Ganon Heart',
+    'FireTemple': 'Fire Temple Volvagia Heart',
+    'WaterTemple': 'Water Temple Morpha Heart',
+    'SpiritTemple': 'Spirit Temple Twinrova Heart',
+    'ShadowTemple': 'Shadow Temple Bongo Bongo Heart',
+}
+HEART_GYAML = 'Obj_Heart_Container'
 SONG_BY_ACTOR: dict[str, SongLocation] = {s.actor: s for s in SONGS}
 
 

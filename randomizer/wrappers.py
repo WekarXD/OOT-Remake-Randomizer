@@ -24,6 +24,11 @@ ITEM_REFS = ('ActorNameRef', 'ModelInfoRef', 'AnimationRef', 'PouchContentRef',
 ACTOR_INFO_COPY = ('FmdbName', 'ModelProjectName', 'AnimationResources',
                    'ModelAabbMax', 'ModelAabbMin')
 HEAP_KEYS = ('InstanceHeapSize', 'PreActorRenderInfoHeapSize')
+# Songs have no AnimationRef or GameParameterTableRef: their wrapper keeps the token's
+# (Shuffle Songs: Dungeon Rewards puts songs on the boss hearts). Other contents still
+# need every reference, so Tokensanity's wrappers are unchanged.
+SONG_PREFIX = 'Item_Melody_'
+SONG_REFS = ('ActorNameRef', 'ModelInfoRef', 'PouchContentRef')
 
 
 def _table_path(t: str) -> str:
@@ -102,6 +107,7 @@ class _Tables:
 
 
 def _wrappable(game, actor: str, tables: _Tables) -> bool:
+    required = SONG_REFS if actor.startswith(SONG_PREFIX) else ITEM_REFS
     if not all(actor in tables.ids[t] for t in RSDB_TABLES):
         return False
     if not game.nup.has(_pack_path(actor)):
@@ -111,7 +117,7 @@ def _wrappable(game, actor: str, tables: _Tables) -> bool:
         refs = _resolved_refs(pack, actor)
     except (KeyError, TypeError, ValueError):
         return False
-    return (all(k in refs for k in ITEM_REFS)
+    return (all(k in refs for k in required)
             and refs['PouchContentRef'].lstrip('?') in pack)
 
 
@@ -154,7 +160,8 @@ def _clone_pack(game, token_pack: dict, content: str, source: str) -> bytes:
     refs = _resolved_refs(spack, source)
     comp = tap['Components']
     for k in ITEM_REFS:
-        comp[k] = refs[k]
+        if k in refs:  # a song lacks two of them: the token's stay
+            comp[k] = refs[k]
     for k, v in spack.items():
         if not k.startswith('Actor/') and k not in files:
             files[k] = v

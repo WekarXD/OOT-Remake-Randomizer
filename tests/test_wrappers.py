@@ -109,6 +109,30 @@ class TestWrappers(unittest.TestCase):
         expected = dict(pa['Obj_Rupee_Purple'], __RowId='Obj_Rando_TBox_Rupee_Purple')
         self.assertEqual(pa['Obj_Rando_TBox_Rupee_Purple'], expected)
 
+    def test_song_wrapper(self):
+        # Songs lack AnimationRef and GameParameterTableRef: the wrapper keeps the
+        # token's (Dungeon Rewards puts songs on the boss hearts).
+        self.assertEqual(wrap_source(self.game, 'Item_Melody_StormSong'), 'Item_Melody_StormSong')
+        files = self.build(['Item_Melody_StormSong'], self.rstb())
+        _raw, pack = self.pack(files, 'Item_Melody_StormSong')
+        _v, ap = byml.load(pack['Actor/Obj_Rando_Item_Melody_StormSong.engine__actor__ActorParam.bgyml'])
+        comp = ap['Components']
+        self.assertEqual(comp['ActorNameRef'],
+                         '?ActorSystem/ActorName/Item_Melody_StormSong.engine__actor__ActorName.bgyml')
+        token = wrappers._resolved_refs(wrappers._load_pack(self.game, 'Obj_Token_Gold'),
+                                        'Obj_Token_Gold')
+        self.assertEqual(comp['AnimationRef'], token['AnimationRef'])
+        self.assertEqual(comp['GameParameterTableRef'], token['GameParameterTableRef'])
+        _v, pc = byml.load(pack[comp['PouchContentRef'].lstrip('?')])
+        self.assertIs(pc['DefaultAutoGet'], True)
+
+    def test_partial_wrap_only_for_songs(self):
+        # Non-song contents still need every reference (Tokensanity unchanged).
+        self.assertIsNone(wrap_source(self.game, 'Item_NoExiste'))
+        self.assertEqual(wrap_sources(self.game, ['Item_Hookshot', 'Item_Melody_SunSong']),
+                         {'Item_Hookshot': 'Item_Hookshot',
+                          'Item_Melody_SunSong': 'Item_Melody_SunSong'})
+
     def test_build_wrapper_none_needed(self):
         rstb = self.rstb()
         before = rstb.dump()

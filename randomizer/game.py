@@ -28,6 +28,13 @@ class SkulltulaActor:
 SKULLTULA_GYAML = 'Enemy_Skulltula_Gold'
 
 
+@dataclass(frozen=True)
+class BossHeart:
+    banc: str
+    hash: int
+    location: str  # OoTR location
+
+
 def load_chests_fixture(path) -> list[ChestActor]:
     with open(path, encoding='utf-8') as f:
         rows = json.load(f)
@@ -106,3 +113,18 @@ class GameData:
             out.sort(key=lambda s: (s.banc, s.hash))
             self._skulltulas = out
         return list(self._skulltulas)
+
+    def boss_hearts(self) -> list[BossHeart]:
+        """The boss Heart Container of each dungeon in `songs.BOSS_HEARTS`, read from
+        the dungeon's *_Static banc. Raises ValueError unless there is exactly one."""
+        from .songs import BOSS_HEARTS, HEART_GYAML
+        out = []
+        for zone, location in BOSS_HEARTS.items():
+            path = f'Banc/{zone}/{zone}_Static.bcett.byml.zs'
+            _ver, root = self.load_banc(path)
+            found = [a for a in root.get('Actors') or []
+                     if isinstance(a, dict) and a.get('Gyaml') == HEART_GYAML]
+            if len(found) != 1:
+                raise ValueError(f'{path} has {len(found)} {HEART_GYAML}, not one.')
+            out.append(BossHeart(path, int(found[0]['Hash']), location))
+        return out

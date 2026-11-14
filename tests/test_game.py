@@ -71,3 +71,21 @@ class TestFixture(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
+@unittest.skipUnless(os.environ.get('OOT_NUP'), 'OOT_NUP not set')
+class BossHeartsTest(unittest.TestCase):
+    def test_boss_hearts(self):
+        from randomizer.game import GameData
+        from randomizer.logic import ootr_data
+        from randomizer.nup import NupArchive
+        from randomizer.songs import BOSS_HEARTS
+        with NupArchive(os.environ['OOT_NUP']) as nup:
+            hearts = GameData(nup).boss_hearts()
+        self.assertEqual(sorted(h.location for h in hearts), sorted(BOSS_HEARTS.values()))
+        self.assertEqual(len({h.hash for h in hearts}), 8)
+        locations = ootr_data.load_locations()
+        for h in hearts:
+            self.assertEqual(locations[h.location]['vanilla_item'], 'Heart Container', h.location)
+            self.assertTrue(h.banc.endswith('_Static.bcett.byml.zs'), h.banc)
