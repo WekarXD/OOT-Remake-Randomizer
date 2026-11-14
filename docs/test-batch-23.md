@@ -7,14 +7,18 @@ Spike for "Shuffle Songs: Anywhere" (OoTR's setting: songs join the general pool
 | Impa (`Dm_MelodyGet_Zelda`) | Zelda's Lullaby | **Red Rupee** (`Obj_Rupee_Red`) |
 | Saria (`Dm_MelodyGet_Saria`) | Saria's Song | **Deku Nuts** (`TBox_DekuNutBundle`, the chests' ammo) |
 
-Built on the full cutscene skip, so the lessons are gone. From each scene's real entry, no `LearningOcarina*` call is reached (checked on the built files), so the original song cannot slip in through the lesson's end. Same start as batch 20: the Fairy Ocarina, the castle quest at Step04, teleport to the courtyard by Impa. Builder: scratchpad `batch23.py` (throwaway).
+Built on the full cutscene skip, so the lessons are gone. From each scene's real entry, no `LearningOcarina*` call is reached (checked on the built files), so the original song cannot slip in through the lesson's end. Every check starts with a teleport next to its scene (the user's standing rule), so there are two mods, each for a new game:
+
+- **`TestBatch23a` (Impa):** the Fairy Ocarina, the castle quest at Step04, teleport to the courtyard by Impa (as batch 20).
+- **`TestBatch23b` (Saria):** the Fairy Ocarina, `DoorOfTime` advanced Ready → Step01 → Step02 (her meadow logic, `SacredForestMeadow_Child_Prefab_3265`, starts the scene once that quest is past Step01 and `Dm_MelodyGet_Saria` has not played), teleport to the `ForestMinuet` start position next to her stump.
+
+Builder: scratchpad `batch23.py` (throwaway), `a` or `b`.
 
 ## Setup
 
 - [ ] Remove any other `Rando_*`, `TestBatch*` or `TestScenes*` mod.
-- [ ] Copy `test-mod/0400486024DEC000/TestBatch23` to `load/0400486024DEC000/`.
-- [ ] Start a **new game** and walk out of Link's house: you are teleported to the castle courtyard.
-- [ ] Walk up to Zelda, then go to Impa. Afterwards, go back to the forest → Lost Woods → Sacred Forest Meadow for Saria.
+- [ ] **23a:** copy `test-mod/0400486024DEC000/TestBatch23a` to `load/0400486024DEC000/`, start a **new game** and leave the house: you are in the castle courtyard. Walk up to Zelda, then to Impa.
+- [ ] **23b:** replace it with `TestBatch23b`, start **another new game** and leave the house: you appear in the Sacred Forest Meadow next to Saria.
 
 ## Check
 
