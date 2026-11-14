@@ -55,6 +55,19 @@ class ApplyStartTest(unittest.TestCase):
         self.assertEqual(len(seen), len(HOOK_FLAGS) + 1 + 1 + 1)
         self.assertEqual((seen[-1][0].sub_flow, seen[-1][0].next), ('Dm_SY_BancChangeGo', 0xFFFF))
 
+    def test_entry_lists_chain_subflows(self):
+        # Every entry of the game lists the subflow events it reaches; without
+        # that list the game hangs at the first call (batch 21).
+        new = EventFlow(apply_start(self.data, PRESET))
+        i = new.entry_points[HOOK_ENTRY]
+        reached = []
+        while i != 0xFFFF:
+            if new.events[i].kind == SUBFLOW:
+                reached.append(i)
+            i = new.events[i].next
+        self.assertEqual(len(reached), 2)
+        self.assertEqual(new.entry_subflows(HOOK_ENTRY), reached)
+
     def test_original_events_untouched(self):
         new = EventFlow(apply_start(self.data, PRESET))
         for i in range(len(self.flow.events)):

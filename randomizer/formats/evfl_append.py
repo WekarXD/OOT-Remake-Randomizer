@@ -223,3 +223,34 @@ def append_events(data: bytes, specs: Sequence[ActionSpec | SubflowSpec]) -> tup
     out += bytes(reloc - end) + bfevfl.build_relocation_table(reloc, end, pointers)
     struct.pack_into('<II', out, 0x18, reloc, len(out))
     return bytes(out), [n + j for j in range(len(specs))]
+
+
+def set_entry_subflows(data: bytes, entry: str, indices: Sequence[int]) -> bytes:
+    """The file with entry point `entry` listing the subflow events `indices`. The
+    game only runs subflow calls an entry lists (see `EventFlow.entry_subflows`), so
+    a chain with new calls needs this. The new list goes after the relocated data;
+    an empty list is a null pointer, as in the game."""
+    flow = EventFlow(data)
+    e = flow._entry_offset(entry)
+    for i in indices:
+        if not 0 <= i < len(flow.events) or flow.events[i].kind not in (
+                bfevfl.SUBFLOW, bfevfl.SUBFLOW_SWITCH):
+            raise BfevflError(f'Event {i} is not a subflow call.')
+    _, size, pointers = bfevfl.relocation_table(data)
+    out = bytearray(data[:size])
+    pointers = set(pointers)
+    if indices:
+        _align(out, 8)
+        at = len(out)
+        out += b''.join(struct.pack('<H', i) for i in indices)
+        struct.pack_into('<Q', out, e, at)
+        pointers.add(e)
+    else:
+        struct.pack_into('<Q', out, e, 0)
+        pointers.discard(e)
+    struct.pack_into('<H', out, e + 0x18, len(indices))
+    end = len(out)
+    reloc = (end + 0xF) & ~0xF
+    out += bytes(reloc - end) + bfevfl.build_relocation_table(reloc, end, pointers)
+    struct.pack_into('<II', out, 0x18, reloc, len(out))
+    return bytes(out)

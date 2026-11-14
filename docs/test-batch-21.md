@@ -26,4 +26,6 @@ The events are built from scratch by the new tool (`randomizer/formats/evfl_appe
 
 ## Results
 
-(To be filled in after testing.)
+Attempt 1 (2026-11-14): the door opened, then Link froze (music and leaves kept moving). Cause: every entry point lists the subflow events it reaches (true for all 5512 entries of the game), and the chain's calls were not listed. Fixed with `set_entry_subflows`; the mod was rebuilt for attempt 2.
+
+Attempt 2: (to be filled in after testing.)

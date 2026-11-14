@@ -10,7 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from randomizer.formats.bfevfl import EventFlow, patch_pointers
-from randomizer.formats.evfl_append import ActionSpec, SubflowSpec, append_events
+from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, append_events,
+                                            set_entry_subflows)
 
 HOOK_FLOW = 'Dm_Kokiri_0045'
 HOOK_ENTRY = 'EntryPoint0'
@@ -44,10 +45,13 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
 
 def apply_start(flow_bytes: bytes, preset: StartPreset) -> bytes:
     """`HOOK_FLOW` with its entry pointing to the preset chain (the original events
-    stay, unreachable from the entry)."""
-    data, idx = append_events(flow_bytes, _chain(preset))
+    stay, unreachable from the entry) and listing the chain's subflow calls."""
+    specs = _chain(preset)
+    data, idx = append_events(flow_bytes, specs)
     flow = EventFlow(data)
     links = {flow.link_slots[('entry', HOOK_ENTRY)]: idx[0]}
     for a, b in zip(idx, idx[1:]):
         links[flow.link_slots[('next', a)]] = b
-    return patch_pointers(data, links)
+    data = patch_pointers(data, links)
+    calls = [i for i, s in zip(idx, specs) if isinstance(s, SubflowSpec)]
+    return set_entry_subflows(data, HOOK_ENTRY, calls)

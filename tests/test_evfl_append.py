@@ -4,7 +4,8 @@ import unittest
 
 from randomizer.formats.bfevfl import (ACTION, SUBFLOW, BfevflError, EventFlow, grow_events,
                                        relocation_table)
-from randomizer.formats.evfl_append import ActionSpec, SubflowSpec, append_events, build_dic
+from randomizer.formats.evfl_append import (ActionSpec, SubflowSpec, append_events, build_dic,
+                                            set_entry_subflows)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -169,6 +170,29 @@ class AppendEventsTest(unittest.TestCase):
             for _, it in items:
                 if out[it] == 5:
                     self.assertIn(it + 0x10, pointers)
+
+    def test_set_entry_subflows(self):
+        out, idx = append_events(self.data, [FLAG, GIFT, TELEPORT])
+        self.assertEqual(EventFlow(out).entry_subflows('EntryPoint0'), [])
+        out = set_entry_subflows(out, 'EntryPoint0', idx[1:])
+        new = _valid(self, out)
+        self.assertEqual(new.entry_subflows('EntryPoint0'), idx[1:])
+        self._check_original(new)
+        entry = new._entry_offset('EntryPoint0')
+        self.assertIn(entry, relocation_table(out)[2])
+
+    def test_set_entry_subflows_empty_is_null(self):
+        out, idx = append_events(self.data, [GIFT])
+        out = set_entry_subflows(set_entry_subflows(out, 'EntryPoint0', idx), 'EntryPoint0', [])
+        new = _valid(self, out)
+        self.assertEqual(new.entry_subflows('EntryPoint0'), [])
+        entry = new._entry_offset('EntryPoint0')
+        self.assertEqual(new._u64(entry), 0)
+        self.assertNotIn(entry, relocation_table(out)[2])
+
+    def test_set_entry_subflows_unknown_entry_raises(self):
+        with self.assertRaises(BfevflError):
+            set_entry_subflows(self.data, 'Nope', [])
 
 
 if __name__ == '__main__':

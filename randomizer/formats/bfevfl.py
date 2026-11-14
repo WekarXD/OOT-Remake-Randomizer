@@ -214,8 +214,25 @@ class EventFlow:
         names = [self._str(self._u64(dic_p + 8 + 0x10 * (i + 1) + 8)) for i in range(n_dic)]
         if n_dic != n_entries:
             raise BfevflError('The dictionary and the entries do not match.')
+        self._entries_p = entries_p
         for i, name in enumerate(names):
             self.entry_points[name] = slot(entries_p + 0x20 * i + 0x1C, ('entry', name))
+
+    def _entry_offset(self, name: str) -> int:
+        """Offset of entry point `name` (0x20 bytes: u64 pointer to its subflow list,
+        two u64 for variables, u16 subflow count, u16 variable count, u16 main event)."""
+        names = list(self.entry_points)
+        if name not in names:
+            raise BfevflError(f'The flow has no entry point {name!r}.')
+        return self._entries_p + 0x20 * names.index(name)
+
+    def entry_subflows(self, name: str) -> list[int]:
+        """The subflow events entry `name` lists. In every flow of the game this is
+        exactly the subflow events reachable from the entry (in visit order); the
+        game does not run a call that is missing from it."""
+        e = self._entry_offset(name)
+        p = self._u64(e)
+        return [self._u16(p + 2 * k) for k in range(self._u16(e + 0x18))]
 
     def pointer_slots(self) -> list[tuple[int, int]]:
         """(offset, current index) of every u16 that references an event."""
