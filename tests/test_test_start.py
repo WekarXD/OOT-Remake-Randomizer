@@ -65,6 +65,15 @@ class ApplyStartTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             apply_start(self.data, StartPreset('HyruleField_Child', 'X', adult=True))
 
+    def test_boot_event(self):
+        # A dungeon's map entrance passes its arrival event (batch 25: without it the
+        # teleport into the Deku Tree stayed on a black screen).
+        preset = StartPreset('InsideTheDekuTree', 'DefeatBoss',
+                             boot_event='Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
+        last = self._walk(preset)[-1]
+        self.assertEqual(last[1]['BootEventName'], 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
+        self.assertEqual(self._walk(PRESET)[-1][1]['BootEventName'], '')
+
     def test_child_chain_unchanged(self):
         self.assertNotIn(ERA_CHANGE, chain_calls(PRESET))
         flags = [p.get('GameDataName') for _, p in self._walk(PRESET)]

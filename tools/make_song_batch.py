@@ -73,7 +73,12 @@ GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
                     # The Slingshot alone has no ammo (batch 25, attempt 1): the bag and seeds.
                     items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
                            'Item_Range_SlingShot', 'Item_BulletBag_Small',
-                           'TBox_DekuSeedBundle'))
+                           'TBox_DekuSeedBundle'),
+                    # Its map entrance passes this arrival event and plays the Deku Tree's
+                    # intro until Dm_Deku_0000 is marked played (batch 25, attempt 2:
+                    # black screen without them).
+                    flags=(('HavePlayedEvent.Dm_Deku_0000', True),),
+                    boot_event='Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
 VARIANTS['25'] = (GOHMA, VANILLA, True)
 # Variants that put a song on a boss Heart Container: OoTR location -> song.
 HEART_SONGS = {'25': {'Deku Tree Queen Gohma Heart': 'Item_Melody_StormSong'}}

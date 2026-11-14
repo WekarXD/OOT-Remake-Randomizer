@@ -67,6 +67,9 @@ class StartPreset:
     # quest must be at Step04 for Zelda's meeting to trigger).
     challenge_steps: tuple[tuple[str, str], ...] = ()
     adult: bool = False  # arrive as an adult; `banc` must be an *_Adult map
+    # Event started on arrival. A dungeon's map entrance passes its arrival event
+    # (e.g. 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01').
+    boot_event: str = ''
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -89,7 +92,8 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
         # The era change reads the childhood flag, so it runs before the flag changes.
         specs += [SubflowSpec(*ERA_CHANGE, {}), _flag(CHILDHOOD_FLAG, False)]
     specs.append(SubflowSpec('Dm_SY_BancChangeGo', 'EntryPoint0', {
-        'NextBanc': preset.banc, 'NextStartPos': preset.start_pos, 'BootEventName': '',
+        'NextBanc': preset.banc, 'NextStartPos': preset.start_pos,
+        'BootEventName': preset.boot_event,
         'IsCheckAir': False, 'NextStartPosAir': preset.start_pos}))
     return specs
 
