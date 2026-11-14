@@ -12,7 +12,10 @@ from unittest import mock
 from randomizer import locations, spoiler
 from randomizer.fill import Settings
 from randomizer.formats import byml
+from randomizer.formats.bfevfl import SUBFLOW, EventFlow
 from randomizer.formats.rstb import Rstb, banc_rstb_size
+from randomizer.formats.zs import ZsCodec
+from randomizer.songs import SONGS
 from randomizer.game import GameData, load_chests_fixture, load_skulltulas_fixture
 from randomizer.generate import GenerationError, generate, safe_seed_name
 from randomizer.nup import NupArchive
@@ -381,6 +384,82 @@ class RealTests(unittest.TestCase):
             self.assertNotIn('skulltulas', data)
             self.assertNotIn('tokensanity', data['settings'])
             self.assertNotIn('Skulltula', Path(ra.spoiler_txt).read_text(encoding='utf-8'))
+
+    def test_generate_songs_off_unchanged(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            ra = generate(NUP_PATH, a, Settings(seed='x'))
+            rb = generate(NUP_PATH, b, Settings(seed='x', shuffle_songs='off'))
+            self.assertEqual(_hashes(Path(ra.mod_dir)), _hashes(Path(rb.mod_dir)))
+            data = json.loads(Path(ra.spoiler_json).read_text(encoding='utf-8'))
+            self.assertNotIn('songs', data)
+            self.assertNotIn('shuffle_songs', data['settings'])
+            self.assertNotIn('Songs', Path(ra.spoiler_txt).read_text(encoding='utf-8'))
+
+    def _granted(self, root: Path, nup, codec) -> dict[str, str]:
+        """OoTR song location -> the song its scene grants in the mod (or the game)."""
+        out = {}
+        for row in SONGS:
+            granted = set()
+            for flow in row.flows:
+                rel = f'Event/EventFlow/{flow}.bfevfl.zs'
+                p = root / Path(*rel.split('/'))
+                raw = p.read_bytes() if p.exists() else nup.read(rel)
+                f = EventFlow(codec.decompress(rel, raw))
+                granted |= {f.action_params(i).get('ActorName') for i in range(len(f.events))}
+            melodies = {g for g in granted if isinstance(g, str) and g.startswith('Item_Melody_')}
+            self.assertEqual(len(melodies), 1, (row.location, melodies))
+            out[row.location] = melodies.pop()
+        return out
+
+    def _check_songs(self, settings):
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, settings)
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            self.assertEqual(data['settings']['shuffle_songs'], 'song_locations')
+            songs = {r['location']: r['song'] for r in data['songs']}
+            self.assertEqual(len(songs), 12)
+            self.assertNotEqual(songs, {s.location: s.actor for s in SONGS})
+            with NupArchive(NUP_PATH) as nup:
+                codec = ZsCodec.from_archive(nup)
+                self.assertEqual(self._granted(Path(res.mod_dir) / 'romfs', nup, codec), songs)
+            text = Path(res.spoiler_txt).read_text(encoding='utf-8')
+            self.assertIn('Shuffle Songs: Song Locations', text)
+            section = text.split('\nSongs\n', 1)[1].split('\n\n', 1)[0]
+            self.assertEqual(len(section.splitlines()), 12)
+            return self._calls(Path(res.mod_dir) / 'romfs')
+
+    @staticmethod
+    def _calls(root: Path) -> dict[str, list]:
+        """Song flow -> its subflow calls other than the lesson end, for the flows the
+        mod writes."""
+        out = {}
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            for row in SONGS:
+                for flow in row.flows:
+                    rel = f'Event/EventFlow/{flow}.bfevfl.zs'
+                    p = root / Path(*rel.split('/'))
+                    if p.exists():
+                        f = EventFlow(codec.decompress(rel, p.read_bytes()))
+                        out[flow] = sorted((e.sub_flow or '', e.sub_entry or '')
+                                           for e in f.events if e.kind == SUBFLOW
+                                           and 'PlayAuto' not in (e.sub_entry or ''))
+        return out
+
+    def test_generate_song_locations(self):
+        self._check_songs(Settings(seed='songs', shuffle_songs='song_locations'))
+
+    def test_generate_song_locations_with_skip(self):
+        # The song patch is built on the skip's flows: a song flow the skip rewrote
+        # keeps the skip's calls (only the lesson end may be retargeted).
+        with_songs = self._check_songs(Settings(seed='songs', shuffle_songs='song_locations',
+                                                skip_cutscenes=True))
+        with tempfile.TemporaryDirectory() as out:
+            plain = generate(NUP_PATH, out, Settings(seed='songs', skip_cutscenes=True))
+            skip_only = self._calls(Path(plain.mod_dir) / 'romfs')
+        self.assertTrue(skip_only)
+        for flow, calls in skip_only.items():
+            self.assertEqual(with_songs[flow], calls, flow)
 
     def test_wrapper_error_becomes_generation_error(self):
         with tempfile.TemporaryDirectory() as out:

@@ -13,7 +13,7 @@ from pathlib import Path
 from . import locations, patch, spoiler
 from .formats.bfevfl import BfevflError
 from .formats.timeline import TimelineError
-from .fill import FillError, Settings, _eligible, place
+from .fill import VANILLA_SONGS, FillError, Settings, _eligible, place_all
 from .full_skip import files_with_fallback
 
 # Phases of full_skip.json the "Skip cutscenes" option builds (1 childhood, 2 adult).
@@ -22,6 +22,7 @@ from .full_skip import files_with_fallback
 FULL_SKIP_PHASE = 1
 from .game import GameData
 from . import wrappers
+from .songs import song_flow_patches
 from .logic.world import World, load_vanilla_settings
 from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError, TITLE_ID
 
@@ -91,8 +92,9 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     skulltulas = game.skulltulas()
                     gs_map = locations.load_gs_map()
                     gs_forbidden = _gs_forbidden(game, chests, loc_map)
-                placement = place(chests, loc_map, World(world_settings), settings,
-                                  skulltulas, gs_map, gs_forbidden)
+                placed = place_all(chests, loc_map, World(world_settings), settings,
+                                   skulltulas, gs_map, gs_forbidden)
+                placement = placed.chests
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
                 tmp_dir.mkdir(parents=True)
@@ -106,6 +108,11 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     except (ValueError, BfevflError, TimelineError) as e:
                         raise GenerationError(
                             f'Could not prepare the cutscenes: {e}') from e
+                if placed.songs != VANILLA_SONGS:
+                    try:
+                        extras, sizes = _with_song_flows(game, placed.songs, extras, sizes)
+                    except (ValueError, BfevflError) as e:
+                        raise GenerationError(f'Could not prepare the songs: {e}') from e
                 try:
                     changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras,
                                               extra_sizes=sizes, report=rstb_report)
@@ -120,7 +127,8 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     print('\n'.join(rstb_report), file=sys.stderr)
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
-                                         SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped)
+                                         SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped,
+                                         placed.songs)
                     # '\n' line endings everywhere, so the spoiler log is the same
                     # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
@@ -152,6 +160,36 @@ def _not_skipped(report: list[str]) -> list[str]:
     return [line for line in report
             if not line.startswith(_APPLIED)
             and not (line.startswith('movie ') and ' not dropped from ' not in line)]
+
+
+FLOW_DIR, FLOW_EXT = 'Event/EventFlow/', '.bfevfl.zs'
+
+
+def _with_song_flows(game: GameData, songs: dict[str, str],
+                     extras: dict[str, bytes] | None,
+                     sizes: dict[str, int] | None) -> tuple[dict[str, bytes], dict[str, int]]:
+    """`extras` (romfs path -> compressed bytes) and `sizes` (romfs path -> size change
+    against the game's file) with the song scenes patched for `songs` (OoTR location ->
+    song actor). A flow the full skip already rewrote is patched on top of the skip's
+    version, which it replaces."""
+    files, deltas = dict(extras or {}), dict(sizes or {})
+
+    def path(name: str) -> str:
+        return FLOW_DIR + name + FLOW_EXT
+
+    def read(name: str) -> bytes:
+        p = path(name)
+        raw = files[p] if p in files else game.nup.read(p)
+        return game.codec.decompress(p, raw)
+
+    for name, data in song_flow_patches(read, songs).items():
+        p = path(name)
+        files[p] = game.codec.compress(p, data)
+        grow = len(data) - len(game.codec.decompress(p, game.nup.read(p)))
+        deltas.pop(p, None)
+        if grow:
+            deltas[p] = grow
+    return files, deltas
 
 
 def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:

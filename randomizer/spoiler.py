@@ -2,6 +2,7 @@
 from . import RANDO_VERSION
 from .fill import TOKEN, filler_sites
 from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS
+from .songs import SONG_BY_ACTOR
 
 TOKEN_LABEL = 'Gold Skulltula Token'
 
@@ -15,6 +16,7 @@ def _label(drop: str) -> str:
 MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
 TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
                       'overworld': 'Overworld Only', 'all': 'All Tokens'}
+SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations'}
 
 
 def _zone(banc: str) -> str:
@@ -23,7 +25,7 @@ def _zone(banc: str) -> str:
 
 
 def build(settings, placement, chests, loc_map, game_version,
-          skulltulas=(), gs_map=None, cutscenes_not_skipped=None) -> dict:
+          skulltulas=(), gs_map=None, cutscenes_not_skipped=None, songs=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -88,6 +90,11 @@ def build(settings, placement, chests, loc_map, game_version,
     if settings.tokensanity != 'off':
         result['settings']['tokensanity'] = settings.tokensanity
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
+    if settings.shuffle_songs != 'off':
+        result['settings']['shuffle_songs'] = settings.shuffle_songs
+        result['songs'] = [{'location': loc, 'song': actor,
+                            'label': SONG_BY_ACTOR[actor].song}
+                           for loc, actor in sorted((songs or {}).items())]
     if cutscenes_not_skipped is not None and settings.skip_cutscenes:
         result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)
     return result
@@ -118,6 +125,9 @@ def to_text(d: dict) -> str:
     if 'tokensanity' in s:
         lines.append('  Gold Skulltula Tokens (Tokensanity): '
                      f'{TOKENSANITY_LABELS.get(s["tokensanity"], s["tokensanity"])}')
+    if 'shuffle_songs' in s:
+        lines.append('  Shuffle Songs: '
+                     f'{SHUFFLE_SONGS_LABELS.get(s["shuffle_songs"], s["shuffle_songs"])}')
     lines += ['', 'Randomizer version', f'  {d["randomizer_version"]}', '',
              'Game version', f'  {d["game_version"]}', '', 'Key items']
     for k in d['key_items']:
@@ -133,6 +143,9 @@ def to_text(d: dict) -> str:
         loc = r['location'] or 'unmapped'
         lines.append(f'  {r["zone"]} {r["hash"]} [{loc}]: {_label(r["original"])}'
                      f' ({r["reason"]})')
+    if 'songs' in d:
+        lines += ['', 'Songs']
+        lines += [f'  {r["location"]}: {r["label"]}' for r in d['songs']]
     if 'skulltulas' in d:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:
