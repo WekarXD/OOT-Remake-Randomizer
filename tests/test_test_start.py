@@ -6,7 +6,8 @@ from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 from randomizer.formats import byml
-from randomizer.test_start import (ANALYZED_INFO, FOREST_EXIT_FLAGS, HOOK_ENTRY, HOOK_FLAGS,
+from randomizer.test_start import (ANALYZED_INFO, CHILDHOOD_FLAG, ERA_CHANGE,
+                                   FOREST_EXIT_FLAGS, HOOK_ENTRY, HOOK_FLAGS,
                                    HOOK_FLOW, START_POS,
                                    NewStartPos, StartPreset, apply_start, chain_calls,
                                    subflow_closure, with_start_pos, with_subflow_list)
@@ -37,6 +38,36 @@ class ApplyStartTest(unittest.TestCase):
             p = f'Event/EventFlow/{HOOK_FLOW}.bfevfl.zs'
             cls.data = codec.decompress(p, nup.read(p))
         cls.flow = EventFlow(cls.data)
+
+    def _walk(self, preset):
+        new = EventFlow(apply_start(self.data, preset))
+        i = new.entry_points[HOOK_ENTRY]
+        seen = []
+        while i != 0xFFFF:
+            seen.append((new.events[i], new.action_params(i)))
+            i = new.events[i].next
+        return seen
+
+    def test_adult_chain(self):
+        # Mirrors Market_Child_Field_ChildToAdult: flag, era change, then the teleport.
+        preset = StartPreset('DeathMountainCrater_Adult', 'FireBolero', adult=True)
+        seen = self._walk(preset)
+        tail = seen[-3:]
+        self.assertEqual((tail[0][0].action, tail[0][1]['GameDataName'], tail[0][1]['Value']),
+                         ('EventTriggerSetGameDataBool', CHILDHOOD_FLAG, False))
+        self.assertEqual((tail[1][0].kind, tail[1][0].sub_flow, tail[1][0].sub_entry),
+                         (SUBFLOW, *ERA_CHANGE))
+        self.assertEqual(tail[2][0].sub_flow, 'Dm_SY_BancChangeGo')
+        self.assertIn(ERA_CHANGE, chain_calls(preset))
+
+    def test_adult_needs_adult_map(self):
+        with self.assertRaises(ValueError):
+            apply_start(self.data, StartPreset('HyruleField_Child', 'X', adult=True))
+
+    def test_child_chain_unchanged(self):
+        self.assertNotIn(ERA_CHANGE, chain_calls(PRESET))
+        flags = [p.get('GameDataName') for _, p in self._walk(PRESET)]
+        self.assertNotIn(CHILDHOOD_FLAG, flags)
 
     def test_chain_order(self):
         new = EventFlow(apply_start(self.data, PRESET))

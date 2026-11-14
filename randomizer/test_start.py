@@ -36,6 +36,11 @@ FOREST_EXIT_FLAGS = (('HavePlayedEvent.KokiriForest_ArriveLostWood', True),
                      ('HavePlayedEvent.Dm_Kokiri_0155', True),
                      ('HyruleField_ChangeENV', True),
                      ('KokiriForest_Npc_Kokiri_007_Child_Blocker_00', False))
+# Becoming an adult, as the game does when the Master Sword is drawn again
+# (Market_Child_Field_ChildToAdult): swap the equipment, leave the childhood, then
+# change to an *_Adult map.
+ERA_CHANGE = ('ReplaceEquipmentForEraChange', 'ReplaceEquipmentForEraChange')
+CHILDHOOD_FLAG = 'Sequence_IsChildhood'
 ANALYZED_INFO = 'RSDB/GameAnalyzedEventInfo.Product.111.rstbl.byml.zs'
 # Named start positions per map ({banc: {name: {'Rot': [x, y, z], 'Trans': [x, y, z]}}});
 # the teleport's NextStartPos must be one of them.
@@ -61,6 +66,7 @@ class StartPreset:
     # (ChallengeName, StepName) quest steps to progress, in order (e.g. the castle
     # quest must be at Step04 for Zelda's meeting to trigger).
     challenge_steps: tuple[tuple[str, str], ...] = ()
+    adult: bool = False  # arrive as an adult; `banc` must be an *_Adult map
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -77,6 +83,10 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
         for challenge, step in preset.challenge_steps]
     specs += [SubflowSpec('Dm_SY_GetInEvent', 'GetInEvent', {'ActorName': item})
               for item in preset.items]
+    if preset.adult:
+        if not preset.banc.endswith('_Adult'):
+            raise ValueError(f'An adult preset needs an *_Adult map, not {preset.banc!r}.')
+        specs += [_flag(CHILDHOOD_FLAG, False), SubflowSpec(*ERA_CHANGE, {})]
     specs.append(SubflowSpec('Dm_SY_BancChangeGo', 'EntryPoint0', {
         'NextBanc': preset.banc, 'NextStartPos': preset.start_pos, 'BootEventName': '',
         'IsCheckAir': False, 'NextStartPosAir': preset.start_pos}))
