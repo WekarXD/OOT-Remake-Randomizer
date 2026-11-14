@@ -14,7 +14,6 @@ Pending work, most important first within each section.
 
 ## To test in game
 
-- Batch 22 (guide `docs/test-batch-22.md`, mod `TestBatch22`, tool `tools/make_song_batch.py`): the windmill and crater song patches for Song Locations, with the first adult start preset. Song Locations (plan `docs/superpowers/plans/2026-11-14-song-locations.md`, tasks 5-8) waits for it.
 - Bomb Bag outside its chest (guide `docs/test-bomb-bag.md`, seed `Rando_BOMBAS16`): **accepted without an in-game test** (user's call, 2026-11-13). Optional: play it to confirm bombs only after the Goron's Bracelet and that Dodongo's Cavern plays normally without its Bomb Bag event.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.

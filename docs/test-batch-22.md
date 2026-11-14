@@ -35,8 +35,8 @@ Crater:
 Windmill (walk down Death Mountain Trail to Kakariko and enter the windmill):
 
 - [ ] Talk to the man with the box. Does his scene start (he plays the song and you learn it), even though you already own Song of Storms? If not, try playing the ocarina in front of him and note what happens. ______
-- [ ] Does he give you the **Bolero of Fire**? ______
-- [ ] Do both songs work: Storm (for example in the windmill or at a Gossip Stone grotto), Bolero (warps to the crater)? ______
+- [x] Does he give you the **Bolero of Fire**? Yes (attempt 3).
+- [x] Do both songs work: Storm (for example in the windmill or at a Gossip Stone grotto), Bolero (warps to the crater)? Yes (attempt 3).
 
 In general:
 
@@ -48,3 +48,5 @@ In general:
 Attempt 1 (2026-11-14): becoming an adult works (Master Sword included). Sheik appears on arrival at the crater and gives **Song of Storms**, so the crater patch works. The crater could not be left: the warp pad's ledge needs the Hookshot. Rebuilt for attempt 2 with the Hookshot; only the windmill half is left (needs a new game).
 
 Attempt 2 (2026-11-14): the windmill scene **starts** although Song of Storms is owned, so the windmill patch works, and it teaches the Bolero's notes. After you play them back, the game hangs. Cause: the lesson ends with `Dm_SY_Ocarina:LearningOcarinaPlayAuto`, whose switch on the melody just played only has cases for melodies 0–5 (and 12); the warp songs 6–11 have their own entry, `LearningOcarinaPlayAutoForSeek`, used by the Sheik scenes. A melody without its case stops the flow. The song patch now retargets that call when the new song is of the other group (`set_subflow_entry`). With the full skip this never shows (the lessons are dropped), but without it any normal↔warp swap would have hung. Rebuilt for attempt 3.
+
+Attempt 3 (2026-11-14): **works.** The windmill man teaches and gives the Bolero of Fire with Song of Storms already owned, no hang, and both songs work (Storm, and the Bolero warps to the crater). Both patches are confirmed, as is the lesson-end retarget and the adult start preset.
