@@ -69,8 +69,9 @@ input[type="text"], input[type="file"], select { width: 100%; padding: 9px 10px;
   background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; }
 .field-head { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .field-head label { margin: 0; }
-.card h2 + .field-head { margin-top: 0; }
-.field-head + select, .tip-text + select { margin-top: 6px; }
+.card h2 + .field-head, .card h2 + .field > .field-head { margin-top: 0; }
+.field-head + select { margin-top: 6px; }
+.field + .field { margin-top: 4px; }
 .note { color: var(--muted); font-size: .9rem; margin: 10px 0 0; }
 .badge { font-size: .72rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--gold);
   color: var(--gold); }
@@ -91,11 +92,15 @@ input[type="text"], input[type="file"], select { width: 100%; padding: 9px 10px;
 .tip { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border);
   background: var(--panel-2); color: var(--muted); cursor: pointer; line-height: 1; padding: 0; }
 .tip[aria-expanded="true"] { color: var(--gold); border-color: var(--gold); }
-.tip-text { display: none; margin: 8px 0 0; padding: 10px 12px; font-size: .9rem; border-radius: 8px;
-  background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--gold); }
+/* Each option and its help live in a .field; the help floats under the control
+   (it never pushes the page) when the pointer is over the option or ⓘ is tapped. */
+.field { position: relative; }
+.tip-text { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20; margin: 0;
+  padding: 10px 12px; font-size: .9rem; font-weight: normal; border-radius: 8px; background: var(--panel);
+  border: 1px solid var(--border); border-left: 3px solid var(--gold); box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
 .tip-text.open { display: block; }
 @media (hover: hover) {
-  .field-head:has(.tip:hover) + .tip-text { display: block; }
+  .field:hover .tip-text { display: block; }
 }
 
 /* Presets */

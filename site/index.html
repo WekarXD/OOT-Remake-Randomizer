@@ -62,13 +62,19 @@
 
       <div class="card">
         <h2>Options</h2>
-        <div class="field-head">
-          <label class="switch"><input type="checkbox" id="skip-cutscenes"><span class="slider" aria-hidden="true"></span> Skip cutscenes <span class="badge">in development</span></label>
-          <button type="button" class="tip" aria-expanded="false" aria-controls="tip-skip" aria-label="About Skip cutscenes">ⓘ</button>
+        <div class="field">
+          <div class="field-head">
+            <label class="switch"><input type="checkbox" id="skip-cutscenes"><span class="slider" aria-hidden="true"></span> Skip cutscenes <span class="badge">in development</span></label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-skip" aria-label="About Skip cutscenes">ⓘ</button>
+          </div>
+          <p class="tip-text" id="tip-skip">Childhood cutscenes and forced conversations are skipped (items and songs are still given). From the Temple of Time on, scenes are only shortened. Boss intros and defeats are kept.</p>
         </div>
-        <p class="tip-text" id="tip-skip">Childhood cutscenes and forced conversations are skipped (items and songs are still given). From the Temple of Time on, scenes are only shortened. Boss intros and defeats are kept.</p>
-        <div class="field-head">
-          <label class="switch"><input type="checkbox" id="spoiler" checked><span class="slider" aria-hidden="true"></span> Include the spoiler log in the zip</label>
+        <div class="field">
+          <div class="field-head">
+            <label class="switch"><input type="checkbox" id="spoiler" checked><span class="slider" aria-hidden="true"></span> Include the spoiler log in the zip</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-spoiler" aria-label="About the spoiler log">ⓘ</button>
+          </div>
+          <p class="tip-text" id="tip-spoiler">Adds <code>spoiler.txt</code> to the mod folder: the list of where every item went. Leave it off if you don't want to be tempted.</p>
         </div>
       </div>
     </section>
@@ -76,38 +82,48 @@
     <section role="tabpanel" id="panel-items" aria-labelledby="tab-items" hidden>
       <div class="card">
         <h2>Key items</h2>
-        <label for="mode">Where key items go</label>
-        <select id="mode">
-          <option value="vanilla">Vanilla</option>
-          <option value="any_chest" selected>Any chest</option>
-        </select>
+        <div class="field">
+          <div class="field-head">
+            <label for="mode">Where key items go</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-mode" aria-label="About key items">ⓘ</button>
+          </div>
+          <select id="mode">
+            <option value="vanilla">Vanilla</option>
+            <option value="any_chest" selected>Any chest</option>
+          </select>
+          <p class="tip-text" id="tip-mode">Vanilla: key items stay where they are in the original game. Any chest: key items are shuffled among chests (and among the Skulltulas or song spots you turn on in Shuffle).</p>
+        </div>
         <p class="note">The Market Treasure Chest Game chests and those holding keys, maps or compasses do not receive key items in this version.</p>
       </div>
 
       <div class="card">
         <h2>Shuffle</h2>
-        <div class="field-head">
-          <label for="tokensanity">Gold Skulltula Tokens (Tokensanity)</label>
-          <button type="button" class="tip" aria-expanded="false" aria-controls="tip-tokens" aria-label="About Tokensanity">ⓘ</button>
+        <div class="field">
+          <div class="field-head">
+            <label for="tokensanity">Gold Skulltula Tokens (Tokensanity)</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-tokens" aria-label="About Tokensanity">ⓘ</button>
+          </div>
+          <select id="tokensanity">
+            <option value="off" selected>Off</option>
+            <option value="dungeons">Dungeons Only</option>
+            <option value="overworld">Overworld Only</option>
+            <option value="all">All Tokens</option>
+          </select>
+          <p class="tip-text" id="tip-tokens">The selected Gold Skulltulas can drop any item, and their tokens are distributed among chests and other Skulltulas.</p>
         </div>
-        <p class="tip-text" id="tip-tokens">The selected Gold Skulltulas can drop any item, and their tokens are distributed among chests and other Skulltulas.</p>
-        <select id="tokensanity">
-          <option value="off" selected>Off</option>
-          <option value="dungeons">Dungeons Only</option>
-          <option value="overworld">Overworld Only</option>
-          <option value="all">All Tokens</option>
-        </select>
 
-        <div class="field-head">
-          <label for="shuffle_songs">Shuffle Songs</label>
-          <button type="button" class="tip" aria-expanded="false" aria-controls="tip-songs" aria-label="About Shuffle Songs">ⓘ</button>
+        <div class="field">
+          <div class="field-head">
+            <label for="shuffle_songs">Shuffle Songs</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-songs" aria-label="About Shuffle Songs">ⓘ</button>
+          </div>
+          <select id="shuffle_songs">
+            <option value="off" selected>Off</option>
+            <option value="song_locations">Song Locations</option>
+            <option value="anywhere">Anywhere</option>
+          </select>
+          <p class="tip-text" id="tip-songs">Song Locations: the 12 songs are shuffled among the places that teach a song (Impa, Saria, Malon, the Royal Family's Tomb, the Ocarina of Time, the windmill and Sheik). The scenes still name their original song. Anywhere: songs can be in any chest or song scene (never on a Skulltula), and the song scenes can give any item except Gold Skulltula tokens; needs key items shuffled.</p>
         </div>
-        <p class="tip-text" id="tip-songs">Song Locations: the 12 songs are shuffled among the places that teach a song (Impa, Saria, Malon, the Royal Family's Tomb, the Ocarina of Time, the windmill and Sheik). The scenes still name their original song. Anywhere: songs can be in any chest or song scene (never on a Skulltula), and the song scenes can give any item except Gold Skulltula tokens; needs key items shuffled.</p>
-        <select id="shuffle_songs">
-          <option value="off" selected>Off</option>
-          <option value="song_locations">Song Locations</option>
-          <option value="anywhere">Anywhere</option>
-        </select>
       </div>
 
       <div class="card">
@@ -120,11 +136,13 @@
     <section role="tabpanel" id="panel-logic" aria-labelledby="tab-logic" hidden>
       <div class="card">
         <h2>Logic</h2>
-        <div class="field-head">
-          <label class="switch disabled"><input type="checkbox" checked disabled><span class="slider" aria-hidden="true"></span> No glitches</label>
-          <button type="button" class="tip" aria-expanded="false" aria-controls="tip-logic" aria-label="About the logic">ⓘ</button>
+        <div class="field">
+          <div class="field-head">
+            <label class="switch disabled"><input type="checkbox" checked disabled><span class="slider" aria-hidden="true"></span> No glitches</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-logic" aria-label="About the logic">ⓘ</button>
+          </div>
+          <p class="tip-text" id="tip-logic">Every generated seed is beatable with OoTR's glitchless logic, plus a few rules where the remake is stricter.</p>
         </div>
-        <p class="tip-text" id="tip-logic">Every generated seed is beatable with OoTR's glitchless logic, plus a few rules where the remake is stricter.</p>
       </div>
     </section>
 
