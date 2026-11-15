@@ -49,4 +49,18 @@ Attempt 5 (2026-11-14): **26d gives Farore's Wind**, so the patch works on Din's
 
 Attempt 6 (2026-11-14): **26e gives nothing** either. With the full skip and Din's fountain untouched, the fairy takes the 25 rupees and gives no Din's Fire. So the full skip's rewrite of Din (copies per call site) loses the grant, also in ordinary seeds; the batch's patch is fine (26d). Fixed in the full skip: Din's fountain is in `NOT_SKIPPED` (`tools/build_full_skip_list.py`) and `PLAY_WHOLE` (`tools/build_cutscene_list.py`, so the old trimming does not take it over either), and both JSON lists were regenerated. The scene now plays whole. 26a was rebuilt: its Din flow is byte for byte 26d's.
 
-Attempt 7 (2026-11-15): **26a works.** With the full skip on and 0 rupees, Din's fairy gives Farore's Wind. Back at the fountain she only heals ("Necesitas recuperarte..."). Cosmetic: the question still names the price ("25 rupias", the `GreatFairy_Price1` tag in `Dm_FairyFountain_0009_01`), although nothing is charged. The magic bar stays **double** after Farore's Wind (`MPMax` 24 does not lower the 48 of `MPDouble`), so the order of magic items does not matter. Not reported yet: 26c.
+Attempt 7 (2026-11-15): **26a works.** With the full skip on and 0 rupees, Din's fairy gives Farore's Wind. Back at the fountain she only heals ("Necesitas recuperarte..."). Cosmetic: the question still names the price ("25 rupias", the `GreatFairy_Price1` tag in `Dm_FairyFountain_0009_01`), although nothing is charged. The magic bar stays **double** after Farore's Wind (`MPMax` 24 does not lower the 48 of `MPDouble`), so the order of magic items does not matter.
+
+Attempt 7, 26c (2026-11-15): **works.** At the crater fountain (Wisdom, adult) Navi does not stop Link, although he has neither Din's Fire nor magic. The fairy gives Nayru's Love, the magic bar appears, and back at the fountain she only heals. The generic grant entry replaces the special `GetInEvent_GreatFairyWisdom` without trouble.
+
+## Conclusion
+
+Every patch works in game:
+
+- another item from a fountain, with the special grant entries pointed at the generic one;
+- free fairies;
+- revisits that only heal;
+- no Din gate;
+- no spin guide.
+
+Every magic item brings the meter, and a 24 one keeps an earlier double bar. Din's fountain plays whole: the full skip left it because its rewrite lost her item. Ready for the design of the Great Fairy shuffle.
