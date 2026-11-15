@@ -133,12 +133,16 @@ class RealTests(unittest.TestCase):
                 r = generate(NUP_PATH, out, Settings(seed='off'))
             fwf.assert_not_called()
             old.assert_not_called()
-            self.assertIsNone(wm.call_args.args[4])  # no extra files: as before
+            # The only extra files are the Great Fairy flows (key items shuffled).
+            from randomizer.fairies import FOUNTAINS, TRIFORCE_FLOW
+            fairy_flows = {f'Event/EventFlow/{n}.bfevfl.zs'
+                           for n in [f.flow for f in FOUNTAINS] + [TRIFORCE_FLOW]}
+            self.assertEqual(set(wm.call_args.args[4]), fairy_flows)
             text = Path(r.spoiler_txt).read_text(encoding='utf-8')
             self.assertNotIn('Cutscenes not skipped', text)
             data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
             self.assertNotIn('cutscenes_not_skipped', data)
-            self.assertFalse(any(f.startswith('Event/') for f in r.changed_files))
+            self.assertEqual({f for f in r.changed_files if f.startswith('Event/')}, fairy_flows)
 
     def test_full_skip_option_on(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
@@ -520,6 +524,53 @@ class RealTests(unittest.TestCase):
             self.assertIn('Shuffle Songs: Dungeon Rewards', text)
             self.assertIn('Boss hearts', text)
 
+    def test_great_fairies_in_mod(self):
+        # Design 2026-11-15-great-fairies: with key items shuffled each fountain gives
+        # what the spoiler says, with and without the full skip.
+        from randomizer.fairies import FOUNTAIN_BY_LOCATION, TRIFORCE_FLOW
+        for skip in (False, True):
+            with self.subTest(skip=skip), tempfile.TemporaryDirectory() as out:
+                res = generate(NUP_PATH, out, Settings(seed='hadas', skip_cutscenes=skip))
+                data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+                fairies = {r['location']: r['item'] for r in data['great_fairies']}
+                self.assertEqual(set(fairies), set(FOUNTAIN_BY_LOCATION))
+                self.assertIn('\nGreat Fairies\n', Path(res.spoiler_txt).read_text(encoding='utf-8'))
+                self.assertFalse([l for l in data.get('cutscenes_not_skipped', [])
+                                  if 'FairyFountain' in l or 'TriForcePoint' in l])
+                root = Path(res.mod_dir) / 'romfs'
+                with NupArchive(NUP_PATH) as nup:
+                    codec = ZsCodec.from_archive(nup)
+                    rel = f'Event/EventFlow/{TRIFORCE_FLOW}.bfevfl.zs'
+                    self.assertTrue((root / rel).exists())
+                    for loc, f in FOUNTAIN_BY_LOCATION.items():
+                        rel = f'Event/EventFlow/{f.flow}.bfevfl.zs'
+                        self.assertIn(rel, res.changed_files)
+                        flow = EventFlow(codec.decompress(rel, (root / rel).read_bytes()))
+                        given = {flow.action_params(i)['ActorName']
+                                 for i, ev in enumerate(flow.events)
+                                 if ev.kind == SUBFLOW and ev.sub_flow == 'Dm_SY_GetInEvent'
+                                 and 'ActorName' in flow.action_params(i)}
+                        self.assertIn(fairies[loc], given, loc)
+                    rstb = Rstb.load(codec.decompress(RSTB_PATH, (root / RSTB_PATH).read_bytes()))
+                    for f in FOUNTAIN_BY_LOCATION.values():
+                        rel = f'Event/EventFlow/{f.flow}.bfevfl'
+                        size = len(codec.decompress(rel + '.zs', (root / (rel + '.zs')).read_bytes()))
+                        self.assertGreaterEqual(rstb.get(rel), size, rel)
+
+    def test_great_fairies_not_with_vanilla_keys(self):
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla'))
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            self.assertNotIn('great_fairies', data)
+
+    def test_gs_forbidden_extra(self):
+        from randomizer.generate import _gs_forbidden
+        with NupArchive(NUP_PATH) as nup:
+            game = GameData(nup)
+            out = _gs_forbidden(game, game.chests(), locations.load_map(),
+                                extra={'Item_NoSuchActor_Rando'})
+        self.assertIn('Item_NoSuchActor_Rando', out)
+
     def test_wrapper_error_becomes_generation_error(self):
         with tempfile.TemporaryDirectory() as out:
             with mock.patch('randomizer.patch.build_wrapper_files',
@@ -655,6 +706,25 @@ class SpoilerTextTest(unittest.TestCase):
         d['cutscenes_not_skipped'] = []
         self.assertIn('\nCutscenes not skipped\n  none\n', spoiler.to_text(d))
         self.assertNotIn('Cutscenes not skipped', spoiler.to_text(self._data('off')))
+
+    def test_great_fairies_section(self):
+        chests = load_chests_fixture(CHESTS_FIXTURE)
+        placement = {c.hash: c.drop for c in chests}
+        fairies = {'HC Great Fairy Reward': 'Item_Hookshot',
+                   'DMT Great Fairy Reward': 'TBox_Rupee_Red'}
+        d = spoiler.build(Settings(seed='x'), placement, chests, locations.load_map(),
+                          '1.3.1', fairies=fairies)
+        self.assertEqual(d['great_fairies'],
+                         [{'location': 'DMT Great Fairy Reward', 'item': 'TBox_Rupee_Red',
+                           'label': spoiler._label('TBox_Rupee_Red')},
+                          {'location': 'HC Great Fairy Reward', 'item': 'Item_Hookshot',
+                           'label': 'Hookshot'}])
+        rows = [r for r in d['key_items'] if r['location'] == 'HC Great Fairy Reward']
+        self.assertEqual([(r['item'], r['zone']) for r in rows],
+                         [('Item_Hookshot', 'Great Fairy')])
+        text = spoiler.to_text(d)
+        self.assertIn('\nGreat Fairies\n  DMT Great Fairy Reward: ', text)
+        self.assertNotIn('Great Fairies', spoiler.to_text(self._data('off')))
 
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))

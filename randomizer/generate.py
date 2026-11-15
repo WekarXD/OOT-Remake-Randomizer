@@ -23,6 +23,7 @@ FULL_SKIP_PHASE = 1
 from .game import GameData
 from . import wrappers
 from .songs import song_flow_patches
+from .fairies import FAIRY_REWARDS, fairy_flow_patches
 from .logic.world import World, load_vanilla_settings
 from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError, TITLE_ID
 
@@ -91,7 +92,10 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if settings.tokensanity != 'off':
                     skulltulas = game.skulltulas()
                     gs_map = locations.load_gs_map()
-                    gs_forbidden = _gs_forbidden(game, chests, loc_map)
+                    # The Great Fairy rewards are in no chest: check them too.
+                    gs_forbidden = _gs_forbidden(
+                        game, chests, loc_map,
+                        FAIRY_REWARDS if settings.key_items_mode != 'vanilla' else ())
                     if settings.shuffle_songs == 'anywhere':
                         # No Skulltula can drop a song (no wrapper or world actor).
                         gs_forbidden |= frozenset(VANILLA_SONGS.values())
@@ -113,9 +117,19 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                             f'Could not prepare the cutscenes: {e}') from e
                 if placed.songs != VANILLA_SONGS:
                     try:
-                        extras, sizes = _with_song_flows(game, placed.songs, extras, sizes)
+                        extras, sizes = _with_flow_patches(
+                            game, lambda read: song_flow_patches(read, placed.songs),
+                            extras, sizes)
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(f'Could not prepare the songs: {e}') from e
+                if placed.fairies:
+                    try:
+                        extras, sizes = _with_flow_patches(
+                            game, lambda read: fairy_flow_patches(read, placed.fairies),
+                            extras, sizes)
+                    except (ValueError, BfevflError) as e:
+                        raise GenerationError(
+                            f'Could not prepare the Great Fairies: {e}') from e
                 try:
                     swaps = ({h.hash: (h.banc, placed.hearts[h.location])
                               for h in game.boss_hearts()} if placed.hearts else None)
@@ -134,7 +148,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped,
-                                         placed.songs, placed.hearts)
+                                         placed.songs, placed.hearts, placed.fairies)
                     # '\n' line endings everywhere, so the spoiler log is the same
                     # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
@@ -171,13 +185,13 @@ def _not_skipped(report: list[str]) -> list[str]:
 FLOW_DIR, FLOW_EXT = 'Event/EventFlow/', '.bfevfl.zs'
 
 
-def _with_song_flows(game: GameData, songs: dict[str, str],
-                     extras: dict[str, bytes] | None,
-                     sizes: dict[str, int] | None) -> tuple[dict[str, bytes], dict[str, int]]:
+def _with_flow_patches(game: GameData, patches,
+                       extras: dict[str, bytes] | None,
+                       sizes: dict[str, int] | None) -> tuple[dict[str, bytes], dict[str, int]]:
     """`extras` (romfs path -> compressed bytes) and `sizes` (romfs path -> size change
-    against the game's file) with the song scenes patched for `songs` (OoTR location ->
-    song actor). A flow the full skip already rewrote is patched on top of the skip's
-    version, which it replaces."""
+    against the game's file) with the flows `patches(read)` returns ({flow: bytes}; the
+    song scenes, the Great Fairy fountains). A flow the full skip already rewrote is
+    patched on top of the skip's version, which it replaces."""
     files, deltas = dict(extras or {}), dict(sizes or {})
 
     def path(name: str) -> str:
@@ -188,7 +202,7 @@ def _with_song_flows(game: GameData, songs: dict[str, str],
         raw = files[p] if p in files else game.nup.read(p)
         return game.codec.decompress(p, raw)
 
-    for name, data in song_flow_patches(read, songs).items():
+    for name, data in patches(read).items():
         p = path(name)
         files[p] = game.codec.compress(p, data)
         grow = len(data) - len(game.codec.decompress(p, game.nup.read(p)))
@@ -198,12 +212,13 @@ def _with_song_flows(game: GameData, songs: dict[str, str],
     return files, deltas
 
 
-def _gs_forbidden(game, chests, loc_map) -> frozenset[str]:
-    """Contents of eligible chests that no Skulltula can drop: no floating
-    wrapper can be built for them and the game has no world actor for them."""
+def _gs_forbidden(game, chests, loc_map, extra=()) -> frozenset[str]:
+    """Contents of eligible chests, plus `extra` (moving items that are in no chest,
+    such as the Great Fairy rewards), that no Skulltula can drop: no floating wrapper
+    can be built for them and the game has no world actor for them."""
     original = {c.hash: c.drop for c in chests}
     rows = wrappers.pouch_rows(game)
-    contents = {original[h] for h in _eligible(chests, loc_map, original)}
+    contents = {original[h] for h in _eligible(chests, loc_map, original)} | set(extra)
     wrappable = wrappers.wrap_sources(game, contents)
     return frozenset(c for c in sorted(contents)
                      if c not in wrappable and wrappers.vanilla_drop(c, rows) is None)

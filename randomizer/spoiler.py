@@ -29,7 +29,7 @@ def _zone(banc: str) -> str:
 
 def build(settings, placement, chests, loc_map, game_version,
           skulltulas=(), gs_map=None, cutscenes_not_skipped=None, songs=None,
-          hearts=None) -> dict:
+          hearts=None, fairies=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -88,6 +88,11 @@ def build(settings, placement, chests, loc_map, game_version,
             if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
                 key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
                                   'zone': zone, 'hash': ''})
+    # Great Fairy fountains (key items shuffled) are item locations too.
+    for loc, actor in sorted((fairies or {}).items()):
+        if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
+            key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
+                              'zone': 'Great Fairy', 'hash': ''})
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
     result = {
         'seed': settings.seed,
@@ -113,6 +118,9 @@ def build(settings, placement, chests, loc_map, game_version,
     if hearts:
         result['boss_hearts'] = [{'location': loc, 'item': a, 'label': _label(a)}
                                  for loc, a in sorted(hearts.items())]
+    if fairies:
+        result['great_fairies'] = [{'location': loc, 'item': a, 'label': _label(a)}
+                                   for loc, a in sorted(fairies.items())]
     if cutscenes_not_skipped is not None and settings.skip_cutscenes:
         result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)
     return result
@@ -167,6 +175,9 @@ def to_text(d: dict) -> str:
     if 'boss_hearts' in d:
         lines += ['', 'Boss hearts']
         lines += [f'  {r["location"]}: {r["label"]}' for r in d['boss_hearts']]
+    if 'great_fairies' in d:
+        lines += ['', 'Great Fairies']
+        lines += [f'  {r["location"]}: {r["label"]}' for r in d['great_fairies']]
     if 'skulltulas' in d:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:
