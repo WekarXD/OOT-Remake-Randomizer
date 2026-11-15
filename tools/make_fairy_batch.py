@@ -31,16 +31,12 @@ from randomizer.full_skip import files_with_fallback  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
-from randomizer.formats.bfevfl import (SUBFLOW, SWITCH, EventFlow, patch_pointers,  # noqa: E402
-                                       set_string_param, set_subflow_entry)
-from randomizer.songs import _rename_flag, bypass  # noqa: E402
+from randomizer import fairies  # noqa: E402
+from randomizer.fairies import make_free, patch_triforce  # noqa: E402
 from randomizer.test_start import NewStartPos, StartPreset  # noqa: E402
 
-GRANT_FLOW = 'Dm_SY_GetInEvent'
-GENERIC_GRANT = 'GetInEvent_Demo_NotLookatObjectEntry'
-TRIFORCE_FLOW = 'TriForcePoint'
-DIN_GATE = 'IsGet.Item_DinFire'
-BOOL_QUERY = 'EventQueryIsGameDataBool'
+TRIFORCE_FLOW = fairies.TRIFORCE_FLOW
+FOUNTAIN_BY_NAME = {f.name: f for f in fairies.FOUNTAINS}
 # fountain -> (vanilla reward, map, Triforce point, fountain basin centre)
 FOUNTAINS = {
     # The remake swaps these two against the N64: Din's fountain is at the top of Death
@@ -72,77 +68,8 @@ VARIANTS = {
 NO_SKIP = {'26d'}
 
 
-def _switch_case_targets(flow: EventFlow, index: int) -> dict[int, int]:
-    """{case value: target event} of switch `index`."""
-    ev = flow.events[index]
-    cases_p = flow._u64(flow._events_p + 0x30 * index + 0x18)
-    return {flow._u32(cases_p + 8 * k): ev.cases[k] for k in range(len(ev.cases))}
-
-
-def _retarget(data: bytes, old: int, new: int) -> bytes:
-    """Every pointer to event `old` goes to `new`."""
-    flow = EventFlow(data)
-    return patch_pointers(data, {off: new for off in flow.link_slots.values()
-                                 if flow._u16(off) == old})
-
-
-def _one(hits: list[int], what: str) -> int:
-    if len(hits) != 1:
-        raise SystemExit(f'FAIL: {len(hits)} {what}, expected one')
-    return hits[0]
-
-
-def _some(hits: list[int], what: str) -> list[int]:
-    """`hits`, which must not be empty (the full skip copies some events: Din's grant
-    is both at 308 and in the shortened path at 615)."""
-    if not hits:
-        raise SystemExit(f'FAIL: no {what}')
-    return hits
-
-
 def patch_fountain(data: bytes, name: str, item: str) -> bytes:
-    reward = FOUNTAINS[name][0]
-    flow = EventFlow(data)
-    for grant in _some([i for i, ev in enumerate(flow.events)
-                        if ev.kind == SUBFLOW and ev.sub_flow == GRANT_FLOW
-                        and flow.action_params(i).get('ActorName') == reward],
-                       f'{name} grants'):
-        data = set_string_param(data, grant, 'ActorName', item)
-        if item != reward and flow.events[grant].sub_entry != GENERIC_GRANT:
-            data = set_subflow_entry(data, grant, GENERIC_GRANT)
-    if item != reward:  # the Power fairy's spin attack guide
-        guides = [i for i, ev in enumerate(flow.events)
-                  if ev.kind == SUBFLOW and ev.sub_flow == 'ActionGuide']
-        data = bypass(data, guides)
-    data, n = _rename_flag(data, BOOL_QUERY, 'IsGet.' + reward,
-                           'HavePlayedEvent.Dm_FairyFountain_' + name)
-    _some(list(range(n)), f'own-reward checks in {name}')
-    return make_free(data)
-
-
-def make_free(data: bytes) -> bytes:
-    """The flow without charging: every pay question (`TalkChoice2`) goes to its "yes"
-    case, every rupee check (`HasRuppe`, including the copies the full skip inlines,
-    which skip the question) to its "enough" case, and every payment (`IncreaseRupee`,
-    also inlined from `Pay`) is skipped. Batch 26 attempt 1 patched only the question
-    (the skip's direct path still checked the rupees); attempt 2 only the checks ("No"
-    still led to DontPay1, whose line also says Link has too few rupees)."""
-    flow = EventFlow(data)
-    for check in [i for i, ev in enumerate(flow.events)
-                  if ev.query in ('EventQueryTalkChoice2', 'EventQueryHasRuppe')]:
-        data = _retarget(data, check, _switch_case_targets(EventFlow(data), check)[0])
-    flow = EventFlow(data)
-    return bypass(data, [i for i, ev in enumerate(flow.events)
-                         if ev.action == 'EventTriggerIncreaseRupee'])
-
-
-def patch_triforce(data: bytes) -> bytes:
-    """TriForcePoint summons every fairy without Din's Fire."""
-    flow = EventFlow(data)
-    gate = _one([i for i, ev in enumerate(flow.events)
-                 if ev.kind == SWITCH and ev.query == BOOL_QUERY and len(ev.cases) == 2
-                 and flow.action_params(i).get('GameDataName') == DIN_GATE], 'Din gates')
-    return _retarget(data, gate, _switch_case_targets(flow, gate)[0])
+    return fairies.patch_fountain(data, FOUNTAIN_BY_NAME[name], item)
 
 
 def _preset(fountain: str, extra: tuple[str, ...], adult: bool, rupees: int) -> StartPreset:
