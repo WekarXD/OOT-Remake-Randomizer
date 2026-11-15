@@ -132,7 +132,7 @@ A seed with "Any chest" and the skip on. Its guide lists, from the spoiler, what
 ## Decisions taken (mine, for review)
 
 1. The fairies are free (OoTR). The price is in the TODO.
-2. Fountains never get tokens, `Item_BulletBag_Small` or `TBox_DekuSeedBundle`; every other item is allowed.
+2. Fountains never get tokens, `Item_BulletBag_Small`, `TBox_DekuSeedBundle` or `Item_ScrubBusinessSeed` (Deku seeds), nor the Bow, the Slingshot or the Bomb Bag. The final review pointed out that `GetInEvent` handed over the Slingshot without ammo (batch 25). Every other item is allowed.
 3. `Magic_Meter` is satisfied by any magic item, so Din's Fire, Farore's Wind and Nayru's Love bring their own meter.
 4. All six fountains are patched whenever the rewards are shuffled, including one that keeps its own reward.
 5. No access rule: OoTR's regions plus the removed gate and price match the remake.

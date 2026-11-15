@@ -68,9 +68,10 @@ What each fountain reward really does, and where the magic meter comes from, is 
 
 ## Next
 
-1. Confirm in game what each reward gives, and what gates each fountain (test batch 26, a teleport next to each fountain).
-2. Logic rules:
-   - the fountain order;
-   - the rupee prices against the wallet;
-   - the magic meter as the remake gives it.
-3. Patch each fountain's `IsGet.<reward>` reads to `HavePlayedEvent`-style checks, as was done for the windmill.
+Done:
+
+- test batch 26 (`docs/test-batch-26.md`);
+- the design (`docs/superpowers/specs/2026-11-15-great-fairies-design.md`);
+- the implementation (`docs/superpowers/plans/2026-11-15-great-fairies.md`).
+
+The acceptance seed `HADAS1` is in `docs/test-great-fairies.md`.

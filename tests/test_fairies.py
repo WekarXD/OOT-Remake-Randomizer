@@ -59,6 +59,15 @@ class FairyTableTest(unittest.TestCase):
                 self.assertEqual(items.KEY_ITEM_HOME[f.reward], f.location)
         self.assertEqual(fairies.FAIRY_REWARDS, frozenset(f.reward for f in fairies.FOUNTAINS))
 
+    def test_fountains_never_give_unproven_containers(self):
+        # Final review: GetInEvent handed over the Slingshot without its ammo (batch 25,
+        # attempt 1), so a ranged weapon or bag from a fountain could be useless while the
+        # logic counts it; and Deku seeds are the family that hung GetInEvent (batch 25).
+        self.assertLessEqual({'Item_Range_Bow', 'Item_Range_SlingShot', 'Item_BombBag_Small',
+                              'Item_ScrubBusinessSeed', 'Obj_Token_Gold',
+                              'Item_BulletBag_Small', 'TBox_DekuSeedBundle'},
+                             _fairies().FOUNTAIN_FORBIDDEN)
+
     def test_empty_placement_changes_nothing(self):
         self.assertEqual(_fairies().fairy_flow_patches(lambda name: b'', {}), {})
 

@@ -33,6 +33,7 @@ To play it following a checklist, see `docs/acceptance.md`.
 ## v1 limitations
 
 - **9 key items are moved:** Kokiri Sword, Slingshot, Bow, Megaton Hammer, Lens of Truth, Ice Arrows, Golden Gauntlets, Longshot and Bomb Bag.
+- **The six Great Fairy rewards are moved too** (Magic Meter, Double Magic, Din's Fire, Farore's Wind, Nayru's Love, Double Defense), as OoTR does, and each fountain can give any item except a Gold Skulltula token. The fairies are free (the remake charges rupees) and only heal on a second visit. In the remake the castle fairy gives the magic and the Death Mountain fairy gives Din's Fire, the reverse of the N64. Any magic item brings the magic meter, so the logic accepts any of them where OoTR asks for the meter.
 - **6 stay in place:** Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield, because their chests carry story events.
 - Bombs and Bombchus cannot be used until you have the Goron's Bracelet (remake behaviour); the logic accounts for it. Seeds generated before the Bomb Bag was freed place items differently.
 - 104 of the 203 chests are mapped to OoTR locations and can hold anything. Another 61 have no OoTR equivalent (most are new in the remake) and take part in the fill with minor items only. The remaining 38 keep their original contents: small keys, the remake-only dream area, and a few event or shop chests.

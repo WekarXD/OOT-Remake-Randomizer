@@ -29,9 +29,15 @@ DIN_GATE = 'IsGet.Item_DinFire'
 BOOL_QUERY = 'EventQueryIsGameDataBool'
 PAY_QUERIES = ('EventQueryTalkChoice2', 'EventQueryHasRuppe')
 PAYMENT = 'EventTriggerIncreaseRupee'
-# What a fountain never gives: a token is untested from a GetInEvent grant (as from a
-# song scene), and these two hang GetInEvent (batch 25). See docs/TODO.md.
-FOUNTAIN_FORBIDDEN = frozenset({'Obj_Token_Gold', 'Item_BulletBag_Small', 'TBox_DekuSeedBundle'})
+# What a fountain never gives, until a test batch proves it (docs/TODO.md):
+# - a token: untested from a GetInEvent grant (as from a song scene);
+# - Item_BulletBag_Small, TBox_DekuSeedBundle: they hang GetInEvent (batch 25), and
+#   Item_ScrubBusinessSeed is Deku seeds too (final review);
+# - the Bow, the Slingshot and the Bomb Bag: GetInEvent handed over the Slingshot
+#   without its ammo (batch 25), and the logic would count a useless weapon (review).
+FOUNTAIN_FORBIDDEN = frozenset({
+    'Obj_Token_Gold', 'Item_BulletBag_Small', 'TBox_DekuSeedBundle', 'Item_ScrubBusinessSeed',
+    'Item_Range_Bow', 'Item_Range_SlingShot', 'Item_BombBag_Small'})
 
 
 class FairyPatchError(ValueError):
