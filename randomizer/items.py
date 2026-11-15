@@ -17,6 +17,14 @@ KEY_ITEMS: dict[str, str] = {
     'Item_Shield_Mirror': 'Mirror Shield',
     'Item_Arrow_Ice': 'Ice Arrows',
     'Item_BombBag_Small': 'Bomb Bag',
+    # Great Fairy rewards (design 2026-11-15-great-fairies). Both magic blessings are
+    # OoTR's progressive Magic Meter; their order does not matter (batch 26a).
+    'Item_FairyBless_MP': 'Magic Meter',
+    'Item_FairyBless_MPDouble': 'Magic Meter',
+    'Item_DinFire': 'Dins Fire',
+    'Item_FaroreWind': 'Farores Wind',
+    'Item_NayruLove': 'Nayrus Love',
+    'Item_FairyBless_DefenseDouble': 'Double Defense',
 }
 
 # The logic needs these items to progress: excluding them never gives a
@@ -48,6 +56,12 @@ LABELS: dict[str, str] = {
     'Item_Shield_Mirror': 'Mirror Shield',
     'Item_Arrow_Ice': 'Ice Arrows',
     'Item_BombBag_Small': 'Bomb Bag',
+    'Item_FairyBless_MP': 'Magic Meter',
+    'Item_FairyBless_MPDouble': 'Double Magic',
+    'Item_DinFire': "Din's Fire",
+    'Item_FaroreWind': "Farore's Wind",
+    'Item_NayruLove': "Nayru's Love",
+    'Item_FairyBless_DefenseDouble': 'Double Defense',
 }
 
 # Remake actor -> vanilla OoTR location where that item is.
@@ -67,6 +81,14 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Item_Shield_Mirror': 'Spirit Temple Mirror Shield Chest',
     'Item_Arrow_Ice': 'Gerudo Training Ground Maze Path Final Chest',
     'Item_BombBag_Small': 'Dodongos Cavern Bomb Bag Chest',
+    # The remake swaps the castle's and the mountain's rewards against the N64
+    # (each fountain flow's camera warp; batch 26).
+    'Item_FairyBless_MP': 'HC Great Fairy Reward',
+    'Item_DinFire': 'DMT Great Fairy Reward',
+    'Item_FairyBless_MPDouble': 'DMC Great Fairy Reward',
+    'Item_FaroreWind': 'ZF Great Fairy Reward',
+    'Item_NayruLove': 'Colossus Great Fairy Reward',
+    'Item_FairyBless_DefenseDouble': 'OGC Great Fairy Reward',
 }
 
 # Dungeon items (and minigame keys): always stay vanilla.

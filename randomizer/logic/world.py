@@ -79,6 +79,9 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
 # named as a string so the helper does not expand itself.
 REMAKE_HELPERS: dict[str, str] = {
     'Bomb_Bag': "'Bomb Bag' and Progressive_Strength_Upgrade",
+    # Batch 26: Din's Fire, Farore's Wind, Nayru's Love and both magic blessings each
+    # bring the meter (PouchActorInfo MPMaxUP), so any of them is OoTR's Magic_Meter.
+    'Magic_Meter': "'Magic Meter' or Dins_Fire or Farores_Wind or Nayrus_Love",
 }
 
 

@@ -229,6 +229,32 @@ class BombBagTest(unittest.TestCase):
         for text in texts:
             self.assertNotIn('(Bomb_Bag,', text.replace(' ', ''))
 
+    def test_magic_meter_from_any_magic_item(self):
+        # Batch 26: every spell and fairy magic reward brings the meter in the remake
+        # (PouchActorInfo MPMaxUP), so OoTR's Magic_Meter accepts any of them.
+        compiler = self._compiler()
+        for text in ('Magic_Meter', 'can_use(Lens_of_Truth)'):
+            fn = compiler.compile(text)
+            for actor in ('Item_DinFire', 'Item_FaroreWind', 'Item_NayruLove',
+                          'Item_FairyBless_MP', 'Item_FairyBless_MPDouble'):
+                with self.subTest(rule=text, item=actor):
+                    s = State()
+                    s.collect(actor)
+                    s.collect('Item_GlassTruth')
+                    self.assertTrue(fn(s, 'child'))
+            s = State()
+            s.collect('Item_GlassTruth')
+            self.assertFalse(fn(s, 'child'))
+
+    def test_vanilla_fixed_has_remake_fairy_rewards(self):
+        # The remake swaps two rewards against the N64 (batch 26): the castle fairy
+        # gives the magic, the mountain one Din's Fire.
+        fixed = _vanilla_world().vanilla_fixed()
+        self.assertEqual(fixed['HC Great Fairy Reward'], 'Item_FairyBless_MP')
+        self.assertEqual(fixed['DMT Great Fairy Reward'], 'Item_DinFire')
+        self.assertEqual(fixed['DMC Great Fairy Reward'], 'Item_FairyBless_MPDouble')
+        self.assertEqual(fixed['OGC Great Fairy Reward'], 'Item_FairyBless_DefenseDouble')
+
     def test_early_bag_needs_bracelet(self):
         # Bag in Mido's house: a bomb grotto stays out of reach until
         # Darunia hands over the bracelet.
