@@ -28,6 +28,7 @@ Pending work, most important first within each section.
 ## To build
 
 - **Gold Skulltula tokens from song scenes (Anywhere):** the fill never puts a token on a song scene, because a token given by a scene's `GetPouchContentByActorName` grant is untested in game (a token is a counter, not a pouch item). To allow it: a test batch where a song scene gives `Obj_Token_Gold`, then drop the rule in `fill._attempt` (the `open_scenes` block).
+- **Free Great Fairies still name a price** (batch 26a): the pay question (`Dm_FairyFountain_0009_01`, tag `GreatFairy_Price1..6`) still says "25 rupias" and so on, though nothing is charged. Change the text or the tag's value, or drop the question.
 - **Bring back the Great Fairies' price** (the remake charges: Din 25, Power 50, Farore 100, Wisdom 200, Nayru 300, Courage 500). Batch 26 makes the fairies free, as in OoTR. `HavePlayedEvent.Dm_FairyFountain_<name>` is set even when the payment is refused, so with the price kept a refusal would mark the fountain as visited and lose its item. There is no cheap per-fountain flag either: `GameDataList` is a big-endian BYML v7 with hashed names. Possible ways:
   - `TriForcePoint` only summons the fairy when Link has enough rupees (an `EventQueryHasRuppe` before the transition), and the fountain then always charges.
   - Add a new flag to `GameDataList`.
