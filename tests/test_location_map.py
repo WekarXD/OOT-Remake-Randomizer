@@ -116,7 +116,8 @@ class LocationMapTest(unittest.TestCase):
 
 class ItemsTest(unittest.TestCase):
     def test_key_items(self):
-        self.assertEqual(len(items.KEY_ITEMS), 15)
+        # 15 from chests plus the six Great Fairy rewards (design 2026-11-15).
+        self.assertEqual(len(items.KEY_ITEMS), 21)
         self.assertEqual(items.KEY_ITEMS['Item_Longshot'], 'Progressive Hookshot')
         self.assertEqual(items.KEY_ITEMS['Item_BombBag_Small'], 'Bomb Bag')
         self.assertEqual(set(items.LABELS), set(items.KEY_ITEMS))
@@ -129,8 +130,9 @@ class ItemsTest(unittest.TestCase):
 
     def test_key_item_home(self):
         self.assertEqual(set(items.KEY_ITEM_HOME), set(items.KEY_ITEMS))
+        from randomizer.fairies import FOUNTAINS
         self.assertEqual(set(items.KEY_ITEM_HOME.values()),
-                         set(KEY_ITEM_LOCATIONS.values()))
+                         set(KEY_ITEM_LOCATIONS.values()) | {f.location for f in FOUNTAINS})
         self.assertEqual(items.KEY_ITEM_HOME['Item_Longshot'],
                          'Water Temple Longshot Chest')
 
