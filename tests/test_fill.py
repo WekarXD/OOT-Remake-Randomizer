@@ -41,12 +41,23 @@ def _eligible_hashes(chests, loc_map) -> list[int]:
     return out
 
 
-def _fixed_for(result, chests, loc_map, world) -> dict[str, str]:
+def _fixed_for(result, chests, loc_map, world, fairies=None) -> dict[str, str]:
+    """The logic's view: eligible chests from `result`, and the Great Fairy fountains
+    from `fairies` (they are sites too with key items shuffled)."""
     fixed = world.vanilla_fixed()
     for h in _eligible_hashes(chests, loc_map):
         drop = result[h]
         fixed[loc_map[h].location] = drop if drop in items.KEY_ITEMS else 'Rupees (5)'
+    for loc, drop in (fairies or {}).items():
+        fixed[loc] = (SONG_BY_ACTOR[drop].song if drop in SONG_BY_ACTOR
+                      else drop if drop in items.KEY_ITEMS
+                      else OOTR_TOKEN if drop == TOKEN else 'Rupees (5)')
     return fixed
+
+
+def _fairy_rewards() -> Counter:
+    from randomizer.fairies import FOUNTAINS
+    return Counter(f.reward for f in FOUNTAINS)
 
 
 class FillTest(unittest.TestCase):
@@ -56,6 +67,9 @@ class FillTest(unittest.TestCase):
 
     def _place(self, **kw):
         return place(self.chests, self.loc_map, self.world, Settings(**kw))
+
+    def _all(self, **kw):
+        return place_all(self.chests, self.loc_map, self.world, Settings(**kw))
 
     def test_deterministic(self):
         self.assertEqual(self._place(seed='ABC'), self._place(seed='ABC'))
@@ -67,8 +81,9 @@ class FillTest(unittest.TestCase):
         self.assertEqual(set(self._place(seed='ABC')), set(self.orig))
 
     def test_multiset_preserved(self):
-        result = self._place(seed='ABC')
-        self.assertEqual(Counter(result.values()), Counter(self.orig.values()))
+        r = self._all(seed='ABC')
+        self.assertEqual(Counter(r.chests.values()) + Counter(r.fairies.values()),
+                         Counter(self.orig.values()) + _fairy_rewards())
 
     def test_key_items_actually_move(self):
         moved = sum(self._place(seed=str(i)) != self.orig for i in range(5))
@@ -85,8 +100,8 @@ class FillTest(unittest.TestCase):
     def test_beatable_many(self):
         start = time.perf_counter()
         for i in range(200):
-            result = self._place(seed=str(i))
-            fixed = _fixed_for(result, self.chests, self.loc_map, self.world)
+            r = self._all(seed=str(i))
+            fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world, r.fairies)
             self.assertTrue(self.world.can_beat(fixed), f'seed {i}')
         self.assertLess(time.perf_counter() - start, 60)
 
@@ -160,8 +175,9 @@ class FillTest(unittest.TestCase):
         filler = filler_sites(self.chests, self.loc_map)
         ammo = [h for h in filler if self.orig[h] in AMMO_CONTAINER]
         self.assertTrue(ammo)
-        r = self._place(seed='ABC')
-        self.assertEqual(Counter(r.values()), Counter(self.orig.values()))
+        r = self._all(seed='ABC')
+        self.assertEqual(Counter(r.chests.values()) + Counter(r.fairies.values()),
+                         Counter(self.orig.values()) + _fairy_rewards())
 
     def test_spoiler_toggle_does_not_change_placement(self):
         self.assertEqual(self._place(seed='X', spoiler=True),
@@ -205,7 +221,7 @@ class SongFillTest(unittest.TestCase):
         return place_all(self.chests, self.loc_map, self.world, Settings(**kw))
 
     def _fixed(self, result):
-        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world)
+        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world, result.fairies)
         fixed.update((loc, SONG_BY_ACTOR[a].song) for loc, a in result.songs.items())
         return fixed
 
@@ -262,7 +278,7 @@ class AnywhereFillTest(unittest.TestCase):
                          Settings(shuffle_songs='anywhere', **kw))
 
     def _fixed(self, result):
-        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world)
+        fixed = _fixed_for(result.chests, self.chests, self.loc_map, self.world, result.fairies)
         for h, drop in result.chests.items():  # songs in chests
             if drop in SONG_BY_ACTOR and h in self.loc_map and self.loc_map[h].location:
                 fixed[self.loc_map[h].location] = SONG_BY_ACTOR[drop].song
@@ -284,8 +300,10 @@ class AnywhereFillTest(unittest.TestCase):
         r = self._all(seed='M')
         self.assertEqual(set(r.chests), set(self.orig))
         self.assertEqual(set(r.songs), set(VANILLA_SONGS))
-        self.assertEqual(Counter(r.chests.values()) + Counter(r.songs.values()),
-                         Counter(self.orig.values()) + Counter(VANILLA_SONGS.values()))
+        self.assertEqual(Counter(r.chests.values()) + Counter(r.songs.values())
+                         + Counter(r.fairies.values()),
+                         Counter(self.orig.values()) + Counter(VANILLA_SONGS.values())
+                         + _fairy_rewards())
         self.assertEqual(r, self._all(seed='M'))
 
     def test_anywhere_beatable_many(self):
@@ -317,6 +335,78 @@ class AnywhereFillTest(unittest.TestCase):
             self.assertNotIn(TOKEN, r.songs.values(), f'seed {i}')
 
 
+class FairyFillTest(unittest.TestCase):
+    """Great Fairy rewards in the pool (design 2026-11-15-great-fairies): with key items
+    shuffled, the six fountains are sites and their rewards move."""
+    def setUp(self):
+        from randomizer.fairies import FOUNTAINS, FOUNTAIN_FORBIDDEN
+        self.fountains, self.forbidden = FOUNTAINS, FOUNTAIN_FORBIDDEN
+        self.chests, self.loc_map, self.world = _data()
+        self.orig = _original(self.chests)
+        self.vanilla = {f.location: f.reward for f in FOUNTAINS}
+
+    def _all(self, **kw):
+        return place_all(self.chests, self.loc_map, self.world, Settings(**kw))
+
+    def _fixed(self, r):
+        fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world)
+        for loc, drop in r.fairies.items():
+            fixed[loc] = drop if drop in items.KEY_ITEMS else 'Rupees (5)'
+        return fixed
+
+    def test_fountains_hold_six_items(self):
+        r = self._all(seed='F')
+        self.assertEqual(set(r.fairies), set(self.vanilla))
+        self.assertEqual(set(r.chests), set(self.orig))
+        self.assertEqual(Counter(r.chests.values()) + Counter(r.fairies.values()),
+                         Counter(self.orig.values()) + Counter(self.vanilla.values()))
+        self.assertEqual(r, self._all(seed='F'))
+
+    def test_fairy_rewards_move(self):
+        moved = 0
+        for i in range(10):
+            r = self._all(seed=f'M{i}')
+            moved += any(r.fairies[loc] != a for loc, a in self.vanilla.items())
+            reach = self.world.reachable_locations(self._fixed(r))
+            for h, drop in r.chests.items():
+                if drop in self.vanilla.values() and drop != self.orig[h]:
+                    self.assertIn(self.loc_map[h].location, reach)
+        self.assertGreater(moved, 0)
+
+    def test_beatable_many(self):
+        for i in range(20):
+            r = self._all(seed=f'B{i}')
+            self.assertTrue(self.world.can_beat(self._fixed(r)), f'seed {i}')
+
+    def test_fountains_never_get_forbidden(self):
+        skulltulas, gs_map = _gs_data()
+        for i in range(20):
+            r = place_all(self.chests, self.loc_map, self.world,
+                          Settings(seed=f'T{i}', tokensanity='all'), skulltulas, gs_map)
+            self.assertFalse(set(r.fairies.values()) & self.forbidden, f'seed {i}')
+
+    def test_excluded_reward_stays(self):
+        r = self._all(seed='X', excluded_items=frozenset({'Item_DinFire'}))
+        self.assertEqual(r.fairies['DMT Great Fairy Reward'], 'Item_DinFire')
+
+    def test_vanilla_keys_no_fountains(self):
+        for songs in ('off', 'song_locations'):
+            r = self._all(seed='V', key_items_mode='vanilla', shuffle_songs=songs)
+            self.assertEqual(r.fairies, {})
+            self.assertEqual(set(r.chests), set(self.orig))
+
+    def test_with_songs_anywhere_and_dungeon_rewards(self):
+        for songs in ('anywhere', 'dungeon_rewards'):
+            r = self._all(seed='S', shuffle_songs=songs)
+            self.assertEqual(set(r.fairies), set(self.vanilla))
+            self.assertEqual(len(r.songs), 12)
+            self.assertTrue(all(h >= 0 for h in r.chests))
+            self.assertEqual(sum(d in SONG_BY_ACTOR for d in r.chests.values())
+                             + sum(d in SONG_BY_ACTOR for d in r.songs.values())
+                             + sum(d in SONG_BY_ACTOR for d in r.hearts.values())
+                             + sum(d in SONG_BY_ACTOR for d in r.fairies.values()), 12)
+
+
 REWARD_CHESTS = ('Gerudo Training Ground Maze Path Final Chest',
                  'Bottom of the Well Lens of Truth Chest')
 REWARD_SCENES = ('Song from Impa', 'Sheik in Ice Cavern')
@@ -333,7 +423,7 @@ class DungeonRewardsFillTest(unittest.TestCase):
                          Settings(shuffle_songs='dungeon_rewards', **kw))
 
     def _fixed(self, r):
-        fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world)
+        fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world, r.fairies)
         for h, drop in r.chests.items():
             if drop in SONG_BY_ACTOR and h in self.loc_map and self.loc_map[h].location:
                 fixed[self.loc_map[h].location] = SONG_BY_ACTOR[drop].song
@@ -358,9 +448,10 @@ class DungeonRewardsFillTest(unittest.TestCase):
 
     def test_multiset_and_hearts_moved(self):
         r = self._all(seed='M')
-        got = Counter(r.chests.values()) + Counter(r.songs.values()) + Counter(r.hearts.values())
+        got = (Counter(r.chests.values()) + Counter(r.songs.values())
+               + Counter(r.hearts.values()) + Counter(r.fairies.values()))
         want = (Counter(self.orig.values()) + Counter(VANILLA_SONGS.values())
-                + Counter({'Obj_Heart_Container': 8}))
+                + Counter({'Obj_Heart_Container': 8}) + _fairy_rewards())
         self.assertEqual(got, want)
         self.assertEqual(r, self._all(seed='M'))
 
@@ -399,6 +490,11 @@ class TokensanityTest(unittest.TestCase):
 
     def _place(self, **kw):
         return place(self.chests, self.loc_map, self.world, Settings(**kw))
+
+    def PA(self, seed, mode, forbidden=frozenset()):
+        return place_all(self.chests, self.loc_map, self.world,
+                         Settings(seed=seed, tokensanity=mode), self.skulltulas,
+                         self.gs_map, forbidden)
 
     def P(self, seed, mode, forbidden=frozenset()):
         return place(self.chests, self.loc_map, self.world,
@@ -440,16 +536,18 @@ class TokensanityTest(unittest.TestCase):
         self.assertEqual(self._place(seed='ABC'), self.P('ABC', 'off'))
 
     def test_tokensanity_all_places_gs(self):
-        r = self.P('T', 'all')
+        pa = self.PA('T', 'all')
+        r = pa.chests
         gs = self._gs('all')
         self.assertEqual(len(gs), 100)
         self.assertTrue(set(gs) <= set(r))
         self.assertEqual(set(r), set(self.orig) | set(gs))
-        self.assertEqual(sum(1 for v in r.values() if v == TOKEN), 100)
+        self.assertEqual(sum(1 for v in r.values() if v == TOKEN)
+                         + sum(1 for v in pa.fairies.values() if v == TOKEN), 100)
         self.assertTrue(any(r[h] != TOKEN for h in gs))
         self.assertTrue(any(v == TOKEN for h, v in r.items() if h not in gs))
-        expected = Counter(self.orig.values()) + Counter({TOKEN: 100})
-        self.assertEqual(Counter(r.values()), expected)
+        expected = Counter(self.orig.values()) + Counter({TOKEN: 100}) + _fairy_rewards()
+        self.assertEqual(Counter(r.values()) + Counter(pa.fairies.values()), expected)
 
     def test_tokensanity_modes_counts(self):
         self.assertEqual(len(self._gs('dungeons')), 44)
@@ -466,12 +564,13 @@ class TokensanityTest(unittest.TestCase):
 
     def test_tokensanity_forbidden_never_on_gs(self):
         forbidden = frozenset({'Item_ScrubBusinessSeed', 'TBox_DekuNutBundle'})
-        r = self.P('F', 'all', forbidden)
+        pa = self.PA('F', 'all', forbidden)
+        r = pa.chests
         for h in self._gs('all'):
             self.assertNotIn(r[h], forbidden)
-        # Forbidden contents are still in the fill (in chests).
-        self.assertEqual(Counter(r.values()),
-                         Counter(self.orig.values()) + Counter({TOKEN: 100}))
+        # Forbidden contents are still in the fill (in chests or fountains).
+        self.assertEqual(Counter(r.values()) + Counter(pa.fairies.values()),
+                         Counter(self.orig.values()) + Counter({TOKEN: 100}) + _fairy_rewards())
 
     def test_tokensanity_not_enough_allowed_raises(self):
         allowed_none = frozenset(self.orig.values()) | {TOKEN}
@@ -515,8 +614,9 @@ class TokensanityTest(unittest.TestCase):
     def test_tokensanity_completable(self):
         gs = self._gs('all')
         for i in range(5):
-            r = self.P(f'C{i}', 'all')
-            fixed = self.world.vanilla_fixed()
+            pa = self.PA(f'C{i}', 'all')
+            r = pa.chests
+            fixed = _fixed_for({}, [], {}, self.world, pa.fairies)
             sites = ([(h, self.loc_map[h].location)
                       for h in _eligible_hashes(self.chests, self.loc_map)]
                      + [(h, self.gs_map[h].location) for h in gs])
