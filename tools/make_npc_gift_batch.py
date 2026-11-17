@@ -11,7 +11,8 @@ item that shows in the inventory), the way the shuffle would:
 27a: castle, next to Malon. She gives the Boomerang; Link starts with the Weird Egg (not
      from her): does it hatch, and does Talon wake?
 27b: Goron City, by the rolling Goron, who gives the Boomerang. Link starts with the
-     Medium Bomb Bag and then the Small one: does the bag shrink?
+     Medium Bomb Bag and then the Small one: does the bag shrink? Also the Goron's
+     Bracelet: attempt 1 could not use bombs without it.
 27c: Goron City, in Darunia's room: his dance gives the Boomerang.
 27d: castle courtyard (the quest at Step04): Zelda gives the Boomerang.
 27e: Kakariko, next to Anju: the Cucco round gives the Boomerang (an NpcCommon hand-over).
@@ -100,7 +101,7 @@ VARIANTS: dict[str, Variant] = {
     '27b': Variant(
         _preset('GoronCity_Child',
                 _pos('RandoTest_GiftRollingGoron', (-6.3, 109.6, -16.5), ROLLING_GORON),
-                items=('Item_BombBag_Medium', 'Item_BombBag_Small')),
+                items=('Item_BombBag_Medium', 'Item_BombBag_Small', 'Item_Gauntlet_Goron')),
         gifts=(Gift('Npc_Goron_006_Child', 'ReveiveItem',
                     ('Item_BombBag_Medium', 'Item_BombBag_Large')),),
         entries=(Entry('Npc_Goron_006_Child', 'GetInEvent_NotTurn_BombBag', GENERIC_NPC),)),

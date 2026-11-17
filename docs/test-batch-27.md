@@ -25,6 +25,7 @@ The tunics are not in the batch. Their grants (`SageOfFire`, `SageOfWater`) use 
 
 - **27a, attempt 1:** carrying the egg without talking to Malon, it never hatched. Walking into the castle garden, the guards' catch scene looped (the animation cut and restarted); see `docs/TODO.md`.
 - **27a, attempt 2:** after talking to Malon, the egg (from the start preset, not from her) hatched. The hatch is not an egg timer: Malon's talk moves the castle quest to `Step03`, and Navi's `Step03_01` schedule (`Goto_HyruleCastle_Step03_01_Npc_Navi`) starts `Step03_01_Npc_Navi_StepStart`, which runs `EggHatch` (remove the egg, give `Item_AlarmCucco`). That path does not check the egg, so talking to Malon may give the Cucco even without it (untested). Talon woke up when shown the Cucco. **27a works.**
+- **27b, attempt 1:** the capacity stayed at 30 after the Small Bomb Bag: a smaller bag does not lower it. Link could not use bombs without the Goron's Bracelet, so attempt 2 also starts with it.
 
 ## Setup
 
