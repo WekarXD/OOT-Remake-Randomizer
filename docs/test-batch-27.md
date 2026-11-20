@@ -58,3 +58,7 @@ Built with the same tool (`28a`, `28a2`, `28b`, `28c`); see `docs/superpowers/pl
 - **28a, attempt 1:** the Hookshot wrapper was not on the island, and Link had the Bow but no arrows. The Fire Arrows quest (`SubEvent_GetFireArrow`, steps `Ready`, `Step01`, `Step02`, `Step03`) depends on `SageOfWater_IsAfter_Step08_Exp`, and shooting the sun (`FireArrow_Appear`, then `Dm_LakeHrl_0030`) moves it to `Step03`. Attempt 2 completes the Water Temple quest, puts the Fire Arrows quest at `Step02` and gives a medium quiver. **28a2** puts it at `Step03` (the arrows should already be there).
 - **28a, attempt 2:** shooting the sun made the Hookshot wrapper appear on the island. Link could not reach it: the sun is shot from the other island, and the lake stayed empty (the start preset completes the Water Temple quest, but the lake's water level is set elsewhere). In a real game the lake is full after the Water Temple.
 - **28a2:** the Hookshot wrapper was on the island; picking it up gave a working Hookshot. **The Fire Arrows site works as a wrapper** (it appears with the sun, as the arrows do).
+- **28b:** shown Ruto's Letter from the start preset (not from the lake), King Zora moved aside. **Ruto's Letter works from anywhere.**
+- **28c:** an adult with the Silver Gauntlets and no Goron's Bracelet could throw bombs and lift bomb flowers. **Any strength level works**, so the logic's level model (the bracelet is level 1, Silver level 2) is right.
+
+**Batch 28: everything works. No gift stays fixed (`FIXED_GIFTS` is empty).**
