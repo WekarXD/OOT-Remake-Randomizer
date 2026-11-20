@@ -24,6 +24,7 @@ from dataclasses import dataclass
 
 from randomizer import RANDO_VERSION
 from randomizer.fairies import FOUNTAIN_FORBIDDEN, FOUNTAINS
+from randomizer.gifts import FIXED_GIFTS, GIFT_FORBIDDEN, GIFTS, WorldGift
 from randomizer.game import ChestActor, SkulltulaActor
 from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
                               NON_EXCLUDABLE)
@@ -79,6 +80,8 @@ class Placement:
     hearts: dict[str, str] = field(default_factory=dict)  # boss heart -> item (Dungeon Rewards)
     # Great Fairy fountain (OoTR location) -> what it gives; empty with vanilla key items.
     fairies: dict[str, str] = field(default_factory=dict)
+    # NPC gift (OoTR location) -> what it gives; empty with vanilla key items.
+    gifts: dict[str, str] = field(default_factory=dict)
 
 
 VANILLA_SONGS: dict[str, str] = {s.location: s.actor for s in SONGS}
@@ -227,11 +230,25 @@ HEART_SITE_IDS: dict[str, int] = {loc: -(101 + k) for k, loc in enumerate(BOSS_H
 # With key items shuffled, the Great Fairy fountains join as sites with these ids.
 FOUNTAIN_SITE_IDS: dict[str, int] = {f.location: -(201 + k) for k, f in enumerate(FOUNTAINS)}
 _FOUNTAIN_IDS = frozenset(FOUNTAIN_SITE_IDS.values())
+# With key items shuffled, the NPC gifts (batch 1) join as sites with these ids.
+GIFT_SITE_IDS: dict[str, int] = {g.location: -(301 + k) for k, g in enumerate(GIFTS)
+                                 if g.location not in FIXED_GIFTS}
+_WORLD_GIFT_IDS = frozenset(GIFT_SITE_IDS[g.location] for g in GIFTS
+                            if isinstance(g, WorldGift) and g.location in GIFT_SITE_IDS)
+_FLOW_GIFT_IDS = frozenset(GIFT_SITE_IDS.values()) - _WORLD_GIFT_IDS
 
 
-def _scene_forbidden(h: int) -> frozenset[str]:
-    """What a song scene or fountain site (negative id) never gives."""
-    return FOUNTAIN_FORBIDDEN if h in _FOUNTAIN_IDS else frozenset({TOKEN})
+def _scene_forbidden(h: int, world_forbidden: frozenset[str] = frozenset()) -> frozenset[str]:
+    """What a song scene, fountain or NPC gift site (negative id) never gives. A world
+    gift (an actor in a map) becomes a wrapper: never a token or what cannot be wrapped
+    (`world_forbidden`)."""
+    if h in _FOUNTAIN_IDS:
+        return FOUNTAIN_FORBIDDEN
+    if h in _FLOW_GIFT_IDS:
+        return GIFT_FORBIDDEN
+    if h in _WORLD_GIFT_IDS:
+        return world_forbidden | {TOKEN}
+    return frozenset({TOKEN})
 
 
 # OoTR's dungeon-reward song locations besides the boss hearts (non-MQ, OoTR Fill.py).
@@ -276,7 +293,9 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
              gs_forbidden: frozenset[str] = frozenset(),
              shuffle_songs: bool = False,
              vanilla_keys: bool = False,
-             reward_sites: tuple[int, ...] = ()) -> tuple[dict[int, str], dict[str, str]] | None:
+             reward_sites: tuple[int, ...] = (),
+             world_forbidden: frozenset[str] = frozenset()
+             ) -> tuple[dict[int, str], dict[str, str]] | None:
     # Eligible sites that stay fixed: those of excluded key items.
     pinned = {h: original[h] for h in eligible
               if original[h] in KEY_ITEMS and h not in moving}
@@ -309,7 +328,7 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
         candidates = [h for h in free if h not in placed and h not in no_key
                       and site_loc[h] in reach
                       and not (h in gs and item in gs_forbidden)
-                      and not (h < 0 and item in _scene_forbidden(h))]
+                      and not (h < 0 and item in _scene_forbidden(h, world_forbidden))]
         if not candidates:
             return None
         placed[rng.choice(candidates)] = item
@@ -351,10 +370,11 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     # contents they can give: never a token (untested in game), and for a fountain
     # never what hangs its grant (`FOUNTAIN_FORBIDDEN`).
     for h in [h for h in open_sites if h < 0]:
-        bad = _scene_forbidden(h)
+        bad = _scene_forbidden(h, world_forbidden)
         i = next((i for i, drop in enumerate(rest) if drop not in bad), None)
         if i is None:
-            raise FillError('Not enough items that the song scenes or fountains can give')
+            raise FillError('Not enough items that the song scenes, fountains or NPC gifts '
+                            'can give')
         placed[h] = rest.pop(i)
     open_chests = [h for h in open_sites if h not in gs and h >= 0]
     for h, drop in zip(open_chests, rest, strict=True):
@@ -394,7 +414,8 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
               world: World, settings: Settings,
               skulltulas: list[SkulltulaActor] = (),
               gs_map: dict[int, GsEntry] | None = None,
-              gs_forbidden: frozenset[str] = frozenset()) -> Placement:
+              gs_forbidden: frozenset[str] = frozenset(),
+              world_forbidden: frozenset[str] = frozenset()) -> Placement:
     """`place`'s chest map plus the songs (OoTR song location -> song actor), which
     are shuffled with `settings.shuffle_songs == 'song_locations'` (even with the
     key items in `vanilla` mode: the two settings are independent)."""
@@ -427,6 +448,11 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         original[h] = f.reward
         site_loc[h] = f.location
     eligible = sorted(eligible + list(FOUNTAIN_SITE_IDS.values()))
+    for g in GIFTS:  # the NPC gifts become sites holding their items
+        if g.location in GIFT_SITE_IDS:
+            original[GIFT_SITE_IDS[g.location]] = g.content
+            site_loc[GIFT_SITE_IDS[g.location]] = g.location
+    eligible = sorted(eligible + list(GIFT_SITE_IDS.values()))
     if anywhere:  # the song scenes become sites holding their songs
         for s in SONGS:
             original[SONG_SITE_IDS[s.location]] = s.actor
@@ -463,25 +489,29 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         if h in site_loc:
             base[site_loc[h]] = FILLER
     placed = _run(settings, world, original, eligible, moving, site_loc, base, no_key,
-                  frozenset(gs), gs_forbidden, reward_sites=reward_sites)
+                  frozenset(gs), gs_forbidden, reward_sites=reward_sites,
+                  world_forbidden=world_forbidden)
     songs = ({loc: placed.chests[h] for loc, h in SONG_SITE_IDS.items()} if anywhere
              else placed.songs)
     hearts = {loc: placed.chests[h] for loc, h in HEART_SITE_IDS.items()} if dungeon else {}
     fairies = {loc: placed.chests[h] for loc, h in FOUNTAIN_SITE_IDS.items()}
+    gifts = {loc: placed.chests[h] for loc, h in GIFT_SITE_IDS.items()}
     return Placement({h: d for h, d in placed.chests.items() if h >= 0}, songs, hearts,
-                     fairies)
+                     fairies, gifts)
 
 
 def _run(settings: Settings, world: World, original: dict[int, str], eligible: list[int],
          moving: list[int], site_loc: dict[int, str], base: dict[str, str],
          no_key: frozenset[int] = frozenset(), gs: frozenset[int] = frozenset(),
          gs_forbidden: frozenset[str] = frozenset(), vanilla_keys: bool = False,
-         reward_sites: tuple[int, ...] = ()) -> Placement:
+         reward_sites: tuple[int, ...] = (),
+         world_forbidden: frozenset[str] = frozenset()) -> Placement:
     """The first beatable attempt, retried with a new RNG up to MAX_ATTEMPTS."""
     for attempt in range(MAX_ATTEMPTS + 1):
         result = _attempt(_rng(settings, attempt), original, eligible, moving, site_loc,
                           world, base, no_key, gs, gs_forbidden,
-                          settings.shuffle_songs == 'song_locations', vanilla_keys, reward_sites)
+                          settings.shuffle_songs == 'song_locations', vanilla_keys, reward_sites,
+                          world_forbidden)
         if result is not None:
             return Placement(*result)
     raise FillError('Could not generate a beatable seed with these settings')
