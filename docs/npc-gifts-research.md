@@ -57,3 +57,44 @@ Method:
 - **The ocarinas** (Saria's `Dm_Kokiri_0155`, the Ocarina of Time in `Dm_MelodyGet_Time`): they are an OoTR option (Shuffle Ocarinas, off by default). Batch 3.
 - **The Gold Skulltula rewards** (Kakariko house: wallets, Stone of Agony, ...): OoTR always shuffles them. They are counter rewards like the minigames. Batch 2.
 - **Biggoron and the trade items:** batch 3.
+
+## Batch 2: where each minigame and reward is (2026-11-20)
+
+Same method as batch 1. Every grant uses one of the patterns batch 1 already patches. The item is either a `Dm_SY_GetInEvent` `ActorName`, an `NpcCommon` hand-over `ReveiveItem`, or a by-reference parameter: the Gold Skulltula house passes `TakenRewardActor` to its own `TakenReward_Common_Event` entry, as the rolling Goron passes `ReveiveItem`.
+
+| OoTR location | Vanilla item | Remake grant |
+|---|---|---|
+| Kak 10 Gold Skulltula Reward | Progressive Wallet | `GatheringTokenGold` event 245, `TakenRewardActor` `Item_Wallet_Medium` |
+| Kak 20 Gold Skulltula Reward | Stone of Agony | event 246, `Item_AgonyStone` |
+| Kak 30 Gold Skulltula Reward | Progressive Wallet | event 247, `Item_Wallet_Large` |
+| Kak 40 Gold Skulltula Reward | Bombchus (10) | event 248, `Item_BombchuBundle_Large` |
+| Kak 50 Gold Skulltula Reward | Piece of Heart | event 249, `Obj_Heart_Piece` (event 250, 100 tokens: 200 rupees, not an OoTR location) |
+| Market Shooting Gallery Reward | Slingshot upgrade | `MiniGame_HitTarget` events 291/292, `ReveiveItem` `Item_BulletBag_Large`/`_Medium` (a bigger bag than Link's) |
+| Kak Shooting Gallery Reward | Bow upgrade | `MiniGame_HitTarget` events 293/294, `Item_Quiver_Large`/`_Medium` |
+| LW Target in Woods | Slingshot upgrade | `Dm_LostWood_0040` events 84/85, `ActorName` `Item_BulletBag_Large`/`_Medium` |
+| Market Bombchu Bowling First Prize | Bomb Bag | `MiniGame_BombchuBowling` events 297/298, `Item_BombBag_Medium`/`_Large` |
+| Market Bombchu Bowling Second Prize | Piece of Heart | event 296, `Obj_Heart_Piece` |
+| LH Child Fishing | Piece of Heart | `MiniGame_Fishing` events 482 (`NpcCommon`) and 489 (`GetInEvent_NotTurn`), `Obj_Heart_Piece` |
+| LH Adult Fishing | Golden Scale | events 483 and 490, `Item_Scale_Gold` |
+| LH Lab Dive | Piece of Heart | `Npc_Hylia_045_Child` event 55, `ReveiveItem` `Obj_Heart_Piece` |
+| ZD Diving Minigame | Silver Scale | `MiniGame_Diving` event 316, `Item_Scale_Silver` (event 315: red rupee on later rounds) |
+| LW Ocarina Memory Game | Piece of Heart | `Npc_SkullKid_Child_02` event 203, `Obj_Heart_Piece` (events 201, 202, 204: rupees) |
+| ZR Frogs Ocarina Game | Piece of Heart | `MiniGame_FrogTenors` event 247, `Obj_Heart_Piece` |
+| ZR Frogs in the Rain | Piece of Heart | **not found**: the Song of Storms branch (`MiniGame_FrogTenors_StormSong`) seems to give rupees (`GetRupy_FrogsTenors`); to confirm |
+| GF HBA 1000 Points | Piece of Heart | `Minigame_HorsebackArchery` event 313, `Obj_Heart_Piece` |
+| GF HBA 1500 Points | Bow upgrade | events 311/312, `Item_Quiver_Large`/`_Medium` |
+| Graveyard Dampe Gravedigging Tour | Piece of Heart | `Npc_Hylia_Dampe_001` event 602, `Obj_Heart_Piece`; special entry `GetInEvent_NotTurn_NotNpc_Dampe` |
+| LLR Talons Chickens | Bottle with Milk | `Minigame_FindOutCucco` events 261 (`GetInEventInBottle`) and 262 (`NpcCommon`), `Item_Bottle_Milk` |
+
+Not in batch 2:
+- the Treasure Chest Game (its chests and keys);
+- the Deku Theater masks (trade, batch 3);
+- the repeat prizes (rupees after the first win).
+
+### Open, for the design and a test batch
+
+- **Upgrades come in sizes:** wallets, bullet bags, quivers, bomb bags and scales. The remake hands over "a bigger one than Link's", picking the event by his current size. As fill items these become OoTR's progressive items: `Progressive Wallet`, `Progressive Scale`, the Slingshot and Bow upgrades, and `Bomb Bag`. A chest gives one fixed size.
+  - Batch 27b showed that a smaller bomb bag never lowers the capacity.
+  - Still to check: a Golden Scale before the Silver one (dive depth), a Large Wallet before the Medium one, and a quiver or bullet bag upgrade before the Bow or Slingshot.
+- **Stone of Agony** (`Item_AgonyStone`) and the wallets are new item types for the fill.
+- **Two grants for one prize** (fishing 482/489, Talon 261/262): rename both, as the full skip's copies are.
