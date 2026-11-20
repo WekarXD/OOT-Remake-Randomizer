@@ -49,7 +49,9 @@ Pending work, most important first within each section.
 - **New END cases:** five scene files refuse rewrites that add a case to END (`Dm_DeathMtTrail_0010`, `Dm_DodongoCave_0010` and `.110`, `Dm_Goron_0028`, `Dm_Goron_0040.110`); decide whether to allow them.
 - **Full skip, adult phase:** the same method for the adult scenes, after the childhood test batch.
 - **Browser generator on GitHub Pages:** built (`site/`, `randomizer/browser.py`); confirm a full generation in the browser with a real `.nup`.
-- **NPC gifts:** phase B (plan written), then phases C and D.
+- **NPC gifts:** batch 1 is built (design `docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md`, acceptance seed `REGALOS1`, guide `docs/test-npc-gifts.md`). Next: batch 2 (minigames and the Gold Skulltula rewards), then batch 3 (OoTR's optional settings, the ocarinas and the trade sequence). Still to check in game:
+  - **The Big Poes' gift with another item** (`Npc_Hylia_048_BottleShop`, its `GetInEvent_Poeshop` entry pointed at `GetInEvent_NotTurn`): untested; the only batch 1 entry change not tried in batch 27.
+  - **Gold Skulltula tokens from NPC gifts:** the gifts never give a token (as the fountains and song scenes). To allow it: a test batch where a gift gives `Obj_Token_Gold`.
 - **OoTR generator options:** Open Forest / Kakariko / Door of Time / Zora's Fountain / Gerudo Fortress, and the timesavers (skip child stealth, free Rauru reward, skip tower escape, skip Epona race, minigame phases, fast chests, fast bunny hood, plant beans, Ruto on F1, fast shadow boat, free scarecrow, cucco/poe counts, ...).
 - **Key items in the Water Temple, Fire Temple, Bottom of the Well and Gerudo Training Ground:** the small-key layout in the remake differs from the N64, so the logic is not reliable there yet.
 
