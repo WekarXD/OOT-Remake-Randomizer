@@ -32,6 +32,9 @@ The tunics are not in the batch. Their grants (`SageOfFire`, `SageOfWater`) use 
 - **27d2, attempt 1:** without the skip, still nothing. **Cause:** the generic grant calls `ActionGuide`, and `Dm_HrlCastle_0050`'s `SubFlowList` in `RSDB/GameAnalyzedEventInfo` lacks it (Darunia's and the fountains' lists have it, which is why 27c and batch 26 worked). The game ignores a call to a flow missing from the list. The tool now adds the new entry's closure to the event's list; 27d and 27d2 are rebuilt (attempt 2).
 - **27d, attempt 2:** on the full skip, Zelda gave the Boomerang. **27d works**; 27d2-27d4 are not needed. Rule for the implementation: whenever a grant's entry changes, the event's `SubFlowList` must include the new entry's closure.
 - **27e:** Anju gave the Boomerang for the Cuccos (`ReveiveItem` of an `NpcCommon` hand-over renamed). **27e works.**
+- **27f:** at the bottom of the lake, Ruto's Letter was a floating Boomerang with the Gold Skulltula token's glow (as every wrapper), and picking it up gave the Boomerang. **27f works.**
+
+**Every variant works.**
 
 ## Setup
 
