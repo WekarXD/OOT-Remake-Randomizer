@@ -28,6 +28,7 @@ The tunics are not in the batch. Their grants (`SageOfFire`, `SageOfWater`) use 
 - **27b, attempt 1:** the capacity stayed at 30 after the Small Bomb Bag: a smaller bag does not lower it. Link could not use bombs without the Goron's Bracelet, so attempt 2 also starts with it.
 - **27b, attempt 2:** stopped with a bomb, the rolling Goron gave the Boomerang (his bomb bag entry pointed at `GetInEvent_NotTurn`). **27b works.**
 - **27c:** Link appeared in front of Darunia; Saria's Song made him give the Boomerang (`GetInEvent_Goron` pointed at `GetInEvent_Demo_NotLookatObjectEntry`). **27c works.**
+- **27d, attempt 1:** Zelda gave nothing (no Boomerang in the inventory), though her meeting played: Impa then taught the Lullaby. On the full skip, `Dm_HrlCastle_0050` runs `EntryPoint0` straight to the grant (event 238, after `Item_ZeldaLetter` joins the event), so the grant is on the played path. As with Din's fountain (batch 26e), the skip's rewrite may lose the item. Three variants tell the causes apart: **27d2** without the full skip; **27d3** on the skip but keeping Zelda's own `GetInEvent_Zeldaletter` entry; **27d4** on the skip with her scene untouched (does it give the letter?).
 
 ## Setup
 

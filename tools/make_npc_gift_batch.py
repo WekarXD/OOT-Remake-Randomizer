@@ -18,7 +18,8 @@ item that shows in the inventory), the way the shuffle would:
 27e: Kakariko, next to Anju: the Cucco round gives the Boomerang (an NpcCommon hand-over).
 27f: Lake Hylia, above Ruto's Letter: the bottle actor is a wrapper of the Boomerang;
      Link has the Silver Scale.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f]
+27d2-27d4: Zelda without the skip, with her own entry, untouched (27d gave nothing).
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4]
 """
 import math
 import os
@@ -115,6 +116,18 @@ VARIANTS: dict[str, Variant] = {
         _preset('HyruleCastle', COURTYARD, items=('Item_Ocarina_Fairy',), steps=CASTLE_STEPS),
         gifts=(Gift('Dm_HrlCastle_0050', 'ActorName', ('Item_ZeldaLetter',)),),
         entries=(Entry('Dm_HrlCastle_0050', 'GetInEvent_Zeldaletter', GENERIC_CUTSCENE),)),
+    # 27d gave nothing on the full skip (attempt 1). These tell the skip's rewrite of
+    # Dm_HrlCastle_0050 from the generic entry: 27d2 without the skip, 27d3 keeps Zelda's
+    # own entry, 27d4 leaves her scene untouched (does the skip lose the letter itself?).
+    '27d2': Variant(
+        _preset('HyruleCastle', COURTYARD, items=('Item_Ocarina_Fairy',), steps=CASTLE_STEPS),
+        gifts=(Gift('Dm_HrlCastle_0050', 'ActorName', ('Item_ZeldaLetter',)),),
+        entries=(Entry('Dm_HrlCastle_0050', 'GetInEvent_Zeldaletter', GENERIC_CUTSCENE),)),
+    '27d3': Variant(
+        _preset('HyruleCastle', COURTYARD, items=('Item_Ocarina_Fairy',), steps=CASTLE_STEPS),
+        gifts=(Gift('Dm_HrlCastle_0050', 'ActorName', ('Item_ZeldaLetter',)),)),
+    '27d4': Variant(
+        _preset('HyruleCastle', COURTYARD, items=('Item_Ocarina_Fairy',), steps=CASTLE_STEPS)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
@@ -124,6 +137,9 @@ VARIANTS: dict[str, Variant] = {
                 items=('Item_Scale_Silver',)),
         swap=(FIELD_CHILD, RUTO_LETTER_HASH, ITEM)),
 }
+
+
+NO_SKIP = {'27d2'}  # variants built without the full skip
 
 
 def _calls(data: bytes, match) -> list[int]:
@@ -157,8 +173,9 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
     v = VARIANTS[variant]
     game = GameData(nup)
     batch = Batch(nup)
-    skip, _, _ = files_with_fallback(game, FULL_SKIP_PHASE)
-    batch.files.update(batch.unpack(skip))
+    if variant not in NO_SKIP:
+        skip, _, _ = files_with_fallback(game, FULL_SKIP_PHASE)
+        batch.files.update(batch.unpack(skip))
     for gift in v.gifts:
         path = FLOW_DIR + gift.flow + FLOW_EXT
         batch.files[path] = give(batch.read(path), gift, ITEM)
