@@ -50,3 +50,9 @@ The tunics are not in the batch. Their grants (`SageOfFire`, `SageOfWater`) use 
 - [ ] 27d: does Zelda give the Boomerang instead of her letter? ______
 - [ ] 27e: catch the Cuccos: does Anju give the Boomerang instead of the bottle? ______
 - [ ] 27f: dive to the letter: what does it look like, and does picking it up give the Boomerang? ______
+
+## Batch 28 (the plan's gate)
+
+Built with the same tool (`28a`, `28a2`, `28b`, `28c`); see `docs/superpowers/plans/2026-11-20-npc-gifts-batch-1.md`, Task 1.
+
+- **28a, attempt 1:** the Hookshot wrapper was not on the island, and Link had the Bow but no arrows. The Fire Arrows quest (`SubEvent_GetFireArrow`, steps `Ready`, `Step01`, `Step02`, `Step03`) depends on `SageOfWater_IsAfter_Step08_Exp`, and shooting the sun (`FireArrow_Appear`, then `Dm_LakeHrl_0030`) moves it to `Step03`. Attempt 2 completes the Water Temple quest, puts the Fire Arrows quest at `Step02` and gives a medium quiver. **28a2** puts it at `Step03` (the arrows should already be there).

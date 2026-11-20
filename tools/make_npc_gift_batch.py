@@ -98,6 +98,12 @@ FIRE_ARROWS = (-158.1, 131.5, 523.4)
 FIRE_ARROWS_HASH = 4598657944866228526
 KING_ZORA_CHILD = (67.3, 118.9, 15.6)
 BOMB_FLOWER_ADULT = (-18.8, 105.0, -9.1)
+# The Water Temple quest done (the Fire Arrows quest depends on SageOfWater_IsAfter_Step08),
+# then the Fire Arrows quest's steps (the stone tablet moves it to Step02, the sun to Step03).
+WATER_DONE = tuple(('SageOfWater', s) for s in (
+    'Ready', 'Step00', 'Step01', 'Step03', 'Step04', 'Step05', 'Step06', 'Step07', 'Step07_00',
+    'Step07_1', 'Step07_2', 'Step08', 'Complete'))
+FIRE_ARROWS_STEPS = tuple(('SubEvent_GetFireArrow', s) for s in ('Ready', 'Step01', 'Step02', 'Step03'))
 # The castle courtyard on Impa's anchor (batches 20, 23a and 24a).
 COURTYARD = NewStartPos('RandoTest_MeetImpa',
                         (5.134531497955322, 126.82830810546875, -236.39134216308594),
@@ -140,10 +146,21 @@ VARIANTS: dict[str, Variant] = {
     # Batch 28 (the plan's gate): what batch 27 left untested.
     # 28a: LH Sun's Fire Arrows as a wrapper (of the Hookshot, usable by the adult): does
     #      it show (before or after shooting the sun) and give the Hookshot?
+    #      Attempt 1: no arrows to shoot, and the quest was not started (it depends on
+    #      SageOfWater_IsAfter_Step08). Now the Water Temple quest is complete, the Fire
+    #      Arrows quest is at Step02 (the sun can be shot; it moves to Step03, the arrows
+    #      appear) and Link has a quiver. 28a2: the quest already at Step03.
     '28a': Variant(
         _preset('HyruleField_Adult',
                 _pos('RandoTest_GiftFireArrows', (-160.1, 131.5, 521.4), FIRE_ARROWS),
-                items=('Item_Range_Bow',), adult=True),
+                items=('Item_Range_Bow', 'Item_Quiver_Medium'),
+                steps=WATER_DONE + FIRE_ARROWS_STEPS[:3], adult=True),
+        swap=(FIELD_ADULT, FIRE_ARROWS_HASH, 'Item_Hookshot')),
+    '28a2': Variant(
+        _preset('HyruleField_Adult',
+                _pos('RandoTest_GiftFireArrows', (-160.1, 131.5, 521.4), FIRE_ARROWS),
+                items=('Item_Range_Bow', 'Item_Quiver_Medium'),
+                steps=WATER_DONE + FIRE_ARROWS_STEPS, adult=True),
         swap=(FIELD_ADULT, FIRE_ARROWS_HASH, 'Item_Hookshot')),
     # 28b: Ruto's Letter from elsewhere (the start preset): does King Zora take it?
     '28b': Variant(
