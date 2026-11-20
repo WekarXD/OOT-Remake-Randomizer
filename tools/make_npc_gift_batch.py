@@ -38,7 +38,8 @@ from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.patch import RSTB_PATH  # noqa: E402
-from randomizer.test_start import NewStartPos, StartPreset  # noqa: E402
+from randomizer.test_start import (ANALYZED_INFO, NewStartPos, StartPreset,  # noqa: E402
+                                   subflow_closure)
 from randomizer.wrappers import WRAPPER_PREFIX, build_wrapper_files, wrap_sources  # noqa: E402
 
 ITEM = 'Item_Boomerang'
@@ -169,6 +170,22 @@ def redirect(data: bytes, entry: Entry) -> bytes:
     return data
 
 
+def _allow_subflows(batch: Batch, entry: Entry) -> None:
+    """Adds what `entry.new` calls to the event's `SubFlowList`: the game ignores a
+    call to a flow missing from it (27d, attempt 2: Zelda's scene lacked
+    `ActionGuide`, which the generic grant calls)."""
+    ver, rows = byml.load(batch.read(ANALYZED_INFO))
+    row = next((r for r in rows if r['__RowId'] == entry.flow), None)
+    if row is None:
+        return  # not an analysed event (NPC flows): nothing to keep in step
+    need = subflow_closure(batch.flow, [('Dm_SY_GetInEvent', entry.new)], skip=entry.flow)
+    missing = sorted(set(need) - set(row['SubFlowList']))
+    if missing:
+        print(f'{entry.flow}: SubFlowList += {missing}', file=sys.stderr)
+        row['SubFlowList'] = sorted(set(row['SubFlowList']) | set(need))
+        batch.files[ANALYZED_INFO] = byml.dump(rows, ver)
+
+
 def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
     v = VARIANTS[variant]
     game = GameData(nup)
@@ -182,6 +199,7 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
     for entry in v.entries:
         path = FLOW_DIR + entry.flow + FLOW_EXT
         batch.files[path] = redirect(batch.read(path), entry)
+        _allow_subflows(batch, entry)
     add_start(batch, v.preset)
     if v.swap is not None:
         banc, actor, content = v.swap
