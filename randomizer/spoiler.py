@@ -29,7 +29,7 @@ def _zone(banc: str) -> str:
 
 def build(settings, placement, chests, loc_map, game_version,
           skulltulas=(), gs_map=None, cutscenes_not_skipped=None, songs=None,
-          hearts=None, fairies=None) -> dict:
+          hearts=None, fairies=None, gifts=None) -> dict:
     original: dict[int, str] = {}
     site: dict[int, object] = {}
     for c in chests:
@@ -93,6 +93,11 @@ def build(settings, placement, chests, loc_map, game_version,
         if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
             key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
                               'zone': 'Great Fairy', 'hash': ''})
+    # NPC gifts (key items shuffled) too.
+    for loc, actor in sorted((gifts or {}).items()):
+        if actor in KEY_ITEMS or actor in SONG_BY_ACTOR:
+            key_items.append({'item': actor, 'label': _label(actor), 'location': loc,
+                              'zone': 'NPC gift', 'hash': ''})
     key_items.sort(key=lambda r: (r['label'], r['location'], r['hash']))
     result = {
         'seed': settings.seed,
@@ -121,6 +126,9 @@ def build(settings, placement, chests, loc_map, game_version,
     if fairies:
         result['great_fairies'] = [{'location': loc, 'item': a, 'label': _label(a)}
                                    for loc, a in sorted(fairies.items())]
+    if gifts:
+        result['npc_gifts'] = [{'location': loc, 'item': a, 'label': _label(a)}
+                               for loc, a in sorted(gifts.items())]
     if cutscenes_not_skipped is not None and settings.skip_cutscenes:
         result['cutscenes_not_skipped'] = list(cutscenes_not_skipped)
     return result
@@ -178,6 +186,9 @@ def to_text(d: dict) -> str:
     if 'great_fairies' in d:
         lines += ['', 'Great Fairies']
         lines += [f'  {r["location"]}: {r["label"]}' for r in d['great_fairies']]
+    if 'npc_gifts' in d:
+        lines += ['', 'NPC Gifts']
+        lines += [f'  {r["location"]}: {r["label"]}' for r in d['npc_gifts']]
     if 'skulltulas' in d:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:

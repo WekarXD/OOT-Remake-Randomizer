@@ -351,7 +351,8 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
             gated[container] = [h for h in open_sites if h not in gs
                                 and h in site_loc and site_loc[h] not in reach]
         for drop in ammo:
-            candidates = [h for h in gated[AMMO_CONTAINER[drop]] if h not in placed]
+            candidates = [h for h in gated[AMMO_CONTAINER[drop]] if h not in placed
+                          and not (h < 0 and drop in _scene_forbidden(h, world_forbidden))]
             if not candidates:
                 return None
             placed[rng.choice(candidates)] = drop

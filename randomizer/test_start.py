@@ -15,6 +15,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 
+from randomizer.analyzed_info import ANALYZED_INFO, subflow_closure  # noqa: F401 (re-exported)
 from randomizer.formats import byml
 
 from randomizer.formats.bfevfl import EventFlow, patch_pointers
@@ -41,7 +42,6 @@ FOREST_EXIT_FLAGS = (('HavePlayedEvent.KokiriForest_ArriveLostWood', True),
 # change to an *_Adult map.
 ERA_CHANGE = ('ReplaceEquipmentForEraChange', 'ReplaceEquipmentForEraChange')
 CHILDHOOD_FLAG = 'Sequence_IsChildhood'
-ANALYZED_INFO = 'RSDB/GameAnalyzedEventInfo.Product.111.rstbl.byml.zs'
 # Named start positions per map ({banc: {name: {'Rot': [x, y, z], 'Trans': [x, y, z]}}});
 # the teleport's NextStartPos must be one of them.
 START_POS = 'Banc/BancBasedResource/StartPos.byml.zs'
@@ -107,29 +107,6 @@ def chain_calls(preset: StartPreset) -> list[tuple[str, str]]:
     return [(s.flow, s.entry) for s in _chain(preset) if isinstance(s, SubflowSpec)]
 
 
-def subflow_closure(load: Callable[[str], EventFlow | None],
-                    calls: Iterable[tuple[str, str]], skip: str = '') -> list[str]:
-    """Sorted names of every flow reached from `calls` ((flow, entry) pairs),
-    following each entry's subflow list recursively; `load(name)` gives a flow
-    (None if missing) and `skip` is left out (the event's own flow). This is the
-    event's `SubFlowList` in `ANALYZED_INFO`."""
-    flows: dict[str, EventFlow | None] = {}
-    seen: set[tuple[str, str]] = set()
-    stack = list(calls)
-    while stack:
-        name, entry = stack.pop()
-        if (name, entry) in seen:
-            continue
-        seen.add((name, entry))
-        if name not in flows:
-            flows[name] = load(name)
-        flow = flows[name]
-        if flow is None or entry not in flow.entry_points:
-            continue
-        for i in flow.entry_subflows(entry):
-            ev = flow.events[i]
-            stack.append((ev.sub_flow or name, ev.sub_entry))
-    return sorted({name for name, _ in seen} - {skip})
 
 
 def with_subflow_list(info: bytes, event: str, names: Sequence[str]) -> bytes:

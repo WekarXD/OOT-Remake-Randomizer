@@ -466,6 +466,15 @@ class GiftFillTest(unittest.TestCase):
                 bad = (unwrappable | {TOKEN}) if loc in self.world_locs else self.forbidden
                 self.assertNotIn(drop, bad, f'seed {i}: {loc}')
 
+    def test_ammo_never_on_forbidden_gift(self):
+        # Generation: filler ammo goes to sites gated by its container in its own loop; it
+        # must not land on a world gift that cannot wrap it (a Bombchu bundle did).
+        ammo = frozenset(AMMO_CONTAINER)
+        for i in range(30):
+            r = self._all(world_forbidden=ammo, seed=f'A{i}')
+            for loc in self.world_locs:
+                self.assertNotIn(r.gifts[loc], ammo, f'seed {i}: {loc}')
+
     def test_excluded_gift_item_stays(self):
         r = self._all(seed='X', excluded_items=frozenset({'Item_ZeldaLetter'}))
         self.assertEqual(r.gifts['HC Zeldas Letter'], 'Item_ZeldaLetter')

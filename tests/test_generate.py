@@ -133,11 +133,19 @@ class RealTests(unittest.TestCase):
                 r = generate(NUP_PATH, out, Settings(seed='off'))
             fwf.assert_not_called()
             old.assert_not_called()
-            # The only extra files are the Great Fairy flows (key items shuffled).
+            # The only extra files are the Great Fairy flows, the flows of the NPC gifts
+            # whose item changed and the analysed-event table (key items shuffled).
+            from randomizer.analyzed_info import ANALYZED_INFO
             from randomizer.fairies import FOUNTAINS, TRIFORCE_FLOW
+            from randomizer.gifts import GIFT_BY_LOCATION, Gift
+            data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
+            gift_flows = {f'Event/EventFlow/{GIFT_BY_LOCATION[g["location"]].flow}.bfevfl.zs'
+                          for g in data['npc_gifts']
+                          if isinstance(GIFT_BY_LOCATION[g['location']], Gift)
+                          and g['item'] != GIFT_BY_LOCATION[g['location']].content}
             fairy_flows = {f'Event/EventFlow/{n}.bfevfl.zs'
-                           for n in [f.flow for f in FOUNTAINS] + [TRIFORCE_FLOW]}
-            self.assertEqual(set(wm.call_args.args[4]), fairy_flows)
+                           for n in [f.flow for f in FOUNTAINS] + [TRIFORCE_FLOW]} | gift_flows
+            self.assertEqual(set(wm.call_args.args[4]) - {ANALYZED_INFO}, fairy_flows)
             text = Path(r.spoiler_txt).read_text(encoding='utf-8')
             self.assertNotIn('Cutscenes not skipped', text)
             data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
@@ -557,6 +565,57 @@ class RealTests(unittest.TestCase):
                         size = len(codec.decompress(rel + '.zs', (root / (rel + '.zs')).read_bytes()))
                         self.assertGreaterEqual(rstb.get(rel), size, rel)
 
+    def test_npc_gifts_in_mod(self):
+        # Design 2026-11-20-npc-gifts-batch-1: with key items shuffled each NPC gift gives
+        # what the spoiler says, with and without the full skip.
+        from randomizer.formats import byml
+        from randomizer.gifts import GIFT_BY_LOCATION, Gift
+        from randomizer.test_start import ANALYZED_INFO
+        for skip in (False, True):
+            with self.subTest(skip=skip), tempfile.TemporaryDirectory() as out:
+                res = generate(NUP_PATH, out, Settings(seed='regalos', skip_cutscenes=skip))
+                data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+                gifts = {r['location']: r['item'] for r in data['npc_gifts']}
+                self.assertEqual(set(gifts), set(GIFT_BY_LOCATION))
+                self.assertIn('\nNPC Gifts\n', Path(res.spoiler_txt).read_text(encoding='utf-8'))
+                root = Path(res.mod_dir) / 'romfs'
+                changed = {loc: g for loc, g in GIFT_BY_LOCATION.items() if gifts[loc] != g.content}
+                self.assertTrue(changed)
+                with NupArchive(NUP_PATH) as nup:
+                    codec = ZsCodec.from_archive(nup)
+                    for loc, g in changed.items():
+                        if isinstance(g, Gift):
+                            rel = f'Event/EventFlow/{g.flow}.bfevfl.zs'
+                            flow = EventFlow(codec.decompress(rel, (root / rel).read_bytes()))
+                            given = {flow.action_params(i).get(g.key)
+                                     for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW}
+                            self.assertIn(gifts[loc], given, loc)
+                            self.assertFalse(set(g.vanilla) & given, loc)
+                        else:
+                            banc = byml.load(codec.decompress(g.banc, (root / g.banc).read_bytes()))[1]
+                            actor = next(x for x in banc['Actors'] if x.get('Hash') == g.hash)
+                            self.assertEqual(actor['Gyaml'], f'Obj_Rando_{gifts[loc]}', loc)
+                            self.assertTrue((root / 'Pack' / 'Actor'
+                                             / f'Obj_Rando_{gifts[loc]}.pack.zs').exists())
+                    entry_changed = [g for g in changed.values()
+                                     if isinstance(g, Gift) and g.entry and g.flow.startswith('Dm_')]
+                    if entry_changed:
+                        info = byml.load(codec.decompress(
+                            ANALYZED_INFO, (root / ANALYZED_INFO).read_bytes()))[1]
+                        rows = {r['__RowId']: r.get('SubFlowList', []) for r in info}
+                        for g in entry_changed:
+                            self.assertIn('ActionGuide', rows[g.flow], g.location)
+
+    def test_npc_gifts_not_with_vanilla_keys(self):
+        from randomizer.gifts import GIFTS, Gift
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla'))
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            self.assertNotIn('npc_gifts', data)
+            for g in GIFTS:
+                if isinstance(g, Gift):
+                    self.assertNotIn(f'Event/EventFlow/{g.flow}.bfevfl.zs', res.changed_files)
+
     def test_great_fairies_not_with_vanilla_keys(self):
         with tempfile.TemporaryDirectory() as out:
             res = generate(NUP_PATH, out, Settings(seed='v', key_items_mode='vanilla'))
@@ -725,6 +784,23 @@ class SpoilerTextTest(unittest.TestCase):
         text = spoiler.to_text(d)
         self.assertIn('\nGreat Fairies\n  DMT Great Fairy Reward: ', text)
         self.assertNotIn('Great Fairies', spoiler.to_text(self._data('off')))
+
+    def test_npc_gifts_section(self):
+        chests = load_chests_fixture(CHESTS_FIXTURE)
+        placement = {c.hash: c.drop for c in chests}
+        gifts = {'GC Darunias Joy': 'Item_Hookshot', 'Kak Man on Roof': 'TBox_Rupee_Red'}
+        d = spoiler.build(Settings(seed='x'), placement, chests, locations.load_map(),
+                          '1.3.1', gifts=gifts)
+        self.assertEqual(d['npc_gifts'],
+                         [{'location': 'GC Darunias Joy', 'item': 'Item_Hookshot',
+                           'label': 'Hookshot'},
+                          {'location': 'Kak Man on Roof', 'item': 'TBox_Rupee_Red',
+                           'label': spoiler._label('TBox_Rupee_Red')}])
+        rows = [r for r in d['key_items'] if r['location'] == 'GC Darunias Joy']
+        self.assertEqual([(r['item'], r['zone']) for r in rows], [('Item_Hookshot', 'NPC gift')])
+        text = spoiler.to_text(d)
+        self.assertIn('\nNPC Gifts\n  GC Darunias Joy: Hookshot', text)
+        self.assertNotIn('NPC Gifts', spoiler.to_text(self._data('off')))
 
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))

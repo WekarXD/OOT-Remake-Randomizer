@@ -20,7 +20,7 @@ from .fairies import FOUNTAIN_FORBIDDEN
 from .formats import byml
 from .formats.bfevfl import SUBFLOW, EventFlow, set_string_param, set_subflow_entry
 from .items import KEY_ITEMS
-from .test_start import subflow_closure
+from .analyzed_info import subflow_closure
 
 GRANT_FLOW = 'Dm_SY_GetInEvent'
 GENERIC_SCENE = 'GetInEvent_Demo_NotLookatObjectEntry'  # in a Dm_ scene (27c, 27d)
@@ -142,8 +142,9 @@ def gift_subflow_list(info: bytes, load: Callable[[str], EventFlow | None],
             continue
         row = by_id[g.flow]
         need = set(subflow_closure(load, [(GRANT_FLOW, g.entry[1])], skip=g.flow))
-        if not need <= set(row['SubFlowList']):
-            row['SubFlowList'] = sorted(set(row['SubFlowList']) | need)
+        have = set(row.get('SubFlowList', []))
+        if not need <= have:
+            row['SubFlowList'] = sorted(have | need)
             changed = True
     return byml.dump(rows, ver) if changed else info
 

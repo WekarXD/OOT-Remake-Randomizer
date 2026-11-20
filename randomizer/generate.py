@@ -24,6 +24,9 @@ from .game import GameData
 from . import wrappers
 from .songs import song_flow_patches
 from .fairies import FAIRY_REWARDS, fairy_flow_patches
+from .gifts import GIFT_ITEMS, GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
+from .formats.bfevfl import EventFlow
+from .analyzed_info import ANALYZED_INFO
 from .logic.world import World, load_vanilla_settings
 from .nup import SUPPORTED_DISPLAY_VERSION, SUPPORTED_UPDATE_VERSION, NupArchive, NupError, TITLE_ID
 
@@ -89,18 +92,22 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 world_settings = dict(load_vanilla_settings())
                 world_settings['tokensanity'] = settings.tokensanity
                 skulltulas, gs_map, gs_forbidden = (), None, frozenset()
+                shuffled = settings.key_items_mode != 'vanilla'
+                # The world NPC gifts become wrappers: never what cannot be wrapped.
+                world_forbidden = _world_forbidden(game, chests) if shuffled else frozenset()
                 if settings.tokensanity != 'off':
                     skulltulas = game.skulltulas()
                     gs_map = locations.load_gs_map()
-                    # The Great Fairy rewards are in no chest: check them too.
+                    # The Great Fairy rewards and NPC gift items are in no chest: check them too.
                     gs_forbidden = _gs_forbidden(
                         game, chests, loc_map,
-                        FAIRY_REWARDS if settings.key_items_mode != 'vanilla' else ())
+                        FAIRY_REWARDS | GIFT_ITEMS if shuffled else ())
                     if settings.shuffle_songs == 'anywhere':
                         # No Skulltula can drop a song (no wrapper or world actor).
                         gs_forbidden |= frozenset(VANILLA_SONGS.values())
                 placed = place_all(chests, loc_map, World(world_settings), settings,
-                                   skulltulas, gs_map, gs_forbidden)
+                                   skulltulas, gs_map, gs_forbidden,
+                                   world_forbidden=world_forbidden)
                 placement = placed.chests
                 if tmp_dir.exists():
                     shutil.rmtree(tmp_dir)
@@ -130,9 +137,22 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(
                             f'Could not prepare the Great Fairies: {e}') from e
+                if placed.gifts:
+                    try:
+                        extras, sizes = _with_flow_patches(
+                            game, lambda read: gift_flow_patches(read, placed.gifts),
+                            extras, sizes)
+                        extras, sizes = _with_file_patch(
+                            game, ANALYZED_INFO,
+                            lambda info, load: gift_subflow_list(info, load, placed.gifts),
+                            extras, sizes)
+                    except (ValueError, BfevflError) as e:
+                        raise GenerationError(f'Could not prepare the NPC gifts: {e}') from e
                 try:
                     swaps = ({h.hash: (h.banc, placed.hearts[h.location])
-                              for h in game.boss_hearts()} if placed.hearts else None)
+                              for h in game.boss_hearts()} if placed.hearts else {})
+                    swaps.update(gift_actor_swaps(placed.gifts))
+                    swaps = swaps or None
                     changed = patch.write_mod(game, placement, tmp_dir, loc_map, extras,
                                               extra_sizes=sizes, report=rstb_report,
                                               actor_swaps=swaps)
@@ -148,7 +168,8 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 if settings.spoiler:
                     data = spoiler.build(settings, placement, chests, loc_map,
                                          SUPPORTED_DISPLAY_VERSION, skulltulas, gs_map, not_skipped,
-                                         placed.songs, placed.hearts, placed.fairies)
+                                         placed.songs, placed.hearts, placed.fairies,
+                                         placed.gifts)
                     # '\n' line endings everywhere, so the spoiler log is the same
                     # whether it is generated on Windows or in the browser.
                     (tmp_dir / 'spoiler.txt').write_text(spoiler.to_text(data),
@@ -210,6 +231,44 @@ def _with_flow_patches(game: GameData, patches,
         if grow:
             deltas[p] = grow
     return files, deltas
+
+
+def _with_file_patch(game: GameData, path: str, patch_fn,
+                     extras: dict[str, bytes] | None,
+                     sizes: dict[str, int] | None) -> tuple[dict[str, bytes], dict[str, int]]:
+    """`extras` and `sizes` with `path` (a romfs path ending in .zs) replaced by
+    `patch_fn(data, load)`: `data` is its decompressed current version (from `extras` if a
+    patch wrote it, else the game's) and `load(flow)` gives a flow's current EventFlow (or
+    None). An unchanged result is left out."""
+    files, deltas = dict(extras or {}), dict(sizes or {})
+
+    def current(p: str) -> bytes:
+        return game.codec.decompress(p, files[p] if p in files else game.nup.read(p))
+
+    def load(name: str) -> EventFlow | None:
+        p = FLOW_DIR + name + FLOW_EXT
+        return EventFlow(current(p)) if p in files or game.nup.has(p) else None
+
+    before = current(path)
+    data = patch_fn(before, load)
+    if data == before:
+        return files, deltas
+    files[path] = game.codec.compress(path, data)
+    grow = len(data) - len(game.codec.decompress(path, game.nup.read(path)))
+    deltas.pop(path, None)
+    if grow:
+        deltas[path] = grow
+    return files, deltas
+
+
+def _world_forbidden(game, chests) -> frozenset[str]:
+    """What a world NPC gift (an actor swapped for a wrapper) can never hold: the
+    contents of the pool (chests, fountain rewards, NPC gift items, songs) that no wrapper
+    can be built for."""
+    contents = ({c.drop for c in chests} | set(FAIRY_REWARDS) | {g.content for g in GIFTS}
+                | set(VANILLA_SONGS.values()))
+    wrappable = wrappers.wrap_sources(game, contents)
+    return frozenset(c for c in sorted(contents) if c not in wrappable)
 
 
 def _gs_forbidden(game, chests, loc_map, extra=()) -> frozenset[str]:
