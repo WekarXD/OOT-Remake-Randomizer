@@ -19,7 +19,9 @@ item that shows in the inventory), the way the shuffle would:
 27f: Lake Hylia, above Ruto's Letter: the bottle actor is a wrapper of the Boomerang;
      Link has the Silver Scale.
 27d2-27d4: Zelda without the skip, with her own entry, untouched (27d gave nothing).
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4]
+28a-28c: Fire Arrows as a wrapper, Ruto's Letter from elsewhere, Silver Gauntlets without
+     the bracelet (the plan's gate, docs/superpowers/plans/2026-11-20-npc-gifts-batch-1.md).
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c]
 """
 import math
 import os
@@ -78,8 +80,9 @@ def _pos(name: str, at: tuple[float, float, float],
 
 
 def _preset(banc: str, pos: NewStartPos, items: tuple[str, ...] = (),
-            steps: tuple[tuple[str, str], ...] = ()) -> StartPreset:
-    return StartPreset(banc, pos.name, items=items, new_pos=pos, challenge_steps=steps)
+            steps: tuple[tuple[str, str], ...] = (), adult: bool = False) -> StartPreset:
+    return StartPreset(banc, pos.name, items=items, new_pos=pos, challenge_steps=steps,
+                       adult=adult)
 
 
 CASTLE_STEPS = tuple(('Goto_HyruleCastle', f'Step0{i}') for i in (1, 2, 3, 4))
@@ -90,6 +93,11 @@ ANJU = (-72.1, 99.3, 73.1)
 RUTO_LETTER = (-151.6, 125.0, 461.0)
 RUTO_LETTER_HASH = 474136620438465634
 FIELD_CHILD = 'Banc/HyruleField/HyruleField_Child_Static.bcett.byml.zs'
+FIELD_ADULT = 'Banc/HyruleField/HyruleField_Adult_Static.bcett.byml.zs'
+FIRE_ARROWS = (-158.1, 131.5, 523.4)
+FIRE_ARROWS_HASH = 4598657944866228526
+KING_ZORA_CHILD = (67.3, 118.9, 15.6)
+BOMB_FLOWER_ADULT = (-18.8, 105.0, -9.1)
 # The castle courtyard on Impa's anchor (batches 20, 23a and 24a).
 COURTYARD = NewStartPos('RandoTest_MeetImpa',
                         (5.134531497955322, 126.82830810546875, -236.39134216308594),
@@ -129,6 +137,25 @@ VARIANTS: dict[str, Variant] = {
         gifts=(Gift('Dm_HrlCastle_0050', 'ActorName', ('Item_ZeldaLetter',)),)),
     '27d4': Variant(
         _preset('HyruleCastle', COURTYARD, items=('Item_Ocarina_Fairy',), steps=CASTLE_STEPS)),
+    # Batch 28 (the plan's gate): what batch 27 left untested.
+    # 28a: LH Sun's Fire Arrows as a wrapper (of the Hookshot, usable by the adult): does
+    #      it show (before or after shooting the sun) and give the Hookshot?
+    '28a': Variant(
+        _preset('HyruleField_Adult',
+                _pos('RandoTest_GiftFireArrows', (-160.1, 131.5, 521.4), FIRE_ARROWS),
+                items=('Item_Range_Bow',), adult=True),
+        swap=(FIELD_ADULT, FIRE_ARROWS_HASH, 'Item_Hookshot')),
+    # 28b: Ruto's Letter from elsewhere (the start preset): does King Zora take it?
+    '28b': Variant(
+        _preset('ZoraDomain_Child',
+                _pos('RandoTest_GiftKingZora', (63.3, 118.9, 15.6), KING_ZORA_CHILD),
+                items=('Item_Bottle_Letter',))),
+    # 28c: adult with the Silver Gauntlets and a bomb bag but no Goron's Bracelet: can he
+    #      throw bombs and lift a bomb flower?
+    '28c': Variant(
+        _preset('GoronCity_Adult',
+                _pos('RandoTest_SilverNoBracelet', (-15.8, 105.0, -9.1), BOMB_FLOWER_ADULT),
+                items=('Item_Gauntlet_Silver', 'Item_BombBag_Medium'), adult=True)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
