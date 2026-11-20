@@ -622,6 +622,18 @@ class RealTests(unittest.TestCase):
             data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
             self.assertNotIn('great_fairies', data)
 
+    def test_world_gift_sites_hold_proven_wrappers_only(self):
+        # Final review: minor-item wrappers (rupees, arrow bundles...) are untested in game
+        # (batch 18 open), so a world NPC gift only holds key items, songs and hearts.
+        from randomizer.generate import _world_forbidden
+        with NupArchive(NUP_PATH) as nup:
+            game = GameData(nup)
+            out = _world_forbidden(game, game.chests())
+        for c in ('TBox_Rupee_Red', 'TBox_ArrowBundle_Medium', 'Item_ScrubBusinessSeed'):
+            self.assertIn(c, out)
+        for c in ('Item_Hookshot', 'Item_Melody_StormSong', 'Obj_Heart_Piece', 'Item_DinFire'):
+            self.assertNotIn(c, out)
+
     def test_gs_forbidden_extra(self):
         from randomizer.generate import _gs_forbidden
         with NupArchive(NUP_PATH) as nup:

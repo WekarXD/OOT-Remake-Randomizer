@@ -263,6 +263,20 @@ class BombBagTest(unittest.TestCase):
         self.assertFalse(fn(State(), 'child'))
         self.assertTrue(fn(State(), 'adult'))
 
+    def test_lh_sun_needs_water_temple(self):
+        # Batch 28a: the remake's Fire Arrows quest depends on the Water Temple being done
+        # (SageOfWater_IsAfter_Step08); OoTR's scarecrow path does not apply.
+        region = _vanilla_world().regions['Lake Hylia']
+        fn = dict(region.locations)['LH Sun']
+        s = State()
+        for item in ('Item_Range_Bow', 'Item_Longshot', 'Scarecrow Song', 'Ocarina',
+                     'Ocarina A Button', 'Ocarina C up Button', 'Ocarina C down Button',
+                     'Ocarina C left Button', 'Ocarina C right Button'):
+            s.collect(item)
+        self.assertFalse(fn(s, 'adult'))
+        s.collect('Water Temple Clear')
+        self.assertTrue(fn(s, 'adult'))
+
     def test_vanilla_fixed_has_remake_fairy_rewards(self):
         # The remake swaps two rewards against the N64 (batch 26): the castle fairy
         # gives the magic, the mountain one Din's Fire.

@@ -73,6 +73,9 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
     # Only the adult man on the roof has the Piece of Heart (Npc_Hylia_001_Adult; the
     # child's flow has no grant). NPC gifts research.
     ('Kak Odd Medicine Rooftop', 'locations', 'Kak Man on Roof'): '({orig}) and is_adult',
+    # The Fire Arrows only appear once the Water Temple is done (their quest depends on
+    # SageOfWater_IsAfter_Step08, batch 28a): OoTR's scarecrow path does not apply.
+    ('Lake Hylia', 'locations', 'LH Sun'): "'Water Temple Clear' and can_use(Bow)",
 }
 
 

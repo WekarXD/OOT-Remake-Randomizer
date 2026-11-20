@@ -24,6 +24,7 @@ from .game import GameData
 from . import wrappers
 from .songs import song_flow_patches
 from .fairies import FAIRY_REWARDS, fairy_flow_patches
+from .items import KEY_ITEMS
 from .gifts import GIFT_ITEMS, GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
 from .formats.bfevfl import EventFlow
 from .analyzed_info import ANALYZED_INFO
@@ -261,14 +262,22 @@ def _with_file_patch(game: GameData, path: str, patch_fn,
     return files, deltas
 
 
+# What a world NPC gift's wrapper is proven to hand over in game: key items (27f, 28a),
+# songs (Dungeon Rewards boss hearts) and Pieces of Heart / Heart Containers (the
+# token-clone recipe, batch 14). Minor-item wrappers (rupees, ammo...) are still untested.
+_WORLD_PROVEN = frozenset(KEY_ITEMS) | frozenset(VANILLA_SONGS.values()) | {
+    'Obj_Heart_Piece', 'Obj_Heart_Container'}
+
+
 def _world_forbidden(game, chests) -> frozenset[str]:
     """What a world NPC gift (an actor swapped for a wrapper) can never hold: the
-    contents of the pool (chests, fountain rewards, NPC gift items, songs) that no wrapper
-    can be built for."""
+    contents of the pool (chests, fountain rewards, NPC gift items, songs) that are not
+    proven wrapper contents (`_WORLD_PROVEN`) or that no wrapper can be built for."""
     contents = ({c.drop for c in chests} | set(FAIRY_REWARDS) | {g.content for g in GIFTS}
                 | set(VANILLA_SONGS.values()))
     wrappable = wrappers.wrap_sources(game, contents)
-    return frozenset(c for c in sorted(contents) if c not in wrappable)
+    return frozenset(c for c in sorted(contents)
+                     if c not in wrappable or c not in _WORLD_PROVEN)
 
 
 def _gs_forbidden(game, chests, loc_map, extra=()) -> frozenset[str]:
