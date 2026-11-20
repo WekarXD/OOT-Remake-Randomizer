@@ -86,6 +86,16 @@ class StateTest(unittest.TestCase):
         self.assertTrue(s.has('Progressive Strength Upgrade', 2))
         self.assertFalse(s.has('Progressive Strength Upgrade', 3))
 
+    def test_bracelet_is_strength_one(self):
+        # NPC gifts batch 1: the Goron's Bracelet moves; it is strength level 1, and a
+        # later Silver Gauntlets raise it (batch 28c: any level lifts and throws bombs).
+        s = State()
+        s.collect('Item_Gauntlet_Goron')
+        self.assertTrue(s.has('Progressive Strength Upgrade', 1))
+        self.assertFalse(s.has('Progressive Strength Upgrade', 2))
+        s.collect('Item_Gauntlet_Silver')
+        self.assertTrue(s.has('Progressive Strength Upgrade', 2))
+
     def test_unknown_item_raises(self):
         with self.assertRaises(KeyError):
             State().collect('Not An Item')
@@ -245,6 +255,13 @@ class BombBagTest(unittest.TestCase):
             s = State()
             s.collect('Item_GlassTruth')
             self.assertFalse(fn(s, 'child'))
+
+    def test_man_on_roof_needs_adult(self):
+        # Only Npc_Hylia_001_Adult hands over the Piece of Heart (NPC gifts research).
+        region = _vanilla_world().regions['Kak Odd Medicine Rooftop']
+        fn = dict(region.locations)['Kak Man on Roof']
+        self.assertFalse(fn(State(), 'child'))
+        self.assertTrue(fn(State(), 'adult'))
 
     def test_vanilla_fixed_has_remake_fairy_rewards(self):
         # The remake swaps two rewards against the N64 (batch 26): the castle fairy

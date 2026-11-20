@@ -55,6 +55,13 @@ EVENT_PATCH_HASHES: set[int] = {
 }
 
 
+# Homes of the NPC gift items (design 2026-11-20); Item_Bottle's is Anju's.
+NPC_GIFT_HOMES = {
+    'GC Darunias Joy', 'HC Zeldas Letter', 'HC Malon Egg', 'ToT Light Arrows Cutscene',
+    'LH Sun', 'GC Rolling Goron as Child', 'GC Rolling Goron as Adult', 'ZD King Zora Thawed',
+    'Kak Anju as Child', 'LH Underwater Item'}
+
+
 class LocationMapTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -116,8 +123,11 @@ class LocationMapTest(unittest.TestCase):
 
 class ItemsTest(unittest.TestCase):
     def test_key_items(self):
-        # 15 from chests plus the six Great Fairy rewards (design 2026-11-15).
-        self.assertEqual(len(items.KEY_ITEMS), 21)
+        # 15 from chests, the six Great Fairy rewards (design 2026-11-15) and the ten
+        # NPC gift items of batch 1 (design 2026-11-20).
+        self.assertEqual(len(items.KEY_ITEMS), 31)
+        self.assertEqual(items.KEY_ITEMS['Item_Gauntlet_Goron'], 'Progressive Strength Upgrade')
+        self.assertEqual(items.KEY_ITEMS['Item_Bottle_Letter'], 'Rutos Letter')
         self.assertEqual(items.KEY_ITEMS['Item_Longshot'], 'Progressive Hookshot')
         self.assertEqual(items.KEY_ITEMS['Item_BombBag_Small'], 'Bomb Bag')
         self.assertEqual(set(items.LABELS), set(items.KEY_ITEMS))
@@ -125,6 +135,8 @@ class ItemsTest(unittest.TestCase):
 
     def test_item_level(self):
         self.assertEqual(items.ITEM_LEVEL['Item_Longshot'], ('Progressive Hookshot', 2))
+        self.assertEqual(items.ITEM_LEVEL['Item_Gauntlet_Goron'],
+                         ('Progressive Strength Upgrade', 1))
         self.assertEqual(items.ITEM_LEVEL['Item_Gauntlet_Gold'],
                          ('Progressive Strength Upgrade', 3))
 
@@ -132,7 +144,8 @@ class ItemsTest(unittest.TestCase):
         self.assertEqual(set(items.KEY_ITEM_HOME), set(items.KEY_ITEMS))
         from randomizer.fairies import FOUNTAINS
         self.assertEqual(set(items.KEY_ITEM_HOME.values()),
-                         set(KEY_ITEM_LOCATIONS.values()) | {f.location for f in FOUNTAINS})
+                         set(KEY_ITEM_LOCATIONS.values()) | {f.location for f in FOUNTAINS}
+                         | NPC_GIFT_HOMES)
         self.assertEqual(items.KEY_ITEM_HOME['Item_Longshot'],
                          'Water Temple Longshot Chest')
 

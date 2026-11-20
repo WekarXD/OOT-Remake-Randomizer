@@ -70,6 +70,9 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
         f'({{orig}}) and ({_DEKU_UPPER})',
     ('Deku Tree Lobby', 'exits', 'Deku Tree Basement'):
         f'deku_tree_shortcuts or (({{orig}}) and here({_DEKU_UPPER}))',
+    # Only the adult man on the roof has the Piece of Heart (Npc_Hylia_001_Adult; the
+    # child's flow has no grant). NPC gifts research.
+    ('Kak Odd Medicine Rooftop', 'locations', 'Kak Man on Roof'): '({orig}) and is_adult',
 }
 
 

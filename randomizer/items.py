@@ -25,16 +25,27 @@ KEY_ITEMS: dict[str, str] = {
     'Item_FaroreWind': 'Farores Wind',
     'Item_NayruLove': 'Nayrus Love',
     'Item_FairyBless_DefenseDouble': 'Double Defense',
+    # NPC gifts, batch 1 (design 2026-11-20-npc-gifts-batch-1).
+    'Item_Gauntlet_Goron': 'Progressive Strength Upgrade',
+    'Item_ZeldaLetter': 'Zeldas Letter',
+    'Item_WeirdEgg': 'Weird Egg',
+    'Item_Arrow_Light': 'Light Arrows',
+    'Item_Arrow_Fire': 'Fire Arrows',
+    'Item_BombBag_Medium': 'Bomb Bag',
+    'Obj_Armor_Goron': 'Goron Tunic',
+    'Obj_Armor_Zora': 'Zora Tunic',
+    'Item_Bottle': 'Bottle',
+    'Item_Bottle_Letter': 'Rutos Letter',
 }
 
 # The logic needs these items to progress: excluding them never gives a
 # beatable game.
 NON_EXCLUDABLE = frozenset({'Item_Longshot', 'Item_Gauntlet_Gold'})
 
-# Level of the progressive items. Strength level 1 (Goron's Bracelet)
-# is fixed, from an event.
+# Level of the progressive items. Any strength level lifts and throws bombs (batch 28c).
 ITEM_LEVEL: dict[str, tuple[str, int]] = {
     'Item_Hookshot': ('Progressive Hookshot', 1),
+    'Item_Gauntlet_Goron': ('Progressive Strength Upgrade', 1),
     'Item_Longshot': ('Progressive Hookshot', 2),
     'Item_Gauntlet_Silver': ('Progressive Strength Upgrade', 2),
     'Item_Gauntlet_Gold': ('Progressive Strength Upgrade', 3),
@@ -62,6 +73,16 @@ LABELS: dict[str, str] = {
     'Item_FaroreWind': "Farore's Wind",
     'Item_NayruLove': "Nayru's Love",
     'Item_FairyBless_DefenseDouble': 'Double Defense',
+    'Item_Gauntlet_Goron': "Goron's Bracelet",
+    'Item_ZeldaLetter': "Zelda's Letter",
+    'Item_WeirdEgg': 'Weird Egg',
+    'Item_Arrow_Light': 'Light Arrows',
+    'Item_Arrow_Fire': 'Fire Arrows',
+    'Item_BombBag_Medium': 'Big Bomb Bag',
+    'Obj_Armor_Goron': 'Goron Tunic',
+    'Obj_Armor_Zora': 'Zora Tunic',
+    'Item_Bottle': 'Bottle',
+    'Item_Bottle_Letter': "Ruto's Letter",
 }
 
 # Remake actor -> vanilla OoTR location where that item is.
@@ -89,6 +110,18 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Item_FaroreWind': 'ZF Great Fairy Reward',
     'Item_NayruLove': 'Colossus Great Fairy Reward',
     'Item_FairyBless_DefenseDouble': 'OGC Great Fairy Reward',
+    # NPC gifts, batch 1. Item_Bottle is at two gifts: its home is Anju's, and the Big
+    # Poes' location keeps OoTR's own 'Bottle'.
+    'Item_Gauntlet_Goron': 'GC Darunias Joy',
+    'Item_ZeldaLetter': 'HC Zeldas Letter',
+    'Item_WeirdEgg': 'HC Malon Egg',
+    'Item_Arrow_Light': 'ToT Light Arrows Cutscene',
+    'Item_Arrow_Fire': 'LH Sun',
+    'Item_BombBag_Medium': 'GC Rolling Goron as Child',
+    'Obj_Armor_Goron': 'GC Rolling Goron as Adult',
+    'Obj_Armor_Zora': 'ZD King Zora Thawed',
+    'Item_Bottle': 'Kak Anju as Child',
+    'Item_Bottle_Letter': 'LH Underwater Item',
 }
 
 # Dungeon items (and minigame keys): always stay vanilla.
