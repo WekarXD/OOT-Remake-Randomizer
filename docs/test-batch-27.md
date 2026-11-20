@@ -31,6 +31,7 @@ The tunics are not in the batch. Their grants (`SageOfFire`, `SageOfWater`) use 
 - **27d, attempt 1:** Zelda gave nothing (no Boomerang in the inventory), though her meeting played: Impa then taught the Lullaby. On the full skip, `Dm_HrlCastle_0050` runs `EntryPoint0` straight to the grant (event 238, after `Item_ZeldaLetter` joins the event), so the grant is on the played path. As with Din's fountain (batch 26e), the skip's rewrite may lose the item. Three variants tell the causes apart: **27d2** without the full skip; **27d3** on the skip but keeping Zelda's own `GetInEvent_Zeldaletter` entry; **27d4** on the skip with her scene untouched (does it give the letter?).
 - **27d2, attempt 1:** without the skip, still nothing. **Cause:** the generic grant calls `ActionGuide`, and `Dm_HrlCastle_0050`'s `SubFlowList` in `RSDB/GameAnalyzedEventInfo` lacks it (Darunia's and the fountains' lists have it, which is why 27c and batch 26 worked). The game ignores a call to a flow missing from the list. The tool now adds the new entry's closure to the event's list; 27d and 27d2 are rebuilt (attempt 2).
 - **27d, attempt 2:** on the full skip, Zelda gave the Boomerang. **27d works**; 27d2-27d4 are not needed. Rule for the implementation: whenever a grant's entry changes, the event's `SubFlowList` must include the new entry's closure.
+- **27e:** Anju gave the Boomerang for the Cuccos (`ReveiveItem` of an `NpcCommon` hand-over renamed). **27e works.**
 
 ## Setup
 
