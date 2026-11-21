@@ -107,3 +107,6 @@ Results (2026-11-21):
 - **31d:** Medigoron sold the Boomerang, then offered something again (not enough rupees left to see what). **He resells: the site needs a sold-out flag.**
 - **31e:** the start was off the floating carpet; without Hover Boots the salesman could not be reached. **31e2** starts on the carpet (centre 37.65, 59.75) and gives the Hover Boots as a fallback.
 - **31f:** the 100-token reward gave the Boomerang. **The 100-token reward moves.**
+- **31e2:** on the carpet, the salesman sold the Boomerang, then sold it again. **His sale moves; like Medigoron's, it needs a sold-out flag.**
+
+**Batch 31: every site moves. Both merchants resell, so a shuffled merchant needs a sold-out flag (OoTR sells each once).**
