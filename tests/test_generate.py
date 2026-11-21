@@ -397,7 +397,11 @@ class RealTests(unittest.TestCase):
             data = json.loads(Path(ra.spoiler_json).read_text(encoding='utf-8'))
             self.assertNotIn('skulltulas', data)
             self.assertNotIn('tokensanity', data['settings'])
-            self.assertNotIn('Skulltula', Path(ra.spoiler_txt).read_text(encoding='utf-8'))
+            # No Skulltula section or token line (the house's rewards are NPC gift
+            # locations named "Kak NN Gold Skulltula Reward", NPC gifts batch 2).
+            text = Path(ra.spoiler_txt).read_text(encoding='utf-8')
+            self.assertNotIn('\nSkulltulas\n', text)
+            self.assertNotIn('Tokensanity', text)
 
     def test_generate_songs_off_unchanged(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
