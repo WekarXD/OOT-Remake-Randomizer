@@ -23,7 +23,9 @@ item that shows in the inventory), the way the shuffle would:
      the bracelet (the plan's gate, docs/superpowers/plans/2026-11-20-npc-gifts-batch-1.md).
 29a-29d: NPC gifts batch 2 (docs/npc-gifts-research.md, "Batch 2"): upgrades given out of
      order, a Gold Skulltula house reward and a minigame prize.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d]
+30a-30e: the gate of NPC gifts batch 2 (docs/superpowers/plans/2026-11-21-npc-gifts-batch-2.md):
+     Talon, milk from elsewhere, Dampe, LW Target, the quiver order.
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e]
 """
 import math
 import os
@@ -115,6 +117,9 @@ COURTYARD = NewStartPos('RandoTest_MeetImpa',
 SKULL_DAD = (-26.5, 102.9, 72.5)  # his actor sits at y 109.9; the floor is at 102.9
 DIVING_ZORA = (30.7, 113.6, -8.2)
 LAB_SCIENTIST = (-174.5, 137.8, 422.3)
+TALON_RANCH = (-52.4, 150.7, 199.3)
+DAMPE_CHILD = (-12.0, 100.8, 20.0)
+LW_TARGET = (40.3, 102.9, -0.2)
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -215,6 +220,46 @@ VARIANTS: dict[str, Variant] = {
         _preset('ZoraDomain_Child', _pos('RandoTest_GiftDiving', (27.0, 113.3, -4.8),
                                          DIVING_ZORA)),
         gifts=(Gift('MiniGame_Diving', 'ActorName', ('Item_Scale_Silver',)),)),
+    # Batch 30 (the gate of NPC gifts batch 2).
+    # 30a: Lon Lon Ranch, child, by Talon (woken, 100 rupees for the 30-rupee game): the
+    #      first win (event 262, an NpcCommon hand-over) gives the Boomerang. Event 261
+    #      (GetInEventInBottle) is the repeat prize, refilling an empty bottle: untouched.
+    '30a': Variant(
+        _preset('HyruleField_Child', _pos('RandoTest_GiftTalon', (-52.4, 150.7, 202.3),
+                                          TALON_RANCH),
+                steps=CASTLE_STEPS, rupees=100),
+        gifts=(Gift('Minigame_FindOutCucco', 'ReveiveItem', ('Item_Bottle_Milk',)),)),
+    # 30b: the same place, with a Bottle with Milk from the start preset: can he drink it?
+    '30b': Variant(
+        _preset('HyruleField_Child', _pos('RandoTest_MilkElsewhere', (-52.4, 150.7, 202.3),
+                                          TALON_RANCH),
+                items=('Item_Bottle_Milk',))),
+    # 30c: the graveyard, child, by Dampe, with the Sun's Song (his tour is at night) and
+    #      200 rupees: the tour's Piece of Heart (a lottery) gives the Boomerang, through
+    #      the generic entry instead of his own.
+    '30c': Variant(
+        _preset('Graveyard_Child', _pos('RandoTest_GiftDampe', (-12.0, 100.8, 23.0),
+                                        DAMPE_CHILD),
+                items=('Item_Ocarina_Fairy', 'Item_Melody_SunSong'), rupees=200),
+        gifts=(Gift('Npc_Hylia_Dampe_001', 'ActorName', ('Obj_Heart_Piece',)),),
+        entries=(Entry('Npc_Hylia_Dampe_001', 'GetInEvent_NotTurn_NotNpc_Dampe',
+                       'GetInEvent_NotTurn_NotNpc'),)),
+    # 30d: the Lost Woods, child, near the target, with the Slingshot (and its biggest bag,
+    #      so it has seeds): hitting the target gives the Boomerang (the scene animates a
+    #      bullet bag).
+    '30d': Variant(
+        _preset('LostWood_Child', _pos('RandoTest_GiftLWTarget', (36.3, 102.9, -0.2),
+                                       LW_TARGET),
+                items=('Item_BulletBag_Large', 'Item_Range_SlingShot')),
+        gifts=(Gift('Dm_LostWood_0040', 'ActorName',
+                    ('Item_BulletBag_Large', 'Item_BulletBag_Medium')),)),
+    # 30e: Kakariko, adult: the biggest quiver, then the medium one, then the Bow: how many
+    #      arrows does the Bow hold?
+    '30e': Variant(
+        _preset('KakarikoVillage_Adult',
+                _pos('RandoTest_QuiverOrder', (-72.1, 99.3, 76.1), ANJU),
+                items=('Item_Quiver_Large', 'Item_Quiver_Medium', 'Item_Range_Bow'),
+                adult=True)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),

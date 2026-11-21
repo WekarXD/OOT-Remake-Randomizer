@@ -42,7 +42,7 @@
 - Create: `local/test-batch-30.md` (Spanish); append results to `docs/test-batch-27.md` under `## Batch 30`
 
 - [ ] **Step 1:** Add the variants. Each teleports next to its NPC (positions from the map's `Static` banc, as in batch 29). For 30a, 30c and 30d the grant gives `Item_Boomerang`.
-  - **30a (Talon):** `Gift('Minigame_FindOutCucco', 'ActorName', ('Item_Bottle_Milk',))` and the same with `'ReveiveItem'`, plus `Entry('Minigame_FindOutCucco', 'GetInEventInBottle', GENERIC_NPC)`. Child at Lon Lon Ranch, in Talon's house.
+  - **30a (Talon):** `Gift('Minigame_FindOutCucco', 'ReveiveItem', ('Item_Bottle_Milk',))` (event 262, the first win; 261 is the repeat refill and stays). Child at Lon Lon Ranch, by Talon.
   - **30b (milk):** start-preset item `Item_Bottle_Milk`, at Lon Lon Ranch.
   - **30c (Dampe):** `Gift('Npc_Hylia_Dampe_001', 'ActorName', ('Obj_Heart_Piece',))` and `Entry('Npc_Hylia_Dampe_001', 'GetInEvent_NotTurn_NotNpc_Dampe', 'GetInEvent_NotTurn_NotNpc')`. Child in the graveyard at night; set the flags Dampe's tour reads.
   - **30d (LW Target):** `Gift('Dm_LostWood_0040', 'ActorName', ('Item_BulletBag_Large', 'Item_BulletBag_Medium'))`. Child with the Slingshot next to the target stump.
@@ -91,8 +91,9 @@
   - `_Base.test_patch_gives_new_item`: unchanged; it now covers the 21 rows.
   - `_Base.test_same_flow_swap`: `{'Kak 10 Gold Skulltula Reward': 'Item_Wallet_Large', 'Kak 30 Gold Skulltula Reward': 'Item_Wallet_Medium'}`. In `GatheringTokenGold`, the call that gave `Item_Wallet_Medium` now gives Large, and vice versa (compare the call sets before and after). Do the same for child fishing ↔ adult fishing.
   - `_Base.test_frogs_separate`: a Boomerang at `ZR Frogs in the Rain` changes only the call whose entry is `GetInEvent_NotTurn_NotNpc`; both `MushiToriGame` calls still give `Obj_Heart_Piece`. Then the reverse with `ZR Frogs Ocarina Game`.
-  - `_Base.test_two_keys_renamed`: a Boomerang at `LH Child Fishing` renames the `ReveiveItem` call and the `ActorName` call. Do the same for `LLR Talons Chickens`.
-  - `_Base.test_special_entry_goes_generic_only_when_changed`: extend it with Dampe and Talon.
+  - `_Base.test_two_keys_renamed`: a Boomerang at `LH Child Fishing` renames the `ReveiveItem` call and the `ActorName` call.
+  - `_Base.test_talon_repeat_untouched`: a Boomerang at `LLR Talons Chickens` renames event 262 only; the `GetInEventInBottle` call still gives `Item_Bottle_Milk`.
+  - `_Base.test_special_entry_goes_generic_only_when_changed`: extend it with Dampe.
 - [ ] **Step 2:** Run them and watch them fail.
 - [ ] **Step 3: Implement.**
   - **`Gift` fields:**
@@ -102,8 +103,8 @@
   - **Rows:** append the spec's 21 rows in its table order.
     - The upgrade sites list both sizes in `vanilla`, as the rolling Goron does.
     - The frogs' rows use `via='MushiToriGame'` and `via='GetInEvent_NotTurn_NotNpc'`.
-    - Dampe uses `entry=('GetInEvent_NotTurn_NotNpc_Dampe', 'GetInEvent_NotTurn_NotNpc')`, and Talon uses `entry=('GetInEventInBottle', GENERIC_NPC)`.
-    - Fishing and Talon use `key=('ReveiveItem', 'ActorName')`.
+    - Dampe uses `entry=('GetInEvent_NotTurn_NotNpc_Dampe', 'GetInEvent_NotTurn_NotNpc')`.
+    - Fishing uses `key=('ReveiveItem', 'ActorName')`; Talon uses `key='ReveiveItem'`.
   - **`FIXED_GIFTS`:** set it from Task 1's failures.
   - **`gift_subflow_list`:** `subflow_closure` gets the generic entry's flow, which is not always `GRANT_FLOW`. Read it from the redirected calls' `sub_flow` (Dampe's call is in `Dm_SY_GetInEvent`).
 - [ ] **Step 4:** Run `python -m unittest tests.test_gifts`; expect a pass. Then run the whole suite.

@@ -43,7 +43,7 @@ OoTR always shuffles the minigame prizes and the Gold Skulltula house rewards. T
 | GF HBA 1000 Points | `Obj_Heart_Piece` | `Minigame_HorsebackArchery` 313, `ActorName` | `GetInEvent` family |
 | GF HBA 1500 Points | `Item_Quiver_Large` | 311/312, `ActorName` (Large, Medium) | same |
 | Graveyard Dampe Gravedigging Tour | `Obj_Heart_Piece` | `Npc_Hylia_Dampe_001` 602, `ActorName`; special entry `GetInEvent_NotTurn_NotNpc_Dampe` | **untested** entry change |
-| LLR Talons Chickens | `Item_Bottle_Milk` | `Minigame_FindOutCucco` 261 (`ActorName`, special entry `GetInEventInBottle`) and 262 (`ReveiveItem`) | **untested** entry change and milk from elsewhere |
+| LLR Talons Chickens | `Item_Bottle_Milk` | `Minigame_FindOutCucco` 262, `ReveiveItem` (the first win). Event 261 (`GetInEventInBottle`) is the repeat prize, refilling an empty bottle: it stays milk | NpcCommon (27e); milk from elsewhere **untested** |
 
 This corrects the research map: the frogs' two Pieces of Heart are both in `MiniGame_FrogTenors`. The ocarina game (the remake's butterfly game) passes its prize to `MushiToriGame`, and the Song of Storms path reaches event 247.
 
@@ -89,11 +89,10 @@ Test batch 29:
 - `GIFTS` gets the 21 rows after batch 1's. Ids `-301`..`-314` stay the same.
 - `Gift` gets two optional fields:
   - `via: str | None`: a call matches only if its entry is `via`. This separates the frogs' two prizes: the ocarina game uses `MushiToriGame`, and the rain uses `GetInEvent_NotTurn_NotNpc`. Both give `Obj_Heart_Piece` in the same flow.
-  - `key` may be a tuple of keys. Fishing and Talon give each prize twice: an `NpcCommon` `ReveiveItem` and a `GetInEvent` `ActorName`. Both calls are renamed.
+  - `key` may be a tuple of keys. Fishing gives each prize through two calls (a normal fish and the loach): an `NpcCommon` `ReveiveItem` and a `GetInEvent` `ActorName`. Both calls are renamed.
 - **Same-flow prizes:** five flows hold several prizes: the Skulltula house, the galleries, bowling, fishing and the frogs. `gift_flow_patches` finds every changed gift's calls on the unpatched flow first, then renames them. This avoids a later gift renaming a call that an earlier gift just gave its value to (for example the 10 and 30 rewards swapping wallets).
 - **Special entries:**
   - Dampe: `GetInEvent_NotTurn_NotNpc_Dampe` → `GetInEvent_NotTurn_NotNpc`.
-  - Talon: `GetInEventInBottle` → `GetInEvent_NotTurn`.
   - The `SubFlowList` rule applies when the flow has a row (batch 1's `gift_subflow_list`).
 - `GIFT_ITEMS` covers the new key items as it is.
 
@@ -108,7 +107,7 @@ Test batch 29:
 
 | Variant | Question | If it fails |
 |---|---|---|
-| 30a | Talon's Cucco game, with `GetInEventInBottle` → generic: does the win give the Boomerang? | Talon stays fixed (`FIXED_GIFTS`) |
+| 30a | Talon's Cucco game: does the first win (event 262) give the Boomerang? | Talon stays fixed (`FIXED_GIFTS`) |
 | 30b | Milk from elsewhere (`Item_Bottle_Milk` from the start preset): is there a bottle of milk you can drink? | Milk stays fixed (Talon in `FIXED_GIFTS`) |
 | 30c | Dampe's tour, with his entry → generic: does the heart spot give the Boomerang? | Dampe stays fixed |
 | 30d | LW Target: does the scene give the Boomerang (its animation shows a bag)? | LW Target stays fixed |
@@ -126,8 +125,8 @@ Test batch 29:
 - **Patch, on the real game file** (vanilla and full-skip versions):
   - every new gift's grant changes and only that one (the frogs' ocarina game against the rain, the house's five rewards);
   - two prizes in one flow can swap items without overwriting each other;
-  - Dampe's and Talon's entries change only when the item changed;
-  - fishing and Talon rename both of their calls.
+  - Dampe's entry changes only when the item changed;
+  - fishing renames both of its calls; Talon's repeat refill (261) stays milk.
 - **Fill:**
   - in 30 seeds, whenever the Golden Scale moves, its location is unreachable without the Silver one;
   - excluding one scale excludes both;
