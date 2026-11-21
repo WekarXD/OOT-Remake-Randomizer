@@ -21,7 +21,9 @@ item that shows in the inventory), the way the shuffle would:
 27d2-27d4: Zelda without the skip, with her own entry, untouched (27d gave nothing).
 28a-28c: Fire Arrows as a wrapper, Ruto's Letter from elsewhere, Silver Gauntlets without
      the bracelet (the plan's gate, docs/superpowers/plans/2026-11-20-npc-gifts-batch-1.md).
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c]
+29a-29d: NPC gifts batch 2 (docs/npc-gifts-research.md, "Batch 2"): upgrades given out of
+     order, a Gold Skulltula house reward and a minigame prize.
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d]
 """
 import math
 import os
@@ -80,9 +82,10 @@ def _pos(name: str, at: tuple[float, float, float],
 
 
 def _preset(banc: str, pos: NewStartPos, items: tuple[str, ...] = (),
-            steps: tuple[tuple[str, str], ...] = (), adult: bool = False) -> StartPreset:
+            steps: tuple[tuple[str, str], ...] = (), adult: bool = False,
+            rupees: int = 0) -> StartPreset:
     return StartPreset(banc, pos.name, items=items, new_pos=pos, challenge_steps=steps,
-                       adult=adult)
+                       adult=adult, rupees=rupees)
 
 
 CASTLE_STEPS = tuple(('Goto_HyruleCastle', f'Step0{i}') for i in (1, 2, 3, 4))
@@ -108,6 +111,9 @@ FIRE_ARROWS_STEPS = tuple(('SubEvent_GetFireArrow', s) for s in ('Ready', 'Step0
 COURTYARD = NewStartPos('RandoTest_MeetImpa',
                         (5.134531497955322, 126.82830810546875, -236.39134216308594),
                         (0.0, 3.141592653589793, 0.0))
+
+SKULL_DAD = (-26.5, 102.9, 72.5)  # his actor sits at y 109.9; the floor is at 102.9
+DIVING_ZORA = (30.7, 113.6, -8.2)
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -173,6 +179,35 @@ VARIANTS: dict[str, Variant] = {
         _preset('GoronCity_Adult',
                 _pos('RandoTest_SilverNoBracelet', (-15.8, 105.0, -9.1), BOMB_FLOWER_ADULT),
                 items=('Item_Gauntlet_Silver', 'Item_BombBag_Medium'), adult=True)),
+    # Batch 29 (NPC gifts batch 2). A chest gives one fixed size of an upgrade, so the
+    # shuffle can hand them out of order.
+    # 29a: Zora's Domain, child: the Golden Scale then the Silver one (how deep can he
+    #      dive?), the Giant's Wallet then the Adult's one, and 500 rupees (does it hold
+    #      500 or 200?).
+    '29a': Variant(
+        _preset('ZoraDomain_Child', _pos('RandoTest_UpgradeOrder', (27.0, 113.3, -4.8),
+                                         DIVING_ZORA),
+                items=('Item_Scale_Gold', 'Item_Scale_Silver', 'Item_Wallet_Large',
+                       'Item_Wallet_Medium'), rupees=500)),
+    # 29b: Kakariko, child: the biggest bullet bag before the Slingshot (seeds, up to 50?).
+    '29b': Variant(
+        _preset('KakarikoVillage_Child',
+                _pos('RandoTest_BagBeforeSlingshot', (-72.1, 99.3, 76.1), ANJU),
+                items=('Item_BulletBag_Large', 'Item_Range_SlingShot'))),
+    # 29c: the Gold Skulltula house, child, with 10 tokens given by the start preset
+    #      (also tests a token from GetInEvent): the 10-token reward gives the Boomerang
+    #      (the house's by-reference TakenRewardActor).
+    '29c': Variant(
+        _preset('KakarikoVillage_Child',
+                _pos('RandoTest_GiftSkullHouse', (-27.0, 102.9, 70.0), SKULL_DAD),
+                items=('Obj_Token_Gold',) * 10),
+        gifts=(Gift('GatheringTokenGold', 'TakenRewardActor', ('Item_Wallet_Medium',)),)),
+    # 29d: Zora's Domain, child, by the diving Zora: the first win gives the Boomerang
+    #      (a GetInEvent_NotTurn_NotNpc grant of a minigame).
+    '29d': Variant(
+        _preset('ZoraDomain_Child', _pos('RandoTest_GiftDiving', (27.0, 113.3, -4.8),
+                                         DIVING_ZORA)),
+        gifts=(Gift('MiniGame_Diving', 'ActorName', ('Item_Scale_Silver',)),)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
