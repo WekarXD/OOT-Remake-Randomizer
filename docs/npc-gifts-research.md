@@ -114,7 +114,7 @@ Not in batch 2:
 
 Findings:
 
-- **The shuffle skip keeps every grant:** the full skip rewrites `Dm_Kokiri_0155`, `Dm_MelodyGet_Time` and `Dm_Gerudo_0025`, and all the grants above are still in its copies.
+- **The full skip keeps every grant:** the full skip rewrites `Dm_Kokiri_0155`, `Dm_MelodyGet_Time` and `Dm_Gerudo_0025`, and all the grants above are still in its copies.
 - **Nothing checks the Gerudo Card.** No flow tests `Item_Token_Gerudo`. The guards, the gate and the Training Ground follow the quest: `SageOfSpirit_IsAfter_Step01_Exp`/`Step03_Exp` (for example `Npc_Gerudo_006`, `Npc_Gerudo_007`, `Npc_Gerudo_013`). So in the remake the card's effect comes from freeing the carpenters, not from the item. OoTR's rules that need `Gerudo_Membership_Card` must need the rescue instead.
 - **Nothing checks which ocarina Link has**, apart from the Kokiri's dialogue (`Npc_Kokiri_005_Child`, `Npc_Kokiri_007_Child`: `Item_Ocarina_Fairy`). The Door of Time checks the stones (`DoorOfTime_CheckStoneNum`). OoTR's `stones_oot_sot` asks for both ocarinas (`(Ocarina, 2)`), which is stricter than the game: safe.
 - **The merchants never sell out by item:** Medigoron stops when `Weapon_Sword_Giant` is in the pouch; the carpet salesman has no check at all. A moved item may be sold again (test batch 31d and 31e).
