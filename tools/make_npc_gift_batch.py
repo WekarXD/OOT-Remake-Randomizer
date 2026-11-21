@@ -30,7 +30,7 @@ item that shows in the inventory), the way the shuffle would:
 32a-32f: the gate of NPC gifts batch 3a (docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md):
      the merchants' sold-out patch, their items from elsewhere, Zelda's ocarina scene with no
      ocarina, the Gerudo Card scene.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f3]
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f4]
 """
 import math
 import os
@@ -420,6 +420,13 @@ VARIANTS: dict[str, Variant] = {
         _preset('GerudoFortress_Adult',
                 _pos('RandoTest_LastCarpenter', (27.0, 102.6, -64.0), CARPENTER_013_THIEF),
                 steps=SPIRIT_TO_STEP01, adult=True,
+                ints=((CARPENTERS_HELPED, 3), (CARPENTERS_FOUND, 3))),
+        gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
+    # 32f4: 32f3 with a shield (the thief's fight was too hard without one).
+    '32f4': Variant(
+        _preset('GerudoFortress_Adult',
+                _pos('RandoTest_LastCarpenter', (27.0, 102.6, -64.0), CARPENTER_013_THIEF),
+                items=('Item_Shield_Mirror',), steps=SPIRIT_TO_STEP01, adult=True,
                 ints=((CARPENTERS_HELPED, 3), (CARPENTERS_FOUND, 3))),
         gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
     '27e': Variant(
