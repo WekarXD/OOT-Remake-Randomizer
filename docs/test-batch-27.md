@@ -84,3 +84,6 @@ Built with the same tool (`30a`..`30e`, `30c2`); Spanish guide `local/test-batch
 - **30c:** Dampe: the Sun's Song made night, but day came back, so the tour could not be played. The user suspects time does not run before Zelda's meeting. **30c2** completes the castle quest (`Goto_HyruleCastle` through `Complete`).
 - **30d:** LW Target: the scene's animation hands over the bullet bag, then Link holds up the Boomerang, which he gets. **The site moves** (cosmetic: the bag shows first, as the non-goal "item models" allows).
 - **30e:** the biggest quiver, then the medium one, then the Bow: 50 arrows. **A smaller quiver never lowers the capacity.** No quiver rule is needed.
+- **30c2:** with the castle quest complete, the Sun's Song still turned night and day came back at once. Dampe's tour stays unplayed. **Accepted without an in-game test** (user's call, 2026-11-21): Dampe's prize moves, with his entry pointed at `GetInEvent_NotTurn_NotNpc` (the diving game's, 29d). To check in a later playthrough; see `docs/TODO.md`.
+
+**Batch 30: every site moves (`FIXED_GIFTS` stays empty). No quiver rule is needed.**

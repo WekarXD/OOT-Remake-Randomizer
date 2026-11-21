@@ -21,6 +21,7 @@ Pending work, most important first within each section.
 - `Rando_FullSkipChild1` (guide `docs/test-full-skip-child.md`): the childhood full skip.
 - `Rando_FullSkipChild3` (guide `docs/test-full-skip-child-3.md`): shared forced talks done by growing the flow files (exit Kokiri, Mido, Zelda, castle, Royal Family Tomb 276 KB); pending the game test.
 - Adult batch of the full skip: `AllSage` and `Get_Epona`, whose old-trim output changed when the parser began to show the case slots of subflow switches (kind 5). `Goto_HyruleCastle` and `SubEvent_GetEponaSong` changed the same way and are in the childhood guide.
+- **Dampe's gravedigging prize with another item** (NPC gifts batch 2, test batch 30c/30c2): accepted without an in-game test (user's call, 2026-11-21). The start preset could not keep the night in the graveyard: the Sun's Song made night and day came back at once, even with the castle quest complete. Check it in a normal playthrough (dig at night as a child; the Piece of Heart is a lottery). If it fails, put `Graveyard Dampe Gravedigging Tour` in `gifts.FIXED_GIFTS`. Find out also what keeps the time from running in the start preset.
 - Batch 17, attempt 3: seed `TestTokens3`.
 - Batch 16 (optional): confirm the 27 "guessed" Skulltulas with a rupee-colour mod so they can also hold key items.
 - Acceptance seed `ACEPTACION1` and the round 2b cutscene re-test.
