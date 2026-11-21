@@ -62,3 +62,10 @@ Built with the same tool (`28a`, `28a2`, `28b`, `28c`); see `docs/superpowers/pl
 - **28c:** an adult with the Silver Gauntlets and no Goron's Bracelet could throw bombs and lift bomb flowers. **Any strength level works**, so the logic's level model (the bracelet is level 1, Silver level 2) is right.
 
 **Batch 28: everything works. No gift stays fixed (`FIXED_GIFTS` is empty).**
+
+## Batch 29 (NPC gifts batch 2: upgrades out of order, a Gold Skulltula reward, a minigame)
+
+Built with the same tool (`29a`, `29a2`, `29b`, `29c`, `29d`); Spanish guide `local/test-batch-29.md`.
+
+- **29a:** Zora's Domain, child, given the Golden Scale then the Silver one, the Giant's Wallet (`Item_Wallet_Large`) then the Adult's (`Item_Wallet_Medium`), and 500 rupees. The menu kept the bigger ones: the Golden Scale and the Giant's Wallet, with 500/1000 rupees. **A smaller wallet never lowers the capacity.** But the Lake Hylia lab dive did not reach the bottom.
+- **29a2 (control):** the Golden Scale alone, in the lab: the dive reached the bottom. **A Silver Scale received after the Golden one lowers the dive depth to silver's, though the menu still shows Gold.** The shuffle must never let Link get the Silver Scale after the Golden one.
