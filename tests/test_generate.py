@@ -2,6 +2,7 @@ import contextlib
 import hashlib
 import io
 import json
+from collections import Counter
 import os
 import tempfile
 import unittest
@@ -581,16 +582,20 @@ class RealTests(unittest.TestCase):
                 root = Path(res.mod_dir) / 'romfs'
                 changed = {loc: g for loc, g in GIFT_BY_LOCATION.items() if gifts[loc] != g.content}
                 self.assertTrue(changed)
+                flows = Counter(g.flow for g in GIFT_BY_LOCATION.values() if isinstance(g, Gift))
                 with NupArchive(NUP_PATH) as nup:
                     codec = ZsCodec.from_archive(nup)
                     for loc, g in changed.items():
                         if isinstance(g, Gift):
                             rel = f'Event/EventFlow/{g.flow}.bfevfl.zs'
                             flow = EventFlow(codec.decompress(rel, (root / rel).read_bytes()))
-                            given = {flow.action_params(i).get(g.key)
-                                     for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW}
+                            given = {flow.action_params(i).get(k)
+                                     for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
+                                     and (g.via is None or ev.sub_entry == g.via)
+                                     for k in g.keys}
                             self.assertIn(gifts[loc], given, loc)
-                            self.assertFalse(set(g.vanilla) & given, loc)
+                            if flows[g.flow] == 1:  # alone in its flow: nothing kept vanilla
+                                self.assertFalse(set(g.vanilla) & given, loc)
                         else:
                             banc = byml.load(codec.decompress(g.banc, (root / g.banc).read_bytes()))[1]
                             actor = next(x for x in banc['Actors'] if x.get('Hash') == g.hash)
@@ -633,6 +638,16 @@ class RealTests(unittest.TestCase):
             self.assertIn(c, out)
         for c in ('Item_Hookshot', 'Item_Melody_StormSong', 'Obj_Heart_Piece', 'Item_DinFire'):
             self.assertNotIn(c, out)
+
+    def test_moving_extras_has_every_gift_content(self):
+        # NPC gifts batch 2: the minor gift items (upgrades, bombchus) are in no chest
+        # either, so the Skulltula check sees them too.
+        from randomizer.generate import _moving_extras
+        from randomizer.gifts import GIFTS
+        extras = _moving_extras()
+        self.assertLessEqual({g.content for g in GIFTS}, extras)
+        self.assertIn('Item_BulletBag_Medium', extras)
+        self.assertIn('Item_BombchuBundle_Large', extras)
 
     def test_gs_forbidden_extra(self):
         from randomizer.generate import _gs_forbidden

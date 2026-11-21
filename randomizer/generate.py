@@ -25,7 +25,7 @@ from . import wrappers
 from .songs import song_flow_patches
 from .fairies import FAIRY_REWARDS, fairy_flow_patches
 from .items import KEY_ITEMS
-from .gifts import GIFT_ITEMS, GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
+from .gifts import GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
 from .formats.bfevfl import EventFlow
 from .analyzed_info import ANALYZED_INFO
 from .logic.world import World, load_vanilla_settings
@@ -101,8 +101,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                     gs_map = locations.load_gs_map()
                     # The Great Fairy rewards and NPC gift items are in no chest: check them too.
                     gs_forbidden = _gs_forbidden(
-                        game, chests, loc_map,
-                        FAIRY_REWARDS | GIFT_ITEMS if shuffled else ())
+                        game, chests, loc_map, _moving_extras() if shuffled else ())
                     if settings.shuffle_songs == 'anywhere':
                         # No Skulltula can drop a song (no wrapper or world actor).
                         gs_forbidden |= frozenset(VANILLA_SONGS.values())
@@ -265,6 +264,12 @@ def _with_file_patch(game: GameData, path: str, patch_fn,
 # What a world NPC gift's wrapper is proven to hand over in game: key items (27f, 28a),
 # songs (Dungeon Rewards boss hearts) and Pieces of Heart / Heart Containers (the
 # token-clone recipe, batch 14). Minor-item wrappers (rupees, ammo...) are still untested.
+def _moving_extras() -> frozenset[str]:
+    """What moves with key items shuffled but is in no chest: the Great Fairy rewards and
+    every NPC gift content (key items, Pieces of Heart, upgrades, bombchus)."""
+    return frozenset(FAIRY_REWARDS) | {g.content for g in GIFTS}
+
+
 _WORLD_PROVEN = frozenset(KEY_ITEMS) | frozenset(VANILLA_SONGS.values()) | {
     'Obj_Heart_Piece', 'Obj_Heart_Container'}
 
