@@ -27,7 +27,7 @@ from randomizer.fairies import FOUNTAIN_FORBIDDEN, FOUNTAINS
 from randomizer.gifts import FIXED_GIFTS, GIFT_FORBIDDEN, GIFTS, WorldGift
 from randomizer.game import ChestActor, SkulltulaActor
 from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
-                              NON_EXCLUDABLE)
+                              NON_EXCLUDABLE, UPGRADES)
 from randomizer.locations import GsEntry, LocationEntry
 from randomizer.logic.world import World
 from randomizer.songs import BOSS_HEARTS, HEART_GYAML, SHUFFLE_SONGS, SONG_BY_ACTOR, SONGS
@@ -38,16 +38,25 @@ TOKEN = 'Obj_Token_Gold'
 OOTR_TOKEN = 'Gold Skulltula Token'
 MAX_ATTEMPTS = 100
 FILLER = 'Rupees (5)'
-# Ammo -> key item that holds it. In the remake, picking up ammo without its
-# container unlocks the container in the inventory without making it usable
-# (batch 17: bombs before the Bomb Bag). Ammo only goes to chests that cannot
-# be reached without the container, and never to a Skulltula.
+# Ammo -> OoTR item that holds it (any actor of it: three bags are 'Bomb Bag'). In
+# the remake, picking up ammo without its container unlocks the container in the
+# inventory without making it usable (batch 17: bombs before the Bomb Bag). Ammo only
+# goes to chests that cannot be reached without the container, and never to a Skulltula.
 AMMO_CONTAINER: dict[str, str] = {
-    'Item_BombBundle_Small': 'Item_BombBag_Small',
-    'Item_BombchuBundle_Small': 'Item_BombBag_Small',
-    'TBox_ArrowBundle_Medium': 'Item_Range_Bow',
-    'TBox_ArrowBundle_Large': 'Item_Range_Bow',
+    'Item_BombBundle_Small': 'Bomb Bag',
+    'Item_BombchuBundle_Small': 'Bomb Bag',
+    'Item_BombchuBundle_Large': 'Bomb Bag',
+    'TBox_ArrowBundle_Medium': 'Bow',
+    'TBox_ArrowBundle_Large': 'Bow',
 }
+# A key item -> the one that must come before it. A Silver Scale received after the
+# Golden one lowers the dive depth (test batch 29a2), so the Golden Scale only goes
+# where the logic cannot reach without the Silver one (NPC gifts batch 2 design).
+NEEDS_FIRST: dict[str, str] = {'Item_Scale_Gold': 'Item_Scale_Silver'}
+# Items excluded together: both scales stay at their minigames, where the game hands
+# them out in order.
+LINKED_EXCLUSIONS: tuple[frozenset[str], ...] = (
+    frozenset({'Item_Scale_Silver', 'Item_Scale_Gold'}),)
 # Zones (path segment of the Banc after 'Banc/') where no key items are
 # placed. Their chests are still sources of items and destinations for filler,
 # but in the remake the number of small keys and doors in these dungeons
@@ -248,7 +257,9 @@ def _scene_forbidden(h: int, world_forbidden: frozenset[str] = frozenset()) -> f
         return GIFT_FORBIDDEN
     if h in _WORLD_GIFT_IDS:
         return world_forbidden | {TOKEN}
-    return frozenset({TOKEN})
+    # A song scene: never a token, nor a Slingshot or Bow upgrade
+    # (`GetPouchContentByActorName` with a bag is untested).
+    return UPGRADES | {TOKEN}
 
 
 # OoTR's dungeon-reward song locations besides the boss hearts (non-MQ, OoTR Fill.py).
@@ -325,6 +336,11 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
     for i, item in enumerate(to_place):
         reach = world.reachable_locations(_fixed(base, site_loc, placed),
                                           owned=[_logic_name(a) for a in to_place[i + 1:]])
+        if item in NEEDS_FIRST:  # only where the prerequisite is needed
+            first = NEEDS_FIRST[item]
+            reach = reach - world.reachable_locations(
+                _fixed(base, site_loc, {h: a for h, a in placed.items() if a != first}),
+                owned=[_logic_name(a) for a in to_place[i + 1:] if a != first])
         candidates = [h for h in free if h not in placed and h not in no_key
                       and site_loc[h] in reach
                       and not (h in gs and item in gs_forbidden)
@@ -345,7 +361,7 @@ def _attempt(rng: random.Random, original: dict[int, str], eligible: list[int],
         tokens = [OOTR_TOKEN] * 100
         gated: dict[str, list[int]] = {}
         for container in sorted({AMMO_CONTAINER[a] for a in ammo}):
-            without = {loc: FILLER if item == container else item
+            without = {loc: FILLER if KEY_ITEMS.get(item, item) == container else item
                        for loc, item in fixed_now.items()}
             reach = world.reachable_locations(without, owned=tokens)
             gated[container] = [h for h in open_sites if h not in gs
@@ -411,6 +427,11 @@ def _check_settings(settings: Settings) -> None:
                         'for the game to be beatable.')
 
 
+def linked_exclusions(excluded: frozenset[str]) -> frozenset[str]:
+    """`excluded` with each `LINKED_EXCLUSIONS` group added whole when any of it is in."""
+    return frozenset(excluded).union(*(g for g in LINKED_EXCLUSIONS if g & excluded))
+
+
 def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
               world: World, settings: Settings,
               skulltulas: list[SkulltulaActor] = (),
@@ -421,6 +442,7 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     are shuffled with `settings.shuffle_songs == 'song_locations'` (even with the
     key items in `vanilla` mode: the two settings are independent)."""
     _check_settings(settings)
+    excluded = linked_exclusions(settings.excluded_items)
     gs = gs_sites(skulltulas, gs_map, settings.tokensanity)
     original = _original_drops(chests)
     for h in gs:
@@ -472,13 +494,13 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         reward_sites = tuple(sorted(HEART_SITE_IDS.values())) + tuple(
             by_loc[loc] for loc in REWARD_SCENES + REWARD_CHESTS)
         kept = sorted(original[by_loc[loc]] for loc in REWARD_CHESTS
-                      if original[by_loc[loc]] in settings.excluded_items)
+                      if original[by_loc[loc]] in excluded)
         if kept:  # its chest must take a song, so the item cannot stay there
             label = ', '.join(LABELS.get(a, a) for a in kept)
             raise FillError(f'Dungeon Rewards puts a song in the chest of {label}: '
                             'that item cannot be excluded with it.')
     moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR)
-              and original[h] not in settings.excluded_items]
+              and original[h] not in excluded]
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
     no_key = frozenset(h for h, banc in bancs
                        if banc.split('/')[1:2] and banc.split('/')[1] in NO_KEY_TARGET_ZONES)

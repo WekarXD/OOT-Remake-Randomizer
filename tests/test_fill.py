@@ -493,6 +493,78 @@ class GiftFillTest(unittest.TestCase):
             self.assertTrue(all(h >= 0 for h in r.chests))
 
 
+class ScaleOrderTest(unittest.TestCase):
+    """NPC gifts batch 2 (design 2026-11-21): a Silver Scale after the Golden one lowers
+    the dive depth (test batch 29a2), so the Golden one only goes where the Silver one is
+    needed; bombchus need any of the three bomb bags; upgrades never go to a song scene."""
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+
+    def _all(self, skulltulas=(), gs_map=None, **kw):
+        return place_all(self.chests, self.loc_map, self.world, Settings(**kw),
+                         skulltulas, gs_map)
+
+    def _where(self, r) -> dict[str, list[str]]:
+        """Content -> OoTR locations holding it (chests, fountains, gifts, songs)."""
+        out: dict[str, list[str]] = {}
+        for h, drop in r.chests.items():
+            if h in self.loc_map and self.loc_map[h].location:
+                out.setdefault(drop, []).append(self.loc_map[h].location)
+        for loc, drop in {**r.fairies, **r.gifts, **r.songs, **r.hearts}.items():
+            out.setdefault(drop, []).append(loc)
+        return out
+
+    def _fixed(self, r):
+        return _fixed_for(r.chests, self.chests, self.loc_map, self.world,
+                          {**r.fairies, **r.gifts})
+
+    def test_gold_needs_silver(self):
+        for i in range(30):
+            r = self._all(seed=f'S{i}')
+            where = self._where(r)
+            [gold], [silver] = where['Item_Scale_Gold'], where['Item_Scale_Silver']
+            fixed = self._fixed(r)
+            fixed[silver] = 'Rupees (5)'
+            self.assertNotIn(gold, self.world.reachable_locations(fixed), f'seed {i}')
+
+    def test_gold_needs_silver_with_dungeon_rewards(self):
+        for i in range(5):
+            r = self._all(seed=f'R{i}', shuffle_songs='dungeon_rewards')
+            where = self._where(r)
+            [gold], [silver] = where['Item_Scale_Gold'], where['Item_Scale_Silver']
+            fixed = self._fixed(r)
+            for loc, drop in list(r.songs.items()) + list(r.hearts.items()):
+                fixed[loc] = (SONG_BY_ACTOR[drop].song if drop in SONG_BY_ACTOR
+                              else drop if drop in items.KEY_ITEMS else 'Rupees (5)')
+            fixed[silver] = 'Rupees (5)'
+            self.assertNotIn(gold, self.world.reachable_locations(fixed), f'seed {i}')
+
+    def test_excluding_one_scale_excludes_both(self):
+        for scale in ('Item_Scale_Gold', 'Item_Scale_Silver'):
+            r = self._all(seed='X', excluded_items=frozenset({scale}))
+            self.assertEqual(r.gifts['LH Adult Fishing'], 'Item_Scale_Gold')
+            self.assertEqual(r.gifts['ZD Diving Minigame'], 'Item_Scale_Silver')
+
+    def test_bombchus_need_any_bag(self):
+        for i in range(15):
+            r = self._all(seed=f'C{i}')
+            fixed = self._fixed(r)
+            for loc, item in list(fixed.items()):
+                if items.KEY_ITEMS.get(item, item) == 'Bomb Bag':
+                    fixed[loc] = 'Rupees (5)'
+            reach = self.world.reachable_locations(fixed)
+            where = self._where(r)
+            for chu in ('Item_BombchuBundle_Small', 'Item_BombchuBundle_Large'):
+                for loc in where.get(chu, []):
+                    self.assertNotIn(loc, reach, f'seed {i}: {chu} at {loc}')
+
+    def test_upgrades_avoid_song_scenes(self):
+        for i in range(10):
+            r = self._all(seed=f'U{i}', shuffle_songs='anywhere')
+            for loc, drop in r.songs.items():
+                self.assertNotIn(drop, items.UPGRADES, f'seed {i}: {loc}')
+
+
 REWARD_CHESTS = ('Gerudo Training Ground Maze Path Final Chest',
                  'Bottom of the Well Lens of Truth Chest')
 REWARD_SCENES = ('Song from Impa', 'Sheik in Ice Cavern')
@@ -611,7 +683,7 @@ class TokensanityTest(unittest.TestCase):
                     continue
                 without = dict(fixed)
                 for other, item in fixed.items():
-                    if item == container:
+                    if items.KEY_ITEMS.get(item, item) == container:  # any bag of it
                         without[other] = 'Rupees (5)'
                 reach = self.world.reachable_locations(without, owned=[OOTR_TOKEN] * 100)
                 self.assertNotIn(loc, reach, (seed, r[h], loc))
