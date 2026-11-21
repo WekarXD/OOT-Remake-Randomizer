@@ -98,3 +98,12 @@ Built with the same tool (`31a`..`31f`); Spanish guide `local/test-batch-31.md`.
 - **31d:** Medigoron (`Npc_Goron_Medigoron_Adult` event 6, `SimpleShop:SimpleShopRoot_Npc_Goron_Medigoron_Adult`, by-reference `ActorName` `Shop_Sword_Giant`; his own grant `GetInEventItemSwordMedigoron`, `SimpleShop` event 112, points at `GetInEvent_NotTurn`). He only stops selling when the Giant's Knife is in the pouch: does he sell the Boomerang again?
 - **31e:** the carpet salesman (`Npc_Hylia_044_Adult` event 0, `SimpleShop:SimpleShopRoot`, `ActorName` `Shop_BombchuBundle_01`, handed over by `NpcCommon_HandOver_NpcToPlayer_NoTurn_NoWaitAS`). His sale has no sold-out check at all: does he sell it again?
 - **31f:** the 100-token reward (`GatheringTokenGold` event 250 `TakenRewardActor`, entry `TakenReward_Common_Event_200Rupee`, and event 573's literal `ActorName`), with the count set directly (`PouchData.Item_Token_Gold.StockNum` = 100).
+
+Results (2026-11-21):
+
+- **31a:** Saria came out on the bridge and gave the Boomerang. **Saria's ocarina moves.**
+- **31b:** Zelda gave the Boomerang, and the Song of Time still came. **The Ocarina of Time moves.**
+- **31c:** Link had both ocarinas and could play the song. **The two ocarinas are separate items; the order does not matter.**
+- **31d:** Medigoron sold the Boomerang, then offered something again (not enough rupees left to see what). **He resells: the site needs a sold-out flag.**
+- **31e:** the start was off the floating carpet; without Hover Boots the salesman could not be reached. **31e2** starts on the carpet (centre 37.65, 59.75) and gives the Hover Boots as a fallback.
+- **31f:** the 100-token reward gave the Boomerang. **The 100-token reward moves.**

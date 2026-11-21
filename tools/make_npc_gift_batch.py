@@ -325,10 +325,13 @@ VARIANTS: dict[str, Variant] = {
         entries=(Entry('SimpleShop', 'GetInEventItemSwordMedigoron', GENERIC_NPC),)),
     # 31e: the Haunted Wasteland, adult, by the carpet salesman, with 200 rupees: he sells
     #      the Boomerang (an NpcCommon hand-over by reference). Again after buying?
+    #      The carpet (Obj_Gerudo_FlyingCarpetFloor_A_01, centre 37.65, 59.75) floats:
+    #      batch 31 started 4.3 units out and fell off, so the start is on it now, and the
+    #      Hover Boots come as a fallback.
     '31e': Variant(
         _preset('HountedWasteland_Adult',
-                _pos('RandoTest_GiftCarpet', (33.3, 90.8, 60.6), CARPET_SALESMAN),
-                adult=True, rupees=200),
+                _pos('RandoTest_GiftCarpet', (38.5, 90.8, 58.4), CARPET_SALESMAN),
+                items=('Item_HoverBoot',), adult=True, rupees=200),
         gifts=(Gift('Npc_Hylia_044_Adult', 'ActorName', ('Shop_BombchuBundle_01',)),)),
     # 31f: the Gold Skulltula house, child, with 100 tokens (the count set directly): the
     #      100-token reward (its own entry, and a literal `ActorName`) gives the Boomerang.
