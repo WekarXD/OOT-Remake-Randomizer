@@ -60,6 +60,8 @@ Method:
 
 ## Batch 2: where each minigame and reward is (2026-11-20)
 
+Built: design `docs/superpowers/specs/2026-11-21-npc-gifts-batch-2-design.md`, test batches 29 and 30 (`docs/test-batch-27.md`). Talon's first win is event 262 only; event 261 (`GetInEventInBottle`) is the repeat refill.
+
 Same method as batch 1. Every grant uses one of the patterns batch 1 already patches. The item is either a `Dm_SY_GetInEvent` `ActorName`, an `NpcCommon` hand-over `ReveiveItem`, or a by-reference parameter: the Gold Skulltula house passes `TakenRewardActor` to its own `TakenReward_Common_Event` entry, as the rolling Goron passes `ReveiveItem`.
 
 | OoTR location | Vanilla item | Remake grant |
@@ -79,8 +81,8 @@ Same method as batch 1. Every grant uses one of the patterns batch 1 already pat
 | LH Lab Dive | Piece of Heart | `Npc_Hylia_045_Child` event 55, `ReveiveItem` `Obj_Heart_Piece` |
 | ZD Diving Minigame | Silver Scale | `MiniGame_Diving` event 316, `Item_Scale_Silver` (event 315: red rupee on later rounds) |
 | LW Ocarina Memory Game | Piece of Heart | `Npc_SkullKid_Child_02` event 203, `Obj_Heart_Piece` (events 201, 202, 204: rupees) |
-| ZR Frogs Ocarina Game | Piece of Heart | `MiniGame_FrogTenors` event 247, `Obj_Heart_Piece` |
-| ZR Frogs in the Rain | Piece of Heart | **not found**: the Song of Storms branch (`MiniGame_FrogTenors_StormSong`) seems to give rupees (`GetRupy_FrogsTenors`); to confirm |
+| ZR Frogs Ocarina Game | Piece of Heart | `MiniGame_FrogTenors` events 71/91, the `MushiToriGame` entry's `ActorName` (the remake's butterfly game; by reference, then event 246) |
+| ZR Frogs in the Rain | Piece of Heart | `MiniGame_FrogTenors` event 247, `Obj_Heart_Piece` (on the Song of Storms path; corrected 2026-11-21) |
 | GF HBA 1000 Points | Piece of Heart | `Minigame_HorsebackArchery` event 313, `Obj_Heart_Piece` |
 | GF HBA 1500 Points | Bow upgrade | events 311/312, `Item_Quiver_Large`/`_Medium` |
 | Graveyard Dampe Gravedigging Tour | Piece of Heart | `Npc_Hylia_Dampe_001` event 602, `Obj_Heart_Piece`; special entry `GetInEvent_NotTurn_NotNpc_Dampe` |
