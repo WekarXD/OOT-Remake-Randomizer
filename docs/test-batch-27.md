@@ -110,3 +110,13 @@ Results (2026-11-21):
 - **31e2:** on the carpet, the salesman sold the Boomerang, then sold it again. **His sale moves; like Medigoron's, it needs a sold-out flag.**
 
 **Batch 31: every site moves. Both merchants resell, so a shuffled merchant needs a sold-out flag (OoTR sells each once).**
+
+## Batch 32 (the gate of NPC gifts batch 3a)
+
+Built with the same tool (`32a`..`32f2`); Spanish guide `local/test-batch-32.md`. Design: `docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md`. The merchants' variants apply `randomizer.merchants.sold_out_patches` after the gift.
+
+- **32a / 32b:** Medigoron and the carpet salesman with the sold-out patch: refuse, buy (the Boomerang), talk again. Do they sell exactly once? Does the carpet's rupee display close?
+- **32c / 32c2:** the Giant's Knife from the start preset (`Item_Sword_Giant` / `Shop_Sword_Giant`): which works, and does the patched Medigoron sell with it in the pouch?
+- **32d / 32d2:** `Shop_BombchuBundle_01` from elsewhere, against `Item_BombchuBundle_Small` (with a bomb bag): how many bombchus?
+- **32e:** 31b with no ocarina in the pouch.
+- **32f:** the fortress with `SageOfSpirit` at `Step01`, `GerudoFortress_Meet_FourCarpenter_NumOfCarpenterHelped` = 4, and the rescue's closing event (`Meet_FourCarpenter_ClearEvent`, from `SageOfSpirit_RescueCarpenter` 328) booted on arrival: does the card scene (`Dm_Gerudo_0025` 120) give the Boomerang? **32f2** boots `Dm_Gerudo_0025` itself.

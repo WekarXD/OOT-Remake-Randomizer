@@ -27,7 +27,10 @@ item that shows in the inventory), the way the shuffle would:
      Talon, milk from elsewhere, Dampe, LW Target, the quiver order.
 31a-31f: NPC gifts batch 3a (docs/npc-gifts-research.md): the ocarinas, Medigoron, the carpet
      salesman and the 100-token reward.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f]
+32a-32f: the gate of NPC gifts batch 3a (docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md):
+     the merchants' sold-out patch, their items from elsewhere, Zelda's ocarina scene with no
+     ocarina, the Gerudo Card scene.
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f2]
 """
 import math
 import os
@@ -44,6 +47,7 @@ from randomizer.formats.rstb import Rstb  # noqa: E402
 from randomizer.full_skip import files_with_fallback  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
 from randomizer.generate import FULL_SKIP_PHASE  # noqa: E402
+from randomizer.merchants import sold_out_patches  # noqa: E402
 from randomizer.nup import NupArchive  # noqa: E402
 from randomizer.patch import RSTB_PATH  # noqa: E402
 from randomizer.test_start import (ANALYZED_INFO, NewStartPos, StartPreset,  # noqa: E402
@@ -77,6 +81,7 @@ class Variant:
     gifts: tuple[Gift, ...] = ()
     entries: tuple[Entry, ...] = ()
     swap: tuple[str, int, str] | None = None  # (banc path, actor hash, content)
+    merchants: bool = False  # the merchants' sold-out patch (randomizer.merchants)
 
 
 def _pos(name: str, at: tuple[float, float, float],
@@ -139,6 +144,12 @@ DOOR_TO_STEP03 = tuple(('DoorOfTime', s) for s in (
 MEDIGORON = (36.2, 115.7, 6.7)
 CARPET_SALESMAN = (37.3, 90.5, 60.6)
 TOKEN_COUNT = 'PouchData.Item_Token_Gold.StockNum'
+# Batch 32. The carpenters' rescue ends in SageOfSpirit_RescueCarpenter 328, a transition to
+# the event Meet_FourCarpenter_ClearEvent (SageOfSpirit), which moves the quest to Step02 and
+# plays Dm_Gerudo_0025 (the card).
+SPIRIT_TO_STEP01 = (('SageOfSpirit', 'Ready'), ('SageOfSpirit', 'Step01'))
+CARPENTERS_HELPED = 'GerudoFortress_Meet_FourCarpenter_NumOfCarpenterHelped'
+MEDIGORON_SALE = (Gift('Npc_Goron_Medigoron_Adult', 'ActorName', ('Shop_Sword_Giant',)),)
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -341,6 +352,64 @@ VARIANTS: dict[str, Variant] = {
                 ints=((TOKEN_COUNT, 100),)),
         gifts=(Gift('GatheringTokenGold', 'TakenRewardActor', ('Obj_Rupee_Gold',)),
                Gift('GatheringTokenGold', 'ActorName', ('Obj_Rupee_Gold',)))),
+    # Batch 32 (the gate of NPC gifts batch 3a).
+    # 32a: 31d with the sold-out patch: refuse once, then buy, then talk again.
+    '32a': Variant(
+        _preset('GoronCity_Adult', _pos('RandoTest_SoldMedigoron', (31.2, 115.9, 9.7),
+                                        MEDIGORON),
+                adult=True, rupees=200),
+        gifts=MEDIGORON_SALE,
+        entries=(Entry('SimpleShop', 'GetInEventItemSwordMedigoron', GENERIC_NPC),),
+        merchants=True),
+    # 32b: 31e2 with the sold-out patch.
+    '32b': Variant(
+        _preset('HountedWasteland_Adult',
+                _pos('RandoTest_SoldCarpet', (38.5, 90.8, 58.4), CARPET_SALESMAN),
+                items=('Item_HoverBoot',), adult=True, rupees=200),
+        gifts=(Gift('Npc_Hylia_044_Adult', 'ActorName', ('Shop_BombchuBundle_01',)),),
+        merchants=True),
+    # 32c/32c2: the Giant's Knife from elsewhere (two candidate actors), by the patched
+    #      Medigoron: does the knife work, and does he still sell with it in the pouch?
+    '32c': Variant(
+        _preset('GoronCity_Adult', _pos('RandoTest_KnifeElsewhere', (31.2, 115.9, 9.7),
+                                        MEDIGORON),
+                items=('Item_Sword_Giant',), adult=True, rupees=200),
+        gifts=MEDIGORON_SALE,
+        entries=(Entry('SimpleShop', 'GetInEventItemSwordMedigoron', GENERIC_NPC),),
+        merchants=True),
+    '32c2': Variant(
+        _preset('GoronCity_Adult', _pos('RandoTest_KnifeElsewhere', (31.2, 115.9, 9.7),
+                                        MEDIGORON),
+                items=('Shop_Sword_Giant',), adult=True, rupees=200),
+        gifts=MEDIGORON_SALE,
+        entries=(Entry('SimpleShop', 'GetInEventItemSwordMedigoron', GENERIC_NPC),),
+        merchants=True),
+    # 32d/32d2: the carpet's bombchus from elsewhere, against the small bundle (with a bag).
+    '32d': Variant(
+        _preset('KakarikoVillage_Adult', _pos('RandoTest_ShopChus', (-72.1, 99.3, 76.1), ANJU),
+                items=('Item_BombBag_Small', 'Shop_BombchuBundle_01'), adult=True)),
+    '32d2': Variant(
+        _preset('KakarikoVillage_Adult', _pos('RandoTest_ShopChus', (-72.1, 99.3, 76.1), ANJU),
+                items=('Item_BombBag_Small', 'Item_BombchuBundle_Small'), adult=True)),
+    # 32e: 31b with no ocarina in the pouch: does Zelda's scene start and give both?
+    '32e': Variant(
+        StartPreset('HyruleField_Child', 'HyruleField_FrontOfMarket',
+                    challenge_steps=CASTLE_DONE + DOOR_TO_STEP03),
+        gifts=(Gift('Dm_MelodyGet_Time', 'Actor', ('Item_Ocarina_Time',)),
+               Gift('Dm_MelodyGet_Time', 'ActorName', ('Item_Ocarina_Time',)))),
+    # 32f: the fortress, adult, the rescue at Step01 with four carpenters helped, and the
+    #      rescue's closing event booted on arrival: does the card scene give the Boomerang?
+    #      32f2 boots the card scene itself.
+    '32f': Variant(
+        StartPreset('GerudoFortress_Adult', 'GerudoFortress_FromGerudoValley', adult=True,
+                    challenge_steps=SPIRIT_TO_STEP01, ints=((CARPENTERS_HELPED, 4),),
+                    boot_event='Meet_FourCarpenter_ClearEvent'),
+        gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
+    '32f2': Variant(
+        StartPreset('GerudoFortress_Adult', 'GerudoFortress_FromGerudoValley', adult=True,
+                    challenge_steps=SPIRIT_TO_STEP01, ints=((CARPENTERS_HELPED, 4),),
+                    boot_event='Dm_Gerudo_0025'),
+        gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
@@ -414,6 +483,9 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
         path = FLOW_DIR + entry.flow + FLOW_EXT
         batch.files[path] = redirect(batch.read(path), entry)
         _allow_subflows(batch, entry)
+    if v.merchants:
+        batch.files.update((FLOW_DIR + name + FLOW_EXT, data) for name, data in
+                           sold_out_patches(lambda n: batch.read(FLOW_DIR + n + FLOW_EXT)).items())
     add_start(batch, v.preset)
     if v.swap is not None:
         banc, actor, content = v.swap
