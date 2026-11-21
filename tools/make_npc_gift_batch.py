@@ -114,6 +114,7 @@ COURTYARD = NewStartPos('RandoTest_MeetImpa',
 
 SKULL_DAD = (-26.5, 102.9, 72.5)  # his actor sits at y 109.9; the floor is at 102.9
 DIVING_ZORA = (30.7, 113.6, -8.2)
+LAB_SCIENTIST = (-174.5, 137.8, 422.3)
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -189,6 +190,12 @@ VARIANTS: dict[str, Variant] = {
                                          DIVING_ZORA),
                 items=('Item_Scale_Gold', 'Item_Scale_Silver', 'Item_Wallet_Large',
                        'Item_Wallet_Medium'), rupees=500)),
+    # 29a2: the control for 29a (the menu showed Gold, but the lab dive did not reach the
+    #       bottom): the Golden Scale alone, in the Lake Hylia lab.
+    '29a2': Variant(
+        _preset('HyruleField_Child', _pos('RandoTest_GoldScaleOnly', (-174.5, 137.8, 419.3),
+                                          LAB_SCIENTIST),
+                items=('Item_Scale_Gold',))),
     # 29b: Kakariko, child: the biggest bullet bag before the Slingshot (seeds, up to 50?).
     '29b': Variant(
         _preset('KakarikoVillage_Child',
