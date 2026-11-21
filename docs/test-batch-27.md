@@ -74,3 +74,13 @@ Built with the same tool (`29a`, `29a2`, `29b`, `29c`, `29d`); Spanish guide `lo
 - **29d:** Zora's Domain, child: winning the diving game gave the Boomerang. **A minigame's `GetInEvent_NotTurn_NotNpc` grant can be renamed.**
 
 **Batch 29: every grant works. The only problem is the Silver Scale after the Golden one.**
+
+## Batch 30 (the gate of NPC gifts batch 2)
+
+Built with the same tool (`30a`..`30e`, `30c2`); Spanish guide `local/test-batch-30.md`.
+
+- **30a:** Talon's Cucco game, first win (event 262, `ReveiveItem`): gave the Boomerang. **Talon's prize moves.**
+- **30b:** a Bottle with Milk from the start preset: Link had it and could drink it. **Milk works from elsewhere.**
+- **30c:** Dampe: the Sun's Song made night, but day came back, so the tour could not be played. The user suspects time does not run before Zelda's meeting. **30c2** completes the castle quest (`Goto_HyruleCastle` through `Complete`).
+- **30d:** LW Target: the scene's animation hands over the bullet bag, then Link holds up the Boomerang, which he gets. **The site moves** (cosmetic: the bag shows first, as the non-goal "item models" allows).
+- **30e:** the biggest quiver, then the medium one, then the Bow: 50 arrows. **A smaller quiver never lowers the capacity.** No quiver rule is needed.

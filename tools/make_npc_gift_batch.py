@@ -91,6 +91,8 @@ def _preset(banc: str, pos: NewStartPos, items: tuple[str, ...] = (),
 
 
 CASTLE_STEPS = tuple(('Goto_HyruleCastle', f'Step0{i}') for i in (1, 2, 3, 4))
+CASTLE_DONE = tuple(('Goto_HyruleCastle', s) for s in (
+    'Step01', 'Step02', 'Step02_01', 'Step03', 'Step03_02', 'Step04', 'Complete'))
 MALON = (17.6, 105.5, -25.1)
 ROLLING_GORON = (-10.3, 109.6, -16.5)
 DARUNIA = (-0.2, 98.6, -41.8)
@@ -241,6 +243,16 @@ VARIANTS: dict[str, Variant] = {
         _preset('Graveyard_Child', _pos('RandoTest_GiftDampe', (-12.0, 100.8, 23.0),
                                         DAMPE_CHILD),
                 items=('Item_Ocarina_Fairy', 'Item_Melody_SunSong'), rupees=200),
+        gifts=(Gift('Npc_Hylia_Dampe_001', 'ActorName', ('Obj_Heart_Piece',)),),
+        entries=(Entry('Npc_Hylia_Dampe_001', 'GetInEvent_NotTurn_NotNpc_Dampe',
+                       'GetInEvent_NotTurn_NotNpc'),)),
+    # 30c2: 30c with the castle quest complete: in 30c the Sun's Song made night, but day
+    #       came back (time may be frozen until Zelda's meeting).
+    '30c2': Variant(
+        _preset('Graveyard_Child', _pos('RandoTest_GiftDampe', (-12.0, 100.8, 23.0),
+                                        DAMPE_CHILD),
+                items=('Item_Ocarina_Fairy', 'Item_Melody_SunSong'), rupees=200,
+                steps=CASTLE_DONE),
         gifts=(Gift('Npc_Hylia_Dampe_001', 'ActorName', ('Obj_Heart_Piece',)),),
         entries=(Entry('Npc_Hylia_Dampe_001', 'GetInEvent_NotTurn_NotNpc_Dampe',
                        'GetInEvent_NotTurn_NotNpc'),)),
