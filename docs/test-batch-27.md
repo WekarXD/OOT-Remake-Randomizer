@@ -69,3 +69,8 @@ Built with the same tool (`29a`, `29a2`, `29b`, `29c`, `29d`); Spanish guide `lo
 
 - **29a:** Zora's Domain, child, given the Golden Scale then the Silver one, the Giant's Wallet (`Item_Wallet_Large`) then the Adult's (`Item_Wallet_Medium`), and 500 rupees. The menu kept the bigger ones: the Golden Scale and the Giant's Wallet, with 500/1000 rupees. **A smaller wallet never lowers the capacity.** But the Lake Hylia lab dive did not reach the bottom.
 - **29a2 (control):** the Golden Scale alone, in the lab: the dive reached the bottom. **A Silver Scale received after the Golden one lowers the dive depth to silver's, though the menu still shows Gold.** The shuffle must never let Link get the Silver Scale after the Golden one.
+- **29b:** Kakariko, child, given the biggest bullet bag (`Item_BulletBag_Large`) before the Slingshot: the Slingshot held 50 seeds. **A bag received before its weapon is kept.**
+- **29c:** the Gold Skulltula house, child, with 10 tokens given by the start preset (`Dm_SY_GetInEvent:GetInEvent` with `Obj_Token_Gold`): the 10-token reward gave the Boomerang. **The house's by-reference `TakenRewardActor` can be renamed**, and the reward was handed over, so the tokens from `GetInEvent` counted.
+- **29d:** Zora's Domain, child: winning the diving game gave the Boomerang. **A minigame's `GetInEvent_NotTurn_NotNpc` grant can be renamed.**
+
+**Batch 29: every grant works. The only problem is the Silver Scale after the Golden one.**
