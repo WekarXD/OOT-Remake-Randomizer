@@ -119,3 +119,11 @@ Findings:
 - **Nothing checks which ocarina Link has**, apart from the Kokiri's dialogue (`Npc_Kokiri_005_Child`, `Npc_Kokiri_007_Child`: `Item_Ocarina_Fairy`). The Door of Time checks the stones (`DoorOfTime_CheckStoneNum`). OoTR's `stones_oot_sot` asks for both ocarinas (`(Ocarina, 2)`), which is stricter than the game: safe.
 - **The merchants never sell out by item:** Medigoron stops when `Weapon_Sword_Giant` is in the pouch; the carpet salesman has no check at all. A moved item may be sold again (test batch 31d and 31e).
 - **Left for batch 3b:** Granny's Blue Potion (`Npc_Hylia_053_Adult`, `GetInEventInBottle_BlueBottleShop`: a bottle refill, and OoTR ties it to the Odd Mushroom) and the bean seller (`Npc_Hylia_047_Child`: ten sales at rising prices, granted by `SimpleShop` event 63's literal `Item_MagicBean`, with no one-time gate).
+
+### Batch 3a: the merchants' sold-out flag (2026-11-21)
+
+- Test batch 31: both merchants resell (31d, 31e2). See the batch 3a design (`docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md`).
+- `GameDataList` (`GameData/GameDataList.Product.110.byml.zs`) is big-endian BYML v7. Each flag is stored as the MurmurHash3 (seed 0) of its name, so a name can be checked: `HyruleField_ChangeENV`, `Npc_Hylia_044_Buy` and `KokiriForest_LinkHouseDoor_Open` all match. Saved flags have `SaveFileIndex` 0 and `ResetTypeValue` 8.
+- `Npc_Hylia_044_Buy` (set by `SimpleShop` 84 after the carpet sale) is not saved (`SaveFileIndex` -1, `ResetTypeValue` 1).
+- `HaveTalked.<npc>` exists for 156 of the 240 NPC flows, probably engine-set on any talk.
+- A query's case value 0 is true and 1 is false; a query with no matching case ends the flow, or returns from a subflow.
