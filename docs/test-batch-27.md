@@ -120,3 +120,12 @@ Built with the same tool (`32a`..`32f2`); Spanish guide `local/test-batch-32.md`
 - **32d / 32d2:** `Shop_BombchuBundle_01` from elsewhere, against `Item_BombchuBundle_Small` (with a bomb bag): how many bombchus?
 - **32e:** 31b with no ocarina in the pouch.
 - **32f:** the fortress with `SageOfSpirit` at `Step01`, `GerudoFortress_Meet_FourCarpenter_NumOfCarpenterHelped` = 4, and the rescue's closing event (`Meet_FourCarpenter_ClearEvent`, from `SageOfSpirit_RescueCarpenter` 328) booted on arrival: does the card scene (`Dm_Gerudo_0025` 120) give the Boomerang? **32f2** boots `Dm_Gerudo_0025` itself.
+
+Results (2026-11-22):
+
+- **32a:** Medigoron sold the Boomerang once, then offered nothing. **His sold-out patch works.**
+- **32b:** the carpet salesman too. **His sold-out patch works.**
+- **32c / 32c2:** both `Item_Sword_Giant` and `Shop_Sword_Giant` gave a usable knife, and the patched Medigoron still sold with it in the pouch. **The knife moves as it is; no twin is needed.**
+- **32d / 32d2:** `Shop_BombchuBundle_01` gave 10 bombchus, the small bundle 5 (capacity 20 both). Bombs could not be used: no Goron's Bracelet, as in 27b. **The carpet's bombchus move as they are (OoTR's Bombchus (10)).**
+- **32e:** with no ocarina, Zelda's scene gave the Boomerang and the Song of Time. **No ocarina rule is needed.**
+- **32f:** Link arrived and the Gerudo did not attack, but no scene played. **32f2** stayed on a black screen. **32f3** frees the last carpenter the game's way: the count at 3, Link by carpenter 013's thief.

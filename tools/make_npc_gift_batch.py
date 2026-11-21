@@ -30,7 +30,7 @@ item that shows in the inventory), the way the shuffle would:
 32a-32f: the gate of NPC gifts batch 3a (docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md):
      the merchants' sold-out patch, their items from elsewhere, Zelda's ocarina scene with no
      ocarina, the Gerudo Card scene.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f2]
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f3]
 """
 import math
 import os
@@ -149,6 +149,8 @@ TOKEN_COUNT = 'PouchData.Item_Token_Gold.StockNum'
 # plays Dm_Gerudo_0025 (the card).
 SPIRIT_TO_STEP01 = (('SageOfSpirit', 'Ready'), ('SageOfSpirit', 'Step01'))
 CARPENTERS_HELPED = 'GerudoFortress_Meet_FourCarpenter_NumOfCarpenterHelped'
+CARPENTERS_FOUND = 'GerudoFortress_Meet_FourCarpenter_NumOfCarpenterFound'
+CARPENTER_013_THIEF = (23.3, 102.5, -66.8)  # Enemy_MiddleBoss_GerudoThief; he is at x 31.9
 MEDIGORON_SALE = (Gift('Npc_Goron_Medigoron_Adult', 'ActorName', ('Shop_Sword_Giant',)),)
 
 VARIANTS: dict[str, Variant] = {
@@ -409,6 +411,16 @@ VARIANTS: dict[str, Variant] = {
         StartPreset('GerudoFortress_Adult', 'GerudoFortress_FromGerudoValley', adult=True,
                     challenge_steps=SPIRIT_TO_STEP01, ints=((CARPENTERS_HELPED, 4),),
                     boot_event='Dm_Gerudo_0025'),
+        gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
+    # 32f3: 32f did not play the scene and 32f2 stayed black. Now the real way: three
+    #       carpenters counted as helped, Link in carpenter 013's room by his thief. Beat
+    #       her, open the cell with her key and talk to him: the count reaches 4 and the
+    #       rescue's closing event plays the card scene.
+    '32f3': Variant(
+        _preset('GerudoFortress_Adult',
+                _pos('RandoTest_LastCarpenter', (27.0, 102.6, -64.0), CARPENTER_013_THIEF),
+                steps=SPIRIT_TO_STEP01, adult=True,
+                ints=((CARPENTERS_HELPED, 3), (CARPENTERS_FOUND, 3))),
         gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),

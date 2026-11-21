@@ -69,12 +69,12 @@ Also found:
 | `Obj_Rupee_Gold` (Kak 100) | `Huge Rupee` | minor item | always |
 
 - Each ocarina's `KEY_ITEM_HOME` is its OoTR location, with the `LABELS` "Fairy Ocarina" and "Ocarina of Time".
-- **Pool twins.** When a merchant's item moves elsewhere, it goes as the `Item_` twin that test batch 32 proves works (32c, 32d). A `Shop_` actor may only work inside a shop.
+- **No twins.** The merchants' items move as they are. From elsewhere, `Shop_Sword_Giant` gives a usable knife (32c2), and `Shop_BombchuBundle_01` gives 10 bombchus (32d).
 
 **Logic** (`logic/world.py`).
 - **Ocarina:** OoTR's progressive `Ocarina`, in the "direct" model. 31c shows the order does not matter, so no fill rule like the scales' is needed.
 - **Gerudo Card:** with `shuffle_gerudo_card` on, the location "Hideout Gerudo Membership Card" also grants the logic event `Gerudo Membership Card`, whatever item it holds. The placed `Item_Token_Gerudo` grants nothing. OoTR's rules that need the card then need the rescue, which is what the remake checks. With the setting off, the vanilla card grants the same event at the same place.
-- **HF Ocarina of Time Item:** if 32e shows that the scene needs an ocarina in the pouch, one `REMAKE_RULES` entry adds `Ocarina`.
+- **HF Ocarina of Time Item:** OoTR's rule. The scene plays and gives both the item and the song with no ocarina in the pouch (32e).
 - **Merchants:** OoTR's own rules, including the wallet. Kak 100: OoTR's `(Gold_Skulltula_Token, 100)`.
 
 **Gifts** (`gifts.py`). New `GIFTS` rows, gated by their setting (`gifts_for(settings)`):
@@ -144,4 +144,14 @@ A seed with "Any chest", the skip on and all three settings on. From the spoiler
 3. The Gerudo Card is a logic event at its site; the shuffled card is a minor item.
 4. The ocarinas are progressive in the "direct" model, with no fill rule.
 5. Kak 100 joins the always-shuffled house rewards (OoTR has no setting for it).
-6. A merchant's item enters the pool as its `Item_` twin (from 32c and 32d).
+6. The merchants' items move as they are (32c2, 32d).
+
+## Test batch 32 results (2026-11-22)
+
+32a–32e passed:
+- the sold-out patch works for both merchants;
+- the knife and the bombchus work from elsewhere;
+- Medigoron sells with the knife in the pouch;
+- Zelda's scene needs no ocarina.
+
+32f and 32f2 did not play the card scene. 32f3 (the last carpenter freed the game's way) is pending. If it fails, the card stays fixed and `shuffle_gerudo_card` waits.
