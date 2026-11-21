@@ -36,19 +36,40 @@ KEY_ITEMS: dict[str, str] = {
     'Obj_Armor_Zora': 'Zora Tunic',
     'Item_Bottle': 'Bottle',
     'Item_Bottle_Letter': 'Rutos Letter',
+    # NPC gifts, batch 2 (design 2026-11-21-npc-gifts-batch-2).
+    'Item_Wallet_Medium': 'Progressive Wallet',
+    'Item_Wallet_Large': 'Progressive Wallet',
+    'Item_AgonyStone': 'Stone of Agony',
+    'Item_BombBag_Large': 'Bomb Bag',
+    'Item_Scale_Silver': 'Progressive Scale',
+    'Item_Scale_Gold': 'Progressive Scale',
+    'Item_Bottle_Milk': 'Bottle with Milk',
 }
+
+# The Slingshot and Bow upgrades (NPC gifts batch 2): minor items. In OoTR they are the
+# progressive Slingshot and Bow; here they only raise the capacity (a bag before its
+# weapon is kept, test batch 29b), so the logic ignores them.
+UPGRADES: frozenset[str] = frozenset({
+    'Item_BulletBag_Medium', 'Item_BulletBag_Large', 'Item_Quiver_Medium', 'Item_Quiver_Large'})
 
 # The logic needs these items to progress: excluding them never gives a
 # beatable game.
 NON_EXCLUDABLE = frozenset({'Item_Longshot', 'Item_Gauntlet_Gold'})
 
 # Level of the progressive items. Any strength level lifts and throws bombs (batch 28c).
+# A smaller wallet never lowers the capacity (batch 29a). A Silver Scale after the Golden
+# one lowers the dive depth (batch 29a2): the fill only places the Golden Scale where the
+# Silver one is needed (`fill.NEEDS_FIRST`).
 ITEM_LEVEL: dict[str, tuple[str, int]] = {
     'Item_Hookshot': ('Progressive Hookshot', 1),
     'Item_Gauntlet_Goron': ('Progressive Strength Upgrade', 1),
     'Item_Longshot': ('Progressive Hookshot', 2),
     'Item_Gauntlet_Silver': ('Progressive Strength Upgrade', 2),
     'Item_Gauntlet_Gold': ('Progressive Strength Upgrade', 3),
+    'Item_Wallet_Medium': ('Progressive Wallet', 1),
+    'Item_Wallet_Large': ('Progressive Wallet', 2),
+    'Item_Scale_Silver': ('Progressive Scale', 1),
+    'Item_Scale_Gold': ('Progressive Scale', 2),
 }
 
 LABELS: dict[str, str] = {
@@ -83,6 +104,13 @@ LABELS: dict[str, str] = {
     'Obj_Armor_Zora': 'Zora Tunic',
     'Item_Bottle': 'Bottle',
     'Item_Bottle_Letter': "Ruto's Letter",
+    'Item_Wallet_Medium': "Adult's Wallet",
+    'Item_Wallet_Large': "Giant's Wallet",
+    'Item_AgonyStone': 'Stone of Agony',
+    'Item_BombBag_Large': 'Biggest Bomb Bag',
+    'Item_Scale_Silver': 'Silver Scale',
+    'Item_Scale_Gold': 'Golden Scale',
+    'Item_Bottle_Milk': 'Bottle with Milk',
 }
 
 # Remake actor -> vanilla OoTR location where that item is.
@@ -122,6 +150,14 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Obj_Armor_Zora': 'ZD King Zora Thawed',
     'Item_Bottle': 'Kak Anju as Child',
     'Item_Bottle_Letter': 'LH Underwater Item',
+    # NPC gifts, batch 2.
+    'Item_Wallet_Medium': 'Kak 10 Gold Skulltula Reward',
+    'Item_Wallet_Large': 'Kak 30 Gold Skulltula Reward',
+    'Item_AgonyStone': 'Kak 20 Gold Skulltula Reward',
+    'Item_BombBag_Large': 'Market Bombchu Bowling First Prize',
+    'Item_Scale_Silver': 'ZD Diving Minigame',
+    'Item_Scale_Gold': 'LH Adult Fishing',
+    'Item_Bottle_Milk': 'LLR Talons Chickens',
 }
 
 # Dungeon items (and minigame keys): always stay vanilla.
@@ -150,6 +186,12 @@ FAMILIES: dict[str, str] = {
     'TBox_DekuNutBundle': 'Deku Nuts',
     'Item_DekuStickBundle_Small': 'Deku Stick',
     'Obj_MiniGame_SmallKey': 'Small Key (Treasure Chest Game)',
+    # NPC gifts batch 2: minor items at the prize sites.
+    'Item_BombchuBundle_Large': 'Bombchus',
+    'Item_BulletBag_Medium': 'Slingshot',
+    'Item_BulletBag_Large': 'Slingshot',
+    'Item_Quiver_Medium': 'Bow',
+    'Item_Quiver_Large': 'Bow',
 }
 
 

@@ -96,6 +96,22 @@ class StateTest(unittest.TestCase):
         s.collect('Item_Gauntlet_Silver')
         self.assertTrue(s.has('Progressive Strength Upgrade', 2))
 
+    def test_scale_levels(self):
+        # NPC gifts batch 2: the direct model holds the highest scale (the fill keeps
+        # the Silver Scale before the Golden one, test batch 29a2).
+        s = State()
+        s.collect('Item_Scale_Gold')
+        self.assertTrue(s.has('Progressive Scale', 2))
+        s.collect('Item_Scale_Silver')
+        self.assertEqual(s.items['Progressive Scale'], 2)
+
+    def test_wallet_levels(self):
+        # Test batch 29a: a smaller wallet after a bigger one keeps the capacity.
+        s = State()
+        s.collect('Item_Wallet_Large')
+        s.collect('Item_Wallet_Medium')
+        self.assertEqual(s.items['Progressive Wallet'], 2)
+
     def test_unknown_item_raises(self):
         with self.assertRaises(KeyError):
             State().collect('Not An Item')
@@ -262,6 +278,17 @@ class BombBagTest(unittest.TestCase):
         fn = dict(region.locations)['Kak Man on Roof']
         self.assertFalse(fn(State(), 'child'))
         self.assertTrue(fn(State(), 'adult'))
+
+    def test_lab_dive_needs_child(self):
+        # Only Npc_Hylia_045_Child hands over the Piece of Heart (the adult's flow gives
+        # the Eyedrops; NPC gifts batch 2 design).
+        region = _vanilla_world().regions['LH Lab']
+        fn = dict(region.locations)['LH Lab Dive']
+        s = State()
+        s.collect('Item_Scale_Silver')
+        s.collect('Item_Scale_Gold')
+        self.assertFalse(fn(s, 'adult'))
+        self.assertTrue(fn(s, 'child'))
 
     def test_lh_sun_needs_water_temple(self):
         # Batch 28a: the remake's Fire Arrows quest depends on the Water Temple being done

@@ -76,6 +76,9 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
     # The Fire Arrows only appear once the Water Temple is done (their quest depends on
     # SageOfWater_IsAfter_Step08, batch 28a): OoTR's scarecrow path does not apply.
     ('Lake Hylia', 'locations', 'LH Sun'): "'Water Temple Clear' and can_use(Bow)",
+    # Only the child scientist hands over the Piece of Heart (Npc_Hylia_045_Child; the
+    # adult's flow gives the Eyedrops). NPC gifts batch 2 design.
+    ('LH Lab', 'locations', 'LH Lab Dive'): '({orig}) and is_child',
 }
 
 

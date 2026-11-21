@@ -59,7 +59,11 @@ EVENT_PATCH_HASHES: set[int] = {
 NPC_GIFT_HOMES = {
     'GC Darunias Joy', 'HC Zeldas Letter', 'HC Malon Egg', 'ToT Light Arrows Cutscene',
     'LH Sun', 'GC Rolling Goron as Child', 'GC Rolling Goron as Adult', 'ZD King Zora Thawed',
-    'Kak Anju as Child', 'LH Underwater Item'}
+    'Kak Anju as Child', 'LH Underwater Item',
+    # batch 2 (design 2026-11-21)
+    'Kak 10 Gold Skulltula Reward', 'Kak 20 Gold Skulltula Reward',
+    'Kak 30 Gold Skulltula Reward', 'Market Bombchu Bowling First Prize',
+    'ZD Diving Minigame', 'LH Adult Fishing', 'LLR Talons Chickens'}
 
 
 class LocationMapTest(unittest.TestCase):
@@ -124,8 +128,12 @@ class LocationMapTest(unittest.TestCase):
 class ItemsTest(unittest.TestCase):
     def test_key_items(self):
         # 15 from chests, the six Great Fairy rewards (design 2026-11-15) and the ten
-        # NPC gift items of batch 1 (design 2026-11-20).
-        self.assertEqual(len(items.KEY_ITEMS), 31)
+        # NPC gift items of batch 1 (design 2026-11-20) and the seven of batch 2
+        # (design 2026-11-21).
+        self.assertEqual(len(items.KEY_ITEMS), 38)
+        self.assertEqual(items.KEY_ITEMS['Item_Scale_Gold'], 'Progressive Scale')
+        self.assertEqual(items.KEY_ITEMS['Item_Wallet_Large'], 'Progressive Wallet')
+        self.assertEqual(items.KEY_ITEMS['Item_Bottle_Milk'], 'Bottle with Milk')
         self.assertEqual(items.KEY_ITEMS['Item_Gauntlet_Goron'], 'Progressive Strength Upgrade')
         self.assertEqual(items.KEY_ITEMS['Item_Bottle_Letter'], 'Rutos Letter')
         self.assertEqual(items.KEY_ITEMS['Item_Longshot'], 'Progressive Hookshot')
@@ -139,6 +147,27 @@ class ItemsTest(unittest.TestCase):
                          ('Progressive Strength Upgrade', 1))
         self.assertEqual(items.ITEM_LEVEL['Item_Gauntlet_Gold'],
                          ('Progressive Strength Upgrade', 3))
+        self.assertEqual(items.ITEM_LEVEL['Item_Scale_Gold'], ('Progressive Scale', 2))
+        self.assertEqual(items.ITEM_LEVEL['Item_Wallet_Medium'], ('Progressive Wallet', 1))
+
+    def test_batch_2_homes_hold_their_items(self):
+        from randomizer.logic import ootr_data
+        locs = ootr_data.load_locations()
+        for actor in ('Item_Wallet_Medium', 'Item_Wallet_Large', 'Item_AgonyStone',
+                      'Item_BombBag_Large', 'Item_Scale_Silver', 'Item_Scale_Gold',
+                      'Item_Bottle_Milk'):
+            with self.subTest(actor=actor):
+                home = items.KEY_ITEM_HOME[actor]
+                self.assertEqual(locs[home]['vanilla_item'], items.KEY_ITEMS[actor])
+
+    def test_upgrades_are_minor(self):
+        self.assertEqual(items.UPGRADES, frozenset({
+            'Item_BulletBag_Medium', 'Item_BulletBag_Large',
+            'Item_Quiver_Medium', 'Item_Quiver_Large'}))
+        self.assertFalse(items.UPGRADES & set(items.KEY_ITEMS))
+        self.assertTrue(items.content_matches('Item_BulletBag_Medium', 'Slingshot'))
+        self.assertTrue(items.content_matches('Item_Quiver_Large', 'Bow'))
+        self.assertTrue(items.content_matches('Item_BombchuBundle_Large', 'Bombchus (10)'))
 
     def test_key_item_home(self):
         self.assertEqual(set(items.KEY_ITEM_HOME), set(items.KEY_ITEMS))
