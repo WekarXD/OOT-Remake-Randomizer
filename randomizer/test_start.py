@@ -71,6 +71,7 @@ class StartPreset:
     # (e.g. 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01').
     boot_event: str = ''
     rupees: int = 0  # rupees to add (as the fountains' payment does, with a sign)
+    ints: tuple[tuple[str, int], ...] = ()  # (GameDataName, value), e.g. a token count
 
 
 def _flag(name: str, value: bool) -> ActionSpec:
@@ -81,6 +82,9 @@ def _flag(name: str, value: bool) -> ActionSpec:
 def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
     specs: list[ActionSpec | SubflowSpec] = [_flag(f, True) for f in HOOK_FLAGS]
     specs += [_flag(name, value) for name, value in FOREST_EXIT_FLAGS + preset.flags]
+    specs += [ActionSpec('GameDataActor', 'EventTriggerSetGameDataInt',
+                         {'GameDataName': name, 'Index': -1, 'Value': value})
+              for name, value in preset.ints]
     specs += [ActionSpec('ChallengeSystemActor', 'EventExecuteProgressChallengeStep', {
         'ChallengeName': challenge, 'IsIgnoreCompletedChallenge': False,
         'IsIgnoreChallengeProgressUI': True, 'IsWaitEnd': True, 'StepName': step})

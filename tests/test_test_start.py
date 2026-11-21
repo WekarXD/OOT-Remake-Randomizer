@@ -83,6 +83,15 @@ class ApplyStartTest(unittest.TestCase):
         self.assertFalse(any(ev.action == 'EventTriggerIncreaseRupee'
                              for ev, _ in self._walk(PRESET)))
 
+    def test_ints(self):
+        # Batch 31: the 100-token reward needs 100 tokens; the house reads the count.
+        name = 'PouchData.Item_Token_Gold.StockNum'
+        seen = self._walk(StartPreset('HyruleCastle', 'X', ints=((name, 100),)))
+        sets = [(ev.actor, p) for ev, p in seen if ev.action == 'EventTriggerSetGameDataInt']
+        self.assertEqual(sets, [('GameDataActor', {'GameDataName': name, 'Index': -1, 'Value': 100})])
+        self.assertFalse(any(ev.action == 'EventTriggerSetGameDataInt'
+                             for ev, _ in self._walk(PRESET)))
+
     def test_child_chain_unchanged(self):
         self.assertNotIn(ERA_CHANGE, chain_calls(PRESET))
         flags = [p.get('GameDataName') for _, p in self._walk(PRESET)]

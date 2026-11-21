@@ -100,3 +100,22 @@ Not in batch 2:
   - Still to check: a Golden Scale before the Silver one (dive depth), a Large Wallet before the Medium one, and a quiver or bullet bag upgrade before the Bow or Slingshot.
 - **Stone of Agony** (`Item_AgonyStone`) and the wallets are new item types for the fill.
 - **Two grants for one prize** (fishing 482/489, Talon 261/262): rename both, as the full skip's copies are.
+
+## Batch 3a: OoTR's optional switches (2026-11-21)
+
+| OoTR location | OoTR setting | Grant |
+|---|---|---|
+| LW Gift from Saria | Shuffle Ocarinas | `Dm_Kokiri_0155` event 51 (`EventTriggerAddOrRemovePouchContent`, `Actor`) and 52 (`GetPouchContent:DisplayGetByActorName`, `ActorName`), `Item_Ocarina_Fairy`. Started by `Goto_HyruleCastle:KokiriForest_ArriveLostWood` (the bridge) |
+| HF Ocarina of Time Item | Shuffle Ocarinas | `Dm_MelodyGet_Time` event 106 (action, `Actor`) and 255 (display, `ActorName`), `Item_Ocarina_Time`. Event 93 is the Song of Time (a song site). Started by `DoorOfTime:DoorOfTime_GetOcarinaOfTime` (the moat) |
+| Hideout Gerudo Membership Card | Shuffle Gerudo Card | `Dm_Gerudo_0025` event 120, `GetInEvent_NotLookatObjectTurnOff` `Item_Token_Gerudo`. Started by `SageOfSpirit:Meet_FourCarpenter_ClearEvent` |
+| GC Medigoron | Shuffle Expensive Merchants | `Npc_Goron_Medigoron_Adult` event 6, `SimpleShop:SimpleShopRoot_Npc_Goron_Medigoron_Adult`, by-reference `ActorName` `Shop_Sword_Giant` (200 rupees, as in OoTR); `SimpleShop` event 112 grants it through its own `GetInEventItemSwordMedigoron` |
+| Wasteland Bombchu Salesman | Shuffle Expensive Merchants | `Npc_Hylia_044_Adult` event 0, `SimpleShop:SimpleShopRoot`, `ActorName` `Shop_BombchuBundle_01` (90 rupees), handed over by `SimpleShop` event 39 (`NpcCommon_HandOver_NpcToPlayer_NoTurn_NoWaitAS`, `ReceiveItem` by reference) |
+| Kak 100 Gold Skulltula Reward | (always in OoTR's pool) | `GatheringTokenGold` event 250 (`TakenRewardActor` `Obj_Rupee_Gold`, entry `TakenReward_Common_Event_200Rupee`) and event 573 (literal `ActorName` `Obj_Rupee_Gold`) |
+
+Findings:
+
+- **The shuffle skip keeps every grant:** the full skip rewrites `Dm_Kokiri_0155`, `Dm_MelodyGet_Time` and `Dm_Gerudo_0025`, and all the grants above are still in its copies.
+- **Nothing checks the Gerudo Card.** No flow tests `Item_Token_Gerudo`. The guards, the gate and the Training Ground follow the quest: `SageOfSpirit_IsAfter_Step01_Exp`/`Step03_Exp` (for example `Npc_Gerudo_006`, `Npc_Gerudo_007`, `Npc_Gerudo_013`). So in the remake the card's effect comes from freeing the carpenters, not from the item. OoTR's rules that need `Gerudo_Membership_Card` must need the rescue instead.
+- **Nothing checks which ocarina Link has**, apart from the Kokiri's dialogue (`Npc_Kokiri_005_Child`, `Npc_Kokiri_007_Child`: `Item_Ocarina_Fairy`). The Door of Time checks the stones (`DoorOfTime_CheckStoneNum`). OoTR's `stones_oot_sot` asks for both ocarinas (`(Ocarina, 2)`), which is stricter than the game: safe.
+- **The merchants never sell out by item:** Medigoron stops when `Weapon_Sword_Giant` is in the pouch; the carpet salesman has no check at all. A moved item may be sold again (test batch 31d and 31e).
+- **Left for batch 3b:** Granny's Blue Potion (`Npc_Hylia_053_Adult`, `GetInEventInBottle_BlueBottleShop`: a bottle refill, and OoTR ties it to the Odd Mushroom) and the bean seller (`Npc_Hylia_047_Child`: ten sales at rising prices, granted by `SimpleShop` event 63's literal `Item_MagicBean`, with no one-time gate).

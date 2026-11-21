@@ -87,3 +87,14 @@ Built with the same tool (`30a`..`30e`, `30c2`); Spanish guide `local/test-batch
 - **30c2:** with the castle quest complete, the Sun's Song still turned night and day came back at once. Dampe's tour stays unplayed. **Accepted without an in-game test** (user's call, 2026-11-21): Dampe's prize moves, with his entry pointed at `GetInEvent_NotTurn_NotNpc` (the diving game's, 29d). To check in a later playthrough; see `docs/TODO.md`.
 
 **Batch 30: every site moves (`FIXED_GIFTS` stays empty). No quiver rule is needed.**
+
+## Batch 31 (NPC gifts batch 3a: OoTR's ocarinas, merchants and the 100-token reward)
+
+Built with the same tool (`31a`..`31f`); Spanish guide `local/test-batch-31.md`. Research in `docs/npc-gifts-research.md` ("Batch 3a"). Every variant makes the gift give the Boomerang.
+
+- **31a:** Saria's ocarina on the bridge (`Dm_Kokiri_0155`, from `Goto_HyruleCastle:KokiriForest_ArriveLostWood`): the grant is an `EventTriggerAddOrRemovePouchContent` action (`Actor`) plus `GetPouchContent:DisplayGetByActorName` (`ActorName`); both renamed. The preset clears the farewell flags every other preset sets. Does the scene play, with Saria there, and give the Boomerang?
+- **31b:** the Ocarina of Time at the moat (`Dm_MelodyGet_Time`, from `DoorOfTime:DoorOfTime_GetOcarinaOfTime`), the castle quest complete and `DoorOfTime` at `Step03`: the same two grants renamed (event 106 `Actor`, 255 `ActorName`). The Song of Time (event 93) stays. Does the scene start and give the Boomerang and the song?
+- **31c:** the Ocarina of Time, then the Fairy Ocarina: which one does the menu show, and can Link play?
+- **31d:** Medigoron (`Npc_Goron_Medigoron_Adult` event 6, `SimpleShop:SimpleShopRoot_Npc_Goron_Medigoron_Adult`, by-reference `ActorName` `Shop_Sword_Giant`; his own grant `GetInEventItemSwordMedigoron`, `SimpleShop` event 112, points at `GetInEvent_NotTurn`). He only stops selling when the Giant's Knife is in the pouch: does he sell the Boomerang again?
+- **31e:** the carpet salesman (`Npc_Hylia_044_Adult` event 0, `SimpleShop:SimpleShopRoot`, `ActorName` `Shop_BombchuBundle_01`, handed over by `NpcCommon_HandOver_NpcToPlayer_NoTurn_NoWaitAS`). His sale has no sold-out check at all: does he sell it again?
+- **31f:** the 100-token reward (`GatheringTokenGold` event 250 `TakenRewardActor`, entry `TakenReward_Common_Event_200Rupee`, and event 573's literal `ActorName`), with the count set directly (`PouchData.Item_Token_Gold.StockNum` = 100).

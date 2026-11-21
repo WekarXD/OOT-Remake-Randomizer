@@ -25,7 +25,9 @@ item that shows in the inventory), the way the shuffle would:
      order, a Gold Skulltula house reward and a minigame prize.
 30a-30e: the gate of NPC gifts batch 2 (docs/superpowers/plans/2026-11-21-npc-gifts-batch-2.md):
      Talon, milk from elsewhere, Dampe, LW Target, the quiver order.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e]
+31a-31f: NPC gifts batch 3a (docs/npc-gifts-research.md): the ocarinas, Medigoron, the carpet
+     salesman and the 100-token reward.
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f]
 """
 import math
 import os
@@ -36,8 +38,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from make_start_batch import FLOW_DIR, FLOW_EXT, Batch, add_start, write_mod  # noqa: E402
 from randomizer.formats import byml  # noqa: E402
-from randomizer.formats.bfevfl import (SUBFLOW, EventFlow, set_string_param,  # noqa: E402
-                                       set_subflow_entry)
+from randomizer.formats.bfevfl import (ACTION, SUBFLOW, EventFlow,  # noqa: E402
+                                       set_string_param, set_subflow_entry)
 from randomizer.formats.rstb import Rstb  # noqa: E402
 from randomizer.full_skip import files_with_fallback  # noqa: E402
 from randomizer.game import GameData  # noqa: E402
@@ -85,9 +87,10 @@ def _pos(name: str, at: tuple[float, float, float],
 
 def _preset(banc: str, pos: NewStartPos, items: tuple[str, ...] = (),
             steps: tuple[tuple[str, str], ...] = (), adult: bool = False,
-            rupees: int = 0) -> StartPreset:
+            rupees: int = 0, flags: tuple[tuple[str, bool], ...] = (),
+            ints: tuple[tuple[str, int], ...] = ()) -> StartPreset:
     return StartPreset(banc, pos.name, items=items, new_pos=pos, challenge_steps=steps,
-                       adult=adult, rupees=rupees)
+                       adult=adult, rupees=rupees, flags=flags, ints=ints)
 
 
 CASTLE_STEPS = tuple(('Goto_HyruleCastle', f'Step0{i}') for i in (1, 2, 3, 4))
@@ -122,6 +125,20 @@ LAB_SCIENTIST = (-174.5, 137.8, 422.3)
 TALON_RANCH = (-52.4, 150.7, 199.3)
 DAMPE_CHILD = (-12.0, 100.8, 20.0)
 LW_TARGET = (40.3, 102.9, -0.2)
+# Batch 31 (NPC gifts batch 3a).
+SARIA_BRIDGE = (-117.1, 114.5, -38.2)  # her farewell actor; the trigger is at x -115.4
+# Every start preset marks Saria's farewell as played (FOREST_EXIT_FLAGS); 31a undoes it.
+SARIA_FAREWELL_UNPLAYED = (('HavePlayedEvent.KokiriForest_ArriveLostWood', False),
+                           ('HavePlayedEvent.Dm_Kokiri_0150', False),
+                           ('HavePlayedEvent.Dm_Kokiri_0155', False),
+                           ('HyruleField_ChangeENV', False))
+# The Ocarina of Time scene (DoorOfTime_GetOcarinaOfTime): its trigger is by the moat, at
+# (18.0, 167.3, 52.7); the quest reaches Step03 with the three stones.
+DOOR_TO_STEP03 = tuple(('DoorOfTime', s) for s in (
+    'Step01', 'Step02', 'Step2_1', 'Srep2_1_1', 'Step2_2', 'Step03'))
+MEDIGORON = (36.2, 115.7, 6.7)
+CARPET_SALESMAN = (37.3, 90.5, 60.6)
+TOKEN_COUNT = 'PouchData.Item_Token_Gold.StockNum'
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -272,6 +289,55 @@ VARIANTS: dict[str, Variant] = {
                 _pos('RandoTest_QuiverOrder', (-72.1, 99.3, 76.1), ANJU),
                 items=('Item_Quiver_Large', 'Item_Quiver_Medium', 'Item_Range_Bow'),
                 adult=True)),
+    # Batch 31 (NPC gifts batch 3a: OoTR's ocarinas, Medigoron, the carpet salesman and
+    # the 100-token reward).
+    # 31a: Kokiri Forest, child, a few steps from the bridge, with Saria's farewell not
+    #      yet played: walking onto the bridge, her ocarina gives the Boomerang (a pouch
+    #      action's `Actor` and the get display's `ActorName`).
+    '31a': Variant(
+        _preset('KokiriForest_Child', _pos('RandoTest_GiftSaria', (-108.1, 115.0, -38.2),
+                                           SARIA_BRIDGE),
+                flags=SARIA_FAREWELL_UNPLAYED),
+        gifts=(Gift('Dm_Kokiri_0155', 'Actor', ('Item_Ocarina_Fairy',)),
+               Gift('Dm_Kokiri_0155', 'ActorName', ('Item_Ocarina_Fairy',)))),
+    # 31b: Hyrule Field, child, at the market's drawbridge, the castle quest complete and
+    #      the Door of Time quest at Step03, with the Fairy Ocarina: walking to the moat,
+    #      Zelda's Ocarina of Time gives the Boomerang (and the Song of Time still comes).
+    '31b': Variant(
+        StartPreset('HyruleField_Child', 'HyruleField_FrontOfMarket',
+                    items=('Item_Ocarina_Fairy',), challenge_steps=CASTLE_DONE + DOOR_TO_STEP03),
+        gifts=(Gift('Dm_MelodyGet_Time', 'Actor', ('Item_Ocarina_Time',)),
+               Gift('Dm_MelodyGet_Time', 'ActorName', ('Item_Ocarina_Time',)))),
+    # 31c: Kakariko, child: the Ocarina of Time, then the Fairy Ocarina (out of order), and
+    #      Zelda's Lullaby: which ocarina does the menu show, and can he play?
+    '31c': Variant(
+        _preset('KakarikoVillage_Child',
+                _pos('RandoTest_OcarinaOrder', (-72.1, 99.3, 76.1), ANJU),
+                items=('Item_Ocarina_Time', 'Item_Ocarina_Fairy', 'Item_Melody_ZeldaLullaby'))),
+    # 31d: Goron City, adult, by Medigoron, with 200 rupees: he sells the Boomerang (the
+    #      shop's by-reference `ActorName`; his own grant entry points at the generic one).
+    #      Talk again after buying: does he sell it again?
+    '31d': Variant(
+        _preset('GoronCity_Adult', _pos('RandoTest_GiftMedigoron', (31.2, 115.9, 9.7),
+                                        MEDIGORON),
+                adult=True, rupees=200),
+        gifts=(Gift('Npc_Goron_Medigoron_Adult', 'ActorName', ('Shop_Sword_Giant',)),),
+        entries=(Entry('SimpleShop', 'GetInEventItemSwordMedigoron', GENERIC_NPC),)),
+    # 31e: the Haunted Wasteland, adult, by the carpet salesman, with 200 rupees: he sells
+    #      the Boomerang (an NpcCommon hand-over by reference). Again after buying?
+    '31e': Variant(
+        _preset('HountedWasteland_Adult',
+                _pos('RandoTest_GiftCarpet', (33.3, 90.8, 60.6), CARPET_SALESMAN),
+                adult=True, rupees=200),
+        gifts=(Gift('Npc_Hylia_044_Adult', 'ActorName', ('Shop_BombchuBundle_01',)),)),
+    # 31f: the Gold Skulltula house, child, with 100 tokens (the count set directly): the
+    #      100-token reward (its own entry, and a literal `ActorName`) gives the Boomerang.
+    '31f': Variant(
+        _preset('KakarikoVillage_Child',
+                _pos('RandoTest_GiftSkull100', (-27.0, 102.9, 70.0), SKULL_DAD),
+                ints=((TOKEN_COUNT, 100),)),
+        gifts=(Gift('GatheringTokenGold', 'TakenRewardActor', ('Obj_Rupee_Gold',)),
+               Gift('GatheringTokenGold', 'ActorName', ('Obj_Rupee_Gold',)))),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
@@ -286,15 +352,17 @@ VARIANTS: dict[str, Variant] = {
 NO_SKIP = {'27d2'}  # variants built without the full skip
 
 
-def _calls(data: bytes, match) -> list[int]:
+def _calls(data: bytes, match, kind: int = SUBFLOW) -> list[int]:
     flow = EventFlow(data)
-    return [i for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW and match(flow, i, ev)]
+    return [i for i, ev in enumerate(flow.events) if ev.kind == kind and match(flow, i, ev)]
 
 
 def give(data: bytes, gift: Gift, item: str) -> bytes:
-    """`gift.flow` giving `item` wherever it gave a vanilla value. Raises ValueError
-    when there is no such call."""
-    calls = _calls(data, lambda f, i, ev: f.action_params(i).get(gift.key) in gift.vanilla)
+    """`gift.flow` giving `item` wherever it gave a vanilla value (an action's `Actor`
+    for the key 'Actor', a subflow call's parameter otherwise). Raises ValueError when
+    there is no such call."""
+    kind = ACTION if gift.key == 'Actor' else SUBFLOW
+    calls = _calls(data, lambda f, i, ev: f.action_params(i).get(gift.key) in gift.vanilla, kind)
     if not calls:
         raise ValueError(f'{gift.flow}: no call with {gift.key} in {gift.vanilla}.')
     for i in calls:
