@@ -568,6 +568,29 @@ class Batch3aFillTest(unittest.TestCase):
                               else OOTR_TOKEN if drop == TOKEN else 'Rupees (5)')
             self.assertTrue(self.world.can_beat(fixed), i)
 
+    def test_carpet_bombchus_only_where_a_bag_is_needed(self):
+        # Final review: the carpet salesman's bombchus are ammo (batch 17: ammo before its
+        # container shows the bag without making it usable).
+        self.assertEqual(AMMO_CONTAINER['Shop_BombchuBundle_01'], 'Bomb Bag')
+        checked = 0
+        for i in range(30):
+            r = self._all(seed=f'b{i}', shuffle_expensive_merchants=True)
+            fixed = _fixed_for(r.chests, self.chests, self.loc_map, self.world,
+                               {**r.fairies, **r.gifts})
+            where = [loc for loc, d in r.gifts.items() if d == 'Shop_BombchuBundle_01']
+            where += [self.loc_map[h].location for h, d in r.chests.items()
+                      if d == 'Shop_BombchuBundle_01' and h in self.loc_map
+                      and self.loc_map[h].location]
+            if not where:
+                continue
+            without = {loc: ('Rupees (5)' if items.KEY_ITEMS.get(item, item) == 'Bomb Bag'
+                             else item) for loc, item in fixed.items()}
+            reach = self.world.reachable_locations(without)
+            for loc in where:
+                self.assertNotIn(loc, reach, (i, loc))
+                checked += 1
+        self.assertGreater(checked, 0)
+
     def test_excluded_ocarina(self):
         r = self._all(seed='E', shuffle_ocarinas=True,
                       excluded_items=frozenset({'Item_Ocarina_Time'}))

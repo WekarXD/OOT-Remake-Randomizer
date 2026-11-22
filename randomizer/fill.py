@@ -47,6 +47,7 @@ AMMO_CONTAINER: dict[str, str] = {
     'Item_BombBundle_Small': 'Bomb Bag',
     'Item_BombchuBundle_Small': 'Bomb Bag',
     'Item_BombchuBundle_Large': 'Bomb Bag',
+    'Shop_BombchuBundle_01': 'Bomb Bag',  # the carpet salesman's (NPC gifts batch 3a)
     'TBox_ArrowBundle_Medium': 'Bow',
     'TBox_ArrowBundle_Large': 'Bow',
 }

@@ -63,6 +63,7 @@ Rule = Callable[[State, str], bool]
 #   vine Skulltulas with a ranged weapon (batch 17). The basement is
 #   opened by jumping from that floor onto the web.
 _DEKU_UPPER = 'can_use(Slingshot) or can_use(Bow) or can_use(Hookshot)'
+_SONG_NEEDS_OCARINA = '({orig}) and (Ocarina or not shuffle_ocarinas)'
 REMAKE_RULES: dict[tuple[str, str, str], str] = {
     ('Deku Tree Lobby', 'locations', 'Deku Tree Compass Chest'): _DEKU_UPPER,
     ('Deku Tree Lobby', 'locations', 'Deku Tree Compass Room Side Chest'): _DEKU_UPPER,
@@ -79,6 +80,20 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
     # Only the child scientist hands over the Piece of Heart (Npc_Hylia_045_Child; the
     # adult's flow gives the Eyedrops). NPC gifts batch 2 design.
     ('LH Lab', 'locations', 'LH Lab Dive'): '({orig}) and is_child',
+    # NPC gifts batch 3a: with Shuffle Ocarinas a song lesson may come before any ocarina,
+    # which is untested in game (final review): the lessons need one. Zelda's Ocarina of
+    # Time scene gives its song with no ocarina (test batch 32e); the windmill and Malon
+    # already ask for one.
+    **{(region, 'locations', spot): _SONG_NEEDS_OCARINA for region, spot in (
+        ('HC Garden Skippable Locations', 'Song from Impa'),
+        ('Sacred Forest Meadow', 'Song from Saria'),
+        ('Graveyard Royal Familys Tomb', 'Song from Royal Familys Tomb'),
+        ('Sacred Forest Meadow', 'Sheik in Forest'),
+        ('DMC Central Nearby', 'Sheik in Crater'),
+        ('Ice Cavern End', 'Sheik in Ice Cavern'),
+        ('Kakariko Village', 'Sheik in Kakariko'),
+        ('Desert Colossus From Spirit Lobby', 'Sheik at Colossus'),
+        ('Beyond Door of Time', 'Sheik at Temple'))},
 }
 
 

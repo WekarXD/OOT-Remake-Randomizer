@@ -112,6 +112,22 @@ class StateTest(unittest.TestCase):
         s.collect('Item_Wallet_Medium')
         self.assertEqual(s.items['Progressive Wallet'], 2)
 
+    def test_song_lessons_need_an_ocarina_when_shuffled(self):
+        # Final review: a lesson with no ocarina is untested in game, so with Shuffle
+        # Ocarinas the songs taught by playing need one (Zelda's scene works without, 32e).
+        from randomizer.logic.world import World, load_vanilla_settings
+        on = World({**load_vanilla_settings(), 'shuffle_ocarinas': True})
+        fixed = on.vanilla_fixed()
+        for loc in ('LW Gift from Saria', 'HF Ocarina of Time Item'):
+            fixed[loc] = 'Rupees (5)'
+        reach = on.reachable_locations(fixed)
+        self.assertNotIn('Song from Impa', reach)
+        self.assertNotIn('Song from Saria', reach)
+        from randomizer.logic.world import REMAKE_RULES
+        self.assertNotIn(('Hyrule Field', 'locations', 'Song from Ocarina of Time'), REMAKE_RULES)
+        off = World(load_vanilla_settings())
+        self.assertIn('Song from Impa', off.reachable_locations(fixed))
+
     def test_ocarina_levels(self):
         # NPC gifts batch 3a: the two ocarinas are separate items in the game (31c); the
         # direct model holds the highest, so the Ocarina of Time alone counts as both.
