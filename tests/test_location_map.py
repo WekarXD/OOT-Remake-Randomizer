@@ -63,7 +63,9 @@ NPC_GIFT_HOMES = {
     # batch 2 (design 2026-11-21)
     'Kak 10 Gold Skulltula Reward', 'Kak 20 Gold Skulltula Reward',
     'Kak 30 Gold Skulltula Reward', 'Market Bombchu Bowling First Prize',
-    'ZD Diving Minigame', 'LH Adult Fishing', 'LLR Talons Chickens'}
+    'ZD Diving Minigame', 'LH Adult Fishing', 'LLR Talons Chickens',
+    # batch 3a (design 2026-11-21-npc-gifts-batch-3a): Shuffle Ocarinas
+    'LW Gift from Saria', 'HF Ocarina of Time Item'}
 
 
 class LocationMapTest(unittest.TestCase):
@@ -129,8 +131,10 @@ class ItemsTest(unittest.TestCase):
     def test_key_items(self):
         # 15 from chests, the six Great Fairy rewards (design 2026-11-15) and the ten
         # NPC gift items of batch 1 (design 2026-11-20) and the seven of batch 2
-        # (design 2026-11-21).
-        self.assertEqual(len(items.KEY_ITEMS), 38)
+        # (design 2026-11-21), and the two ocarinas of batch 3a.
+        self.assertEqual(len(items.KEY_ITEMS), 40)
+        self.assertEqual(items.KEY_ITEMS['Item_Ocarina_Fairy'], 'Ocarina')
+        self.assertEqual(items.KEY_ITEMS['Item_Ocarina_Time'], 'Ocarina')
         self.assertEqual(items.KEY_ITEMS['Item_Scale_Gold'], 'Progressive Scale')
         self.assertEqual(items.KEY_ITEMS['Item_Wallet_Large'], 'Progressive Wallet')
         self.assertEqual(items.KEY_ITEMS['Item_Bottle_Milk'], 'Bottle with Milk')
@@ -168,6 +172,22 @@ class ItemsTest(unittest.TestCase):
         self.assertTrue(items.content_matches('Item_BulletBag_Medium', 'Slingshot'))
         self.assertTrue(items.content_matches('Item_Quiver_Large', 'Bow'))
         self.assertTrue(items.content_matches('Item_BombchuBundle_Large', 'Bombchus (10)'))
+
+    def test_batch_3a_homes_and_contents(self):
+        from randomizer.logic import ootr_data
+        locs = ootr_data.load_locations()
+        for actor in ('Item_Ocarina_Fairy', 'Item_Ocarina_Time'):
+            with self.subTest(actor=actor):
+                self.assertEqual(locs[items.KEY_ITEM_HOME[actor]]['vanilla_item'], 'Ocarina')
+        self.assertEqual(items.ITEM_LEVEL['Item_Ocarina_Fairy'], ('Ocarina', 1))
+        self.assertEqual(items.ITEM_LEVEL['Item_Ocarina_Time'], ('Ocarina', 2))
+        for content, location in (('Shop_Sword_Giant', 'GC Medigoron'),
+                                  ('Shop_BombchuBundle_01', 'Wasteland Bombchu Salesman'),
+                                  ('Obj_Rupee_Gold', 'Kak 100 Gold Skulltula Reward'),
+                                  ('Item_Token_Gerudo', 'Hideout Gerudo Membership Card')):
+            with self.subTest(content=content):
+                self.assertNotIn(content, items.KEY_ITEMS)
+                self.assertTrue(items.content_matches(content, locs[location]['vanilla_item']))
 
     def test_key_item_home(self):
         self.assertEqual(set(items.KEY_ITEM_HOME), set(items.KEY_ITEMS))

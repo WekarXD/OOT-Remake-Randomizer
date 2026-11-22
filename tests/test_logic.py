@@ -112,6 +112,15 @@ class StateTest(unittest.TestCase):
         s.collect('Item_Wallet_Medium')
         self.assertEqual(s.items['Progressive Wallet'], 2)
 
+    def test_ocarina_levels(self):
+        # NPC gifts batch 3a: the two ocarinas are separate items in the game (31c); the
+        # direct model holds the highest, so the Ocarina of Time alone counts as both.
+        s = State()
+        s.collect('Item_Ocarina_Time')
+        self.assertEqual(s.items['Ocarina'], 2)
+        s.collect('Item_Ocarina_Fairy')
+        self.assertEqual(s.items['Ocarina'], 2)
+
     def test_unknown_item_raises(self):
         with self.assertRaises(KeyError):
             State().collect('Not An Item')

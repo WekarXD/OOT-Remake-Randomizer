@@ -44,6 +44,10 @@ KEY_ITEMS: dict[str, str] = {
     'Item_Scale_Silver': 'Progressive Scale',
     'Item_Scale_Gold': 'Progressive Scale',
     'Item_Bottle_Milk': 'Bottle with Milk',
+    # NPC gifts batch 3a, Shuffle Ocarinas (design 2026-11-21-npc-gifts-batch-3a): two
+    # separate items in the game (31c), OoTR's progressive Ocarina in the logic.
+    'Item_Ocarina_Fairy': 'Ocarina',
+    'Item_Ocarina_Time': 'Ocarina',
 }
 
 # The Slingshot and Bow upgrades (NPC gifts batch 2): minor items. In OoTR they are the
@@ -70,6 +74,8 @@ ITEM_LEVEL: dict[str, tuple[str, int]] = {
     'Item_Wallet_Large': ('Progressive Wallet', 2),
     'Item_Scale_Silver': ('Progressive Scale', 1),
     'Item_Scale_Gold': ('Progressive Scale', 2),
+    'Item_Ocarina_Fairy': ('Ocarina', 1),
+    'Item_Ocarina_Time': ('Ocarina', 2),
 }
 
 LABELS: dict[str, str] = {
@@ -111,6 +117,8 @@ LABELS: dict[str, str] = {
     'Item_Scale_Silver': 'Silver Scale',
     'Item_Scale_Gold': 'Golden Scale',
     'Item_Bottle_Milk': 'Bottle with Milk',
+    'Item_Ocarina_Fairy': 'Fairy Ocarina',
+    'Item_Ocarina_Time': 'Ocarina of Time',
 }
 
 # Remake actor -> vanilla OoTR location where that item is.
@@ -158,6 +166,8 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Item_Scale_Silver': 'ZD Diving Minigame',
     'Item_Scale_Gold': 'LH Adult Fishing',
     'Item_Bottle_Milk': 'LLR Talons Chickens',
+    'Item_Ocarina_Fairy': 'LW Gift from Saria',
+    'Item_Ocarina_Time': 'HF Ocarina of Time Item',
 }
 
 # Dungeon items (and minigame keys): always stay vanilla.
@@ -192,6 +202,10 @@ FAMILIES: dict[str, str] = {
     'Item_BulletBag_Large': 'Slingshot',
     'Item_Quiver_Medium': 'Bow',
     'Item_Quiver_Large': 'Bow',
+    # NPC gifts batch 3a: minor items at the new sites.
+    'Shop_BombchuBundle_01': 'Bombchus',
+    'Shop_Sword_Giant': 'Giants Knife',
+    'Item_Token_Gerudo': 'Gerudo Membership Card',  # no use in the remake
 }
 
 
@@ -199,6 +213,8 @@ def content_matches(drop: str, vanilla: str) -> bool:
     """Does the remake content `drop` correspond to the vanilla OoTR item?"""
     if drop in KEY_ITEMS:
         return KEY_ITEMS[drop] == vanilla
+    if drop == 'Obj_Rupee_Gold' and vanilla == 'Huge Rupee':
+        return True  # the Kak 100 reward (200 rupees, as a gold rupee)
     for prefix in ('TBox_Rupee_', 'Obj_Rupee_'):
         if drop.startswith(prefix):
             return RUPEES.get(drop[len(prefix):]) == vanilla
