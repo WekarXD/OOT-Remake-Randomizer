@@ -1,11 +1,12 @@
-"""NPC gifts, batches 1 and 2 (designs docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md
+"""NPC gifts, batches 1, 2 and 3a (designs docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md
 and 2026-11-21-npc-gifts-batch-2-design.md; proven by test batches 27 to 30)."""
 import os
 import unittest
 
 from randomizer import items
 from randomizer.formats import byml
-from randomizer.formats.bfevfl import SUBFLOW, EventFlow
+from randomizer.fill import Settings
+from randomizer.formats.bfevfl import ACTION, SUBFLOW, EventFlow
 from randomizer.formats.zs import ZsCodec
 from randomizer.logic import ootr_data
 from randomizer.nup import NupArchive
@@ -20,19 +21,45 @@ def _gifts():
     return gifts
 
 
+POUCH_ADD = 'EventTriggerAddOrRemovePouchContent'
+
+
 def _calls(flow: EventFlow, key, values, via: str | None = None) -> list[int]:
+    """Grants: subflow calls with `key` in `values`, or (key `Actor`) pouch additions."""
     keys = (key,) if isinstance(key, str) else key
-    return [i for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
-            and (via is None or ev.sub_entry == via)
-            and any(flow.action_params(i).get(k) in values for k in keys)]
+    out = []
+    for i, ev in enumerate(flow.events):
+        params = flow.action_params(i) if ev.kind in (ACTION, SUBFLOW) else {}
+        for k in keys:
+            if params.get(k) not in values:
+                continue
+            if k == 'Actor' and ev.kind == ACTION and ev.action == POUCH_ADD:
+                out.append(i)
+            elif k != 'Actor' and ev.kind == SUBFLOW and (via is None or ev.sub_entry == via):
+                out.append(i)
+    return sorted(set(out))
+
+
+def _params(flow: EventFlow) -> list[dict]:
+    return [flow.action_params(i) if ev.kind in (ACTION, SUBFLOW) else {}
+            for i, ev in enumerate(flow.events)]
+
+
+BATCH_3A = ('Kak 100 Gold Skulltula Reward', 'LW Gift from Saria', 'HF Ocarina of Time Item',
+            'GC Medigoron', 'Wasteland Bombchu Salesman', 'Hideout Gerudo Membership Card')
+ALL_ON = Settings('x', shuffle_ocarinas=True, shuffle_gerudo_card=True,
+                  shuffle_expensive_merchants=True)
 
 
 class GiftTableTest(unittest.TestCase):
     def test_table_matches_ootr(self):
         gifts = _gifts()
         locs = ootr_data.load_locations()
-        self.assertEqual(len(gifts.GIFTS), 35)
-        self.assertEqual(len({g.location for g in gifts.GIFTS}), 35)
+        self.assertEqual(len(gifts.GIFTS), 41)
+        self.assertEqual(len({g.location for g in gifts.GIFTS}), 41)
+        # Batch 3a comes after batch 2, so the earlier site ids (-301..-335) stay.
+        self.assertEqual(tuple(g.location for g in gifts.GIFTS[35:]), BATCH_3A)
+        self.assertEqual(gifts.GIFTS[34].location, 'LLR Talons Chickens')
         for g in gifts.GIFTS:
             with self.subTest(gift=g.location):
                 self.assertIn(g.location, locs)
@@ -41,6 +68,18 @@ class GiftTableTest(unittest.TestCase):
         self.assertEqual(gifts.GIFT_ITEMS,
                          frozenset(g.content for g in gifts.GIFTS if g.content in items.KEY_ITEMS))
         self.assertEqual(gifts.FIXED_GIFTS, frozenset())  # batch 28: every gate passed
+
+    def test_active_gifts_by_setting(self):
+        gifts = _gifts()
+        off = {g.location for g in gifts.active_gifts(Settings('x'))}
+        self.assertEqual(off, {g.location for g in gifts.GIFTS[:35]} | {BATCH_3A[0]})
+        for name, locs in (('shuffle_ocarinas', BATCH_3A[1:3]),
+                           ('shuffle_expensive_merchants', BATCH_3A[3:5]),
+                           ('shuffle_gerudo_card', BATCH_3A[5:])):
+            with self.subTest(setting=name):
+                on = {g.location for g in gifts.active_gifts(Settings('x', **{name: True}))}
+                self.assertEqual(on - off, set(locs))
+        self.assertEqual(len(gifts.active_gifts(ALL_ON)), 41)
 
     def test_empty_placement_changes_nothing(self):
         self.assertEqual(_gifts().gift_flow_patches(lambda name: b'', {}), {})
@@ -150,6 +189,48 @@ class _Base:
             self.flows.__getitem__, {'Graveyard Dampe Gravedigging Tour': 'Obj_Heart_Piece'})
         self.assertEqual(same, {})
 
+    def test_only_the_grants_change(self):
+        # Batch 3a: renaming a gift changes its grants' item and nothing else (the
+        # ocarina scenes' screenshot TargetID and the Song of Time stay).
+        for loc in BATCH_3A:
+            g = _gifts().GIFT_BY_LOCATION[loc]
+            with self.subTest(gift=loc):
+                out = _gifts().gift_flow_patches(self.flows.__getitem__, {loc: NEW})
+                before, after = EventFlow(self.flows[g.flow]), EventFlow(out[g.flow])
+                grants = _calls(before, g.key, g.vanilla)
+                self.assertTrue(grants)
+                changed = [i for i, (a, b) in enumerate(zip(_params(before), _params(after)))
+                           if a != b]
+                self.assertEqual(changed, grants)
+                for i in grants:
+                    self.assertIn(NEW, _params(after)[i].values())
+
+    def test_ocarina_action_and_display_renamed(self):
+        for loc, flow in (('LW Gift from Saria', 'Dm_Kokiri_0155'),
+                          ('HF Ocarina of Time Item', 'Dm_MelodyGet_Time')):
+            with self.subTest(gift=loc):
+                out = EventFlow(_gifts().gift_flow_patches(self.flows.__getitem__,
+                                                           {loc: NEW})[flow])
+                self.assertTrue(_calls(out, 'Actor', (NEW,)))
+                self.assertTrue(_calls(out, 'ActorName', (NEW,)))
+                vanilla = _gifts().GIFT_BY_LOCATION[loc].content
+                self.assertTrue(any(p.get('TargetID') == vanilla for p in _params(out)))
+
+    def test_medigoron_entry_in_the_shop(self):
+        out = _gifts().gift_flow_patches(self.flows.__getitem__, {'GC Medigoron': NEW})
+        self.assertEqual(set(out), {'Npc_Goron_Medigoron_Adult', 'SimpleShop'})
+        shop = EventFlow(out['SimpleShop'])
+        self.assertFalse([e for e in shop.events if e.sub_entry == 'GetInEventItemSwordMedigoron'])
+        self.assertTrue([e for e in shop.events if e.sub_flow == 'Dm_SY_GetInEvent'
+                         and e.sub_entry == 'GetInEvent_NotTurn'])
+        self.assertEqual(_gifts().gift_flow_patches(self.flows.__getitem__,
+                                                    {'GC Medigoron': 'Shop_Sword_Giant'}), {})
+
+    def test_kak_100_swaps_with_kak_10(self):
+        self._swap('GatheringTokenGold', ('TakenRewardActor', 'ActorName'), 'Obj_Rupee_Gold',
+                   'Item_Wallet_Medium', 'Kak 100 Gold Skulltula Reward',
+                   'Kak 10 Gold Skulltula Reward')
+
     def test_unchanged_gift_untouched(self):
         own = {g.location: g.content for g in self._flow_gifts()}
         self.assertEqual(_gifts().gift_flow_patches(self.flows.__getitem__, own), {})
@@ -163,7 +244,8 @@ class _Base:
 
 def _flow_names():
     from randomizer.gifts import GIFTS, Gift
-    return sorted({g.flow for g in GIFTS if isinstance(g, Gift)})
+    return sorted({g.flow for g in GIFTS if isinstance(g, Gift)}
+                  | {g.entry_flow for g in GIFTS if isinstance(g, Gift) and g.entry_flow})
 
 
 @unittest.skipUnless(NUP_PATH, 'OOT_NUP not set')

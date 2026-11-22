@@ -1,13 +1,17 @@
 """NPC gifts as item locations: batch 1, the one-time gifts (design
 docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md; test batches 27 and 28),
-and batch 2, the minigame prizes and the Gold Skulltula rewards (design
-2026-11-21-npc-gifts-batch-2-design.md; test batches 29 and 30).
+batch 2, the minigame prizes and the Gold Skulltula rewards (design
+2026-11-21-npc-gifts-batch-2-design.md; test batches 29 and 30), and batch 3a, OoTR's
+switches: the ocarinas, the Gerudo Card, the expensive merchants, and the Kak 100
+reward (design 2026-11-21-npc-gifts-batch-3a-design.md; test batches 31 and 32). A row
+with a `setting` is only a site when that `Settings` field is on (`active_gifts`).
 
 With the key items shuffled, each gift gives what the fill puts there:
 - a flow gift's grant (a subflow call whose `ActorName`, `ReveiveItem` for an `NpcCommon`
-  hand-over, or a by-reference parameter such as `TakenRewardActor`, is the vanilla item)
-  gets the placed item, in every copy the full skip made; a special grant entry (its own
-  animation) is pointed at a generic one. Several gifts in one flow are resolved on the
+  hand-over, or a by-reference parameter such as `TakenRewardActor`, is the vanilla item;
+  or, for the key `Actor`, a pouch addition) gets the placed item, in every copy the full
+  skip made; a special grant entry (its own animation) is pointed at a generic one, in
+  the gift's flow or in `entry_flow`. Several gifts in one flow are resolved on the
   unpatched flow first, so two gifts can swap items;
 - a `Dm_` scene whose entry changed gets the new entry's flows in its `SubFlowList`
   (`RSDB/GameAnalyzedEventInfo`): the game skips a call to a flow missing from it (27d);
@@ -21,13 +25,14 @@ from dataclasses import dataclass
 
 from .fairies import FOUNTAIN_FORBIDDEN
 from .formats import byml
-from .formats.bfevfl import SUBFLOW, EventFlow, set_string_param, set_subflow_entry
+from .formats.bfevfl import ACTION, SUBFLOW, EventFlow, set_string_param, set_subflow_entry
 from .items import KEY_ITEMS
 from .analyzed_info import subflow_closure
 
 GRANT_FLOW = 'Dm_SY_GetInEvent'
 GENERIC_SCENE = 'GetInEvent_Demo_NotLookatObjectEntry'  # in a Dm_ scene (27c, 27d)
 GENERIC_NPC = 'GetInEvent_NotTurn'  # in an NPC's flow (27b)
+POUCH_ADD = 'EventTriggerAddOrRemovePouchContent'  # the ocarina scenes' grant (key `Actor`)
 # What a flow gift never gives: the Great Fairies' set, the same GetInEvent-family risks.
 GIFT_FORBIDDEN = FOUNTAIN_FORBIDDEN
 
@@ -47,6 +52,8 @@ class Gift:
     vanilla: tuple[str, ...]
     entry: tuple[str, str] | None = None  # (special entry, generic entry)
     via: str | None = None  # the calls' entry, when one flow holds two such gifts
+    entry_flow: str | None = None  # the flow calling `entry`'s special entry (None: `flow`)
+    setting: str | None = None  # the `Settings` switch that makes it a site (None: always)
 
     @property
     def keys(self) -> tuple[str, ...]:
@@ -60,6 +67,7 @@ class WorldGift:
     content: str
     banc: str
     hash: int
+    setting: str | None = None
 
 
 _FIELD = 'Banc/HyruleField/HyruleField_{}_Static.bcett.byml.zs'
@@ -144,11 +152,35 @@ GIFTS: tuple[Gift | WorldGift, ...] = (
     # The first win (event 262); the GetInEventInBottle refill is the repeat prize.
     Gift('LLR Talons Chickens', 'Item_Bottle_Milk', 'Minigame_FindOutCucco', 'ReveiveItem',
          ('Item_Bottle_Milk',)),
+    # Batch 3a. Kak 100 (always, as in OoTR): its own entry, then a literal ActorName.
+    Gift('Kak 100 Gold Skulltula Reward', 'Obj_Rupee_Gold', _HOUSE,
+         ('TakenRewardActor', 'ActorName'), ('Obj_Rupee_Gold',)),
+    # Shuffle Ocarinas: a pouch addition (`Actor`) and the item display (`ActorName`).
+    Gift('LW Gift from Saria', 'Item_Ocarina_Fairy', 'Dm_Kokiri_0155', ('Actor', 'ActorName'),
+         ('Item_Ocarina_Fairy',), setting='shuffle_ocarinas'),
+    Gift('HF Ocarina of Time Item', 'Item_Ocarina_Time', 'Dm_MelodyGet_Time',
+         ('Actor', 'ActorName'), ('Item_Ocarina_Time',), setting='shuffle_ocarinas'),
+    # Shuffle Expensive Merchants: SimpleShop sells the caller's ActorName (by reference);
+    # Medigoron's own grant entry is in SimpleShop. They sell once (`merchants`).
+    Gift('GC Medigoron', 'Shop_Sword_Giant', 'Npc_Goron_Medigoron_Adult', 'ActorName',
+         ('Shop_Sword_Giant',), ('GetInEventItemSwordMedigoron', GENERIC_NPC),
+         entry_flow='SimpleShop', setting='shuffle_expensive_merchants'),
+    Gift('Wasteland Bombchu Salesman', 'Shop_BombchuBundle_01', 'Npc_Hylia_044_Adult',
+         'ActorName', ('Shop_BombchuBundle_01',), setting='shuffle_expensive_merchants'),
+    # Shuffle Gerudo Card: accepted though 32f4 gave nothing (user's call), so its site
+    # only takes minor items (`fill.MINOR_ONLY_GIFTS`).
+    Gift('Hideout Gerudo Membership Card', 'Item_Token_Gerudo', 'Dm_Gerudo_0025', 'ActorName',
+         ('Item_Token_Gerudo',), setting='shuffle_gerudo_card'),
 )
 GIFT_BY_LOCATION: dict[str, Gift | WorldGift] = {g.location: g for g in GIFTS}
 GIFT_ITEMS: frozenset[str] = frozenset(g.content for g in GIFTS if g.content in KEY_ITEMS)
 # Gifts that stay out of the fill. Empty: test batches 28 and 30 passed every gate.
 FIXED_GIFTS: frozenset[str] = frozenset()
+
+
+def active_gifts(settings) -> tuple[Gift | WorldGift, ...]:
+    """The rows that are sites under `settings` (a `fill.Settings`)."""
+    return tuple(g for g in GIFTS if g.setting is None or getattr(settings, g.setting))
 
 
 def _changed(gifts: dict[str, str]) -> list[Gift | WorldGift]:
@@ -160,10 +192,17 @@ def _changed(gifts: dict[str, str]) -> list[Gift | WorldGift]:
 
 
 def _grants(flow: EventFlow, gift: Gift) -> list[tuple[int, str]]:
-    """(event, key) of every subflow call in `flow` that grants `gift`'s vanilla item."""
-    return [(i, k) for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
-            and (gift.via is None or ev.sub_entry == gift.via)
-            for k in gift.keys if flow.action_params(i).get(k) in gift.vanilla]
+    """(event, key) of every grant of `gift`'s vanilla item in `flow`: subflow calls, and
+    for the key `Actor` the pouch additions."""
+    out = []
+    for i, ev in enumerate(flow.events):
+        if ev.kind == SUBFLOW and (gift.via is None or ev.sub_entry == gift.via):
+            out += [(i, k) for k in gift.keys
+                    if k != 'Actor' and flow.action_params(i).get(k) in gift.vanilla]
+        elif ev.kind == ACTION and ev.action == POUCH_ADD and 'Actor' in gift.keys:
+            if flow.action_params(i).get('Actor') in gift.vanilla:
+                out.append((i, 'Actor'))
+    return out
 
 
 def _give(data: bytes, gifts: list[tuple[Gift, str]]) -> bytes:
@@ -178,9 +217,6 @@ def _give(data: bytes, gifts: list[tuple[Gift, str]]) -> bytes:
         renames += [(i, k, item) for i, k in calls]
     for i, k, item in renames:
         data = set_string_param(data, i, k, item)
-    for gift, _ in gifts:
-        if gift.entry is not None:
-            data = _redirect(data, gift)
     return data
 
 
@@ -190,7 +226,8 @@ def _redirect(data: bytes, gift: Gift) -> bytes:
     entries = [i for i, ev in enumerate(flow.events)
                if ev.kind == SUBFLOW and ev.sub_entry == special]
     if not entries:
-        raise GiftPatchError(f'{gift.flow}: no call to {special} ({gift.location}).')
+        raise GiftPatchError(f'{gift.entry_flow or gift.flow}: no call to {special} '
+                             f'({gift.location}).')
     for i in entries:
         data = set_subflow_entry(data, i, generic)
     return data
@@ -201,10 +238,21 @@ def gift_flow_patches(read: Callable[[str], bytes], gifts: dict[str, str]) -> di
     item changed. `read(flow)` gives the current version (the full skip's if it wrote one).
     Raises GiftPatchError for an unknown location or a missing grant."""
     by_flow: dict[str, list[tuple[Gift, str]]] = {}
+    redirects: dict[str, list[Gift]] = {}
     for g in _changed(gifts):
         if isinstance(g, Gift):
             by_flow.setdefault(g.flow, []).append((g, gifts[g.location]))
-    return {name: _give(read(name), todo) for name, todo in by_flow.items()}
+            if g.entry is not None:
+                redirects.setdefault(g.entry_flow or g.flow, []).append(g)
+    out: dict[str, bytes] = {}
+    for name in list(by_flow) + [n for n in redirects if n not in by_flow]:
+        data = read(name)
+        if name in by_flow:
+            data = _give(data, by_flow[name])
+        for g in redirects.get(name, ()):
+            data = _redirect(data, g)
+        out[name] = data
+    return out
 
 
 def gift_subflow_list(info: bytes, load: Callable[[str], EventFlow | None],
@@ -216,10 +264,11 @@ def gift_subflow_list(info: bytes, load: Callable[[str], EventFlow | None],
     by_id = {r['__RowId']: r for r in rows}
     changed = False
     for g in _changed(gifts):
-        if not isinstance(g, Gift) or g.entry is None or g.flow not in by_id:
+        flow = (g.entry_flow or g.flow) if isinstance(g, Gift) else None
+        if not isinstance(g, Gift) or g.entry is None or flow not in by_id:
             continue
-        row = by_id[g.flow]
-        need = set(subflow_closure(load, [(GRANT_FLOW, g.entry[1])], skip=g.flow))
+        row = by_id[flow]
+        need = set(subflow_closure(load, [(GRANT_FLOW, g.entry[1])], skip=flow))
         have = set(row.get('SubFlowList', []))
         if not need <= have:
             row['SubFlowList'] = sorted(have | need)
