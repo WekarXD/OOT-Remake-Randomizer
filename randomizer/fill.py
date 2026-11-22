@@ -24,7 +24,8 @@ from dataclasses import dataclass
 
 from randomizer import RANDO_VERSION
 from randomizer.fairies import FOUNTAIN_FORBIDDEN, FOUNTAINS
-from randomizer.gifts import FIXED_GIFTS, GIFT_FORBIDDEN, GIFTS, WorldGift
+from randomizer.gifts import (FIXED_GIFTS, GIFT_BY_LOCATION, GIFT_FORBIDDEN, GIFTS, WorldGift,
+                              active_gifts)
 from randomizer.game import ChestActor, SkulltulaActor
 from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
                               NON_EXCLUDABLE, UPGRADES)
@@ -255,6 +256,9 @@ GIFT_SITE_IDS: dict[str, int] = {g.location: -(301 + k) for k, g in enumerate(GI
 _WORLD_GIFT_IDS = frozenset(GIFT_SITE_IDS[g.location] for g in GIFTS
                             if isinstance(g, WorldGift) and g.location in GIFT_SITE_IDS)
 _FLOW_GIFT_IDS = frozenset(GIFT_SITE_IDS.values()) - _WORLD_GIFT_IDS
+# NPC gifts whose site only takes minor items and that the logic does not see (it keeps
+# their vanilla item): the Gerudo Card, accepted though test batch 32f4 gave nothing.
+MINOR_ONLY_GIFTS = frozenset({'Hideout Gerudo Membership Card'})
 
 
 def _scene_forbidden(h: int, world_forbidden: frozenset[str] = frozenset()) -> frozenset[str]:
@@ -481,11 +485,13 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         original[h] = f.reward
         site_loc[h] = f.location
     eligible = sorted(eligible + list(FOUNTAIN_SITE_IDS.values()))
-    for g in GIFTS:  # the NPC gifts become sites holding their items
-        if g.location in GIFT_SITE_IDS:
-            original[GIFT_SITE_IDS[g.location]] = g.content
-            site_loc[GIFT_SITE_IDS[g.location]] = g.location
-    eligible = sorted(eligible + list(GIFT_SITE_IDS.values()))
+    gift_ids = {g.location: GIFT_SITE_IDS[g.location] for g in active_gifts(settings)
+                if g.location in GIFT_SITE_IDS}
+    for loc, h in gift_ids.items():  # the NPC gifts become sites holding their items
+        original[h] = GIFT_BY_LOCATION[loc].content
+        if loc not in MINOR_ONLY_GIFTS:
+            site_loc[h] = loc
+    eligible = sorted(eligible + list(gift_ids.values()))
     if anywhere:  # the song scenes become sites holding their songs
         for s in SONGS:
             original[SONG_SITE_IDS[s.location]] = s.actor
@@ -517,6 +523,7 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     no_key |= frozenset(h for h in gs
                         if gs_map[h].no_key or gs_map[h].status == 'guessed')
     no_key |= frozenset(filler)
+    no_key |= frozenset(h for loc, h in gift_ids.items() if loc in MINOR_ONLY_GIFTS)
     base = world.vanilla_fixed()
     for h in eligible:
         if h in site_loc:
@@ -528,7 +535,7 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
              else placed.songs)
     hearts = {loc: placed.chests[h] for loc, h in HEART_SITE_IDS.items()} if dungeon else {}
     fairies = {loc: placed.chests[h] for loc, h in FOUNTAIN_SITE_IDS.items()}
-    gifts = {loc: placed.chests[h] for loc, h in GIFT_SITE_IDS.items()}
+    gifts = {loc: placed.chests[h] for loc, h in gift_ids.items()}
     return Placement({h: d for h, d in placed.chests.items() if h >= 0}, songs, hearts,
                      fairies, gifts)
 

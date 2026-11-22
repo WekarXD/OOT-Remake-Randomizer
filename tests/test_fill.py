@@ -48,7 +48,10 @@ def _fixed_for(result, chests, loc_map, world, fairies=None) -> dict[str, str]:
     for h in _eligible_hashes(chests, loc_map):
         drop = result[h]
         fixed[loc_map[h].location] = drop if drop in items.KEY_ITEMS else 'Rupees (5)'
+    from randomizer.fill import MINOR_ONLY_GIFTS
     for loc, drop in (fairies or {}).items():
+        if loc in MINOR_ONLY_GIFTS:
+            continue  # the logic keeps its vanilla item (the Gerudo Card)
         fixed[loc] = (SONG_BY_ACTOR[drop].song if drop in SONG_BY_ACTOR
                       else drop if drop in items.KEY_ITEMS
                       else OOTR_TOKEN if drop == TOKEN else 'Rupees (5)')
@@ -60,10 +63,11 @@ def _fairy_rewards() -> Counter:
     return Counter(f.reward for f in FOUNTAINS)
 
 
-def _scene_items() -> Counter:
-    """What the synthetic sites (fountains and NPC gifts) hold in the vanilla game."""
-    from randomizer.gifts import GIFTS
-    return _fairy_rewards() + Counter(g.content for g in GIFTS)
+def _scene_items(settings: Settings = Settings('x')) -> Counter:
+    """What the synthetic sites (fountains and the NPC gifts active under `settings`) hold
+    in the vanilla game."""
+    from randomizer.gifts import active_gifts
+    return _fairy_rewards() + Counter(g.content for g in active_gifts(settings))
 
 
 class FillTest(unittest.TestCase):
@@ -428,10 +432,11 @@ class GiftFillTest(unittest.TestCase):
     """NPC gifts batch 1 in the pool (design 2026-11-20-npc-gifts-batch-1): with key items
     shuffled, the 14 gifts are sites and their items move."""
     def setUp(self):
-        from randomizer.gifts import GIFT_FORBIDDEN, GIFTS, WorldGift
+        from randomizer.gifts import GIFT_FORBIDDEN, WorldGift, active_gifts
         self.forbidden = GIFT_FORBIDDEN
-        self.world_locs = {g.location for g in GIFTS if isinstance(g, WorldGift)}
-        self.vanilla = {g.location: g.content for g in GIFTS}
+        active = active_gifts(Settings('x'))  # the defaults: batch 3a's switches off
+        self.world_locs = {g.location for g in active if isinstance(g, WorldGift)}
+        self.vanilla = {g.location: g.content for g in active}
         self.chests, self.loc_map, self.world = _data()
         self.orig = _original(self.chests)
 
@@ -498,6 +503,77 @@ class GiftFillTest(unittest.TestCase):
             r = self._all(skulltulas, gs_map, seed='S', shuffle_songs=songs, tokensanity='all')
             self.assertEqual(set(r.gifts), set(self.vanilla))
             self.assertTrue(all(h >= 0 for h in r.chests))
+
+
+class Batch3aFillTest(unittest.TestCase):
+    """NPC gifts batch 3a (design 2026-11-21-npc-gifts-batch-3a): the switches add their
+    gifts as sites; the Gerudo Card's site only takes minor items."""
+    SWITCHES = {'shuffle_ocarinas': ('LW Gift from Saria', 'HF Ocarina of Time Item'),
+                'shuffle_expensive_merchants': ('GC Medigoron', 'Wasteland Bombchu Salesman'),
+                'shuffle_gerudo_card': ('Hideout Gerudo Membership Card',)}
+    CARD = 'Hideout Gerudo Membership Card'
+
+    def setUp(self):
+        self.chests, self.loc_map, self.world = _data()
+
+    def _all(self, skulltulas=(), gs_map=None, **kw):
+        return place_all(self.chests, self.loc_map, self.world, Settings(**kw),
+                         skulltulas, gs_map)
+
+    def _beatable(self, r):
+        return self.world.can_beat(_fixed_for(r.chests, self.chests, self.loc_map, self.world,
+                                              {**r.fairies, **r.gifts}))
+
+    def test_off_has_kak_100_only(self):
+        r = self._all(seed='O')
+        self.assertIn('Kak 100 Gold Skulltula Reward', r.gifts)
+        for locs in self.SWITCHES.values():
+            for loc in locs:
+                self.assertNotIn(loc, r.gifts)
+
+    def test_each_switch_adds_its_sites_and_stays_beatable(self):
+        from randomizer.gifts import GIFT_FORBIDDEN
+        for name, locs in self.SWITCHES.items():
+            for i in range(20):
+                with self.subTest(setting=name, seed=i):
+                    r = self._all(seed=f'{name}{i}', **{name: True})
+                    for loc in locs:
+                        self.assertIn(loc, r.gifts)
+                        self.assertNotIn(r.gifts[loc], GIFT_FORBIDDEN)
+                    self.assertTrue(self._beatable(r))
+
+    def test_card_site_takes_minor_items_only(self):
+        from randomizer.songs import SONG_BY_ACTOR
+        for i in range(20):
+            r = self._all(seed=f'C{i}', shuffle_gerudo_card=True, shuffle_songs='anywhere')
+            drop = r.gifts[self.CARD]
+            self.assertNotIn(drop, items.KEY_ITEMS, i)
+            self.assertNotIn(drop, SONG_BY_ACTOR, i)
+
+    def test_all_switches_with_tokens(self):
+        skulltulas, gs_map = _gs_data()
+        on = dict.fromkeys(self.SWITCHES, True)
+        gs = gs_sites(skulltulas, gs_map, 'all')
+        for i in range(20):
+            r = self._all(skulltulas, gs_map, seed=f'K{i}', tokensanity='all', **on)
+            self.assertEqual(len([loc for locs in self.SWITCHES.values() for loc in locs
+                                  if loc in r.gifts]), 5)
+            fixed = _fixed_for({}, [], {}, self.world, {**r.fairies, **r.gifts})
+            sites = ([(h, self.loc_map[h].location)
+                      for h in _eligible_hashes(self.chests, self.loc_map)]
+                     + [(h, gs_map[h].location) for h in gs])
+            for h, loc in sites:
+                drop = r.chests[h]
+                fixed[loc] = (drop if drop in items.KEY_ITEMS
+                              else OOTR_TOKEN if drop == TOKEN else 'Rupees (5)')
+            self.assertTrue(self.world.can_beat(fixed), i)
+
+    def test_excluded_ocarina(self):
+        r = self._all(seed='E', shuffle_ocarinas=True,
+                      excluded_items=frozenset({'Item_Ocarina_Time'}))
+        self.assertEqual(r.gifts['HF Ocarina of Time Item'], 'Item_Ocarina_Time')
+        off = self._all(seed='E', excluded_items=frozenset({'Item_Ocarina_Time'}))
+        self.assertNotIn('HF Ocarina of Time Item', off.gifts)
 
 
 class ScaleOrderTest(unittest.TestCase):
