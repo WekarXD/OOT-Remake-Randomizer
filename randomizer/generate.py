@@ -26,6 +26,7 @@ from .songs import song_flow_patches
 from .fairies import FAIRY_REWARDS, fairy_flow_patches
 from .items import KEY_ITEMS
 from .gifts import GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
+from .merchants import sold_out_patches
 from .formats.bfevfl import EventFlow
 from .analyzed_info import ANALYZED_INFO
 from .logic.world import World, load_vanilla_settings
@@ -151,6 +152,13 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                             extras, sizes)
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(f'Could not prepare the NPC gifts: {e}') from e
+                if shuffled and settings.shuffle_expensive_merchants:
+                    # After the gifts: Medigoron's grant entry is in the same SimpleShop.
+                    try:
+                        extras, sizes = _with_flow_patches(game, sold_out_patches,
+                                                           extras, sizes)
+                    except (ValueError, BfevflError) as e:
+                        raise GenerationError(f'Could not prepare the merchants: {e}') from e
                 try:
                     swaps = ({h.hash: (h.banc, placed.hearts[h.location])
                               for h in game.boss_hearts()} if placed.hearts else {})

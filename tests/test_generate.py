@@ -574,14 +574,20 @@ class RealTests(unittest.TestCase):
         # Design 2026-11-20-npc-gifts-batch-1: with key items shuffled each NPC gift gives
         # what the spoiler says, with and without the full skip.
         from randomizer.formats import byml
-        from randomizer.gifts import GIFT_BY_LOCATION, Gift
+        from randomizer.gifts import Gift, active_gifts
+        from randomizer.merchants import CARPET, MEDIGORON, SHOP
         from randomizer.test_start import ANALYZED_INFO
+        # The defaults: batch 3a's switches off, so only Kak 100 joins (36 gifts).
+        GIFT_BY_LOCATION = {g.location: g for g in active_gifts(Settings('x'))}
+        self.assertEqual(len(GIFT_BY_LOCATION), 36)
         for skip in (False, True):
             with self.subTest(skip=skip), tempfile.TemporaryDirectory() as out:
                 res = generate(NUP_PATH, out, Settings(seed='regalos', skip_cutscenes=skip))
                 data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
                 gifts = {r['location']: r['item'] for r in data['npc_gifts']}
                 self.assertEqual(set(gifts), set(GIFT_BY_LOCATION))
+                for name in (MEDIGORON, CARPET, SHOP):  # merchants off: untouched
+                    self.assertNotIn(f'Event/EventFlow/{name}.bfevfl.zs', res.changed_files)
                 self.assertIn('\nNPC Gifts\n', Path(res.spoiler_txt).read_text(encoding='utf-8'))
                 root = Path(res.mod_dir) / 'romfs'
                 changed = {loc: g for loc, g in GIFT_BY_LOCATION.items() if gifts[loc] != g.content}
@@ -614,6 +620,83 @@ class RealTests(unittest.TestCase):
                         rows = {r['__RowId']: r.get('SubFlowList', []) for r in info}
                         for g in entry_changed:
                             self.assertIn('ActionGuide', rows[g.flow], g.location)
+
+    def _merchant_flows(self, res):
+        from randomizer.merchants import CARPET, MEDIGORON, SHOP
+        root = Path(res.mod_dir) / 'romfs'
+        with NupArchive(NUP_PATH) as nup:
+            codec = ZsCodec.from_archive(nup)
+            out = {}
+            for name in (MEDIGORON, CARPET, SHOP):
+                rel = f'Event/EventFlow/{name}.bfevfl.zs'
+                out[name] = EventFlow(codec.decompress(rel, (root / rel).read_bytes()))
+        return out
+
+    def _assert_sold_out(self, flows):
+        from randomizer.merchants import (CARPET, CARPET_SOLD, MEDIGORON, MEDIGORON_SOLD,
+                                          SHOP)
+        from tests.test_merchants import _sets
+        med = flows[MEDIGORON]
+        query = med.events[med.entry_points['Talk']].next
+        self.assertEqual(med.action_params(query).get('GameDataName'), MEDIGORON_SOLD)
+        shop = flows[SHOP]
+        self.assertTrue(any(_sets(shop, i, MEDIGORON_SOLD) for i in range(len(shop.events))))
+        self.assertTrue(any(_sets(shop, i, CARPET_SOLD) for i in range(len(shop.events))))
+        carpet = flows[CARPET]
+        self.assertTrue(any(carpet.action_params(i).get('GameDataName') == CARPET_SOLD
+                            for i in range(len(carpet.events))))
+
+    def test_batch_3a_switches_in_mod(self):
+        # Design 2026-11-21-npc-gifts-batch-3a: all three switches on. The merchants sell
+        # once, and Medigoron's shared flows keep both the gift and the sold-out patch.
+        on = Settings(seed='regalos3a', shuffle_ocarinas=True, shuffle_gerudo_card=True,
+                      shuffle_expensive_merchants=True)
+        with tempfile.TemporaryDirectory() as out:
+            res = generate(NUP_PATH, out, on)
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            gifts = {r['location']: r['item'] for r in data['npc_gifts']}
+            self.assertEqual(len(gifts), 41)
+            flows = self._merchant_flows(res)
+        self._assert_sold_out(flows)
+        shop, med = flows['SimpleShop'], flows['Npc_Goron_Medigoron_Adult']
+        sold = {med.action_params(i).get('ActorName') for i, ev in enumerate(med.events)
+                if ev.kind == SUBFLOW and ev.sub_flow == 'SimpleShop'}
+        self.assertEqual(sold, {gifts['GC Medigoron']})
+        special = [e for e in shop.events if e.sub_entry == 'GetInEventItemSwordMedigoron']
+        self.assertEqual(bool(special), gifts['GC Medigoron'] == 'Shop_Sword_Giant')
+
+    def test_sold_out_with_the_knife_back_at_medigoron(self):
+        # The fill may put the vanilla knife back: the sold-out patch still applies.
+        import dataclasses
+        from randomizer import fill
+        real = fill.place_all
+
+        def knife_back(*args, **kwargs):
+            r = real(*args, **kwargs)
+            gifts = dict(r.gifts)
+            here = gifts['GC Medigoron']
+            if here == 'Shop_Sword_Giant':
+                return r
+            chests = dict(r.chests)
+            where = next(loc for loc, d in gifts.items() if d == 'Shop_Sword_Giant') \
+                if 'Shop_Sword_Giant' in gifts.values() else None
+            if where is not None:
+                gifts[where] = here
+            else:
+                h = next(h for h, d in chests.items() if d == 'Shop_Sword_Giant')
+                chests[h] = here
+            gifts['GC Medigoron'] = 'Shop_Sword_Giant'
+            return dataclasses.replace(r, chests=chests, gifts=gifts)
+
+        on = Settings(seed='cuchillo', shuffle_expensive_merchants=True)
+        with tempfile.TemporaryDirectory() as out, \
+                mock.patch('randomizer.generate.place_all', side_effect=knife_back):
+            res = generate(NUP_PATH, out, on)
+            data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
+            gifts = {r['location']: r['item'] for r in data['npc_gifts']}
+            self.assertEqual(gifts['GC Medigoron'], 'Shop_Sword_Giant')
+            flows = self._merchant_flows(res)
+        self._assert_sold_out(flows)
 
     def test_npc_gifts_not_with_vanilla_keys(self):
         from randomizer.gifts import GIFTS, Gift
