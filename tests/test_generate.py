@@ -585,9 +585,10 @@ class RealTests(unittest.TestCase):
         from randomizer.gifts import Gift, active_gifts
         from randomizer.merchants import CARPET, MEDIGORON, SHOP
         from randomizer.test_start import ANALYZED_INFO
-        # The defaults: batch 3a's switches off, so only Kak 100 joins (36 gifts).
+        # The defaults: batch 3a's switches off (Kak 100 joins), plus the OoTR parity rows
+        # (Anju, Biggoron, the theater, 14 hearts) and the 9 dungeon rewards: 63 gifts.
         GIFT_BY_LOCATION = {g.location: g for g in active_gifts(Settings('x'))}
-        self.assertEqual(len(GIFT_BY_LOCATION), 36)
+        self.assertEqual(len(GIFT_BY_LOCATION), 63)
         for skip in (False, True):
             with self.subTest(skip=skip), tempfile.TemporaryDirectory() as out:
                 res = generate(NUP_PATH, out, Settings(seed='regalos', skip_cutscenes=skip))
@@ -663,7 +664,7 @@ class RealTests(unittest.TestCase):
             res = generate(NUP_PATH, out, on)
             data = json.loads(Path(res.spoiler_json).read_text(encoding='utf-8'))
             gifts = {r['location']: r['item'] for r in data['npc_gifts']}
-            self.assertEqual(len(gifts), 41)
+            self.assertEqual(len(gifts), 68)
             flows = self._merchant_flows(res)
         self._assert_sold_out(flows)
         shop, med = flows['SimpleShop'], flows['Npc_Goron_Medigoron_Adult']
@@ -939,6 +940,13 @@ class SpoilerTextTest(unittest.TestCase):
         off = spoiler.build(Settings(seed='x'), placement, chests, locations.load_map(), '1.3.1')
         self.assertNotIn('shuffle_ocarinas', off['settings'])
         self.assertNotIn('Shuffle Ocarinas', spoiler.to_text(off))
+
+    def test_labels_for_minor_site_items(self):
+        # OoTR parity review: the new sites' items show their OoTR names, not actor ids.
+        self.assertEqual(spoiler._label('Item_Medal_Light'), 'Light Medallion')
+        self.assertEqual(spoiler._label('Item_Stone_Forest'), 'Kokiri Emerald')
+        self.assertEqual(spoiler._label('Item_Sword_Biggoron'), 'Biggoron Sword')
+        self.assertEqual(spoiler._label('Item_Hookshot'), 'Hookshot')
 
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))

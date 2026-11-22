@@ -1,7 +1,7 @@
 """Spoiler log: JSON and text."""
 from . import RANDO_VERSION
 from .fill import BATCH_3A_SWITCHES, TOKEN, filler_sites
-from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS
+from .items import DUNGEON_ITEM_PREFIXES, FAMILIES, KEY_ITEMS, LABELS
 from .songs import SONG_BY_ACTOR
 
 TOKEN_LABEL = 'Gold Skulltula Token'
@@ -12,7 +12,8 @@ def _label(drop: str) -> str:
         return TOKEN_LABEL
     if drop in SONG_BY_ACTOR:
         return SONG_BY_ACTOR[drop].song
-    return LABELS.get(drop, drop)
+    # A minor item at the newer sites shows its OoTR name (a medallion, the Biggoron Sword).
+    return LABELS.get(drop) or FAMILIES.get(drop, drop)
 
 
 MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
