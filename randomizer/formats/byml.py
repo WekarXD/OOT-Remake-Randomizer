@@ -1,4 +1,5 @@
-"""Typed BYML v7 reader/writer (little-endian) for TotK-engine files.
+"""Typed BYML v7 reader/writer for TotK-engine files. The writer is little-endian; the
+reader also takes big-endian files (`GameDataList`, `EventFlowFileEntry`).
 Scalars keep their exact BYML type via wrapper classes so a round trip is lossless.
 Writer lays nodes out post-order and dedups identical containers / 64-bit values.
 """
@@ -11,46 +12,50 @@ class F64(float): pass      # 0xD6
 class F32(float): pass      # 0xD2 (plain python float is also written as F32)
 class Bin(bytes): pass      # 0xA1
 
-def _strtab(d, off):
+def _strtab(d, off, e='<', order='little'):
     assert d[off] == 0xC2
-    n = int.from_bytes(d[off+1:off+4], 'little')
+    n = int.from_bytes(d[off+1:off+4], order)
     out = []
     for i in range(n):
-        s = off + struct.unpack_from('<I', d, off + 4 + 4*i)[0]
+        s = off + struct.unpack_from(e + 'I', d, off + 4 + 4*i)[0]
         out.append(d[s:d.index(b'\0', s)].decode('utf-8'))
     return out
 
 def load(d):
-    if d[:2] != b'YB':
+    if d[:2] == b'YB':
+        e, order = '<', 'little'
+    elif d[:2] == b'BY':  # big-endian (read only)
+        e, order = '>', 'big'
+    else:
         raise ValueError('Not a valid BYML file.')
-    ver, ko, so, ro = struct.unpack_from('<HIII', d, 2)
-    keys = _strtab(d, ko) if ko else []
-    strs = _strtab(d, so) if so else []
+    ver, ko, so, ro = struct.unpack_from(e + 'HIII', d, 2)
+    keys = _strtab(d, ko, e, order) if ko else []
+    strs = _strtab(d, so, e, order) if so else []
     def val(t, at):
-        v = struct.unpack_from('<I', d, at)[0]
+        v = struct.unpack_from(e + 'I', d, at)[0]
         if t in (0xC0, 0xC1): return node(v)
         if t == 0xA0: return strs[v]
         if t == 0xD0: return bool(v)
-        if t == 0xD1: return struct.unpack_from('<i', d, at)[0]
-        if t == 0xD2: return F32(struct.unpack_from('<f', d, at)[0])
+        if t == 0xD1: return struct.unpack_from(e + 'i', d, at)[0]
+        if t == 0xD2: return F32(struct.unpack_from(e + 'f', d, at)[0])
         if t == 0xD3: return U32(v)
-        if t == 0xD4: return I64(struct.unpack_from('<q', d, v)[0])
-        if t == 0xD5: return U64(struct.unpack_from('<Q', d, v)[0])
-        if t == 0xD6: return F64(struct.unpack_from('<d', d, v)[0])
-        if t == 0xA1: return Bin(d[v+4:v+4+struct.unpack_from('<I', d, v)[0]])
+        if t == 0xD4: return I64(struct.unpack_from(e + 'q', d, v)[0])
+        if t == 0xD5: return U64(struct.unpack_from(e + 'Q', d, v)[0])
+        if t == 0xD6: return F64(struct.unpack_from(e + 'd', d, v)[0])
+        if t == 0xA1: return Bin(d[v+4:v+4+struct.unpack_from(e + 'I', d, v)[0]])
         if t == 0xFF: return None
         raise ValueError(f'unknown type {t:#x}')
     def node(off):
         # shared nodes become separate python objects, so editing one actor never aliases another
-        t = d[off]; n = int.from_bytes(d[off+1:off+4], 'little')
+        t = d[off]; n = int.from_bytes(d[off+1:off+4], order)
         if t == 0xC0:
             ts = d[off+4:off+4+n]; base = off + 4 + ((n + 3) & ~3)
             return [val(ts[i], base + 4*i) for i in range(n)]
         if t == 0xC1:
             out = {}
             for i in range(n):
-                e = off + 4 + 8*i
-                out[keys[int.from_bytes(d[e:e+3], 'little')]] = val(d[e+3], e + 4)
+                k = off + 4 + 8*i
+                out[keys[int.from_bytes(d[k:k+3], order)]] = val(d[k+3], k + 4)
             return out
         raise ValueError(f'unknown node {t:#x}')
     return ver, (node(ro) if ro else None)

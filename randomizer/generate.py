@@ -227,7 +227,7 @@ def _with_flow_patches(game: GameData, patches,
     files, deltas = dict(extras or {}), dict(sizes or {})
 
     def path(name: str) -> str:
-        return FLOW_DIR + name + FLOW_EXT
+        return game.flow_path(name)  # the versioned copy when the game loads one
 
     def read(name: str) -> bytes:
         p = path(name)
@@ -257,7 +257,7 @@ def _with_file_patch(game: GameData, path: str, patch_fn,
         return game.codec.decompress(p, files[p] if p in files else game.nup.read(p))
 
     def load(name: str) -> EventFlow | None:
-        p = FLOW_DIR + name + FLOW_EXT
+        p = game.flow_path(name)
         return EventFlow(current(p)) if p in files or game.nup.has(p) else None
 
     before = current(path)

@@ -60,12 +60,27 @@ def skulltulas_to_json(skulltulas) -> list[dict]:
              'pos': list(s.pos)} for s in skulltulas]
 
 
+# Which flows the game loads from a versioned copy (`<name>.<version>.bfevfl.zs`): a patch
+# to the plain file is never seen (Dampe's gift, the medallion scenes).
+FLOW_ENTRY = 'Event/EventFlow/EventFlowFileEntry.Product.110.byml.zs'
+
+
 class GameData:
     def __init__(self, nup):
         self.nup = nup
         self.codec = ZsCodec.from_archive(nup)
         self._chests = None
         self._skulltulas = None
+        self._flow_versions = None
+
+    def flow_path(self, name: str) -> str:
+        """The romfs path of the flow `name` that the game loads."""
+        if self._flow_versions is None:
+            raw = self.codec.decompress(FLOW_ENTRY, self.nup.read(FLOW_ENTRY))
+            self._flow_versions = dict(byml.load(raw)[1].get('Versions', {}))
+        version = self._flow_versions.get(name)
+        suffix = f'.{version}' if version else ''
+        return f'Event/EventFlow/{name}{suffix}.bfevfl.zs'
 
     def load_banc(self, path: str) -> tuple[int, dict]:
         raw = self.codec.decompress(path, self.nup.read(path))
