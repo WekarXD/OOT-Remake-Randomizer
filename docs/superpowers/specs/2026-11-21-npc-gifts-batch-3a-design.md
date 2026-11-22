@@ -155,3 +155,11 @@ A seed with "Any chest", the skip on and all three settings on. From the spoiler
 - Zelda's scene needs no ocarina.
 
 32f–32f4: the card scene gave nothing, even after the last carpenter was freed the game's way (32f4: the quest reached `Step02`). **`shuffle_gerudo_card` is out of batch 3a.** The card stays fixed, and its logic is unchanged: the vanilla card at its site already means the rescue. See `docs/TODO.md`. Batch 3a therefore has two settings: `shuffle_ocarinas` and `shuffle_expensive_merchants`. Everything this document says about the Gerudo Card is withdrawn.
+
+## Gerudo Card: accepted with a safeguard (user's call, 2026-11-22)
+
+The user accepted the Gerudo Card as it is, like Dampe in batch 2, so `shuffle_gerudo_card` is back. 32f4 showed the site give nothing, so the site is safeguarded:
+- **Minor items only.** The card's site ("Hideout Gerudo Membership Card") is a site the logic does not see, like the filler chests: not in `site_loc`, and in `no_key`. A failure there loses only a minor item.
+- **The logic is unchanged.** The logic keeps the vanilla `Gerudo Membership Card` at that location. That is what the remake checks: the rescue. The logic's own `shuffle_gerudo_card` stays false.
+- **The card moves as a minor item.** `Item_Token_Gerudo` does nothing in the remake (`FAMILIES` → `Gerudo Membership Card`).
+This replaces the withdrawal above and the earlier "logic event" design.
