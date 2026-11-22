@@ -245,6 +245,13 @@ class SongFillTest(unittest.TestCase):
                          _settings_key(Settings(seed='A')))
         self.assertNotIn('shuffle_songs', _settings_key(Settings(seed='A')))
 
+    def test_settings_key_ignores_new_switches_when_off(self):
+        # NPC gifts batch 3a: the three switches leave the RNG key alone when off.
+        key = _settings_key(Settings(seed='A'))
+        for name in ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants'):
+            self.assertNotIn(name, key)
+            self.assertIn(f'"{name}": true', _settings_key(Settings(seed='A', **{name: True})))
+
     def test_songs_permutation(self):
         moved = 0
         for i in range(5):

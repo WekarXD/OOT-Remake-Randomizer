@@ -141,6 +141,7 @@
       skip_cutscenes: $('skip-cutscenes').checked,
       tokensanity: $('tokensanity').value,
       shuffle_songs: $('shuffle_songs').value,
+      ...Object.fromEntries(Presets.SWITCHES.map((id) => [id, $(id).checked])),
     };
   }
 
@@ -153,6 +154,7 @@
     $('skip-cutscenes').checked = o.skip_cutscenes;
     $('tokensanity').value = o.tokensanity;
     $('shuffle_songs').value = o.shuffle_songs;
+    Presets.SWITCHES.forEach((id) => { $(id).checked = o[id] === true; });
     if (!itemsRendered) pendingExcluded = o.excluded_items.slice();
     $('items').querySelectorAll('input:not(:disabled)').forEach((c) => {
       c.checked = o.excluded_items.includes(c.value);
@@ -171,7 +173,7 @@
     if (id !== Presets.CUSTOM) writeOptions(Presets.apply(options(), id));
     syncPreset();
   });
-  ['mode', 'tokensanity', 'shuffle_songs', 'skip-cutscenes'].forEach((id) => {
+  ['mode', 'tokensanity', 'shuffle_songs', 'skip-cutscenes', ...Presets.SWITCHES].forEach((id) => {
     $(id).addEventListener('change', syncPreset);
   });
   $('items').addEventListener('change', syncPreset);
@@ -194,6 +196,7 @@
   if (typeof saved.skip_cutscenes === 'boolean') $('skip-cutscenes').checked = saved.skip_cutscenes;
   if (TOKENSANITY.includes(saved.tokensanity)) $('tokensanity').value = saved.tokensanity;
   if (SHUFFLE_SONGS.includes(saved.shuffle_songs)) $('shuffle_songs').value = saved.shuffle_songs;
+  Presets.SWITCHES.forEach((id) => { if (typeof saved[id] === 'boolean') $(id).checked = saved[id]; });
   syncPreset();
 
   let worker;

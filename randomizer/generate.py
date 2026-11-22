@@ -92,6 +92,9 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 loc_map = locations.load_map()
                 world_settings = dict(load_vanilla_settings())
                 world_settings['tokensanity'] = settings.tokensanity
+                # The logic keeps the vanilla Gerudo Card: its site holds only minor items.
+                world_settings['shuffle_ocarinas'] = settings.shuffle_ocarinas
+                world_settings['shuffle_expensive_merchants'] = settings.shuffle_expensive_merchants
                 skulltulas, gs_map, gs_forbidden = (), None, frozenset()
                 shuffled = settings.key_items_mode != 'vanilla'
                 # The world NPC gifts become wrappers: never what cannot be wrapped.

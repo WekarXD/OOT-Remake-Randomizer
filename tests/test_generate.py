@@ -833,6 +833,22 @@ class SpoilerTextTest(unittest.TestCase):
         self.assertIn('\nNPC Gifts\n  GC Darunias Joy: Hookshot', text)
         self.assertNotIn('NPC Gifts', spoiler.to_text(self._data('off')))
 
+    def test_batch_3a_switches_in_settings(self):
+        chests = load_chests_fixture(CHESTS_FIXTURE)
+        placement = {c.hash: c.drop for c in chests}
+        on = Settings(seed='x', shuffle_ocarinas=True, shuffle_gerudo_card=True,
+                      shuffle_expensive_merchants=True)
+        d = spoiler.build(on, placement, chests, locations.load_map(), '1.3.1')
+        text = spoiler.to_text(d)
+        for key, label in (('shuffle_ocarinas', 'Shuffle Ocarinas'),
+                           ('shuffle_gerudo_card', 'Shuffle Gerudo Card'),
+                           ('shuffle_expensive_merchants', 'Shuffle Expensive Merchants')):
+            self.assertIs(d['settings'][key], True)
+            self.assertIn(f'\n  {label}: Yes\n', text)
+        off = spoiler.build(Settings(seed='x'), placement, chests, locations.load_map(), '1.3.1')
+        self.assertNotIn('shuffle_ocarinas', off['settings'])
+        self.assertNotIn('Shuffle Ocarinas', spoiler.to_text(off))
+
     def test_to_text_off_has_no_section(self):
         text = spoiler.to_text(self._data('off'))
         self.assertNotIn('Skulltula', text)

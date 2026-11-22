@@ -1,6 +1,6 @@
 """Spoiler log: JSON and text."""
 from . import RANDO_VERSION
-from .fill import TOKEN, filler_sites
+from .fill import BATCH_3A_SWITCHES, TOKEN, filler_sites
 from .items import DUNGEON_ITEM_PREFIXES, KEY_ITEMS, LABELS
 from .songs import SONG_BY_ACTOR
 
@@ -16,6 +16,9 @@ def _label(drop: str) -> str:
 
 
 MODE_LABELS = {'any_chest': 'Any chest', 'vanilla': 'Vanilla'}
+SWITCH_LABELS = {'shuffle_ocarinas': 'Shuffle Ocarinas',
+                 'shuffle_gerudo_card': 'Shuffle Gerudo Card',
+                 'shuffle_expensive_merchants': 'Shuffle Expensive Merchants'}
 TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
                       'overworld': 'Overworld Only', 'all': 'All Tokens'}
 SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations', 'anywhere': 'Anywhere',
@@ -115,6 +118,9 @@ def build(settings, placement, chests, loc_map, game_version,
     if settings.tokensanity != 'off':
         result['settings']['tokensanity'] = settings.tokensanity
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
+    for name in BATCH_3A_SWITCHES:  # NPC gifts batch 3a: only when on
+        if getattr(settings, name):
+            result['settings'][name] = True
     if settings.shuffle_songs != 'off':
         result['settings']['shuffle_songs'] = settings.shuffle_songs
         result['songs'] = [{'location': loc, 'song': actor,
@@ -162,6 +168,7 @@ def to_text(d: dict) -> str:
     if 'shuffle_songs' in s:
         lines.append('  Shuffle Songs: '
                      f'{SHUFFLE_SONGS_LABELS.get(s["shuffle_songs"], s["shuffle_songs"])}')
+    lines += [f'  {SWITCH_LABELS[name]}: Yes' for name in BATCH_3A_SWITCHES if s.get(name)]
     lines += ['', 'Randomizer version', f'  {d["randomizer_version"]}', '',
              'Game version', f'  {d["game_version"]}', '', 'Key items']
     for k in d['key_items']:

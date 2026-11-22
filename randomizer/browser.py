@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 
 from . import locations
-from .fill import MODES, TOKENSANITY, Settings
+from .fill import BATCH_3A_SWITCHES, MODES, TOKENSANITY, Settings
 from .songs import SHUFFLE_SONGS
 from .generate import GenerationError, generate
 from .items import KEY_ITEM_HOME, KEY_ITEMS, LABELS, NON_EXCLUDABLE
@@ -71,7 +71,8 @@ def parse_settings(options: dict) -> Settings:
             or any(not isinstance(x, str) or x not in KEY_ITEMS for x in excluded)):
         raise ValueError('Invalid excluded items list.')
     flags = {}
-    for key, default in (('spoiler', True), ('skip_cutscenes', False)):
+    for key, default in (('spoiler', True), ('skip_cutscenes', False),
+                         *((name, False) for name in BATCH_3A_SWITCHES)):
         flags[key] = options.get(key, default)
         if not isinstance(flags[key], bool):
             raise ValueError(f'{key} must be true or false')
@@ -90,7 +91,8 @@ def parse_settings(options: dict) -> Settings:
     effective = frozenset(x for x in excluded if movable.get(x, True))
     return Settings(seed=seed.strip(), key_items_mode=mode, excluded_items=effective,
                     spoiler=flags['spoiler'], skip_cutscenes=flags['skip_cutscenes'],
-                    tokensanity=tokensanity, shuffle_songs=shuffle_songs)
+                    tokensanity=tokensanity, shuffle_songs=shuffle_songs,
+                    **{name: flags[name] for name in BATCH_3A_SWITCHES})
 
 
 def generate_zip(nup_path: str, options: dict, out_dir: str | None = None) -> dict:

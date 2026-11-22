@@ -13,6 +13,7 @@ test('apply keeps seed and spoiler and clears exclusions', () => {
   assert.deepEqual(Presets.apply(input, 'easy'), {
     seed: 'S', spoiler: false, excluded_items: [],
     key_items_mode: 'any_chest', tokensanity: 'off', shuffle_songs: 'song_locations', skip_cutscenes: true,
+    shuffle_ocarinas: false, shuffle_gerudo_card: false, shuffle_expensive_merchants: false,
   });
 });
 
@@ -31,7 +32,8 @@ test('list has the three presets in order', () => {
   assert.deepEqual(Presets.LIST.map((p) => p.id), ['beginner', 'easy', 'hell']);
   assert.deepEqual(Presets.LIST.map((p) => p.label), ['Default / Beginner', 'Easy Mode', 'Hell Mode']);
   assert.deepEqual(Presets.LIST[2].settings,
-    { key_items_mode: 'any_chest', tokensanity: 'all', shuffle_songs: 'anywhere', skip_cutscenes: true });
+    { key_items_mode: 'any_chest', tokensanity: 'all', shuffle_songs: 'anywhere', skip_cutscenes: true,
+      shuffle_ocarinas: true, shuffle_gerudo_card: true, shuffle_expensive_merchants: true });
 });
 
 test('match finds each preset', () => {
@@ -54,4 +56,11 @@ test('old defaults match beginner', () => {
 test('describe gives preset text and a custom fallback', () => {
   assert.equal(Presets.describe('hell'), Presets.LIST[2].description);
   assert.equal(Presets.describe('custom'), 'Your own settings.');
+});
+
+test('a switch missing from old saved settings counts as off', () => {
+  const old = { key_items_mode: 'any_chest', tokensanity: 'all', shuffle_songs: 'anywhere', skip_cutscenes: true };
+  assert.equal(Presets.match(old), 'custom');
+  assert.equal(Presets.match({ ...old, shuffle_ocarinas: true, shuffle_gerudo_card: true,
+    shuffle_expensive_merchants: true }), 'hell');
 });

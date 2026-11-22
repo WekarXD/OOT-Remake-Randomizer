@@ -67,6 +67,9 @@ NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
                                  'BottomOfTheWell', 'FireTemple'})
 
 
+BATCH_3A_SWITCHES = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
+
+
 @dataclass(frozen=True)
 class Settings:
     seed: str
@@ -76,6 +79,10 @@ class Settings:
     skip_cutscenes: bool = False
     tokensanity: str = 'off'  # see TOKENSANITY
     shuffle_songs: str = 'off'  # see SHUFFLE_SONGS
+    # NPC gifts batch 3a (design 2026-11-21-npc-gifts-batch-3a), OoTR's switches.
+    shuffle_ocarinas: bool = False
+    shuffle_gerudo_card: bool = False
+    shuffle_expensive_merchants: bool = False
 
 
 class FillError(Exception):
@@ -133,6 +140,9 @@ def _settings_key(settings: Settings) -> str:
         del data['tokensanity']  # the key stays as it was before the option existed
     if settings.shuffle_songs == 'off':
         del data['shuffle_songs']  # same
+    for name in BATCH_3A_SWITCHES:
+        if not data[name]:
+            del data[name]  # same
     return json.dumps(data, sort_keys=True)
 
 
