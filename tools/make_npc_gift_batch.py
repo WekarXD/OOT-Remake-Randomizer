@@ -27,10 +27,12 @@ item that shows in the inventory), the way the shuffle would:
      Talon, milk from elsewhere, Dampe, LW Target, the quiver order.
 31a-31f: NPC gifts batch 3a (docs/npc-gifts-research.md): the ocarinas, Medigoron, the carpet
      salesman and the 100-token reward.
+33a-33n: everything left (docs/remaining-items-research.md): the six fixed chests, a
+     dungeon reward, freestanding Pieces of Heart, the Deku Theater and the trade NPCs.
 32a-32f: the gate of NPC gifts batch 3a (docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md):
      the merchants' sold-out patch, their items from elsewhere, Zelda's ocarina scene with no
      ocarina, the Gerudo Card scene.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f4]
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f4, 33a..33n]
 """
 import math
 import os
@@ -82,6 +84,8 @@ class Variant:
     entries: tuple[Entry, ...] = ()
     swap: tuple[str, int, str] | None = None  # (banc path, actor hash, content)
     merchants: bool = False  # the merchants' sold-out patch (randomizer.merchants)
+    swaps: tuple[tuple[str, int, str], ...] = ()  # more wrappers (both eras of a map)
+    drops: tuple[tuple[str, int, str], ...] = ()  # (banc path, chest hash, new drop)
 
 
 def _pos(name: str, at: tuple[float, float, float],
@@ -152,6 +156,35 @@ CARPENTERS_HELPED = 'GerudoFortress_Meet_FourCarpenter_NumOfCarpenterHelped'
 CARPENTERS_FOUND = 'GerudoFortress_Meet_FourCarpenter_NumOfCarpenterFound'
 CARPENTER_013_THIEF = (23.3, 102.5, -66.8)  # Enemy_MiddleBoss_GerudoThief; he is at x 31.9
 MEDIGORON_SALE = (Gift('Npc_Goron_Medigoron_Adult', 'ActorName', ('Shop_Sword_Giant',)),)
+# Batch 33 (docs/remaining-items-research.md).
+_BANC = 'Banc/{0}/{0}_{1}_Static.bcett.byml.zs'
+COLOSSUS = tuple(_BANC.format('DesertColossus', era) for era in ('Child', 'Adult'))
+MIRROR_CHEST, SILVER_CHEST = 10012167258643363548, 2490063409521505179
+ICE_CAVERN = 'Banc/IceCavern/IceCavern_Static.bcett.byml.zs'
+IRON_CHEST = 6859289214373847284
+SHADOW = 'Banc/ShadowTemple/ShadowTemple_Static.bcett.byml.zs'
+HOVER_CHEST = 14535080241831873137
+JABU = 'Banc/InsideJabuJabuBelly/InsideJabuJabuBelly_Static.bcett.byml.zs'
+BOOMERANG_CHEST = 5527401621172639818
+DMT = tuple(_BANC.format('DeathMountainTrail', era) for era in ('Child', 'Adult'))
+DMT_HEART = 715147239509454487  # Obj_Heart_Piece above Dodongo's Cavern (DMT Freestanding PoH)
+GV = tuple(_BANC.format('GerudoValley', era) for era in ('Child', 'Adult'))
+GV_HEART = 16129198288828948135  # Obj_GerudoValley_Heart_Piece (GV Waterfall Freestanding PoH)
+SPIRIT_TO_STEP06 = tuple(('SageOfSpirit', s) for s in (
+    'Ready', 'Step01', 'Step02', 'Step03', 'Step04', 'Step05', 'Step05_01', 'Step05_02',
+    'Step05_03', 'Step06'))
+ANJU_ADULT = (-70.6, 99.3, 74.6)
+BIGGORON = (25.8, 200.5, -128.5)
+GRANNY = (-31.8, 103.8, 28.9)
+BEAN_SELLER = (-53.0, 100.8, -12.2)
+THEATER_ELDER = (-10.0, 83.2, -54.5)
+ICE_POS = _pos('RandoTest_IronChest', (-46.2, 109.7, 46.0), (-46.2, 109.7, 42.5))
+SHADOW_POS = _pos('RandoTest_HoverChest', (-69.0, 90.5, -10.1), (-72.6, 90.5, -10.1))
+JABU_POS = _pos('RandoTest_JabuChest', (-31.3, 92.4, -128.4), (-31.3, 92.4, -131.9))
+GOHMA = StartPreset('InsideTheDekuTree', 'DefeatBoss',
+                    items=('Item_Ocarina_Fairy', 'Item_Sword_Kokiri', 'TBox_Shield_Deku',
+                           'Item_Range_SlingShot', 'Item_BulletBag_Medium'),
+                    boot_event='Dm_SY_BancChangeArrive_InsideTheDekuTree_01')
 
 VARIANTS: dict[str, Variant] = {
     '27a': Variant(
@@ -429,6 +462,69 @@ VARIANTS: dict[str, Variant] = {
                 items=('Item_Shield_Mirror',), steps=SPIRIT_TO_STEP01, adult=True,
                 ints=((CARPENTERS_HELPED, 3), (CARPENTERS_FOUND, 3))),
         gifts=(Gift('Dm_Gerudo_0025', 'ActorName', ('Item_Token_Gerudo',)),)),
+    # Batch 33: everything left (docs/remaining-items-research.md).
+    # 33a-33e: the six fixed chests with another item (their story events stay).
+    '33a': Variant(  # the Mirror Shield hand, adult: only Dm_SY_Treasurebox
+        StartPreset('DesertColossus_Adult', 'DesertColossus_FromSpiritTempleLeftHand',
+                    adult=True),
+        drops=tuple((b, MIRROR_CHEST, ITEM) for b in COLOSSUS)),
+    '33b': Variant(  # the Silver Gauntlets hand, child: Nabooru taken away, then the chest
+        StartPreset('DesertColossus_Child', 'DesertColossus_FromSpiritTempleRightHand',
+                    challenge_steps=SPIRIT_TO_STEP06),
+        drops=tuple((b, SILVER_CHEST, ITEM) for b in COLOSSUS)),
+    '33c': Variant(  # the Ice Cavern end, adult: the Serenade of Water after the chest
+        StartPreset('IceCavern', ICE_POS.name, new_pos=ICE_POS, adult=True,
+                    boot_event='Dm_SY_BancChangeArrive_IceCaven_01'),
+        drops=((ICE_CAVERN, IRON_CHEST, ITEM),)),
+    '33d': Variant(  # the Shadow Temple, adult: the Hover Boots room gives the Hookshot
+        StartPreset('ShadowTemple', SHADOW_POS.name, new_pos=SHADOW_POS, adult=True,
+                    boot_event='Dm_SY_BancChangeArrive_ShadowTemple_01'),
+        drops=((SHADOW, HOVER_CHEST, 'Item_Hookshot'),)),
+    '33e': Variant(  # Jabu's Boomerang room (Ruto's chest), child: gives the Hookshot
+        StartPreset('InsideJabuJabuBelly', JABU_POS.name, new_pos=JABU_POS),
+        drops=((JABU, BOOMERANG_CHEST, 'Item_Hookshot'),)),
+    # 33f: Gohma's room: the Deku Tree's farewell (Dm_Kokiri_0130) gives the Forest Medallion.
+    '33f': Variant(GOHMA, gifts=(Gift('Dm_Kokiri_0130', 'ActorName', ('Item_Stone_Forest',)),)),
+    # 33g-33h: freestanding Pieces of Heart as wrappers of the Boomerang.
+    '33g': Variant(
+        StartPreset('DeathMountainTrail_Child', 'DodongoCavernFront'),
+        swaps=tuple((b, DMT_HEART, ITEM) for b in DMT)),
+    '33h': Variant(
+        _preset('GerudoValley_Child', _pos('RandoTest_GVHeart', (4.9, 59.4, -74.7), (4.9, 59.2, -78.2))),
+        swaps=tuple((b, GV_HEART, ITEM) for b in GV)),
+    # 33i: the Deku Theater, child with the Skull Mask: the stick capacity gives the Boomerang.
+    '33i': Variant(
+        _preset('LostWood_Child', _pos('RandoTest_Theater', (-10.0, 82.8, -50.0), THEATER_ELDER),
+                items=('Armor_Child_Mask_Skull',)),
+        gifts=(Gift('LostWood_ScrubForestStageElder_SkullMaskFirst', 'ActorName',
+                    ('Item_StickBag_Medium', 'Item_StickBag_Large')),)),
+    # 33j: adult Anju: the Pocket Egg (an NpcCommon hand-over) gives the Boomerang.
+    '33j': Variant(
+        _preset('KakarikoVillage_Adult', _pos('RandoTest_AnjuAdult', (-70.6, 99.3, 77.6), ANJU_ADULT),
+                adult=True),
+        gifts=(Gift('Npc_Hylia_049_Adult', 'ReveiveItem', ('Item_PocketEgg',)),)),
+    # 33k: Biggoron with the Claim Check: his sword gives the Boomerang (his entry -> generic).
+    '33k': Variant(
+        _preset('DeathMountainTrail_Adult', _pos('RandoTest_Biggoron', (25.8, 200.5, -122.5), BIGGORON),
+                items=('Item_ClaimCheck',), adult=True),
+        gifts=(Gift('Npc_Goron_Biggoron_Adult', 'ActorName', ('Item_Sword_Biggoron',)),),
+        entries=(Entry('Npc_Goron_Biggoron_Adult', 'GetInEventItemSwordBiggoron', GENERIC_NPC),)),
+    # 33l: Granny's Blue Potion, adult with an empty bottle and rupees (her entry -> generic).
+    '33l': Variant(
+        _preset('KakarikoVillage_Adult', _pos('RandoTest_Granny', (-31.8, 103.8, 31.9), GRANNY),
+                items=('Item_Bottle',), adult=True, rupees=200),
+        gifts=(Gift('Npc_Hylia_053_Adult', 'ActorName', ('Item_Bottle_BluePotion',)),),
+        entries=(Entry('Npc_Hylia_053_Adult', 'GetInEventInBottle_BlueBottleShop', GENERIC_NPC),)),
+    # 33m: the bean seller, child with rupees: the first bean gives the Boomerang.
+    '33m': Variant(
+        _preset('ZoraRiver_Child', _pos('RandoTest_Beans', (-53.0, 100.8, -9.2), BEAN_SELLER),
+                rupees=100),
+        gifts=(Gift('SimpleShop', 'ReveiveItem', ('Item_MagicBean',)),)),
+    # 33n: 33c without the full skip (Sheik's lesson plays): is the Serenade still taught?
+    '33n': Variant(
+        StartPreset('IceCavern', ICE_POS.name, new_pos=ICE_POS, adult=True,
+                    boot_event='Dm_SY_BancChangeArrive_IceCaven_01'),
+        drops=((ICE_CAVERN, IRON_CHEST, ITEM),)),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
@@ -440,7 +536,7 @@ VARIANTS: dict[str, Variant] = {
 }
 
 
-NO_SKIP = {'27d2'}  # variants built without the full skip
+NO_SKIP = {'27d2', '33n'}  # variants built without the full skip
 
 
 def _calls(data: bytes, match, kind: int = SUBFLOW) -> list[int]:
@@ -506,18 +602,26 @@ def build(nup: NupArchive, variant: str) -> dict[str, bytes]:
         batch.files.update((FLOW_DIR + name + FLOW_EXT, data) for name, data in
                            sold_out_patches(lambda n: batch.read(FLOW_DIR + n + FLOW_EXT)).items())
     add_start(batch, v.preset)
-    if v.swap is not None:
-        banc, actor, content = v.swap
+    swaps = ((v.swap,) if v.swap is not None else ()) + v.swaps
+    for banc, actor, content in swaps:
         ver, root = byml.load(batch.read(banc))
         hits = [a for a in root['Actors'] if isinstance(a, dict) and a.get('Hash') == actor]
         if len(hits) != 1:
             raise SystemExit(f'FAIL: {len(hits)} actors with hash {actor} in {banc}')
         hits[0]['Gyaml'] = WRAPPER_PREFIX + content
         batch.files[banc] = byml.dump(root, ver)
+    for banc, chest, content in v.drops:  # a chest's item; its GetEventName stays
+        ver, root = byml.load(batch.read(banc))
+        hits = [a for a in root['Actors'] if isinstance(a, dict) and a.get('Hash') == chest]
+        if len(hits) != 1:
+            raise SystemExit(f'FAIL: {len(hits)} chests with hash {chest} in {banc}')
+        hits[0]['Dynamic']['Drop__DropActor'] = content
+        batch.files[banc] = byml.dump(root, ver)
     files = batch.compressed()
-    if v.swap is not None:  # the wrapper, with its RSTB entries
+    if swaps:  # the wrappers, with their RSTB entries
         rstb = Rstb.load(game.codec.decompress(RSTB_PATH, files[RSTB_PATH]))
-        files.update(build_wrapper_files(game, wrap_sources(game, [v.swap[2]]), rstb))
+        files.update(build_wrapper_files(game, wrap_sources(game, sorted({c for _, _, c in swaps})),
+                                         rstb))
         files[RSTB_PATH] = game.codec.compress(RSTB_PATH, rstb.dump())
     return files
 

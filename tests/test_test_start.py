@@ -65,6 +65,11 @@ class ApplyStartTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             apply_start(self.data, StartPreset('HyruleField_Child', 'X', adult=True))
 
+    def test_adult_in_a_dungeon(self):
+        # Batch 33: dungeons have one map for both eras (no _Child/_Adult suffix).
+        seen = self._walk(StartPreset('IceCavern', 'X', adult=True))
+        self.assertIn(ERA_CHANGE, [(ev.sub_flow, ev.sub_entry) for ev, _ in seen])
+
     def test_boot_event(self):
         # A dungeon's map entrance passes its arrival event (batch 25: without it the
         # teleport into the Deku Tree stayed on a black screen).

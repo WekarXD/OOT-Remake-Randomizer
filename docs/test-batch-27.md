@@ -132,3 +132,17 @@ Results (2026-11-22):
 - **32f3 / 32f4:** the count at 3, by carpenter 013's thief (32f4 with the Mirror Shield). The fight, the key, the cell, and the carpenter left. The rescue's ending ran (`Step02`: the Gerudo stopped attacking), but no card scene showed and no Boomerang came. **The card site does not move:** the card stays fixed (`docs/TODO.md`).
 
 **Batch 32: the merchants, the knife, the bombchus and Zelda's scene pass; the Gerudo Card does not.**
+
+## Batch 33 (everything left: docs/remaining-items-research.md)
+
+Built with the same tool (`33a`..`33n`); Spanish guide `local/test-batch-33.md`. Most variants make the site give the Boomerang.
+
+- **33a–33e:** the six fixed chests with another item; their `GetEventName` stays:
+  - Mirror Shield and Silver Gauntlets at the Colossus hands, the Silver one with `SageOfSpirit` at `Step06` for Nabooru's scene;
+  - Ice Cavern Iron Boots (the Serenade), Shadow Hover Boots, Jabu Boomerang;
+  - the Hookshot is the test item where the Boomerang is the vanilla item.
+- **33f:** a dungeon reward: Gohma's room, and the Deku Tree's farewell (`Dm_Kokiri_0130` 0) gives the Forest Medallion.
+- **33g–33h:** freestanding Pieces of Heart as Boomerang wrappers, in both era maps: DMT (`Obj_Heart_Piece`) and GV Waterfall (`Obj_GerudoValley_Heart_Piece`).
+- **33i:** the Deku Theater's Skull Mask prize (`LostWood_ScrubForestStageElder_SkullMaskFirst`, the stick bags), with the mask from the start preset.
+- **33j–33m:** adult Anju's Pocket Egg (`Npc_Hylia_049_Adult`, `ReveiveItem`), Biggoron's sword (entry `GetInEventItemSwordBiggoron` → generic), Granny's Blue Potion (`GetInEventInBottle_BlueBottleShop` → generic), the first magic bean (`SimpleShop` `ReveiveItem`).
+- **33n:** 33c without the full skip (Sheik's lesson).

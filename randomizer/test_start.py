@@ -66,7 +66,7 @@ class StartPreset:
     # (ChallengeName, StepName) quest steps to progress, in order (e.g. the castle
     # quest must be at Step04 for Zelda's meeting to trigger).
     challenge_steps: tuple[tuple[str, str], ...] = ()
-    adult: bool = False  # arrive as an adult; `banc` must be an *_Adult map
+    adult: bool = False  # arrive as an adult; `banc` is an *_Adult map or a dungeon
     # Event started on arrival. A dungeon's map entrance passes its arrival event
     # (e.g. 'Dm_SY_BancChangeArrive_InsideTheDekuTree_01').
     boot_event: str = ''
@@ -95,7 +95,8 @@ def _chain(preset: StartPreset) -> list[ActionSpec | SubflowSpec]:
         specs.append(ActionSpec('PouchSystemActor', 'EventTriggerIncreaseRupee',
                                 {'Value': preset.rupees}))
     if preset.adult:
-        if not preset.banc.endswith('_Adult'):
+        # A dungeon has one map for both eras; only a child map conflicts (batch 33).
+        if preset.banc.endswith('_Child'):
             raise ValueError(f'An adult preset needs an *_Adult map, not {preset.banc!r}.')
         # The era change reads the childhood flag, so it runs before the flag changes.
         specs += [SubflowSpec(*ERA_CHANGE, {}), _flag(CHILDHOOD_FLAG, False)]
