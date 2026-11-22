@@ -96,8 +96,10 @@ class LocationMapTest(unittest.TestCase):
                 self.assertEqual(self.ootr[e.location]['type'], 'Chest', e.location)
 
     def test_needs_event_patch_from_batch(self):
-        got = {h for h, e in self.map.items() if e.needs_event_patch}
-        self.assertEqual(got, EVENT_PATCH_HASHES)
+        # OoTR parity design: these six move and keep their story event (batch 33a/33b).
+        self.assertEqual({h for h, e in self.map.items() if e.needs_event_patch}, set())
+        for h in EVENT_PATCH_HASHES:
+            self.assertFalse(self.map[h].strip_event, h)
 
     def test_strip_event_from_batch(self):
         got = {h for h, e in self.map.items() if e.strip_event}

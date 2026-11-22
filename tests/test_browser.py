@@ -65,11 +65,10 @@ class SettingsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Cannot exclude'):
             browser.parse_settings({'excluded_items': [item]})
 
-    def test_non_movable_dropped_from_excluded(self):
-        fixed = [a for a, ok in browser.movable_flags().items() if not ok]
-        self.assertTrue(fixed)
-        s = browser.parse_settings({'excluded_items': fixed[:1]})
-        self.assertEqual(s.excluded_items, frozenset())
+    def test_every_key_item_moves(self):
+        # OoTR parity design: the six chests with a story event move too (batch 33a/33b:
+        # their events do not hand over the item), so no key item is fixed any more.
+        self.assertEqual([a for a, ok in browser.movable_flags().items() if not ok], [])
 
     def test_items_list(self):
         rows = browser.items()

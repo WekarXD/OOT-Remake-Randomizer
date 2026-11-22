@@ -775,8 +775,11 @@ class TokensanityTest(unittest.TestCase):
         sites = {h: self.loc_map[h].location for h in _eligible_hashes(self.chests, self.loc_map)}
         sites.update((h, self.gs_map[h].location) for h in self._gs('all'))
         for seed, mode in (('A1', 'off'), ('A2', 'off'), ('A3', 'all'), ('A4', 'all')):
-            r = self.P(seed, mode)
-            fixed = self.world.vanilla_fixed()
+            # The whole placement: the fountains and NPC gifts move key items too (OoTR
+            # parity: with more of them moving, the chests-only view overstated the reach).
+            pa = self.PA(seed, mode)
+            r = pa.chests
+            fixed = _fixed_for({}, [], {}, self.world, {**pa.fairies, **pa.gifts})
             for h, loc in sites.items():
                 if h in r:
                     drop = r[h]

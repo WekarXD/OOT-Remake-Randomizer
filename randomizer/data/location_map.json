@@ -1,7 +1,7 @@
 {
  "10012167258643363548": {
   "location": "Spirit Temple Mirror Shield Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02_NoBake Item_Shield_Mirror in DesertColossus (-168.6, 113.2, -8.6); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
@@ -379,7 +379,7 @@
  },
  "14535080241831873137": {
   "location": "Shadow Temple Hover Boots Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02_NoBake Item_HoverBoot in ShadowTemple (-72.6, 90.5, -10.1); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
@@ -491,7 +491,7 @@
  },
  "16041366920820397198": {
   "location": "Graveyard Dampe Race Hookshot Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02_NoBake Item_Hookshot in Graveyard (-6.0, 82.5, 77.7); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
@@ -764,7 +764,7 @@
  },
  "2490063409521505179": {
   "location": "Spirit Temple Silver Gauntlets Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02 Item_Gauntlet_Silver in DesertColossus (-168.6, 113.2, 29.5); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
@@ -1002,7 +1002,7 @@
  },
  "5527401621172639818": {
   "location": "Jabu Jabus Belly Boomerang Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02_NoBake Item_Boomerang in InsideJabuJabuBelly (-31.3, 92.4, -131.9); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
@@ -1107,7 +1107,7 @@
  },
  "6859289214373847284": {
   "location": "Ice Cavern Iron Boots Chest",
-  "needs_event_patch": true,
+  "needs_event_patch": false,
   "note": "auto: Obj_TBox_A_02_NoBake Item_HeavyBoot in IceCavern (-46.2, 109.7, 42.5); event with extra effects: needs a patch, stays vanilla",
   "status": "auto",
   "strip_event": false
