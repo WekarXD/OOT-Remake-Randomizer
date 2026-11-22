@@ -153,3 +153,8 @@ Built with the same tool (`33a`..`33n`); Spanish guide `local/test-batch-33.md`.
   - **33n** replaces 33c (the skip's song grant is already proven).
 
   The batch is ten tests: 33a, 33b, 33n, 33d, 33e, 33f, 33gk, 33h, 33jl, 33im.
+
+Results (2026-11-22):
+
+- **33a:** the Mirror Shield hand gave the Boomerang. **The Mirror Shield chest moves.**
+- **33b:** the Silver Gauntlets hand gave the Boomerang. **The Silver Gauntlets chest moves** (Nabooru's scene: not reported yet).
