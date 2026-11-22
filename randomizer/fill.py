@@ -24,8 +24,8 @@ from dataclasses import dataclass
 
 from randomizer import RANDO_VERSION
 from randomizer.fairies import FOUNTAIN_FORBIDDEN, FOUNTAINS
-from randomizer.gifts import (FIXED_GIFTS, GIFT_BY_LOCATION, GIFT_FORBIDDEN, GIFTS, WorldGift,
-                              active_gifts)
+from randomizer.gifts import (FIXED_GIFTS, GIFT_BY_LOCATION, GIFT_FORBIDDEN, GIFTS,
+                              REWARD_GIFTS, WorldGift, active_gifts)
 from randomizer.game import ChestActor, SkulltulaActor
 from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
                               NON_EXCLUDABLE, UPGRADES)
@@ -69,6 +69,9 @@ NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
                                  'BottomOfTheWell', 'FireTemple'})
 
 
+# OoTR's Shuffle Dungeon Rewards values the remake has: the 9 rewards stay, or are shuffled
+# among the 9 reward scenes.
+SHUFFLE_DUNGEON_REWARDS = ('vanilla', 'reward')
 BATCH_3A_SWITCHES = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
 
 
@@ -85,6 +88,7 @@ class Settings:
     shuffle_ocarinas: bool = False
     shuffle_gerudo_card: bool = False
     shuffle_expensive_merchants: bool = False
+    shuffle_dungeon_rewards: str = 'reward'  # see SHUFFLE_DUNGEON_REWARDS (OoTR's default)
 
 
 class FillError(Exception):
@@ -145,6 +149,8 @@ def _settings_key(settings: Settings) -> str:
     for name in BATCH_3A_SWITCHES:
         if not data[name]:
             del data[name]  # same
+    if settings.shuffle_dungeon_rewards == 'reward':
+        del data['shuffle_dungeon_rewards']  # the default
     return json.dumps(data, sort_keys=True)
 
 
@@ -435,6 +441,9 @@ def _check_settings(settings: Settings) -> None:
         raise FillError(f'Unknown key item mode: {settings.key_items_mode!r}')
     if settings.shuffle_songs not in SHUFFLE_SONGS:
         raise FillError(f'Unknown Shuffle Songs value: {settings.shuffle_songs!r}')
+    if settings.shuffle_dungeon_rewards not in SHUFFLE_DUNGEON_REWARDS:
+        raise FillError('Unknown Shuffle Dungeon Rewards value: '
+                        f'{settings.shuffle_dungeon_rewards!r}')
     bad = settings.excluded_items & NON_EXCLUDABLE
     if bad:
         label = ', '.join(LABELS.get(a, a) for a in sorted(bad))
@@ -486,8 +495,10 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         original[h] = f.reward
         site_loc[h] = f.location
     eligible = sorted(eligible + list(FOUNTAIN_SITE_IDS.values()))
-    gift_ids = {g.location: GIFT_SITE_IDS[g.location] for g in active_gifts(settings)
-                if g.location in GIFT_SITE_IDS}
+    active = active_gifts(settings)
+    rewards = [g.location for g in active if g.location in REWARD_GIFTS]
+    gift_ids = {g.location: GIFT_SITE_IDS[g.location] for g in active
+                if g.location in GIFT_SITE_IDS and g.location not in REWARD_GIFTS}
     for loc, h in gift_ids.items():  # the NPC gifts become sites holding their items
         original[h] = GIFT_BY_LOCATION[loc].content
         if loc not in MINOR_ONLY_GIFTS:
@@ -537,8 +548,18 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     hearts = {loc: placed.chests[h] for loc, h in HEART_SITE_IDS.items()} if dungeon else {}
     fairies = {loc: placed.chests[h] for loc, h in FOUNTAIN_SITE_IDS.items()}
     gifts = {loc: placed.chests[h] for loc, h in gift_ids.items()}
+    gifts.update(_shuffle_rewards(settings, rewards))
     return Placement({h: d for h, d in placed.chests.items() if h >= 0}, songs, hearts,
                      fairies, gifts)
+
+
+def _shuffle_rewards(settings: Settings, locations: list[str]) -> dict[str, str]:
+    """The dungeon rewards (OoTR's 'reward'): a shuffle among their own scenes. The logic
+    reads each reward as its boss's defeat, so where they land never changes what is
+    reachable."""
+    contents = [GIFT_BY_LOCATION[loc].content for loc in locations]
+    _rng(settings, -1).shuffle(contents)
+    return dict(zip(locations, contents))
 
 
 def _run(settings: Settings, world: World, original: dict[int, str], eligible: list[int],

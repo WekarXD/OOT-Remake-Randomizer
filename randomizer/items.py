@@ -214,6 +214,16 @@ FAMILIES: dict[str, str] = {
     'Item_Sword_Biggoron': 'Biggoron Sword',
     'Item_StickBag_Medium': 'Deku Stick Capacity',
     'Item_NutBag_Medium': 'Deku Nut Capacity',
+    # Dungeon rewards (OoTR parity): the logic reads them as their bosses' defeats.
+    'Item_Stone_Forest': 'Kokiri Emerald',
+    'Item_Stone_Fire': 'Goron Ruby',
+    'Item_Stone_Water': 'Zora Sapphire',
+    'Item_Medal_Forest': 'Forest Medallion',
+    'Item_Medal_Fire': 'Fire Medallion',
+    'Item_Medal_Water': 'Water Medallion',
+    'Item_Medal_Shadow': 'Shadow Medallion',
+    'Item_Medal_Spirit': 'Spirit Medallion',
+    'Item_Medal_Light': 'Light Medallion',
 }
 
 

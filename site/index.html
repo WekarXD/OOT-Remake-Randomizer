@@ -166,6 +166,22 @@
         </div>
         <div class="field">
           <div class="field-head">
+            <label for="shuffle_dungeon_rewards">Shuffle Dungeon Rewards</label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-rewards" aria-label="About Shuffle Dungeon Rewards">ⓘ</button>
+          </div>
+          <select id="shuffle_dungeon_rewards">
+            <option value="reward" selected>Dungeon Reward Locations</option>
+            <option value="vanilla">Vanilla</option>
+          </select>
+          <div class="tip-text" id="tip-rewards">
+            <p>This shuffles the Spiritual Stones and the Medallions.</p>
+            <p>'Dungeon Reward Locations': they are shuffled among the places that normally give one (the bosses and Rauru). The Door of Time and the bridge still open when you beat the bosses, as in the remake.</p>
+            <p>'Vanilla': each boss gives its usual reward.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head">
             <label class="switch"><input type="checkbox" id="shuffle_ocarinas"><span class="slider" aria-hidden="true"></span> Shuffle Ocarinas</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-ocarinas" aria-label="About Shuffle Ocarinas">ⓘ</button>
           </div>

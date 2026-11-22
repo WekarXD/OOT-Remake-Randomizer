@@ -1,4 +1,5 @@
 import contextlib
+import functools
 import hashlib
 import io
 import json
@@ -31,6 +32,13 @@ SK_FIXTURE = Path(__file__).parent / 'fixtures' / 'skulltulas.json'
 def _hashes(root: Path) -> dict[str, str]:
     return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(root.rglob('*')) if p.is_file()}
+
+
+@functools.lru_cache(maxsize=None)
+def _flow_rel(name: str) -> str:
+    """The romfs path of the flow the game loads (a versioned copy for some, e.g. Dampe's)."""
+    with NupArchive(NUP_PATH) as nup:
+        return GameData(nup).flow_path(name)
 
 
 class SeedNameTest(unittest.TestCase):
@@ -140,7 +148,7 @@ class RealTests(unittest.TestCase):
             from randomizer.fairies import FOUNTAINS, TRIFORCE_FLOW
             from randomizer.gifts import GIFT_BY_LOCATION, Gift
             data = json.loads(Path(r.spoiler_json).read_text(encoding='utf-8'))
-            gift_flows = {f'Event/EventFlow/{GIFT_BY_LOCATION[g["location"]].flow}.bfevfl.zs'
+            gift_flows = {_flow_rel(GIFT_BY_LOCATION[g['location']].flow)
                           for g in data['npc_gifts']
                           if isinstance(GIFT_BY_LOCATION[g['location']], Gift)
                           and g['item'] != GIFT_BY_LOCATION[g['location']].content}
@@ -597,7 +605,7 @@ class RealTests(unittest.TestCase):
                     codec = ZsCodec.from_archive(nup)
                     for loc, g in changed.items():
                         if isinstance(g, Gift):
-                            rel = f'Event/EventFlow/{g.flow}.bfevfl.zs'
+                            rel = _flow_rel(g.flow)
                             flow = EventFlow(codec.decompress(rel, (root / rel).read_bytes()))
                             given = {flow.action_params(i).get(k)
                                      for i, ev in enumerate(flow.events) if ev.kind == SUBFLOW
@@ -706,7 +714,7 @@ class RealTests(unittest.TestCase):
             self.assertNotIn('npc_gifts', data)
             for g in GIFTS:
                 if isinstance(g, Gift):
-                    self.assertNotIn(f'Event/EventFlow/{g.flow}.bfevfl.zs', res.changed_files)
+                    self.assertNotIn(_flow_rel(g.flow), res.changed_files)
 
     def test_great_fairies_not_with_vanilla_keys(self):
         with tempfile.TemporaryDirectory() as out:

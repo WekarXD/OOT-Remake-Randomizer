@@ -591,6 +591,23 @@ class Batch3aFillTest(unittest.TestCase):
                 checked += 1
         self.assertGreater(checked, 0)
 
+    def test_dungeon_rewards_among_their_sites(self):
+        from randomizer.gifts import GIFT_BY_LOCATION
+        rewards = ('Queen Gohma', 'King Dodongo', 'Barinade', 'Phantom Ganon', 'Volvagia',
+                   'Morpha', 'Bongo Bongo', 'Twinrova', 'ToT Reward from Rauru')
+        vanilla = sorted(GIFT_BY_LOCATION[loc].content for loc in rewards)
+        moved = 0
+        for i in range(20):
+            r = self._all(seed=f'R{i}')
+            self.assertEqual(sorted(r.gifts[loc] for loc in rewards), vanilla, i)
+            moved += any(r.gifts[loc] != GIFT_BY_LOCATION[loc].content for loc in rewards)
+            others = [d for loc, d in r.gifts.items() if loc not in rewards]
+            self.assertFalse(set(vanilla) & set(others + list(r.chests.values())), i)
+            self.assertTrue(self._beatable(r), i)
+        self.assertGreater(moved, 10)
+        off = self._all(seed='R0', shuffle_dungeon_rewards='vanilla')
+        self.assertFalse(set(rewards) & set(off.gifts))
+
     def test_excluded_ocarina(self):
         r = self._all(seed='E', shuffle_ocarinas=True,
                       excluded_items=frozenset({'Item_Ocarina_Time'}))

@@ -118,6 +118,7 @@ def build(settings, placement, chests, loc_map, game_version,
     if settings.tokensanity != 'off':
         result['settings']['tokensanity'] = settings.tokensanity
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
+    result['settings']['shuffle_dungeon_rewards'] = settings.shuffle_dungeon_rewards
     for name in BATCH_3A_SWITCHES:  # NPC gifts batch 3a: only when on
         if getattr(settings, name):
             result['settings'][name] = True
@@ -169,6 +170,10 @@ def to_text(d: dict) -> str:
         lines.append('  Shuffle Songs: '
                      f'{SHUFFLE_SONGS_LABELS.get(s["shuffle_songs"], s["shuffle_songs"])}')
     lines += [f'  {SWITCH_LABELS[name]}: Yes' for name in BATCH_3A_SWITCHES if s.get(name)]
+    if 'shuffle_dungeon_rewards' in s:
+        lines.append('  Shuffle Dungeon Rewards: '
+                     + {'reward': 'Dungeon Reward Locations', 'vanilla': 'Vanilla'}.get(
+                         s['shuffle_dungeon_rewards'], s['shuffle_dungeon_rewards']))
     lines += ['', 'Randomizer version', f'  {d["randomizer_version"]}', '',
              'Game version', f'  {d["game_version"]}', '', 'Key items']
     for k in d['key_items']:

@@ -102,6 +102,17 @@ REMAKE_RULES: dict[tuple[str, str, str], str] = {
 # asks for the bag (`Bombs`, `has_bombchus`, the World files...). The item is
 # named as a string so the helper does not expand itself.
 REMAKE_HELPERS: dict[str, str] = {
+    # OoTR parity: the game opens the Door of Time and the bridge on the bosses beaten (no
+    # flow checks a stone or a medallion), so each reward is its boss's defeat, wherever
+    # Shuffle Dungeon Rewards puts it. The Light Medallion stays an item: no rule needs it.
+    'Kokiri_Emerald': "'Defeat Queen Gohma'",
+    'Goron_Ruby': "'Defeat King Dodongo'",
+    'Zora_Sapphire': "'Defeat Barinade'",
+    'Forest_Medallion': "'Defeat Phantom Ganon'",
+    'Fire_Medallion': "'Defeat Volvagia'",
+    'Water_Medallion': "'Defeat Morpha'",
+    'Shadow_Medallion': "'Defeat Bongo Bongo'",
+    'Spirit_Medallion': "'Defeat Twinrova'",
     'Bomb_Bag': "'Bomb Bag' and Progressive_Strength_Upgrade",
     # Batch 26: Din's Fire, Farore's Wind, Nayru's Love and both magic blessings each
     # bring the meter (PouchActorInfo MPMaxUP), so any of them is OoTR's Magic_Meter.

@@ -141,6 +141,7 @@
       skip_cutscenes: $('skip-cutscenes').checked,
       tokensanity: $('tokensanity').value,
       shuffle_songs: $('shuffle_songs').value,
+      shuffle_dungeon_rewards: $('shuffle_dungeon_rewards').value,
       ...Object.fromEntries(Presets.SWITCHES.map((id) => [id, $(id).checked])),
     };
   }
@@ -154,6 +155,7 @@
     $('skip-cutscenes').checked = o.skip_cutscenes;
     $('tokensanity').value = o.tokensanity;
     $('shuffle_songs').value = o.shuffle_songs;
+    if (o.shuffle_dungeon_rewards) $('shuffle_dungeon_rewards').value = o.shuffle_dungeon_rewards;
     Presets.SWITCHES.forEach((id) => { $(id).checked = o[id] === true; });
     if (!itemsRendered) pendingExcluded = o.excluded_items.slice();
     $('items').querySelectorAll('input:not(:disabled)').forEach((c) => {
@@ -197,6 +199,9 @@
   if (TOKENSANITY.includes(saved.tokensanity)) $('tokensanity').value = saved.tokensanity;
   if (SHUFFLE_SONGS.includes(saved.shuffle_songs)) $('shuffle_songs').value = saved.shuffle_songs;
   Presets.SWITCHES.forEach((id) => { if (typeof saved[id] === 'boolean') $(id).checked = saved[id]; });
+  if (saved.shuffle_dungeon_rewards === 'reward' || saved.shuffle_dungeon_rewards === 'vanilla') {
+    $('shuffle_dungeon_rewards').value = saved.shuffle_dungeon_rewards;
+  }
   syncPreset();
 
   let worker;

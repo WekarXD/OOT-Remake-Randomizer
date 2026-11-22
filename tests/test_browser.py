@@ -50,6 +50,14 @@ class SettingsTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Invalid Shuffle Songs value.'):
                     browser.parse_settings({'shuffle_songs': bad})
 
+    def test_dungeon_rewards_setting(self):
+        self.assertEqual(browser.parse_settings({}).shuffle_dungeon_rewards, 'reward')
+        s = browser.parse_settings({'shuffle_dungeon_rewards': 'vanilla'})
+        self.assertEqual(s.shuffle_dungeon_rewards, 'vanilla')
+        for bad in ('anywhere', 1):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                browser.parse_settings({'shuffle_dungeon_rewards': bad})
+
     def test_batch_3a_switches(self):
         names = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
         for name in names:

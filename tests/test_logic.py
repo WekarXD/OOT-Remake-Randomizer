@@ -128,6 +128,15 @@ class StateTest(unittest.TestCase):
         off = World(load_vanilla_settings())
         self.assertIn('Song from Impa', off.reachable_locations(fixed))
 
+    def test_rewards_are_their_bosses(self):
+        # OoTR parity: the game opens the Door of Time and the bridge on the bosses beaten,
+        # so each reward item means its boss's defeat, wherever it is placed.
+        from randomizer.logic.world import REMAKE_HELPERS
+        self.assertEqual(REMAKE_HELPERS['Kokiri_Emerald'], "'Defeat Queen Gohma'")
+        self.assertEqual(REMAKE_HELPERS['Spirit_Medallion'], "'Defeat Twinrova'")
+        self.assertEqual(sum(k.endswith(('_Emerald', '_Ruby', '_Sapphire', '_Medallion'))
+                             for k in REMAKE_HELPERS), 8)
+
     def test_ocarina_levels(self):
         # NPC gifts batch 3a: the two ocarinas are separate items in the game (31c); the
         # direct model holds the highest, so the Ocarina of Time alone counts as both.

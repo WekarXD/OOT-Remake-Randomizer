@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 
 from . import locations
-from .fill import BATCH_3A_SWITCHES, MODES, TOKENSANITY, Settings
+from .fill import BATCH_3A_SWITCHES, MODES, SHUFFLE_DUNGEON_REWARDS, TOKENSANITY, Settings
 from .songs import SHUFFLE_SONGS
 from .generate import GenerationError, generate
 from .items import KEY_ITEM_HOME, KEY_ITEMS, LABELS, NON_EXCLUDABLE
@@ -82,6 +82,9 @@ def parse_settings(options: dict) -> Settings:
     shuffle_songs = options.get('shuffle_songs', 'off')
     if not isinstance(shuffle_songs, str) or shuffle_songs not in SHUFFLE_SONGS:
         raise ValueError('Invalid Shuffle Songs value.')
+    rewards = options.get('shuffle_dungeon_rewards', 'reward')
+    if not isinstance(rewards, str) or rewards not in SHUFFLE_DUNGEON_REWARDS:
+        raise ValueError('Invalid Shuffle Dungeon Rewards value.')
     bad = [x for x in excluded if x in NON_EXCLUDABLE]
     if bad:
         raise ValueError(f'Cannot exclude {LABELS.get(bad[0], bad[0])}: the logic '
@@ -92,6 +95,7 @@ def parse_settings(options: dict) -> Settings:
     return Settings(seed=seed.strip(), key_items_mode=mode, excluded_items=effective,
                     spoiler=flags['spoiler'], skip_cutscenes=flags['skip_cutscenes'],
                     tokensanity=tokensanity, shuffle_songs=shuffle_songs,
+                    shuffle_dungeon_rewards=rewards,
                     **{name: flags[name] for name in BATCH_3A_SWITCHES})
 
 

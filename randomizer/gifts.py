@@ -213,7 +213,31 @@ GIFTS: tuple[Gift | WorldGift, ...] = (
     _heart('Graveyard Freestanding PoH', 'Graveyard', _BOTH, 2157466067026784951),
     _heart('LH Freestanding PoH', 'HyruleField', ('Adult',), 13469300937852836203),
     _heart('LLR Freestanding PoH', 'HyruleField', ('Child',), 9814903750835309225),
+    # Dungeon rewards (Shuffle Dungeon Rewards 'reward'): each scene's
+    # GetPouchContentByActorName, like a song scene's. `fill` shuffles them among
+    # themselves only; the logic reads each reward as its boss's defeat.
+    Gift('Queen Gohma', 'Item_Stone_Forest', 'Dm_Kokiri_0130', 'ActorName',
+         ('Item_Stone_Forest',), setting='shuffle_dungeon_rewards'),
+    Gift('King Dodongo', 'Item_Stone_Fire', 'Dm_DeathMtTrail_0025', 'ActorName',
+         ('Item_Stone_Fire',), setting='shuffle_dungeon_rewards'),
+    Gift('Barinade', 'Item_Stone_Water', 'Dm_ZoraFountain_0030', 'ActorName',
+         ('Item_Stone_Water',), setting='shuffle_dungeon_rewards'),
+    Gift('Phantom Ganon', 'Item_Medal_Forest', 'Dm_Awake_Forest_Get', 'ActorName',
+         ('Item_Medal_Forest',), setting='shuffle_dungeon_rewards'),
+    Gift('Volvagia', 'Item_Medal_Fire', 'Dm_Awake_Fire_Get', 'ActorName',
+         ('Item_Medal_Fire',), setting='shuffle_dungeon_rewards'),
+    Gift('Morpha', 'Item_Medal_Water', 'Dm_Awake_Water_Get', 'ActorName',
+         ('Item_Medal_Water',), setting='shuffle_dungeon_rewards'),
+    Gift('Bongo Bongo', 'Item_Medal_Shadow', 'Dm_Awake_Shadow_Get', 'ActorName',
+         ('Item_Medal_Shadow',), setting='shuffle_dungeon_rewards'),
+    Gift('Twinrova', 'Item_Medal_Spirit', 'Dm_Awake_Spirit_Get', 'ActorName',
+         ('Item_Medal_Spirit',), setting='shuffle_dungeon_rewards'),
+    Gift('ToT Reward from Rauru', 'Item_Medal_Light', 'Dm_SageRoom_0005', 'ActorName',
+         ('Item_Medal_Light',), setting='shuffle_dungeon_rewards'),
 )
+# The dungeon reward rows: placed among themselves (`fill`), never in the main pool.
+REWARD_GIFTS: frozenset[str] = frozenset(g.location for g in GIFTS
+                                         if g.setting == 'shuffle_dungeon_rewards')
 GIFT_BY_LOCATION: dict[str, Gift | WorldGift] = {g.location: g for g in GIFTS}
 GIFT_ITEMS: frozenset[str] = frozenset(g.content for g in GIFTS if g.content in KEY_ITEMS)
 # Gifts that stay out of the fill. Empty: test batches 28 and 30 passed every gate.
@@ -221,8 +245,10 @@ FIXED_GIFTS: frozenset[str] = frozenset()
 
 
 def active_gifts(settings) -> tuple[Gift | WorldGift, ...]:
-    """The rows that are sites under `settings` (a `fill.Settings`)."""
-    return tuple(g for g in GIFTS if g.setting is None or getattr(settings, g.setting))
+    """The rows that are sites under `settings` (a `fill.Settings`): a switch that is on, or
+    a choice other than 'off' / 'vanilla'."""
+    return tuple(g for g in GIFTS if g.setting is None
+                 or getattr(settings, g.setting) not in (False, 'off', 'vanilla'))
 
 
 def _changed(gifts: dict[str, str]) -> list[Gift | WorldGift]:
