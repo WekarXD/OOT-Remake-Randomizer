@@ -44,6 +44,8 @@ Pending work, most important first within each section.
   - `LinkSleepInBed` has a `SleepBeforeMeetZelda` entry and checks `HavePlayedEvent.HyruleCastle_Goto_HyruleCastle_MeetZelda`;
   - dozens of NPC flows check `Goto_HyruleCastle_IsCompleted_Exp`.
 
+  Confirmed in play (same seed, 2026-11-22): the clock starts running right after Zelda's garden meeting. The gate is the meeting, not an item or the hour.
+
   Planned test batch, on the full skip, teleported to Hyrule Field:
   - (a) progress `Goto_HyruleCastle` to `Complete` at the start;
   - (b) set only `HavePlayedEvent.HyruleCastle_Goto_HyruleCastle_MeetZelda`.
