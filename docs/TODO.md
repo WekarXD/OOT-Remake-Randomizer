@@ -26,6 +26,8 @@ Pending work, most important first within each section.
 - Batch 16 (optional): confirm the 27 "guessed" Skulltulas with a rupee-colour mod so they can also hold key items.
 - Acceptance seed `ACEPTACION1` and the round 2b cutscene re-test.
 
+- **The Gerudo Card scene gave nothing** (NPC gifts batch 3a, test batch 32f–32f4, 2026-11-22). The card was renamed to the Boomerang at `Dm_Gerudo_0025` 120 (`GetInEvent_NotLookatObjectTurnOff`), on the full skip. Freeing the last carpenter the game's way (32f4) ran the rescue's ending: the quest reached `Step02` and the Gerudo stopped attacking. But no card scene showed and no Boomerang came. The grant is reachable from the entry in both versions, and the `SubFlowList` rows are complete. Booting `Dm_Gerudo_0025` directly (32f2) stays black. So the card stays fixed, and `shuffle_gerudo_card` is out of batch 3a. Next: the same test without the full skip, and a check of whether the vanilla card is given on the skip at all (the card does nothing in the remake, so a missing card goes unnoticed).
+
 ## To build
 
 - **Gold Skulltula tokens from song scenes (Anywhere):** the fill never puts a token on a song scene, because a token given by a scene's `GetPouchContentByActorName` grant is untested in game (a token is a counter, not a pouch item). To allow it: a test batch where a song scene gives `Obj_Token_Gold`, then drop the rule in `fill._attempt` (the `open_scenes` block).

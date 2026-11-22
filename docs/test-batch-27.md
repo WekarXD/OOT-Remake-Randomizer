@@ -129,3 +129,6 @@ Results (2026-11-22):
 - **32d / 32d2:** `Shop_BombchuBundle_01` gave 10 bombchus, the small bundle 5 (capacity 20 both). Bombs could not be used: no Goron's Bracelet, as in 27b. **The carpet's bombchus move as they are (OoTR's Bombchus (10)).**
 - **32e:** with no ocarina, Zelda's scene gave the Boomerang and the Song of Time. **No ocarina rule is needed.**
 - **32f:** Link arrived and the Gerudo did not attack, but no scene played. **32f2** stayed on a black screen. **32f3** frees the last carpenter the game's way: the count at 3, Link by carpenter 013's thief.
+- **32f3 / 32f4:** the count at 3, by carpenter 013's thief (32f4 with the Mirror Shield). The fight, the key, the cell, and the carpenter left. The rescue's ending ran (`Step02`: the Gerudo stopped attacking), but no card scene showed and no Boomerang came. **The card site does not move:** the card stays fixed (`docs/TODO.md`).
+
+**Batch 32: the merchants, the knife, the bombchus and Zelda's scene pass; the Gerudo Card does not.**

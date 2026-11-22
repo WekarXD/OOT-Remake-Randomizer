@@ -154,4 +154,4 @@ A seed with "Any chest", the skip on and all three settings on. From the spoiler
 - Medigoron sells with the knife in the pouch;
 - Zelda's scene needs no ocarina.
 
-32f and 32f2 did not play the card scene. 32f3 (the last carpenter freed the game's way) is pending. If it fails, the card stays fixed and `shuffle_gerudo_card` waits.
+32f–32f4: the card scene gave nothing, even after the last carpenter was freed the game's way (32f4: the quest reached `Step02`). **`shuffle_gerudo_card` is out of batch 3a.** The card stays fixed, and its logic is unchanged: the vanilla card at its site already means the rescue. See `docs/TODO.md`. Batch 3a therefore has two settings: `shuffle_ocarinas` and `shuffle_expensive_merchants`. Everything this document says about the Gerudo Card is withdrawn.
