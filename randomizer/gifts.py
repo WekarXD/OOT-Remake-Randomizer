@@ -62,15 +62,26 @@ class Gift:
 
 @dataclass(frozen=True)
 class WorldGift:
-    """A gift that is an actor in a map (`banc`, `hash`)."""
+    """A gift that is an actor in a map (`banc`, `hash`); `also`: the other era maps that
+    hold the same actor (a freestanding Piece of Heart is in each)."""
     location: str
     content: str
     banc: str
     hash: int
     setting: str | None = None
+    also: tuple[str, ...] = ()
 
 
 _FIELD = 'Banc/HyruleField/HyruleField_{}_Static.bcett.byml.zs'
+
+
+def _heart(location: str, zone: str, eras: tuple[str, ...], hash_: int) -> WorldGift:
+    """A freestanding Piece of Heart in each of `zone`'s era maps (OoTR parity)."""
+    bancs = tuple(f'Banc/{zone}/{zone}_{era}_Static.bcett.byml.zs' for era in eras)
+    return WorldGift(location, 'Obj_Heart_Piece', bancs[0], hash_, also=bancs[1:])
+
+
+_BOTH = ('Child', 'Adult')
 _HOUSE = 'GatheringTokenGold'  # the Gold Skulltula house: by-reference TakenRewardActor
 _FISH = ('ReveiveItem', 'ActorName')  # a normal fish and the loach: two grants
 _FROGS = 'MiniGame_FrogTenors'
@@ -184,6 +195,24 @@ GIFTS: tuple[Gift | WorldGift, ...] = (
     Gift('Deku Theater Mask of Truth', 'Item_NutBag_Medium',
          'LostWood_ScrubForestStageElder_TrueMaskFirst', 'ActorName',
          ('Item_NutBag_Medium', 'Item_NutBag_Large')),
+    # The freestanding Pieces of Heart whose OoTR location is clear from the map
+    # (docs/remaining-items-research.md, "C"); the pot, crate and grotto ones stay.
+    _heart('DMT Freestanding PoH', 'DeathMountainTrail', _BOTH, 715147239509454487),
+    _heart('Colossus Freestanding PoH', 'DesertColossus', _BOTH, 10592092054086534681),
+    _heart('GV Waterfall Freestanding PoH', 'GerudoValley', _BOTH, 16129198288828948135),
+    _heart('ZF Iceberg Freestanding PoH', 'ZoraFountain', ('Adult',), 12406896586250888098),
+    _heart('ZF Bottom Freestanding PoH', 'ZoraFountain', ('Adult',), 8030885465575590602),
+    _heart('ZR Near Domain Freestanding PoH', 'ZoraRiver', _BOTH, 4189391771527808272),
+    _heart('ZR Near Open Grotto Freestanding PoH', 'ZoraRiver', _BOTH, 11455676800795329345),
+    _heart('Kak Windmill Freestanding PoH', 'KakarikoVillage',
+           ('Child', 'Adult', 'Adult_Alternative'), 13389209437182306002),
+    _heart('Kak Impas House Freestanding PoH', 'KakarikoVillage',
+           ('Child', 'Adult', 'Adult_Alternative'), 17926402522258180222),
+    _heart('DMC Volcano Freestanding PoH', 'DeathMountainCrater', _BOTH, 744856631664786545),
+    _heart('DMC Wall Freestanding PoH', 'DeathMountainCrater', _BOTH, 10331043360028932045),
+    _heart('Graveyard Freestanding PoH', 'Graveyard', _BOTH, 2157466067026784951),
+    _heart('LH Freestanding PoH', 'HyruleField', ('Adult',), 13469300937852836203),
+    _heart('LLR Freestanding PoH', 'HyruleField', ('Child',), 9814903750835309225),
 )
 GIFT_BY_LOCATION: dict[str, Gift | WorldGift] = {g.location: g for g in GIFTS}
 GIFT_ITEMS: frozenset[str] = frozenset(g.content for g in GIFTS if g.content in KEY_ITEMS)
@@ -289,8 +318,9 @@ def gift_subflow_list(info: bytes, load: Callable[[str], EventFlow | None],
     return byml.dump(rows, ver) if changed else info
 
 
-def gift_actor_swaps(gifts: dict[str, str]) -> dict[int, tuple[str, str]]:
+def gift_actor_swaps(gifts: dict[str, str]) -> dict[int, tuple[str | tuple[str, ...], str]]:
     """{actor hash: (banc, item)} for the world gifts whose item changed (for
-    `patch.write_mod(actor_swaps=...)`, which builds the wrappers)."""
-    return {g.hash: (g.banc, gifts[g.location]) for g in _changed(gifts)
-            if isinstance(g, WorldGift)}
+    `patch.write_mod(actor_swaps=...)`, which builds the wrappers); `banc` is a tuple
+    when the actor is in several era maps."""
+    return {g.hash: ((g.banc,) + g.also if g.also else g.banc, gifts[g.location])
+            for g in _changed(gifts) if isinstance(g, WorldGift)}

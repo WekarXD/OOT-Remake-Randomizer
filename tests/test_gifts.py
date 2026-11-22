@@ -49,6 +49,12 @@ BATCH_3A = ('Kak 100 Gold Skulltula Reward', 'LW Gift from Saria', 'HF Ocarina o
             'GC Medigoron', 'Wasteland Bombchu Salesman', 'Hideout Gerudo Membership Card')
 PARITY = ('Kak Anju as Adult', 'DMT Biggoron', 'Deku Theater Skull Mask',
           'Deku Theater Mask of Truth')
+HEARTS = ('DMT Freestanding PoH', 'Colossus Freestanding PoH', 'GV Waterfall Freestanding PoH',
+          'ZF Iceberg Freestanding PoH', 'ZF Bottom Freestanding PoH',
+          'ZR Near Domain Freestanding PoH', 'ZR Near Open Grotto Freestanding PoH',
+          'Kak Windmill Freestanding PoH', 'Kak Impas House Freestanding PoH',
+          'DMC Volcano Freestanding PoH', 'DMC Wall Freestanding PoH',
+          'Graveyard Freestanding PoH', 'LH Freestanding PoH', 'LLR Freestanding PoH')
 ALL_ON = Settings('x', shuffle_ocarinas=True, shuffle_gerudo_card=True,
                   shuffle_expensive_merchants=True)
 
@@ -57,18 +63,19 @@ class GiftTableTest(unittest.TestCase):
     def test_table_matches_ootr(self):
         gifts = _gifts()
         locs = ootr_data.load_locations()
-        self.assertEqual(len(gifts.GIFTS), 45)
-        self.assertEqual(len({g.location for g in gifts.GIFTS}), 45)
+        self.assertEqual(len(gifts.GIFTS), 59)
+        self.assertEqual(len({g.location for g in gifts.GIFTS}), 59)
         # Batch 3a comes after batch 2, so the earlier site ids (-301..-335) stay; the
         # OoTR parity rows (design 2026-11-22-ootr-parity) come after batch 3a.
         self.assertEqual(tuple(g.location for g in gifts.GIFTS[35:41]), BATCH_3A)
-        self.assertEqual(tuple(g.location for g in gifts.GIFTS[41:]), PARITY)
+        self.assertEqual(tuple(g.location for g in gifts.GIFTS[41:45]), PARITY)
+        self.assertEqual(tuple(g.location for g in gifts.GIFTS[45:]), HEARTS)
         self.assertEqual(gifts.GIFTS[34].location, 'LLR Talons Chickens')
         for g in gifts.GIFTS:
             with self.subTest(gift=g.location):
                 self.assertIn(g.location, locs)
                 self.assertTrue(items.content_matches(g.content, locs[g.location]['vanilla_item']))
-        self.assertEqual(sum(isinstance(g, gifts.WorldGift) for g in gifts.GIFTS), 2)
+        self.assertEqual(sum(isinstance(g, gifts.WorldGift) for g in gifts.GIFTS), 16)
         self.assertEqual(gifts.GIFT_ITEMS,
                          frozenset(g.content for g in gifts.GIFTS if g.content in items.KEY_ITEMS))
         self.assertEqual(gifts.FIXED_GIFTS, frozenset())  # batch 28: every gate passed
@@ -76,14 +83,15 @@ class GiftTableTest(unittest.TestCase):
     def test_active_gifts_by_setting(self):
         gifts = _gifts()
         off = {g.location for g in gifts.active_gifts(Settings('x'))}
-        self.assertEqual(off, {g.location for g in gifts.GIFTS[:35]} | {BATCH_3A[0]} | set(PARITY))
+        self.assertEqual(off, {g.location for g in gifts.GIFTS[:35]} | {BATCH_3A[0]} | set(PARITY)
+                         | set(HEARTS))
         for name, locs in (('shuffle_ocarinas', BATCH_3A[1:3]),
                            ('shuffle_expensive_merchants', BATCH_3A[3:5]),
                            ('shuffle_gerudo_card', BATCH_3A[5:])):
             with self.subTest(setting=name):
                 on = {g.location for g in gifts.active_gifts(Settings('x', **{name: True}))}
                 self.assertEqual(on - off, set(locs))
-        self.assertEqual(len(gifts.active_gifts(ALL_ON)), 45)
+        self.assertEqual(len(gifts.active_gifts(ALL_ON)), 59)
 
     def test_empty_placement_changes_nothing(self):
         self.assertEqual(_gifts().gift_flow_patches(lambda name: b'', {}), {})
@@ -92,6 +100,17 @@ class GiftTableTest(unittest.TestCase):
     def test_unknown_location_raises(self):
         with self.assertRaises(_gifts().GiftPatchError):
             _gifts().gift_flow_patches(lambda name: b'', {'Nowhere': NEW})
+
+    def test_freestanding_heart_in_every_era_map(self):
+        # OoTR parity: a freestanding Piece of Heart has the same hash in each era's map.
+        gifts = _gifts()
+        swaps = gifts.gift_actor_swaps({'DMT Freestanding PoH': NEW})
+        self.assertEqual(swaps, {715147239509454487: (
+            ('Banc/DeathMountainTrail/DeathMountainTrail_Child_Static.bcett.byml.zs',
+             'Banc/DeathMountainTrail/DeathMountainTrail_Adult_Static.bcett.byml.zs'), NEW)})
+        kak = gifts.gift_actor_swaps({'Kak Windmill Freestanding PoH': NEW})
+        self.assertEqual(len(kak[13389209437182306002][0]), 3)
+        self.assertEqual(gifts.gift_actor_swaps({'DMT Freestanding PoH': 'Obj_Heart_Piece'}), {})
 
     def test_actor_swaps(self):
         gifts = _gifts()

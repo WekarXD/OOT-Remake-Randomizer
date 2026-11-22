@@ -47,7 +47,8 @@ def write_mod(game: GameData, placement: dict[int, str], mod_root: Path,
     swaps = dict(actor_swaps or {})
     bancs = sorted({c.banc for c in chests if c.hash in changed}
                    | {s.banc for s in skulls if s.hash in sk_changed}
-                   | {banc for banc, _ in swaps.values()})
+                   | {b for banc, _ in swaps.values()
+                      for b in ((banc,) if isinstance(banc, str) else banc)})
     written = []
     for rel, data in (extra_files or {}).items():
         _write(mod_root, rel, data)
