@@ -14,7 +14,7 @@ Method:
 - Every `NpcCommon:NpcCommon_HandOver_NpcToPlayer_NoDisplay*` call. Its `ReveiveItem` parameter (the game's spelling) is the item; `NpcCommon` passes it on to `Dm_SY_GetInEvent`.
 - Paths to each grant traced with the real case values (0 is true).
 
-**Status (2026-11-20):** batch 1 is built (design `docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md`, `randomizer/gifts.py`). Test batches 27 and 28 answered every open question below (`docs/test-batch-27.md`).
+**Status (2026-11-22):** batch 3a is built (design `docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md`, plan `docs/superpowers/plans/2026-11-22-npc-gifts-batch-3a.md`, `randomizer/merchants.py`); its acceptance (seed `REGALOS3A`) is pending. Batch 2 is released. Batch 1 is built (design `docs/superpowers/specs/2026-11-20-npc-gifts-batch-1-design.md`, `randomizer/gifts.py`). Test batches 27 and 28 answered every open question below (`docs/test-batch-27.md`).
 
 ## Batch 1: where each gift is
 
