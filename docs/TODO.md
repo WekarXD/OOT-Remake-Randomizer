@@ -39,6 +39,16 @@ Pending work, most important first within each section.
   - the Pocket Egg before meeting adult Anju;
   - a lower Hookshot or Gauntlet level after the higher one;
   - the six chests' story events with another item.
+- **Time stands still until Link meets Zelda** (seen in play, seed `OOTR1`, 2026-11-22): in the remake the day/night cycle only starts after the garden meeting, and in a seed where Zelda comes late (here she gives the Longshot) the whole early game is frozen at day. OoT and OoTR run the clock from the start. No flow or `WorldParam` flag stops the clock: the flows only set the hour (`EventTrigger_SetTime`: Sun's Song, bed, first field entry). So the gate is likely in the code, on the story quest:
+  - `Goto_HyruleCastle` reaches `Complete` in `Goto_HyruleCastle` event 3, after `Dm_HrlCastle_0045`, and `DoorOfTime` `Step01` starts at event 5;
+  - `LinkSleepInBed` has a `SleepBeforeMeetZelda` entry and checks `HavePlayedEvent.HyruleCastle_Goto_HyruleCastle_MeetZelda`;
+  - dozens of NPC flows check `Goto_HyruleCastle_IsCompleted_Exp`.
+
+  Planned test batch, on the full skip, teleported to Hyrule Field:
+  - (a) progress `Goto_HyruleCastle` to `Complete` at the start;
+  - (b) set only `HavePlayedEvent.HyruleCastle_Goto_HyruleCastle_MeetZelda`.
+
+  Check for each that time passes, and that Zelda's garden scene still plays and gives the `HC Zeldas Letter` gift. If the clock runs but the scene is lost, move Zelda's gift elsewhere. Workaround meanwhile: the Sun's Song changes the hour. Batch 30c (Dampe at night) hit the same wall, see above.
 - **Versioned flows** (found 2026-11-22): `EventFlowFileEntry.Product.110` makes the game load `<name>.110.bfevfl.zs` for 13 flows:
   - the five `Dm_Awake_*_Get` and `Dm_InsideJabu_Jabu_0030`;
   - `Dm_DodongoCave_0010`, `Dm_FinalBattle_BossOut`, `Dm_Goron_0040`, `Dm_HrlCastle_0020`, `DreamBossStage`, `MiniGame_HorseRace`, `Npc_Hylia_Dampe_001`.
