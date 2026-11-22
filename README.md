@@ -41,7 +41,10 @@ To play it following a checklist, see `docs/acceptance.md`.
   - **Shuffle Gerudo Card:** the card can be anywhere. It has no use in the remake (the Gerudo let you through once the carpenters are rescued), and its own place only gives minor items: in testing it gave nothing.
   - **Shuffle Expensive Merchants:** Medigoron and the Haunted Wasteland carpet salesman sell another item, once each.
   The Kak 100 Gold Skulltula Reward is always moved, as in OoTR.
-- **6 stay in place:** Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield, because their chests carry story events.
+- **Every key item moves.** The Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield chests keep their story events (Nabooru, Sheik, Ruto, Dampe), which run as usual.
+- **Closer to OoTR** (still being tested in play):
+  - 14 freestanding Pieces of Heart, adult Anju's Pocket Egg, Biggoron's sword and the two Deku Theater prizes are moved too;
+  - **Shuffle Dungeon Rewards** (default 'Dungeon Reward Locations', as in OoTR) shuffles the Spiritual Stones and the Medallions among the bosses and Rauru. The Door of Time and the bridge still open when you beat the bosses, as in the remake, and the logic follows that.
 - Bombs and Bombchus cannot be used until you have the Goron's Bracelet (remake behaviour); the logic accounts for it. Seeds generated before the Bomb Bag was freed place items differently.
 - 104 of the 203 chests are mapped to OoTR locations and can hold anything. Another 61 have no OoTR equivalent (most are new in the remake) and take part in the fill with minor items only. The remaining 38 keep their original contents: small keys, the remake-only dream area, and a few event or shop chests.
 - Keys, maps, compasses and NPC items are not randomized. Songs are, among the song locations, with Shuffle Songs.
