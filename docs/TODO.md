@@ -28,13 +28,24 @@ Pending work, most important first within each section.
 
 - **The Gerudo Card scene gave nothing** (NPC gifts batch 3a, test batch 32f–32f4, 2026-11-22). The card was renamed to the Boomerang at `Dm_Gerudo_0025` 120 (`GetInEvent_NotLookatObjectTurnOff`), on the full skip. Freeing the last carpenter the game's way (32f4) ran the rescue's ending: the quest reached `Step02` and the Gerudo stopped attacking. But no card scene showed and no Boomerang came. The grant is reachable from the entry in both versions, and the `SubFlowList` rows are complete. Booting `Dm_Gerudo_0025` directly (32f2) stays black. The user accepted it anyway (2026-11-22). With `shuffle_gerudo_card` on, the card's site holds only minor items, and the logic keeps the vanilla card there. Next: the same test without the full skip, and a check of whether the vanilla card is given on the skip at all (the card does nothing in the remake, so a missing card goes unnoticed).
 
+- **OoTR parity, minor findings left** (final review, 2026-11-22):
+  - with key items Vanilla, the rewards never move but the spoiler and the site say "Dungeon Reward Locations";
+  - `tests/test_gifts.py` reads the full skip's flows by plain path, not `game.flow_path`;
+  - `site/presets.js` does not set Shuffle Dungeon Rewards;
+  - `generate.FLOW_DIR`/`FLOW_EXT` are unused.
+
+  To watch in play:
+  - a stone at an adult boss (if the engine checks the stones themselves, the Door of Time would not open);
+  - the Pocket Egg before meeting adult Anju;
+  - a lower Hookshot or Gauntlet level after the higher one;
+  - the six chests' story events with another item.
 - **Versioned flows** (found 2026-11-22): `EventFlowFileEntry.Product.110` makes the game load `<name>.110.bfevfl.zs` for 13 flows:
   - the five `Dm_Awake_*_Get` and `Dm_InsideJabu_Jabu_0030`;
   - `Dm_DodongoCave_0010`, `Dm_FinalBattle_BossOut`, `Dm_Goron_0040`, `Dm_HrlCastle_0020`, `DreamBossStage`, `MiniGame_HorseRace`, `Npc_Hylia_Dampe_001`.
 
   The flow patches (songs, fairies, gifts, merchants) now go to that copy (`GameData.flow_path`). Before this, Dampe's gift (batch 2) was patched in the plain file the game never loads, so a seed with another item at Dampe kept the Piece of Heart in game.
 
-  Still to do: the cutscene skip (`cutscenes.py`, `full_skip.py`, `skipflow.py`, `movie_skip.py`, `timeline_skip.py`) also edits the plain files, so those 13 scenes are not skipped. The test batch tool (`tools/make_start_batch.py`) does the same, so batch 30c tested Dampe's plain file.
+  The cutscene skip already lists most `.110` copies in `full_skip.json` and `cutscenes.json`. Only Dampe's, `MiniGame_HorseRace` and `DreamBossStage` lack one (final review, 2026-11-22). The test batch tool (`tools/make_start_batch.py`) does the same, so batch 30c tested Dampe's plain file.
 
 ## To build
 
