@@ -12,7 +12,7 @@ With key items set to "Any chest", the pool resembles OoTR's default as closely 
 |---|---|---|
 | E. Fixed chests | The Boomerang, Hookshot, Iron Boots, Hover Boots, Silver Gauntlets and Mirror Shield chests move like any chest. `needs_event_patch` becomes false, and the story event (`GetEventName`) stays: it does not hand over the item (33a, 33b). | always |
 | C. Freestanding Pieces of Heart | Each `Obj_Heart_Piece` actor mapped to an OoTR location becomes a world gift (a wrapper), in both era maps. | always |
-| A. NPCs | Kak Anju as Adult (Pocket Egg), DMT Biggoron (Biggoron Sword), Kak Granny Buy Blue Potion, Deku Theater Skull Mask and Mask of Truth become gift rows. | always |
+| A. NPCs | Kak Anju as Adult (Pocket Egg), DMT Biggoron (Biggoron Sword), Deku Theater Skull Mask and Mask of Truth become gift rows. Granny's Blue Potion stays out: it is a shop that would hand out the placed item at every sale, and OoTR ties it to Shuffle Expensive Merchants. | always |
 | B. Dungeon rewards | `shuffle_dungeon_rewards` (OoTR's name): `'reward'` (default, as OoTR) shuffles the 3 stones and 6 medallions among the 9 reward scenes; `'vanilla'` keeps them. | setting |
 
 ## Decisions (mine, for the user to correct while playing)

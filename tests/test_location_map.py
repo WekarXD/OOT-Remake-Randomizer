@@ -65,7 +65,9 @@ NPC_GIFT_HOMES = {
     'Kak 30 Gold Skulltula Reward', 'Market Bombchu Bowling First Prize',
     'ZD Diving Minigame', 'LH Adult Fishing', 'LLR Talons Chickens',
     # batch 3a (design 2026-11-21-npc-gifts-batch-3a): Shuffle Ocarinas
-    'LW Gift from Saria', 'HF Ocarina of Time Item'}
+    'LW Gift from Saria', 'HF Ocarina of Time Item',
+    # OoTR parity (design 2026-11-22): the adult trade's first item
+    'Kak Anju as Adult'}
 
 
 class LocationMapTest(unittest.TestCase):
@@ -133,8 +135,9 @@ class ItemsTest(unittest.TestCase):
     def test_key_items(self):
         # 15 from chests, the six Great Fairy rewards (design 2026-11-15) and the ten
         # NPC gift items of batch 1 (design 2026-11-20) and the seven of batch 2
-        # (design 2026-11-21), and the two ocarinas of batch 3a.
-        self.assertEqual(len(items.KEY_ITEMS), 40)
+        # (design 2026-11-21), the two ocarinas of batch 3a and the Pocket Egg (OoTR parity).
+        self.assertEqual(len(items.KEY_ITEMS), 41)
+        self.assertEqual(items.KEY_ITEMS['Item_PocketEgg'], 'Pocket Egg')
         self.assertEqual(items.KEY_ITEMS['Item_Ocarina_Fairy'], 'Ocarina')
         self.assertEqual(items.KEY_ITEMS['Item_Ocarina_Time'], 'Ocarina')
         self.assertEqual(items.KEY_ITEMS['Item_Scale_Gold'], 'Progressive Scale')

@@ -47,6 +47,8 @@ def _params(flow: EventFlow) -> list[dict]:
 
 BATCH_3A = ('Kak 100 Gold Skulltula Reward', 'LW Gift from Saria', 'HF Ocarina of Time Item',
             'GC Medigoron', 'Wasteland Bombchu Salesman', 'Hideout Gerudo Membership Card')
+PARITY = ('Kak Anju as Adult', 'DMT Biggoron', 'Deku Theater Skull Mask',
+          'Deku Theater Mask of Truth')
 ALL_ON = Settings('x', shuffle_ocarinas=True, shuffle_gerudo_card=True,
                   shuffle_expensive_merchants=True)
 
@@ -55,10 +57,12 @@ class GiftTableTest(unittest.TestCase):
     def test_table_matches_ootr(self):
         gifts = _gifts()
         locs = ootr_data.load_locations()
-        self.assertEqual(len(gifts.GIFTS), 41)
-        self.assertEqual(len({g.location for g in gifts.GIFTS}), 41)
-        # Batch 3a comes after batch 2, so the earlier site ids (-301..-335) stay.
-        self.assertEqual(tuple(g.location for g in gifts.GIFTS[35:]), BATCH_3A)
+        self.assertEqual(len(gifts.GIFTS), 45)
+        self.assertEqual(len({g.location for g in gifts.GIFTS}), 45)
+        # Batch 3a comes after batch 2, so the earlier site ids (-301..-335) stay; the
+        # OoTR parity rows (design 2026-11-22-ootr-parity) come after batch 3a.
+        self.assertEqual(tuple(g.location for g in gifts.GIFTS[35:41]), BATCH_3A)
+        self.assertEqual(tuple(g.location for g in gifts.GIFTS[41:]), PARITY)
         self.assertEqual(gifts.GIFTS[34].location, 'LLR Talons Chickens')
         for g in gifts.GIFTS:
             with self.subTest(gift=g.location):
@@ -72,14 +76,14 @@ class GiftTableTest(unittest.TestCase):
     def test_active_gifts_by_setting(self):
         gifts = _gifts()
         off = {g.location for g in gifts.active_gifts(Settings('x'))}
-        self.assertEqual(off, {g.location for g in gifts.GIFTS[:35]} | {BATCH_3A[0]})
+        self.assertEqual(off, {g.location for g in gifts.GIFTS[:35]} | {BATCH_3A[0]} | set(PARITY))
         for name, locs in (('shuffle_ocarinas', BATCH_3A[1:3]),
                            ('shuffle_expensive_merchants', BATCH_3A[3:5]),
                            ('shuffle_gerudo_card', BATCH_3A[5:])):
             with self.subTest(setting=name):
                 on = {g.location for g in gifts.active_gifts(Settings('x', **{name: True}))}
                 self.assertEqual(on - off, set(locs))
-        self.assertEqual(len(gifts.active_gifts(ALL_ON)), 41)
+        self.assertEqual(len(gifts.active_gifts(ALL_ON)), 45)
 
     def test_empty_placement_changes_nothing(self):
         self.assertEqual(_gifts().gift_flow_patches(lambda name: b'', {}), {})
@@ -192,7 +196,7 @@ class _Base:
     def test_only_the_grants_change(self):
         # Batch 3a: renaming a gift changes its grants' item and nothing else (the
         # ocarina scenes' screenshot TargetID and the Song of Time stay).
-        for loc in BATCH_3A:
+        for loc in BATCH_3A + PARITY:
             g = _gifts().GIFT_BY_LOCATION[loc]
             with self.subTest(gift=loc):
                 out = _gifts().gift_flow_patches(self.flows.__getitem__, {loc: NEW})

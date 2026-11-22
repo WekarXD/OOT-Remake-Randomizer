@@ -171,6 +171,19 @@ GIFTS: tuple[Gift | WorldGift, ...] = (
     # only takes minor items (`fill.MINOR_ONLY_GIFTS`).
     Gift('Hideout Gerudo Membership Card', 'Item_Token_Gerudo', 'Dm_Gerudo_0025', 'ActorName',
          ('Item_Token_Gerudo',), setting='shuffle_gerudo_card'),
+    # OoTR parity (design 2026-11-22-ootr-parity; batch 33 accepted untested). The adult
+    # trade starts from the Pocket Egg; its other steps stay vanilla (OoTR's default).
+    Gift('Kak Anju as Adult', 'Item_PocketEgg', 'Npc_Hylia_049_Adult', 'ReveiveItem',
+         ('Item_PocketEgg',)),
+    Gift('DMT Biggoron', 'Item_Sword_Biggoron', 'Npc_Goron_Biggoron_Adult', 'ActorName',
+         ('Item_Sword_Biggoron',), ('GetInEventItemSwordBiggoron', GENERIC_NPC)),
+    # The Deku Theater's first prizes (the remake gives a bigger bag than Link's).
+    Gift('Deku Theater Skull Mask', 'Item_StickBag_Medium',
+         'LostWood_ScrubForestStageElder_SkullMaskFirst', 'ActorName',
+         ('Item_StickBag_Medium', 'Item_StickBag_Large')),
+    Gift('Deku Theater Mask of Truth', 'Item_NutBag_Medium',
+         'LostWood_ScrubForestStageElder_TrueMaskFirst', 'ActorName',
+         ('Item_NutBag_Medium', 'Item_NutBag_Large')),
 )
 GIFT_BY_LOCATION: dict[str, Gift | WorldGift] = {g.location: g for g in GIFTS}
 GIFT_ITEMS: frozenset[str] = frozenset(g.content for g in GIFTS if g.content in KEY_ITEMS)

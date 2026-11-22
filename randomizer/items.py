@@ -48,6 +48,8 @@ KEY_ITEMS: dict[str, str] = {
     # separate items in the game (31c), OoTR's progressive Ocarina in the logic.
     'Item_Ocarina_Fairy': 'Ocarina',
     'Item_Ocarina_Time': 'Ocarina',
+    # OoTR parity (design 2026-11-22-ootr-parity): the adult trade's first item.
+    'Item_PocketEgg': 'Pocket Egg',
 }
 
 # The Slingshot and Bow upgrades (NPC gifts batch 2): minor items. In OoTR they are the
@@ -119,6 +121,7 @@ LABELS: dict[str, str] = {
     'Item_Bottle_Milk': 'Bottle with Milk',
     'Item_Ocarina_Fairy': 'Fairy Ocarina',
     'Item_Ocarina_Time': 'Ocarina of Time',
+    'Item_PocketEgg': 'Pocket Egg',
 }
 
 # Remake actor -> vanilla OoTR location where that item is.
@@ -168,6 +171,7 @@ KEY_ITEM_HOME: dict[str, str] = {
     'Item_Bottle_Milk': 'LLR Talons Chickens',
     'Item_Ocarina_Fairy': 'LW Gift from Saria',
     'Item_Ocarina_Time': 'HF Ocarina of Time Item',
+    'Item_PocketEgg': 'Kak Anju as Adult',
 }
 
 # Dungeon items (and minigame keys): always stay vanilla.
@@ -206,6 +210,10 @@ FAMILIES: dict[str, str] = {
     'Shop_BombchuBundle_01': 'Bombchus',
     'Shop_Sword_Giant': 'Giants Knife',
     'Item_Token_Gerudo': 'Gerudo Membership Card',  # no use in the remake
+    # OoTR parity: minor items at the new NPC sites.
+    'Item_Sword_Biggoron': 'Biggoron Sword',
+    'Item_StickBag_Medium': 'Deku Stick Capacity',
+    'Item_NutBag_Medium': 'Deku Nut Capacity',
 }
 
 
