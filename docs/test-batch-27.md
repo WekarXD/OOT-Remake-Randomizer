@@ -146,3 +146,10 @@ Built with the same tool (`33a`..`33n`); Spanish guide `local/test-batch-33.md`.
 - **33i:** the Deku Theater's Skull Mask prize (`LostWood_ScrubForestStageElder_SkullMaskFirst`, the stick bags), with the mask from the start preset.
 - **33j–33m:** adult Anju's Pocket Egg (`Npc_Hylia_049_Adult`, `ReveiveItem`), Biggoron's sword (entry `GetInEventItemSwordBiggoron` → generic), Granny's Blue Potion (`GetInEventInBottle_BlueBottleShop` → generic), the first magic bean (`SimpleShop` `ReveiveItem`).
 - **33n:** 33c without the full skip (Sheik's lesson).
+- **Merged (the user asked to join tests):**
+  - **33gk** = 33k + 33g: Biggoron, then down to the DMT heart;
+  - **33jl** = 33j + 33l: Anju, then Granny;
+  - **33im** = 33m + 33i: the bean seller, then the theater through the river shortcut;
+  - **33n** replaces 33c (the skip's song grant is already proven).
+
+  The batch is ten tests: 33a, 33b, 33n, 33d, 33e, 33f, 33gk, 33h, 33jl, 33im.

@@ -32,7 +32,7 @@ item that shows in the inventory), the way the shuffle would:
 32a-32f: the gate of NPC gifts batch 3a (docs/superpowers/specs/2026-11-21-npc-gifts-batch-3a-design.md):
      the merchants' sold-out patch, their items from elsewhere, Zelda's ocarina scene with no
      ocarina, the Gerudo Card scene.
-Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f4, 33a..33n]
+Usage: python -I tools/make_npc_gift_batch.py <nup> <out_mod_dir> [27a..27f, 27d2..27d4, 28a..28c, 29a..29d, 30a..30e, 31a..31f, 32a..32f4, 33a..33n, 33gk, 33jl, 33im]
 """
 import math
 import os
@@ -525,6 +525,29 @@ VARIANTS: dict[str, Variant] = {
         StartPreset('IceCavern', ICE_POS.name, new_pos=ICE_POS, adult=True,
                     boot_event='Dm_SY_BancChangeArrive_IceCaven_01'),
         drops=((ICE_CAVERN, IRON_CHEST, ITEM),)),
+    # Batch 33, merged (the user asked to join tests): one teleport, several sites nearby.
+    # 33gk: Biggoron (adult, Claim Check), then down to the DMT Piece of Heart.
+    '33gk': Variant(
+        _preset('DeathMountainTrail_Adult', _pos('RandoTest_Biggoron', (25.8, 200.5, -122.5), BIGGORON),
+                items=('Item_ClaimCheck',), adult=True),
+        gifts=(Gift('Npc_Goron_Biggoron_Adult', 'ActorName', ('Item_Sword_Biggoron',)),),
+        entries=(Entry('Npc_Goron_Biggoron_Adult', 'GetInEventItemSwordBiggoron', GENERIC_NPC),),
+        swaps=tuple((b, DMT_HEART, ITEM) for b in DMT)),
+    # 33jl: Kakariko, adult, between Anju and Granny, with a bottle and rupees.
+    '33jl': Variant(
+        _preset('KakarikoVillage_Adult', _pos('RandoTest_AnjuGranny', (-70.6, 99.3, 77.6), ANJU_ADULT),
+                items=('Item_Bottle',), adult=True, rupees=200),
+        gifts=(Gift('Npc_Hylia_049_Adult', 'ReveiveItem', ('Item_PocketEgg',)),
+               Gift('Npc_Hylia_053_Adult', 'ActorName', ('Item_Bottle_BluePotion',))),
+        entries=(Entry('Npc_Hylia_053_Adult', 'GetInEventInBottle_BlueBottleShop', GENERIC_NPC),)),
+    # 33im: Zora's River, child, by the bean seller with rupees and the Skull Mask; then the
+    #       Lost Woods (the river shortcut) and the Deku Theater.
+    '33im': Variant(
+        _preset('ZoraRiver_Child', _pos('RandoTest_Beans', (-53.0, 100.8, -9.2), BEAN_SELLER),
+                items=('Armor_Child_Mask_Skull',), rupees=100),
+        gifts=(Gift('SimpleShop', 'ReveiveItem', ('Item_MagicBean',)),
+               Gift('LostWood_ScrubForestStageElder_SkullMaskFirst', 'ActorName',
+                    ('Item_StickBag_Medium', 'Item_StickBag_Large')))),
     '27e': Variant(
         _preset('KakarikoVillage_Child', _pos('RandoTest_GiftAnju', (-72.1, 99.3, 76.1), ANJU)),
         gifts=(Gift('Minigame_CatchCucco', 'ReveiveItem', ('Item_Bottle',)),)),
