@@ -103,12 +103,14 @@ class SubflowSpec:
 
 @dataclass(frozen=True)
 class SwitchSpec:
-    """A boolean query of an actor already in the flow (its query must be in the actor's
-    list): case 0 is taken when the query holds, case 1 when it does not (as in the game).
-    Both cases start at the end of the flow."""
+    """A query of an actor already in the flow (its query must be in the actor's list),
+    with one case per value in `cases`, all starting at the end of the flow. A boolean
+    query takes case value 0 when it holds and 1 when it does not; a comparison
+    (`EventQueryIsGameDataInt`) gives 0 less, 1 equal, 2 greater (as in the game)."""
     actor: str
     query: str
     params: dict[str, ParamValue] = field(default_factory=dict)
+    cases: tuple[int, ...] = (0, 1)
 
 
 # The parameters every system actor (GameDataActor, ChallengeSystemActor, ...) has
@@ -242,10 +244,11 @@ def append_events(data: bytes, specs: Sequence[Spec]) -> tuple[bytes, list[int]]
             struct.pack_into('<BBHHH', out, slot + 8, bfevfl.ACTION, 0, bfevfl.END, actor, action)
         elif isinstance(spec, SwitchSpec):
             actor, query = indices[j]
-            struct.pack_into('<BBHHH', out, slot + 8, bfevfl.SWITCH, 0, 2, actor, query)
+            struct.pack_into('<BBHHH', out, slot + 8, bfevfl.SWITCH, 0, len(spec.cases),
+                             actor, query)
             _align(out, 8)
             cases = len(out)
-            out += struct.pack('<IHHIHH', 0, bfevfl.END, 0, 1, bfevfl.END, 0)
+            out += b''.join(struct.pack('<IHH', v, bfevfl.END, 0) for v in spec.cases)
             w.pointer(slot + 0x18, cases)
         else:
             struct.pack_into('<BBHHH', out, slot + 8, bfevfl.SUBFLOW, 0, bfevfl.END, 0, 0)

@@ -287,6 +287,19 @@ class AppendEventsTest(unittest.TestCase):
         linked = patch_pointers(out, {new.link_slots[('case', idx[0], 0)]: idx[1]})
         self.assertEqual(EventFlow(linked).events[idx[0]].cases, [idx[1], 0xFFFF])
 
+    def test_append_comparison_switch(self):
+        # EventQueryIsGameDataInt compares: case values 0 (less), 1 (equal), 2 (greater).
+        spec = SwitchSpec('GameDataActor', 'EventQueryIsGameDataInt',
+                          {'GameDataName': 'PlayerStatus.MaxLife', 'Index': -1, 'Value': 16},
+                          cases=(0, 1, 2))
+        out = add_queries(self.data, [(spec.actor, spec.query)])
+        out, idx = append_events(out, [spec])
+        new = _valid(self, out)
+        self.assertEqual(new.events[idx[0]].cases, [0xFFFF] * 3)
+        cases_p = new._u64(new._events_p + 0x30 * idx[0] + 0x18)
+        self.assertEqual([struct.unpack_from('<I', out, cases_p + 8 * k)[0] for k in range(3)],
+                         [0, 1, 2])
+
     def test_set_entry_subflows_unknown_entry_raises(self):
         with self.assertRaises(BfevflError):
             set_entry_subflows(self.data, 'Nope', [])

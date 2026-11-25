@@ -186,21 +186,58 @@
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-bridge" aria-label="About Rainbow Bridge Requirement">ⓘ</button>
           </div>
           <select id="bridge">
-            <option value="vanilla">Vanilla</option>
+            <option value="open">Always Open</option>
+            <option value="vanilla">Vanilla Requirements</option>
+            <option value="stones">Spiritual Stones</option>
             <option value="medallions" selected>Medallions</option>
+            <option value="dungeons">Dungeon Rewards</option>
+            <option value="tokens">Gold Skulltula Tokens</option>
+            <option value="hearts">Hearts</option>
+            <option value="random">Random</option>
           </select>
           <div class="tip-text" id="tip-bridge">
             <p>What makes the rainbow bridge to Ganon's Castle appear.</p>
-            <p>'Vanilla': as in the remake, after Zelda gives you the Light Arrows (Shadow and Spirit Temples beaten).</p>
-            <p>'Medallions': as soon as you own the number of medallions chosen below, wherever they came from.</p>
+            <p>'Always Open': it is there from the start.</p>
+            <p>'Vanilla Requirements': as in the remake, after Zelda gives you the Light Arrows (Shadow and Spirit Temples beaten).</p>
+            <p>'Spiritual Stones', 'Medallions', 'Dungeon Rewards': as soon as you own the number chosen below, wherever they came from.</p>
+            <p>'Gold Skulltula Tokens', 'Hearts': the number chosen below; the bridge is there the next time you enter its area.</p>
+            <p>'Random': any of them but Gold Skulltula Tokens, with a random number. The spoiler log says which.</p>
           </div>
         </div>
-        <div class="field" id="bridge-medallions-field">
+        <div class="field bridge-count" id="bridge_stones_field" data-bridge="stones" hidden>
+          <div class="field-head">
+            <label for="bridge_stones">Spiritual Stones Required for Bridge:</label>
+            <output class="range-value" id="bridge_stones_value" for="bridge_stones">3</output>
+          </div>
+          <input type="range" id="bridge_stones" min="0" max="3" step="1" value="3">
+        </div>
+        <div class="field bridge-count" id="bridge_medallions_field" data-bridge="medallions">
           <div class="field-head">
             <label for="bridge_medallions">Medallions Required for Bridge:</label>
             <output class="range-value" id="bridge_medallions_value" for="bridge_medallions">6</output>
           </div>
           <input type="range" id="bridge_medallions" min="0" max="6" step="1" value="6">
+        </div>
+        <div class="field bridge-count" id="bridge_rewards_field" data-bridge="dungeons" hidden>
+          <div class="field-head">
+            <label for="bridge_rewards">Dungeon Rewards Required for Bridge:</label>
+            <output class="range-value" id="bridge_rewards_value" for="bridge_rewards">9</output>
+          </div>
+          <input type="range" id="bridge_rewards" min="0" max="9" step="1" value="9">
+        </div>
+        <div class="field bridge-count" id="bridge_tokens_field" data-bridge="tokens" hidden>
+          <div class="field-head">
+            <label for="bridge_tokens">Skulltulas Required for Bridge:</label>
+            <output class="range-value" id="bridge_tokens_value" for="bridge_tokens">100</output>
+          </div>
+          <input type="range" id="bridge_tokens" min="0" max="100" step="1" value="100">
+        </div>
+        <div class="field bridge-count" id="bridge_hearts_field" data-bridge="hearts" hidden>
+          <div class="field-head">
+            <label for="bridge_hearts">Hearts Required for Bridge:</label>
+            <output class="range-value" id="bridge_hearts_value" for="bridge_hearts">20</output>
+          </div>
+          <input type="range" id="bridge_hearts" min="4" max="20" step="1" value="20">
         </div>
 
         <div class="field">

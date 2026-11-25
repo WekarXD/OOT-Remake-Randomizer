@@ -1,6 +1,6 @@
 """Spoiler log: JSON and text."""
 from . import RANDO_VERSION
-from .fill import BATCH_3A_SWITCHES, TOKEN, filler_sites
+from .fill import BATCH_3A_SWITCHES, BRIDGE_COUNTS, TOKEN, bridge_requirement, filler_sites
 from .ganon import active_trials
 from .items import DUNGEON_ITEM_PREFIXES, FAMILIES, KEY_ITEMS, LABELS
 from .songs import SONG_BY_ACTOR
@@ -23,6 +23,11 @@ SWITCH_LABELS = {'shuffle_ocarinas': 'Shuffle Ocarinas',
                  'shuffle_expensive_merchants': 'Shuffle Expensive Merchants'}
 TOKENSANITY_LABELS = {'off': 'Off', 'dungeons': 'Dungeons Only',
                       'overworld': 'Overworld Only', 'all': 'All Tokens'}
+# OoTR's Rainbow Bridge Requirement names.
+BRIDGE_LABELS = {'open': 'Always Open', 'vanilla': 'Vanilla Requirements',
+                 'stones': 'Spiritual Stones', 'medallions': 'Medallions',
+                 'dungeons': 'Dungeon Rewards', 'tokens': 'Gold Skulltula Tokens',
+                 'hearts': 'Hearts', 'random': 'Random'}
 SHUFFLE_SONGS_LABELS = {'off': 'Off', 'song_locations': 'Song Locations', 'anywhere': 'Anywhere',
                         'dungeon_rewards': 'Dungeon Rewards'}
 
@@ -122,8 +127,11 @@ def build(settings, placement, chests, loc_map, game_version,
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
     result['settings']['shuffle_dungeon_rewards'] = settings.shuffle_dungeon_rewards
     result['settings']['bridge'] = settings.bridge
-    if settings.bridge == 'medallions':
-        result['settings']['bridge_medallions'] = settings.bridge_medallions
+    if settings.bridge in BRIDGE_COUNTS:
+        name = BRIDGE_COUNTS[settings.bridge][0]
+        result['settings'][name] = getattr(settings, name)
+    mode, count = bridge_requirement(settings)
+    result['bridge'] = {'mode': mode, 'count': count}
     result['settings']['trials'] = 'random' if settings.trials_random else settings.trials
     result['ganon_trials'] = list(active_trials(settings))
     for name in BATCH_3A_SWITCHES:  # NPC gifts batch 3a: only when on
@@ -163,6 +171,17 @@ def _skulltula_rows(placement, skulltulas, gs_map) -> list[dict]:
     return rows
 
 
+def _bridge_text(d: dict) -> str:
+    """'Medallions (6)'; 'random' shows what the seed drew: 'Random (Hearts (9))'."""
+    chosen = d.get('bridge') or {'mode': d['settings']['bridge'], 'count': 0}
+    text = BRIDGE_LABELS.get(chosen['mode'], chosen['mode'])
+    if chosen['mode'] in BRIDGE_COUNTS:
+        text += f" ({chosen['count']})"
+    if d['settings']['bridge'] == 'random':
+        text = f'Random ({text})'
+    return text
+
+
 def to_text(d: dict) -> str:
     s = d['settings']
     excl = ', '.join(_label(i) for i in s['excluded_items']) or 'none'
@@ -182,9 +201,7 @@ def to_text(d: dict) -> str:
                      + {'reward': 'Dungeon Reward Locations', 'vanilla': 'Vanilla'}.get(
                          s['shuffle_dungeon_rewards'], s['shuffle_dungeon_rewards']))
     if 'bridge' in s:
-        bridge = ('Vanilla' if s['bridge'] == 'vanilla'
-                  else f'Medallions ({s.get("bridge_medallions")})')
-        lines.append(f'  Rainbow Bridge Requirement: {bridge}')
+        lines.append(f'  Rainbow Bridge Requirement: {_bridge_text(d)}')
     if 'trials' in s:
         trials = 'Random' if s['trials'] == 'random' else s['trials']
         lines.append(f"  Ganon's Trials Count: {trials}")

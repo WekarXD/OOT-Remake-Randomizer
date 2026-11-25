@@ -1,12 +1,16 @@
-"""Rainbow Bridge medallions and Ganon's Trials (OoTR's `bridge`, `bridge_medallions`,
+"""Rainbow Bridge Requirement and Ganon's Trials (OoTR's `bridge` with its counts,
 `trials`, `trials_random`). See docs/superpowers/specs/2026-11-22-bridge-and-trials-design.md.
 
 - Bridge: the bridge scene's AINB creates its trigger once `Defeat_Ganon` is past `Ready`
   and `Step01` (Zelda's Light Arrows scene sets `Step01` in the vanilla game). Rewriting
   those BoolExps in GameDataList does nothing in game (test batch 34c); moving the quest
-  does (34f). So, with `bridge == 'medallions'`, every dungeon-reward scene checks the
-  pouch for the medallions right after its grant and moves the quest when there are
-  enough; with 0 medallions the first scene after leaving home moves it.
+  does (34f). So the randomizer moves the quest when the requirement is met:
+  - stones, medallions, dungeons: every dungeon-reward scene checks the pouch right after
+    its grant (34a, 34b);
+  - tokens, hearts: every map change checks the count first (`MAP_CHANGE_ENTRY`, the
+    common start of `Dm_SY_BancChangeGo`, which the entrances fire);
+  - open, or a count already met at the start: on leaving home (34c);
+  - random: `fill.bridge_requirement` draws a mode and a count from the seed.
 - Trials: the skipped trials' flags are set at the start of the bridge scene, which plays
   once before Link can enter the castle.
 """
@@ -14,7 +18,8 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 
-from randomizer.fill import MAX_TRIALS, Settings, _rng
+from randomizer.fill import (BRIDGE_COUNTS, MAX_TRIALS, RANDOM_BRIDGES, Settings, _rng,
+                             bridge_requirement)
 from randomizer.formats.bfevfl import SUBFLOW, EventFlow, patch_pointers, set_string_param
 from randomizer.formats.evfl_append import (ActionSpec, SwitchSpec, add_actions, add_queries,
                                             append_events)
@@ -22,6 +27,18 @@ from randomizer.gifts import GIFTS
 
 TRIALS = ('Forest', 'Fire', 'Water', 'Shadow', 'Spirit', 'Light')  # OoTR's order
 MEDALLION_ACTORS = tuple(f'Item_Medal_{t}' for t in TRIALS)
+STONE_ACTORS = ('Item_Stone_Forest', 'Item_Stone_Fire', 'Item_Stone_Water')
+# The reward items each mode counts in the pouch.
+BRIDGE_ITEMS = {'stones': STONE_ACTORS, 'medallions': MEDALLION_ACTORS,
+                'dungeons': STONE_ACTORS + MEDALLION_ACTORS}
+# Counted modes: (lowest, highest) count, as OoTR's.
+BRIDGE_RANGES = {mode: (low, high) for mode, (_, low, high) in BRIDGE_COUNTS.items()}
+# Counters read before each map change, and the value per unit.
+TOKEN_COUNT = 'PouchData.Item_Token_Gold.StockNum'
+MAX_LIFE = 'PlayerStatus.MaxLife'  # quarter hearts: 12 at the start
+QUARTERS_PER_HEART, START_HEARTS = 4, 3
+MAP_CHANGE_FLOW, MAP_CHANGE_ENTRY = 'Dm_SY_BancChangeGo', 'BancChangeGo_Common'
+_INT_QUERY = ('GameDataActor', 'EventQueryIsGameDataInt')
 
 # The quest steps the bridge's AINB waits for.
 BRIDGE_STEPS = (('Defeat_Ganon', 'Ready'), ('Defeat_Ganon', 'Step01'))
@@ -43,7 +60,7 @@ ALL_CLEAR = 'InsideGanonCastle_IsAllBarrierClear'
 BARRIER_MOVIE = 'HavePlayedEvent.Dm_InsideGanonCastle_0090'
 LACS_FLOW = 'AllSage'
 
-# The trials' RNG stream (fill attempts use 0.., the reward shuffle -1).
+# The trials' RNG stream (fill attempts use 0.., the reward shuffle -1, the bridge -3).
 _TRIALS_STREAM = -2
 
 
@@ -61,9 +78,12 @@ def active_trials(settings: Settings) -> tuple[str, ...]:
 def world_settings(settings: Settings) -> dict:
     """The OoTR World settings these options set."""
     active = active_trials(settings)
-    return {'bridge': settings.bridge, 'bridge_medallions': settings.bridge_medallions,
-            'trials': len(active),
-            'skipped_trials': {t: t not in active for t in TRIALS}}
+    mode, count = bridge_requirement(settings)
+    out = {'bridge': mode, 'trials': len(active),
+           'skipped_trials': {t: t not in active for t in TRIALS}}
+    if mode in BRIDGE_COUNTS:
+        out[BRIDGE_COUNTS[mode][0]] = count
+    return out
 
 
 def _set_bool(name: str) -> ActionSpec:
@@ -120,14 +140,15 @@ def reward_grants(flow: EventFlow) -> list[int]:
             and flow.action_params(e.index).get('ActorName') in REWARD_ACTORS]
 
 
-def with_bridge_check(data: bytes, after: int, n: int) -> bytes:
-    """The flow with, right after event `after`, a check of the pouch for `n` of the six
-    medallions that moves `Defeat_Ganon` to `BRIDGE_STEPS`, then the original next event.
-    The check is a decision diagram: node (i, k) asks for medallion i while k are still
-    needed among medallions i..5."""
-    total = len(MEDALLION_ACTORS)
+def with_bridge_check(data: bytes, after: int, n: int,
+                      actors: Sequence[str] = MEDALLION_ACTORS) -> bytes:
+    """The flow with, right after event `after`, a check of the pouch for `n` of `actors`
+    that moves `Defeat_Ganon` to `BRIDGE_STEPS`, then the original next event. The check
+    is a decision diagram: node (i, k) asks for item i while k are still needed among
+    items i.."""
+    total = len(actors)
     if not 0 <= n <= total:
-        raise ValueError(f'cannot require {n} of {total} medallions')
+        raise ValueError(f'cannot require {n} of {total} items')
     nodes: list[tuple[int, int]] = []
     todo = [(0, n)]
     while todo:
@@ -136,7 +157,7 @@ def with_bridge_check(data: bytes, after: int, n: int) -> bytes:
             continue
         nodes.append((i, k))
         todo += [(i + 1, k - 1), (i + 1, k)]
-    specs = [SwitchSpec(*_POUCH_QUERY, {'Actor': MEDALLION_ACTORS[i], 'Num': 1})
+    specs = [SwitchSpec(*_POUCH_QUERY, {'Actor': actors[i], 'Num': 1})
              for i, _ in nodes] + _step_specs()
     cont = EventFlow(data).events[after].next
     out = add_queries(add_actions(data, [_STEP_ACTION]), [_POUCH_QUERY])
@@ -169,23 +190,58 @@ def with_start_steps(data: bytes) -> bytes:
     return patch_pointers(out, links)
 
 
+def with_count_check(data: bytes, name: str, value: int) -> bytes:
+    """`MAP_CHANGE_FLOW` whose `MAP_CHANGE_ENTRY` first moves `Defeat_Ganon` to
+    `BRIDGE_STEPS` when the int `name` is at least `value` (the comparison's cases:
+    0 less, 1 equal, 2 greater)."""
+    start = EventFlow(data).entry_points[MAP_CHANGE_ENTRY]
+    out = add_queries(add_actions(data, [_STEP_ACTION]), [_INT_QUERY])
+    check = SwitchSpec(*_INT_QUERY, {'GameDataName': name, 'Index': -1, 'Value': value},
+                       cases=(0, 1, 2))
+    out, idx = append_events(out, [check] + _step_specs())
+    flow = EventFlow(out)
+    sw, chain = idx[0], idx[1:]
+    links = {flow.link_slots[('entry', MAP_CHANGE_ENTRY)]: sw,
+             flow.link_slots[('case', sw, 0)]: start,
+             flow.link_slots[('case', sw, 1)]: chain[0],
+             flow.link_slots[('case', sw, 2)]: chain[0],
+             flow.link_slots[('next', chain[-1])]: start}
+    links.update((flow.link_slots[('next', a)], b) for a, b in zip(chain, chain[1:]))
+    return patch_pointers(out, links)
+
+
+def _met_at_start(mode: str, count: int) -> bool:
+    if mode == 'open':
+        return True
+    if mode == 'hearts':
+        return count <= START_HEARTS
+    return mode in BRIDGE_RANGES and count == 0
+
+
 def flow_patches(read: Callable[[str], bytes], settings: Settings) -> dict[str, bytes]:
     """{flow: bytes} for `generate._with_flow_patches`."""
     out: dict[str, bytes] = {}
     active = active_trials(settings)
     if active != TRIALS:
         out[TRIALS_FLOW] = rainbow_patch(read(TRIALS_FLOW), active)
-    if settings.bridge != 'medallions':
+    mode, count = bridge_requirement(settings)
+    if mode == 'vanilla':
         return out
     out[LACS_FLOW] = lacs_patch(read(LACS_FLOW))
-    for name in REWARD_FLOWS:
-        data = read(name)
-        grants = reward_grants(EventFlow(data))
-        if not grants:
-            raise ValueError(f'{name} has no reward grant')
-        for g in grants:  # the indices stay: new events are appended
-            data = with_bridge_check(data, g, settings.bridge_medallions)
-        out[name] = data
-    if settings.bridge_medallions == 0:
+    if _met_at_start(mode, count):
         out[START_FLOW] = with_start_steps(read(START_FLOW))
+    elif mode in BRIDGE_ITEMS:
+        for name in REWARD_FLOWS:
+            data = read(name)
+            grants = reward_grants(EventFlow(data))
+            if not grants:
+                raise ValueError(f'{name} has no reward grant')
+            for g in grants:  # the indices stay: new events are appended
+                data = with_bridge_check(data, g, count, BRIDGE_ITEMS[mode])
+            out[name] = data
+    elif mode == 'tokens':
+        out[MAP_CHANGE_FLOW] = with_count_check(read(MAP_CHANGE_FLOW), TOKEN_COUNT, count)
+    elif mode == 'hearts':
+        out[MAP_CHANGE_FLOW] = with_count_check(read(MAP_CHANGE_FLOW), MAX_LIFE,
+                                                count * QUARTERS_PER_HEART)
     return out

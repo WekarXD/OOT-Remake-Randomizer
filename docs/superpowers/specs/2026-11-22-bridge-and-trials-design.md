@@ -53,6 +53,37 @@ The actions are built with `evfl_append`. They set game data only, so no subflow
 
 **Site.** A "Rainbow Bridge Requirement" select (Vanilla / Medallions), a 0–6 medallions slider, a "Random Number of Ganon's Trials" switch, and a 0–6 trials slider.
 
+## Every OoTR bridge mode (2026-11-25)
+
+The user asked for the other Rainbow Bridge Requirement values. `bridge` takes OoTR's eight values: `open`, `vanilla`, `stones`, `medallions`, `dungeons`, `tokens`, `hearts`, `random`. Each counted mode has its own setting, with OoTR's range: `bridge_stones` 0–3, `bridge_medallions` 0–6, `bridge_rewards` 0–9, `bridge_tokens` 0–100, `bridge_hearts` 4–20. The RNG key keeps only the chosen mode's count, so `medallions` seeds keep their key. Each mode moves the quest as follows:
+
+| Mode | How the quest moves |
+| --- | --- |
+| `stones`, `medallions`, `dungeons` | The pouch check after each reward grant, with that mode's items |
+| `tokens`, `hearts` | Before every map change. `Dm_SY_BancChangeGo:BancChangeGo_Common` is the common start of the 99 entrances' event and of the preset's teleport. It compares `PouchData.Item_Token_Gold.StockNum`, or `PlayerStatus.MaxLife` (quarter hearts, 12 at the start), with `EventQueryIsGameDataInt`, whose cases are 0 less, 1 equal, 2 greater. On equal or greater it moves the quest |
+| `open`, or a count met at the start | On leaving home. For hearts, a count met at the start means 3 or fewer |
+| `random` | `fill.bridge_requirement` draws a mode among open, vanilla, stones, medallions, dungeons and hearts (OoTR leaves the tokens out), and a count from 1 (4 for hearts) to the maximum, on RNG stream -3 |
+
+**Hearts.** The fill places the minor items with no logic, so a heart in a filler chest would be invisible to it. With a hearts bridge, the Pieces of Heart and Heart Containers move like key items (OoTR does the same), and `_fixed` shows them to the logic.
+
+`evfl_append.SwitchSpec` takes any list of case values.
+
+**Test batch 36** (`tools/make_bridge_batch.py`):
+
+| Variant | Requirement | Start state | Expected |
+| --- | --- | --- | --- |
+| 36a | 10 tokens | 10 tokens | Bridge |
+| 36b | 10 tokens | 9 tokens | No bridge |
+| 36c | 5 hearts | Max life 20 quarters | Bridge |
+| 36d | 2 stones | 2 stones given | Bridge |
+
+**Batch 36 result (2026-11-25):**
+
+- 36a opened the bridge and 36b did not, so the map-change comparison works. Writing the token counter by hand gave no tokens in the inventory.
+- In 36c the hand-written max life did not stick: no bridge and no hearts.
+- 36d (stones) opened the bridge.
+- 36e and 36f give the real items through the preset (3 `Obj_Token_Gold`; 2 `Obj_Heart_Container`). Both show in the inventory and both open the bridge. So the counters follow real pickups by the time of the next map change.
+
 ## Result (2026-11-25)
 
 Attempt 2 passes in game: 34a (bridge with 3 of 3), 34b (no bridge with 2 of 3), 34c (bridge with 0; no central barrier with 0 trials) and 34d (only the Forest trial left). In the batch, the preset's gifts stand in for a reward scene; the check after a real reward grant is the same chain.

@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 
 from . import locations
-from .fill import (BATCH_3A_SWITCHES, BRIDGES, MAX_MEDALLIONS, MAX_TRIALS, MODES,
+from .fill import (BATCH_3A_SWITCHES, BRIDGE_COUNTS, BRIDGES, MAX_TRIALS, MODES,
                    SHUFFLE_DUNGEON_REWARDS, TOKENSANITY, Settings)
 from .songs import SHUFFLE_SONGS
 from .generate import GenerationError, generate
@@ -89,8 +89,8 @@ def parse_settings(options: dict) -> Settings:
     bridge = options.get('bridge', 'vanilla')
     if not isinstance(bridge, str) or bridge not in BRIDGES:
         raise ValueError('Invalid Rainbow Bridge Requirement.')
-    medallions = _count(options, 'bridge_medallions', MAX_MEDALLIONS,
-                        'Medallions Required for Bridge')
+    counts = {name: _count(options, name, high, name, low)
+              for name, low, high in BRIDGE_COUNTS.values()}
     trials = _count(options, 'trials', MAX_TRIALS, "Ganon's Trials Count")
     bad = [x for x in excluded if x in NON_EXCLUDABLE]
     if bad:
@@ -102,17 +102,16 @@ def parse_settings(options: dict) -> Settings:
     return Settings(seed=seed.strip(), key_items_mode=mode, excluded_items=effective,
                     spoiler=flags['spoiler'], skip_cutscenes=flags['skip_cutscenes'],
                     tokensanity=tokensanity, shuffle_songs=shuffle_songs,
-                    shuffle_dungeon_rewards=rewards, bridge=bridge,
-                    bridge_medallions=medallions, trials=trials,
+                    shuffle_dungeon_rewards=rewards, bridge=bridge, **counts, trials=trials,
                     trials_random=flags['trials_random'],
                     **{name: flags[name] for name in BATCH_3A_SWITCHES})
 
 
-def _count(options: dict, key: str, top: int, label: str) -> int:
-    """`options[key]` (default `top`) as an int from 0 to `top`; ValueError otherwise."""
+def _count(options: dict, key: str, top: int, label: str, low: int = 0) -> int:
+    """`options[key]` (default `top`) as an int from `low` to `top`; ValueError otherwise."""
     value = options.get(key, top)
-    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= top:
-        raise ValueError(f'{label} must be a whole number from 0 to {top}.')
+    if isinstance(value, bool) or not isinstance(value, int) or not low <= value <= top:
+        raise ValueError(f'{label} must be a whole number from {low} to {top}.')
     return value
 
 

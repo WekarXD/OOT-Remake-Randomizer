@@ -74,8 +74,22 @@ NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
 SHUFFLE_DUNGEON_REWARDS = ('vanilla', 'reward')
 BATCH_3A_SWITCHES = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
 # OoTR's Rainbow Bridge Requirement values the remake has (design 2026-11-22-bridge-and-trials).
-BRIDGES = ('vanilla', 'medallions')
+BRIDGES = ('open', 'vanilla', 'stones', 'medallions', 'dungeons', 'tokens', 'hearts', 'random')
 MAX_MEDALLIONS = 6
+# Each counted mode: (its Settings field, OoTR's lowest and highest value).
+BRIDGE_COUNTS: dict[str, tuple[str, int, int]] = {
+    'stones': ('bridge_stones', 0, 3),
+    'medallions': ('bridge_medallions', 0, MAX_MEDALLIONS),
+    'dungeons': ('bridge_rewards', 0, 9),
+    'tokens': ('bridge_tokens', 0, 100),
+    'hearts': ('bridge_hearts', 4, 20),
+}
+# 'random' picks one of these (OoTR: any requirement but Gold Skulltula Tokens).
+RANDOM_BRIDGES = ('open', 'vanilla', 'stones', 'medallions', 'dungeons', 'hearts')
+_BRIDGE_STREAM = -3  # RNG stream of 'random' (fill attempts 0.., rewards -1, trials -2)
+# Heart items -> their OoTR names: the logic sees them, and a hearts bridge places them
+# with the key items (as OoTR does).
+HEART_ACTORS = {'Obj_Heart_Piece': 'Piece of Heart', HEART_GYAML: 'Heart Container'}
 MAX_TRIALS = 6
 
 
@@ -95,7 +109,11 @@ class Settings:
     shuffle_dungeon_rewards: str = 'reward'  # see SHUFFLE_DUNGEON_REWARDS (OoTR's default)
     # Rainbow Bridge and Ganon's Trials (OoTR's names); the defaults are the remake's own.
     bridge: str = 'vanilla'  # see BRIDGES
-    bridge_medallions: int = MAX_MEDALLIONS  # used with bridge == 'medallions'
+    bridge_stones: int = 3  # the count each mode uses (BRIDGE_COUNTS)
+    bridge_medallions: int = MAX_MEDALLIONS
+    bridge_rewards: int = 9
+    bridge_tokens: int = 100
+    bridge_hearts: int = 20
     trials: int = MAX_TRIALS  # ignored with trials_random
     trials_random: bool = False
 
@@ -161,7 +179,11 @@ def _settings_key(settings: Settings) -> str:
     if settings.shuffle_dungeon_rewards == 'reward':
         del data['shuffle_dungeon_rewards']  # the default
     if settings.bridge == 'vanilla':
-        del data['bridge'], data['bridge_medallions']  # the default; the count does nothing
+        del data['bridge']  # the default
+    chosen = BRIDGE_COUNTS.get(settings.bridge, ('',))[0]
+    for field_name, _, _ in BRIDGE_COUNTS.values():
+        if field_name != chosen:
+            del data[field_name]  # only the chosen mode's count matters
     if settings.trials_random:
         del data['trials']  # drawn from the seed
     else:
@@ -259,12 +281,32 @@ def _fixed(world_base: dict[str, str], site_loc: dict[int, str],
             fixed[site_loc[h]] = SONG_BY_ACTOR[drop].song
         elif drop == TOKEN:
             fixed[site_loc[h]] = OOTR_TOKEN
+        elif drop in HEART_ACTORS:  # only a hearts bridge counts them
+            fixed[site_loc[h]] = HEART_ACTORS[drop]
     return fixed
 
 
 def _logic_name(item: str) -> str:
-    """How the logic names a moving item: songs by their OoTR name."""
-    return SONG_BY_ACTOR[item].song if item in SONG_BY_ACTOR else item
+    """How the logic names a moving item: songs and hearts by their OoTR name."""
+    if item in SONG_BY_ACTOR:
+        return SONG_BY_ACTOR[item].song
+    return HEART_ACTORS.get(item, item)
+
+
+def bridge_requirement(settings: Settings) -> tuple[str, int]:
+    """(mode, count) the Rainbow Bridge asks for; 'random' is resolved from the seed. The
+    count is 0 for 'open' and 'vanilla'."""
+    mode = settings.bridge
+    if mode == 'random':
+        rng = _rng(settings, _BRIDGE_STREAM)
+        mode = rng.choice(RANDOM_BRIDGES)
+        if mode not in BRIDGE_COUNTS:
+            return mode, 0
+        _, low, high = BRIDGE_COUNTS[mode]
+        return mode, rng.randint(max(low, 1), high)
+    if mode not in BRIDGE_COUNTS:
+        return mode, 0
+    return mode, getattr(settings, BRIDGE_COUNTS[mode][0])
 
 
 # Shuffle Songs: Anywhere: the song scenes join the fill as sites with these ids.
@@ -463,8 +505,9 @@ def _check_settings(settings: Settings) -> None:
                         f'{settings.shuffle_dungeon_rewards!r}')
     if settings.bridge not in BRIDGES:
         raise FillError(f'Unknown Rainbow Bridge Requirement: {settings.bridge!r}')
-    if not _is_count(settings.bridge_medallions, MAX_MEDALLIONS):
-        raise FillError('Medallions Required for Bridge must be 0 to 6.')
+    for field_name, low, high in BRIDGE_COUNTS.values():
+        if not _is_count(getattr(settings, field_name), high, low):
+            raise FillError(f'{field_name} must be {low} to {high}.')
     if not _is_count(settings.trials, MAX_TRIALS):
         raise FillError("Ganon's Trials Count must be 0 to 6.")
     if not isinstance(settings.trials_random, bool):
@@ -476,8 +519,8 @@ def _check_settings(settings: Settings) -> None:
                         'for the game to be beatable.')
 
 
-def _is_count(value, top: int) -> bool:
-    return isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= top
+def _is_count(value, top: int, low: int = 0) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and low <= value <= top
 
 
 def linked_exclusions(excluded: frozenset[str]) -> frozenset[str]:
@@ -556,7 +599,9 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
             label = ', '.join(LABELS.get(a, a) for a in kept)
             raise FillError(f'Dungeon Rewards puts a song in the chest of {label}: '
                             'that item cannot be excluded with it.')
-    moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR)
+    hearts_bridge = bridge_requirement(settings)[0] == 'hearts'
+    moving = [h for h in eligible if (original[h] in KEY_ITEMS or original[h] in SONG_BY_ACTOR
+                                      or (hearts_bridge and original[h] in HEART_ACTORS))
               and original[h] not in excluded]
     bancs = [(c.hash, c.banc) for c in chests] + [(s.hash, s.banc) for s in skulltulas]
     no_key = frozenset(h for h, banc in bancs
@@ -570,7 +615,8 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
         if h in site_loc:
             base[site_loc[h]] = FILLER
     # The rewards' shuffle depends on the settings alone, so the fill sees where they
-    # really are: a medallion bridge counts the medallion items (bridge-and-trials design).
+    # really are: a stones, medallions or dungeons bridge counts the reward items
+    # (bridge-and-trials design).
     reward_contents = _shuffle_rewards(settings, rewards)
     base.update((loc, FAMILIES[actor]) for loc, actor in reward_contents.items())
     placed = _run(settings, world, original, eligible, moving, site_loc, base, no_key,
@@ -588,7 +634,7 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
 
 def _shuffle_rewards(settings: Settings, locations: list[str]) -> dict[str, str]:
     """The dungeon rewards (OoTR's 'reward'): a shuffle among their own scenes. The logic
-    reads each reward as its boss's defeat; only a medallion bridge counts the items, so
+    reads each reward as its boss's defeat; only a bridge by rewards counts the items, so
     `place_all` puts this shuffle in the fill's base."""
     contents = [GIFT_BY_LOCATION[loc].content for loc in locations]
     _rng(settings, -1).shuffle(contents)

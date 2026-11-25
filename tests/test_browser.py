@@ -66,8 +66,14 @@ class SettingsTest(unittest.TestCase):
                                     'trials': 0, 'trials_random': True})
         self.assertEqual((s.bridge, s.bridge_medallions, s.trials, s.trials_random),
                          ('medallions', 3, 0, True))
-        for bad in ({'bridge': 'stones'}, {'bridge': 1}, {'bridge_medallions': 7},
+        s = browser.parse_settings({'bridge': 'hearts', 'bridge_stones': 1, 'bridge_rewards': 4,
+                                    'bridge_tokens': 50, 'bridge_hearts': 7})
+        self.assertEqual((s.bridge, s.bridge_stones, s.bridge_rewards, s.bridge_tokens,
+                          s.bridge_hearts), ('hearts', 1, 4, 50, 7))
+        for bad in ({'bridge': 'rings'}, {'bridge': 1}, {'bridge_medallions': 7},
                     {'bridge_medallions': '3'}, {'bridge_medallions': True},
+                    {'bridge_stones': 4}, {'bridge_rewards': 10}, {'bridge_tokens': 101},
+                    {'bridge_hearts': 3}, {'bridge_hearts': 21},
                     {'trials': -1}, {'trials': 2.0}, {'trials_random': 'yes'}):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 browser.parse_settings(bad)

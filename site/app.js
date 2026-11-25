@@ -5,6 +5,10 @@
   const STORE = 'oot-remake-rando-settings';
   const TOKENSANITY = ['off', 'dungeons', 'overworld', 'all'];
   const SHUFFLE_SONGS = ['off', 'song_locations', 'anywhere', 'dungeon_rewards'];
+  const BRIDGES = ['open', 'vanilla', 'stones', 'medallions', 'dungeons', 'tokens', 'hearts', 'random'];
+  // Each count slider's id is the setting's name (fill.BRIDGE_COUNTS).
+  const BRIDGE_COUNTS = ['bridge_stones', 'bridge_medallions', 'bridge_rewards', 'bridge_tokens',
+    'bridge_hearts'];
 
   function selectTab(tab, focus) {
     tabs.forEach((t) => {
@@ -143,7 +147,7 @@
       shuffle_songs: $('shuffle_songs').value,
       shuffle_dungeon_rewards: $('shuffle_dungeon_rewards').value,
       bridge: $('bridge').value,
-      bridge_medallions: Number($('bridge_medallions').value),
+      ...Object.fromEntries(BRIDGE_COUNTS.map((id) => [id, Number($(id).value)])),
       trials: Number($('trials').value),
       trials_random: $('trials_random').checked,
       ...Object.fromEntries(Presets.SWITCHES.map((id) => [id, $(id).checked])),
@@ -168,22 +172,29 @@
     });
   }
 
-  // Rainbow Bridge and Ganon's Trials: the count fields show only when they apply.
-  const isCount = (v) => Number.isInteger(v) && v >= 0 && v <= 6;
+  // Rainbow Bridge and Ganon's Trials: each count field shows only when it applies.
+  // A value is restored only when it is a whole number within its slider's range.
+  function inRange(id, v) {
+    return Number.isInteger(v) && v >= Number($(id).min) && v <= Number($(id).max);
+  }
   function writeBridgeTrials(o) {
-    if (o.bridge === 'vanilla' || o.bridge === 'medallions') $('bridge').value = o.bridge;
-    if (isCount(o.bridge_medallions)) $('bridge_medallions').value = String(o.bridge_medallions);
-    if (isCount(o.trials)) $('trials').value = String(o.trials);
+    if (BRIDGES.includes(o.bridge)) $('bridge').value = o.bridge;
+    [...BRIDGE_COUNTS, 'trials'].forEach((id) => {
+      if (inRange(id, o[id])) $(id).value = String(o[id]);
+    });
     if (typeof o.trials_random === 'boolean') $('trials_random').checked = o.trials_random;
     syncBridgeTrials();
   }
   function syncBridgeTrials() {
-    $('bridge-medallions-field').hidden = $('bridge').value !== 'medallions';
+    BRIDGE_COUNTS.forEach((id) => {
+      const field = $(id + '_field');
+      field.hidden = field.dataset.bridge !== $('bridge').value;
+      $(id + '_value').textContent = $(id).value;
+    });
     $('trials-field').hidden = $('trials_random').checked;
-    $('bridge_medallions_value').textContent = $('bridge_medallions').value;
     $('trials_value').textContent = $('trials').value;
   }
-  ['bridge', 'bridge_medallions', 'trials', 'trials_random'].forEach((id) => {
+  ['bridge', ...BRIDGE_COUNTS, 'trials', 'trials_random'].forEach((id) => {
     $(id).addEventListener('input', syncBridgeTrials);
     $(id).addEventListener('change', syncBridgeTrials);
   });
