@@ -2,11 +2,11 @@ import os
 import struct
 import unittest
 
-from randomizer.formats.bfevfl import (ACTION, SUBFLOW, BfevflError, EventFlow, grow_events,
-                                       relocation_table)
+from randomizer.formats.bfevfl import (ACTION, SUBFLOW, SWITCH, BfevflError, EventFlow,
+                                       grow_events, patch_pointers, relocation_table)
 from randomizer.formats.evfl_append import (SYSTEM_ACTOR_PARAMS, ActionSpec, SubflowSpec,
-                                            add_actions, append_events, build_dic,
-                                            set_entry_subflows)
+                                            SwitchSpec, add_actions, add_queries,
+                                            append_events, build_dic, set_entry_subflows)
 from randomizer.formats.zs import ZsCodec
 from randomizer.nup import NupArchive
 
@@ -84,6 +84,8 @@ CHALLENGE_ACTION = ('ChallengeSystemActor', 'EventExecuteProgressChallengeStep')
 STEP = ActionSpec(*CHALLENGE_ACTION, {
     'ChallengeName': 'Goto_HyruleCastle', 'IsIgnoreCompletedChallenge': False,
     'IsIgnoreChallengeProgressUI': True, 'IsWaitEnd': True, 'StepName': 'Step04'})
+POUCH_QUERY = ('PouchSystemActor', 'EventQueryIsExistInPouch')
+HAS_MEDAL = SwitchSpec(*POUCH_QUERY, {'Actor': 'Item_Medal_Forest', 'Num': 1})
 
 
 def _valid(test, data):
@@ -249,6 +251,41 @@ class AppendEventsTest(unittest.TestCase):
         ev = new.events[idx[0]]
         self.assertEqual((ev.actor, ev.action), CHALLENGE_ACTION)
         self.assertEqual(new.action_params(idx[0]), STEP.params)
+
+    def test_add_queries_new_actor(self):
+        out = add_queries(self.data, [POUCH_QUERY])
+        new = _valid(self, out)
+        self._check_original(new)
+        self.assertEqual(new.actors[-1], ('PouchSystemActor', [], ['EventQueryIsExistInPouch']))
+        n, acts, qs = self._header_counts(self.flow)
+        self.assertEqual(self._header_counts(new), [n + 1, acts, qs + 1])
+        a = new._u64(new._flowchart + 0x28) + 0x38 * (len(new.actors) - 1)
+        self.assertIn(a + 0x20, relocation_table(out)[2])
+
+    def test_add_actions_then_queries_same_new_actor(self):
+        out = add_queries(add_actions(self.data, [('PouchSystemActor', 'EventWait')]),
+                          [POUCH_QUERY])
+        new = _valid(self, out)
+        self.assertEqual(new.actors[-1], ('PouchSystemActor', ['EventWait'],
+                                          ['EventQueryIsExistInPouch']))
+
+    def test_append_switch(self):
+        out = add_queries(self.data, [POUCH_QUERY])
+        out, idx = append_events(out, [HAS_MEDAL, FLAG])
+        new = _valid(self, out)
+        self._check_original(new)
+        sw = new.events[idx[0]]
+        self.assertEqual((sw.kind, sw.actor, sw.query, sw.cases),
+                         (SWITCH, 'PouchSystemActor', 'EventQueryIsExistInPouch',
+                          [0xFFFF, 0xFFFF]))
+        self.assertEqual(new.action_params(idx[0]), HAS_MEDAL.params)
+        cases_p = new._u64(new._events_p + 0x30 * idx[0] + 0x18)
+        self.assertEqual([struct.unpack_from('<I', out, cases_p + 8 * k)[0] for k in range(2)],
+                         [0, 1])
+        self.assertIn(new._events_p + 0x30 * idx[0] + 0x18, relocation_table(out)[2])
+        # the cases can be linked like any other slot
+        linked = patch_pointers(out, {new.link_slots[('case', idx[0], 0)]: idx[1]})
+        self.assertEqual(EventFlow(linked).events[idx[0]].cases, [idx[1], 0xFFFF])
 
     def test_set_entry_subflows_unknown_entry_raises(self):
         with self.assertRaises(BfevflError):

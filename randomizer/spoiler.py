@@ -1,6 +1,7 @@
 """Spoiler log: JSON and text."""
 from . import RANDO_VERSION
 from .fill import BATCH_3A_SWITCHES, TOKEN, filler_sites
+from .ganon import active_trials
 from .items import DUNGEON_ITEM_PREFIXES, FAMILIES, KEY_ITEMS, LABELS
 from .songs import SONG_BY_ACTOR
 
@@ -120,6 +121,11 @@ def build(settings, placement, chests, loc_map, game_version,
         result['settings']['tokensanity'] = settings.tokensanity
         result['skulltulas'] = _skulltula_rows(placement, skulltulas, gs_map or {})
     result['settings']['shuffle_dungeon_rewards'] = settings.shuffle_dungeon_rewards
+    result['settings']['bridge'] = settings.bridge
+    if settings.bridge == 'medallions':
+        result['settings']['bridge_medallions'] = settings.bridge_medallions
+    result['settings']['trials'] = 'random' if settings.trials_random else settings.trials
+    result['ganon_trials'] = list(active_trials(settings))
     for name in BATCH_3A_SWITCHES:  # NPC gifts batch 3a: only when on
         if getattr(settings, name):
             result['settings'][name] = True
@@ -175,6 +181,13 @@ def to_text(d: dict) -> str:
         lines.append('  Shuffle Dungeon Rewards: '
                      + {'reward': 'Dungeon Reward Locations', 'vanilla': 'Vanilla'}.get(
                          s['shuffle_dungeon_rewards'], s['shuffle_dungeon_rewards']))
+    if 'bridge' in s:
+        bridge = ('Vanilla' if s['bridge'] == 'vanilla'
+                  else f'Medallions ({s.get("bridge_medallions")})')
+        lines.append(f'  Rainbow Bridge Requirement: {bridge}')
+    if 'trials' in s:
+        trials = 'Random' if s['trials'] == 'random' else s['trials']
+        lines.append(f"  Ganon's Trials Count: {trials}")
     lines += ['', 'Randomizer version', f'  {d["randomizer_version"]}', '',
              'Game version', f'  {d["game_version"]}', '', 'Key items']
     for k in d['key_items']:
@@ -202,6 +215,9 @@ def to_text(d: dict) -> str:
     if 'npc_gifts' in d:
         lines += ['', 'NPC Gifts']
         lines += [f'  {r["location"]}: {r["label"]}' for r in d['npc_gifts']]
+    if 'ganon_trials' in d:
+        lines += ['', "Ganon's Trials"]
+        lines += [f'  {t}' for t in d['ganon_trials']] or ['  none']
     if 'skulltulas' in d:
         lines += ['', 'Skulltulas']
         for r in d['skulltulas']:

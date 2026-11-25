@@ -13,7 +13,8 @@ import zipfile
 from pathlib import Path
 
 from . import locations
-from .fill import BATCH_3A_SWITCHES, MODES, SHUFFLE_DUNGEON_REWARDS, TOKENSANITY, Settings
+from .fill import (BATCH_3A_SWITCHES, BRIDGES, MAX_MEDALLIONS, MAX_TRIALS, MODES,
+                   SHUFFLE_DUNGEON_REWARDS, TOKENSANITY, Settings)
 from .songs import SHUFFLE_SONGS
 from .generate import GenerationError, generate
 from .items import KEY_ITEM_HOME, KEY_ITEMS, LABELS, NON_EXCLUDABLE
@@ -71,7 +72,7 @@ def parse_settings(options: dict) -> Settings:
             or any(not isinstance(x, str) or x not in KEY_ITEMS for x in excluded)):
         raise ValueError('Invalid excluded items list.')
     flags = {}
-    for key, default in (('spoiler', True), ('skip_cutscenes', False),
+    for key, default in (('spoiler', True), ('skip_cutscenes', False), ('trials_random', False),
                          *((name, False) for name in BATCH_3A_SWITCHES)):
         flags[key] = options.get(key, default)
         if not isinstance(flags[key], bool):
@@ -85,6 +86,12 @@ def parse_settings(options: dict) -> Settings:
     rewards = options.get('shuffle_dungeon_rewards', 'reward')
     if not isinstance(rewards, str) or rewards not in SHUFFLE_DUNGEON_REWARDS:
         raise ValueError('Invalid Shuffle Dungeon Rewards value.')
+    bridge = options.get('bridge', 'vanilla')
+    if not isinstance(bridge, str) or bridge not in BRIDGES:
+        raise ValueError('Invalid Rainbow Bridge Requirement.')
+    medallions = _count(options, 'bridge_medallions', MAX_MEDALLIONS,
+                        'Medallions Required for Bridge')
+    trials = _count(options, 'trials', MAX_TRIALS, "Ganon's Trials Count")
     bad = [x for x in excluded if x in NON_EXCLUDABLE]
     if bad:
         raise ValueError(f'Cannot exclude {LABELS.get(bad[0], bad[0])}: the logic '
@@ -95,8 +102,18 @@ def parse_settings(options: dict) -> Settings:
     return Settings(seed=seed.strip(), key_items_mode=mode, excluded_items=effective,
                     spoiler=flags['spoiler'], skip_cutscenes=flags['skip_cutscenes'],
                     tokensanity=tokensanity, shuffle_songs=shuffle_songs,
-                    shuffle_dungeon_rewards=rewards,
+                    shuffle_dungeon_rewards=rewards, bridge=bridge,
+                    bridge_medallions=medallions, trials=trials,
+                    trials_random=flags['trials_random'],
                     **{name: flags[name] for name in BATCH_3A_SWITCHES})
+
+
+def _count(options: dict, key: str, top: int, label: str) -> int:
+    """`options[key]` (default `top`) as an int from 0 to `top`; ValueError otherwise."""
+    value = options.get(key, top)
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= top:
+        raise ValueError(f'{label} must be a whole number from 0 to {top}.')
+    return value
 
 
 def generate_zip(nup_path: str, options: dict, out_dir: str | None = None) -> dict:

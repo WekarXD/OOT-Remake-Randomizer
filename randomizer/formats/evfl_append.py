@@ -101,6 +101,16 @@ class SubflowSpec:
     params: dict[str, ParamValue] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class SwitchSpec:
+    """A boolean query of an actor already in the flow (its query must be in the actor's
+    list): case 0 is taken when the query holds, case 1 when it does not (as in the game).
+    Both cases start at the end of the flow."""
+    actor: str
+    query: str
+    params: dict[str, ParamValue] = field(default_factory=dict)
+
+
 # The parameters every system actor (GameDataActor, ChallengeSystemActor, ...) has
 # in the game's flows, in their order.
 SYSTEM_ACTOR_PARAMS: dict[str, ParamValue] = {
@@ -182,16 +192,24 @@ class _Writer:
         raise BfevflError(f'Unsupported parameter value: {value!r}')
 
 
-def _action_indices(flow: EventFlow, spec: ActionSpec) -> tuple[int, int]:
-    for a, (name, actions, _) in enumerate(flow.actors):
+def _action_indices(flow: EventFlow, spec: ActionSpec | SwitchSpec) -> tuple[int, int]:
+    """(actor, action or query) indices of `spec`."""
+    is_query = isinstance(spec, SwitchSpec)
+    member = spec.query if is_query else spec.action
+    for a, (name, actions, queries) in enumerate(flow.actors):
         if name == spec.actor:
-            if spec.action not in actions:
-                raise BfevflError(f'Actor {spec.actor!r} has no action {spec.action!r}.')
-            return a, actions.index(spec.action)
+            names = queries if is_query else actions
+            if member not in names:
+                kind = 'query' if is_query else 'action'
+                raise BfevflError(f'Actor {spec.actor!r} has no {kind} {member!r}.')
+            return a, names.index(member)
     raise BfevflError(f'The flow has no actor {spec.actor!r}.')
 
 
-def append_events(data: bytes, specs: Sequence[ActionSpec | SubflowSpec]) -> tuple[bytes, list[int]]:
+Spec = ActionSpec | SubflowSpec | SwitchSpec
+
+
+def append_events(data: bytes, specs: Sequence[Spec]) -> tuple[bytes, list[int]]:
     """The file with one new event per spec (indices n, n+1, ...), each with its own
     parameter container. New events end the flow (`next` = 0xFFFF); link them with
     `bfevfl.patch_pointers`. The event array is grown like `grow_events` does; the
@@ -200,7 +218,8 @@ def append_events(data: bytes, specs: Sequence[ActionSpec | SubflowSpec]) -> tup
     flow = EventFlow(data)
     if flow._flowchart is None:
         raise BfevflError('The file has no flowchart.')
-    indices = [_action_indices(flow, s) if isinstance(s, ActionSpec) else None for s in specs]
+    indices = [None if isinstance(s, SubflowSpec) else _action_indices(flow, s)
+               for s in specs]
     template = next((i for i, e in enumerate(flow.events)
                      if e.kind == bfevfl.ACTION and i in flow._params), None)
     if template is None:
@@ -221,6 +240,13 @@ def append_events(data: bytes, specs: Sequence[ActionSpec | SubflowSpec]) -> tup
         if isinstance(spec, ActionSpec):
             actor, action = indices[j]
             struct.pack_into('<BBHHH', out, slot + 8, bfevfl.ACTION, 0, bfevfl.END, actor, action)
+        elif isinstance(spec, SwitchSpec):
+            actor, query = indices[j]
+            struct.pack_into('<BBHHH', out, slot + 8, bfevfl.SWITCH, 0, 2, actor, query)
+            _align(out, 8)
+            cases = len(out)
+            out += struct.pack('<IHHIHH', 0, bfevfl.END, 0, 1, bfevfl.END, 0)
+            w.pointer(slot + 0x18, cases)
         else:
             struct.pack_into('<BBHHH', out, slot + 8, bfevfl.SUBFLOW, 0, bfevfl.END, 0, 0)
             w.pointer(slot + 0x18, w.string(spec.flow))
@@ -279,13 +305,26 @@ def add_actions(data: bytes, pairs: Sequence[tuple[str, str]]) -> bytes:
     added to the first actor with that name, and an actor that is missing is added
     as a system actor (`SYSTEM_ACTOR_PARAMS`, no queries). Existing actor and event
     indices do not change; the file is returned unchanged if nothing is missing."""
+    return _add_members(data, pairs, queries=False)
+
+
+def add_queries(data: bytes, pairs: Sequence[tuple[str, str]]) -> bytes:
+    """`add_actions` for queries: each (actor, query) becomes available to `SwitchSpec`."""
+    return _add_members(data, pairs, queries=True)
+
+
+def _add_members(data: bytes, pairs: Sequence[tuple[str, str]], queries: bool) -> bytes:
+    # Actor slot: the actions array at +0x18 and count at +0x30, the queries' at +0x20
+    # and +0x32; the flowchart's totals at +0x12 (actions) and +0x14 (queries).
+    kind = 2 if queries else 1
+    arr_at, count_at, total_at = (0x20, 0x32, 0x14) if queries else (0x18, 0x30, 0x12)
     flow = EventFlow(data)
     if flow._flowchart is None:
         raise BfevflError('The file has no flowchart.')
     names = [name for name, _, _ in flow.actors]
     need: dict[str, list[str]] = {}
     for actor, action in pairs:
-        if actor in names and action in flow.actors[names.index(actor)][1]:
+        if actor in names and action in flow.actors[names.index(actor)][kind]:
             continue
         need.setdefault(actor, [])
         if action not in need[actor]:
@@ -312,14 +351,14 @@ def add_actions(data: bytes, pairs: Sequence[tuple[str, str]]) -> bytes:
     for actor, actions in need.items():
         i = names.index(actor) if actor in names else n + added.index(actor)
         a = actors_p + _ACTOR * i
-        old = flow.actors[i][1] if actor in names else []
+        old = flow.actors[i][kind] if actor in names else []
         if actor not in names:
             w.pointer(a, w.string(actor))
             w.pointer(a + 0x08, w.string(''))
             w.pointer(a + 0x10, w.string(''))
             w.pointer(a + 0x28, w.container(SYSTEM_ACTOR_PARAMS))
             struct.pack_into('<HHHBB', out, a + 0x30, 0, 0, 0xFFFF, 1, 0)
-        old_arr = struct.unpack_from('<Q', out, a + 0x18)[0]
+        old_arr = struct.unpack_from('<Q', out, a + arr_at)[0]
         _align(out, 8)
         arr = len(out)
         out += bytes(8 * (len(old) + len(actions)))
@@ -327,8 +366,8 @@ def add_actions(data: bytes, pairs: Sequence[tuple[str, str]]) -> bytes:
             w.pointer(arr + 8 * j, struct.unpack_from('<Q', out, old_arr + 8 * j)[0])
         for j, action in enumerate(actions):
             w.pointer(arr + 8 * (len(old) + j), w.string(action))
-        w.pointer(a + 0x18, arr)
-        struct.pack_into('<H', out, a + 0x30, len(old) + len(actions))
-    total = flow._u16(fl + 0x12) + sum(len(v) for v in need.values())
-    struct.pack_into('<H', out, fl + 0x12, total)
+        w.pointer(a + arr_at, arr)
+        struct.pack_into('<H', out, a + count_at, len(old) + len(actions))
+    total = flow._u16(fl + total_at) + sum(len(v) for v in need.values())
+    struct.pack_into('<H', out, fl + total_at, total)
     return _finish(out, pointers)

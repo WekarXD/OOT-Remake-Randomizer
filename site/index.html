@@ -182,6 +182,47 @@
 
         <div class="field">
           <div class="field-head">
+            <label for="bridge">Rainbow Bridge Requirement <span class="badge">untested</span></label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-bridge" aria-label="About Rainbow Bridge Requirement">ⓘ</button>
+          </div>
+          <select id="bridge">
+            <option value="vanilla" selected>Vanilla</option>
+            <option value="medallions">Medallions</option>
+          </select>
+          <div class="tip-text" id="tip-bridge">
+            <p>What makes the rainbow bridge to Ganon's Castle appear.</p>
+            <p>'Vanilla': as in the remake, after Zelda gives you the Light Arrows (Shadow and Spirit Temples beaten).</p>
+            <p>'Medallions': as soon as you own the number of medallions chosen below, wherever they came from.</p>
+          </div>
+        </div>
+        <div class="field" id="bridge-medallions-field" hidden>
+          <div class="field-head">
+            <label for="bridge_medallions">Medallions Required for Bridge:</label>
+            <output class="range-value" id="bridge_medallions_value" for="bridge_medallions">6</output>
+          </div>
+          <input type="range" id="bridge_medallions" min="0" max="6" step="1" value="6">
+        </div>
+
+        <div class="field">
+          <div class="field-head">
+            <label class="switch"><input type="checkbox" id="trials_random"><span class="slider" aria-hidden="true"></span> Random Number of Ganon's Trials <span class="badge">untested</span></label>
+            <button type="button" class="tip" aria-expanded="false" aria-controls="tip-trials" aria-label="About Ganon's Trials">ⓘ</button>
+          </div>
+          <div class="tip-text" id="tip-trials">
+            <p>How many of the six trials inside Ganon's Castle you must clear to dispel the barrier. Which ones is random; the skipped ones are already cleared when you cross the bridge.</p>
+            <p>With 'Random Number' on, the count is random too (0 to 6). The spoiler log lists the trials to clear.</p>
+          </div>
+        </div>
+        <div class="field" id="trials-field">
+          <div class="field-head">
+            <label for="trials">Ganon's Trials Count:</label>
+            <output class="range-value" id="trials_value" for="trials">6</output>
+          </div>
+          <input type="range" id="trials" min="0" max="6" step="1" value="6">
+        </div>
+
+        <div class="field">
+          <div class="field-head">
             <label class="switch"><input type="checkbox" id="shuffle_ocarinas"><span class="slider" aria-hidden="true"></span> Shuffle Ocarinas</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-ocarinas" aria-label="About Shuffle Ocarinas">ⓘ</button>
           </div>

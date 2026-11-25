@@ -142,6 +142,10 @@
       tokensanity: $('tokensanity').value,
       shuffle_songs: $('shuffle_songs').value,
       shuffle_dungeon_rewards: $('shuffle_dungeon_rewards').value,
+      bridge: $('bridge').value,
+      bridge_medallions: Number($('bridge_medallions').value),
+      trials: Number($('trials').value),
+      trials_random: $('trials_random').checked,
       ...Object.fromEntries(Presets.SWITCHES.map((id) => [id, $(id).checked])),
     };
   }
@@ -156,12 +160,33 @@
     $('tokensanity').value = o.tokensanity;
     $('shuffle_songs').value = o.shuffle_songs;
     if (o.shuffle_dungeon_rewards) $('shuffle_dungeon_rewards').value = o.shuffle_dungeon_rewards;
+    writeBridgeTrials(o);
     Presets.SWITCHES.forEach((id) => { $(id).checked = o[id] === true; });
     if (!itemsRendered) pendingExcluded = o.excluded_items.slice();
     $('items').querySelectorAll('input:not(:disabled)').forEach((c) => {
       c.checked = o.excluded_items.includes(c.value);
     });
   }
+
+  // Rainbow Bridge and Ganon's Trials: the count fields show only when they apply.
+  const isCount = (v) => Number.isInteger(v) && v >= 0 && v <= 6;
+  function writeBridgeTrials(o) {
+    if (o.bridge === 'vanilla' || o.bridge === 'medallions') $('bridge').value = o.bridge;
+    if (isCount(o.bridge_medallions)) $('bridge_medallions').value = String(o.bridge_medallions);
+    if (isCount(o.trials)) $('trials').value = String(o.trials);
+    if (typeof o.trials_random === 'boolean') $('trials_random').checked = o.trials_random;
+    syncBridgeTrials();
+  }
+  function syncBridgeTrials() {
+    $('bridge-medallions-field').hidden = $('bridge').value !== 'medallions';
+    $('trials-field').hidden = $('trials_random').checked;
+    $('bridge_medallions_value').textContent = $('bridge_medallions').value;
+    $('trials_value').textContent = $('trials').value;
+  }
+  ['bridge', 'bridge_medallions', 'trials', 'trials_random'].forEach((id) => {
+    $(id).addEventListener('input', syncBridgeTrials);
+    $(id).addEventListener('change', syncBridgeTrials);
+  });
 
   // The preset is derived from the current options, never stored.
   function syncPreset() {
@@ -202,6 +227,7 @@
   if (saved.shuffle_dungeon_rewards === 'reward' || saved.shuffle_dungeon_rewards === 'vanilla') {
     $('shuffle_dungeon_rewards').value = saved.shuffle_dungeon_rewards;
   }
+  writeBridgeTrials(saved);
   syncPreset();
 
   let worker;

@@ -32,6 +32,20 @@ class BymlTests(unittest.TestCase):
         self.assertIs(type(r['Actors'][1]['u']), U32)
         self.assertIs(type(r['Actors'][1]['f']), F32)
 
+    def test_byml_big_endian_roundtrip(self):
+        x = {'Data': {'BoolExp': [
+            {'Hash': U32(3949112793), 'SaveFileIndex': -1,
+             'Values': [[U64(12), U64(1953449920)], [U64(3)]]}]},
+            's': 'text', 'f': F32(-2.5), 'b': False}
+        data = byml.dump(x, big_endian=True)
+        self.assertEqual(data[:2], b'BY')
+        self.assertEqual(struct.unpack_from('>H', data, 2)[0], 7)
+        r = byml.load(data)[1]
+        self.assertEqual(r, x)
+        self.assertIs(type(r['Data']['BoolExp'][0]['Values'][0][1]), U64)
+        # the default stays little-endian
+        self.assertEqual(byml.dump(x)[:2], b'YB')
+
     def test_byml_shared_nodes_not_aliased(self):
         dyn = {'Drop__DropActor': 'TBox_Rupee_Blue'}
         x = {'Actors': [{'Dynamic': dict(dyn)}, {'Dynamic': dict(dyn)}]}

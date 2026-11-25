@@ -27,7 +27,7 @@ from randomizer.fairies import FOUNTAIN_FORBIDDEN, FOUNTAINS
 from randomizer.gifts import (FIXED_GIFTS, GIFT_BY_LOCATION, GIFT_FORBIDDEN, GIFTS,
                               REWARD_GIFTS, WorldGift, active_gifts)
 from randomizer.game import ChestActor, SkulltulaActor
-from randomizer.items import (DUNGEON_ITEM_PREFIXES, ITEM_LEVEL, KEY_ITEMS, LABELS,
+from randomizer.items import (DUNGEON_ITEM_PREFIXES, FAMILIES, ITEM_LEVEL, KEY_ITEMS, LABELS,
                               NON_EXCLUDABLE, UPGRADES)
 from randomizer.locations import GsEntry, LocationEntry
 from randomizer.logic.world import World
@@ -73,6 +73,10 @@ NO_KEY_TARGET_ZONES = frozenset({'WaterTemple', 'GerudoTrainingGround',
 # among the 9 reward scenes.
 SHUFFLE_DUNGEON_REWARDS = ('vanilla', 'reward')
 BATCH_3A_SWITCHES = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
+# OoTR's Rainbow Bridge Requirement values the remake has (design 2026-11-22-bridge-and-trials).
+BRIDGES = ('vanilla', 'medallions')
+MAX_MEDALLIONS = 6
+MAX_TRIALS = 6
 
 
 @dataclass(frozen=True)
@@ -89,6 +93,11 @@ class Settings:
     shuffle_gerudo_card: bool = False
     shuffle_expensive_merchants: bool = False
     shuffle_dungeon_rewards: str = 'reward'  # see SHUFFLE_DUNGEON_REWARDS (OoTR's default)
+    # Rainbow Bridge and Ganon's Trials (OoTR's names); the defaults are the remake's own.
+    bridge: str = 'vanilla'  # see BRIDGES
+    bridge_medallions: int = MAX_MEDALLIONS  # used with bridge == 'medallions'
+    trials: int = MAX_TRIALS  # ignored with trials_random
+    trials_random: bool = False
 
 
 class FillError(Exception):
@@ -151,6 +160,14 @@ def _settings_key(settings: Settings) -> str:
             del data[name]  # same
     if settings.shuffle_dungeon_rewards == 'reward':
         del data['shuffle_dungeon_rewards']  # the default
+    if settings.bridge == 'vanilla':
+        del data['bridge'], data['bridge_medallions']  # the default; the count does nothing
+    if settings.trials_random:
+        del data['trials']  # drawn from the seed
+    else:
+        del data['trials_random']
+        if settings.trials == MAX_TRIALS:
+            del data['trials']  # the default
     return json.dumps(data, sort_keys=True)
 
 
@@ -444,11 +461,23 @@ def _check_settings(settings: Settings) -> None:
     if settings.shuffle_dungeon_rewards not in SHUFFLE_DUNGEON_REWARDS:
         raise FillError('Unknown Shuffle Dungeon Rewards value: '
                         f'{settings.shuffle_dungeon_rewards!r}')
+    if settings.bridge not in BRIDGES:
+        raise FillError(f'Unknown Rainbow Bridge Requirement: {settings.bridge!r}')
+    if not _is_count(settings.bridge_medallions, MAX_MEDALLIONS):
+        raise FillError('Medallions Required for Bridge must be 0 to 6.')
+    if not _is_count(settings.trials, MAX_TRIALS):
+        raise FillError("Ganon's Trials Count must be 0 to 6.")
+    if not isinstance(settings.trials_random, bool):
+        raise FillError("Random Number of Ganon's Trials must be true or false.")
     bad = settings.excluded_items & NON_EXCLUDABLE
     if bad:
         label = ', '.join(LABELS.get(a, a) for a in sorted(bad))
         raise FillError(f'Cannot exclude {label}: the logic needs to move it '
                         'for the game to be beatable.')
+
+
+def _is_count(value, top: int) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= top
 
 
 def linked_exclusions(excluded: frozenset[str]) -> frozenset[str]:
@@ -540,6 +569,10 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     for h in eligible:
         if h in site_loc:
             base[site_loc[h]] = FILLER
+    # The rewards' shuffle depends on the settings alone, so the fill sees where they
+    # really are: a medallion bridge counts the medallion items (bridge-and-trials design).
+    reward_contents = _shuffle_rewards(settings, rewards)
+    base.update((loc, FAMILIES[actor]) for loc, actor in reward_contents.items())
     placed = _run(settings, world, original, eligible, moving, site_loc, base, no_key,
                   frozenset(gs), gs_forbidden, reward_sites=reward_sites,
                   world_forbidden=world_forbidden)
@@ -548,15 +581,15 @@ def place_all(chests: list[ChestActor], loc_map: dict[int, LocationEntry],
     hearts = {loc: placed.chests[h] for loc, h in HEART_SITE_IDS.items()} if dungeon else {}
     fairies = {loc: placed.chests[h] for loc, h in FOUNTAIN_SITE_IDS.items()}
     gifts = {loc: placed.chests[h] for loc, h in gift_ids.items()}
-    gifts.update(_shuffle_rewards(settings, rewards))
+    gifts.update(reward_contents)
     return Placement({h: d for h, d in placed.chests.items() if h >= 0}, songs, hearts,
                      fairies, gifts)
 
 
 def _shuffle_rewards(settings: Settings, locations: list[str]) -> dict[str, str]:
     """The dungeon rewards (OoTR's 'reward'): a shuffle among their own scenes. The logic
-    reads each reward as its boss's defeat, so where they land never changes what is
-    reachable."""
+    reads each reward as its boss's defeat; only a medallion bridge counts the items, so
+    `place_all` puts this shuffle in the fill's base."""
     contents = [GIFT_BY_LOCATION[loc].content for loc in locations]
     _rng(settings, -1).shuffle(contents)
     return dict(zip(locations, contents))

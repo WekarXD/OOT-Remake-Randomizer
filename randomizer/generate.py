@@ -27,6 +27,7 @@ from .fairies import FAIRY_REWARDS, fairy_flow_patches
 from .items import KEY_ITEMS
 from .gifts import GIFTS, gift_actor_swaps, gift_flow_patches, gift_subflow_list
 from .merchants import sold_out_patches
+from . import ganon
 from .formats.bfevfl import EventFlow
 from .analyzed_info import ANALYZED_INFO
 from .logic.world import World, load_vanilla_settings
@@ -96,6 +97,7 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                 # The logic keeps the vanilla Gerudo Card: its site holds only minor items.
                 world_settings['shuffle_ocarinas'] = settings.shuffle_ocarinas
                 world_settings['shuffle_expensive_merchants'] = settings.shuffle_expensive_merchants
+                world_settings.update(ganon.world_settings(settings))
                 skulltulas, gs_map, gs_forbidden = (), None, frozenset()
                 shuffled = settings.key_items_mode != 'vanilla'
                 # The world NPC gifts become wrappers: never what cannot be wrapped.
@@ -159,6 +161,12 @@ def generate(nup_path: str, out_dir: str, settings: Settings,
                                                            extras, sizes)
                     except (ValueError, BfevflError) as e:
                         raise GenerationError(f'Could not prepare the merchants: {e}') from e
+                try:
+                    extras, sizes = _with_flow_patches(
+                        game, lambda read: ganon.flow_patches(read, settings), extras, sizes)
+                except (ValueError, BfevflError) as e:
+                    raise GenerationError(
+                        f"Could not prepare the bridge or Ganon's Trials: {e}") from e
                 try:
                     swaps = ({h.hash: (h.banc, placed.hearts[h.location])
                               for h in game.boss_hearts()} if placed.hearts else {})

@@ -1,5 +1,5 @@
-"""Typed BYML v7 reader/writer for TotK-engine files. The writer is little-endian; the
-reader also takes big-endian files (`GameDataList`, `EventFlowFileEntry`).
+"""Typed BYML v7 reader/writer for TotK-engine files. The writer and the
+reader also handle big-endian files (`GameDataList`, `EventFlowFileEntry`).
 Scalars keep their exact BYML type via wrapper classes so a round trip is lossless.
 Writer lays nodes out post-order and dedups identical containers / 64-bit values.
 """
@@ -24,7 +24,7 @@ def _strtab(d, off, e='<', order='little'):
 def load(d):
     if d[:2] == b'YB':
         e, order = '<', 'little'
-    elif d[:2] == b'BY':  # big-endian (read only)
+    elif d[:2] == b'BY':  # big-endian
         e, order = '>', 'big'
     else:
         raise ValueError('Not a valid BYML file.')
@@ -75,19 +75,21 @@ def _type(v):
     if v is None: return 0xFF
     raise TypeError(type(v))
 
-def _strtab_bytes(lst):
+def _strtab_bytes(lst, e='<', order='little'):
     n = len(lst)
     start = 4 + 4 * (n + 1)
     offs, blob = [], bytearray()
     for s in lst:
         offs.append(start + len(blob)); blob += s.encode() + b'\0'
     offs.append(start + len(blob))
-    out = bytearray([0xC2]) + n.to_bytes(3, 'little')
-    out += b''.join(struct.pack('<I', o) for o in offs) + blob
+    out = bytearray([0xC2]) + n.to_bytes(3, order)
+    out += b''.join(struct.pack(e + 'I', o) for o in offs) + blob
     while len(out) % 4: out.append(0)
     return bytes(out)
 
-def dump(root, ver=7):
+def dump(root, ver=7, big_endian=False):
+    """BYML bytes of `root`; `big_endian` writes a 'BY' file (GameDataList)."""
+    e, order = ('>', 'big') if big_endian else ('<', 'little')
     keys, strs = set(), set()
     def collect(v):
         if isinstance(v, dict):
@@ -101,9 +103,9 @@ def dump(root, ver=7):
 
     out = bytearray(16)
     ko = len(out) if keys else 0
-    if keys: out += _strtab_bytes(keys)
+    if keys: out += _strtab_bytes(keys, e, order)
     so = len(out) if strs else 0
-    if strs: out += _strtab_bytes(strs)
+    if strs: out += _strtab_bytes(strs, e, order)
     cache = {}
 
     def put(blob, align=4):
@@ -118,13 +120,13 @@ def dump(root, ver=7):
         if t in (0xC0, 0xC1): return emit(v)
         if t == 0xA0: return sidx[v]
         if t == 0xD0: return int(v)
-        if t == 0xD1: return struct.unpack('<I', struct.pack('<i', v))[0]
-        if t == 0xD2: return struct.unpack('<I', struct.pack('<f', v))[0]
+        if t == 0xD1: return struct.unpack(e + 'I', struct.pack(e + 'i', v))[0]
+        if t == 0xD2: return struct.unpack(e + 'I', struct.pack(e + 'f', v))[0]
         if t == 0xD3: return int(v)
-        if t == 0xD4: return put(struct.pack('<q', v), 8)
-        if t == 0xD5: return put(struct.pack('<Q', v), 8)
-        if t == 0xD6: return put(struct.pack('<d', v), 8)
-        if t == 0xA1: return put(struct.pack('<I', len(v)) + bytes(v))
+        if t == 0xD4: return put(struct.pack(e + 'q', v), 8)
+        if t == 0xD5: return put(struct.pack(e + 'Q', v), 8)
+        if t == 0xD6: return put(struct.pack(e + 'd', v), 8)
+        if t == 0xA1: return put(struct.pack(e + 'I', len(v)) + bytes(v))
         if t == 0xFF: return 0
         raise TypeError(t)
 
@@ -132,17 +134,17 @@ def dump(root, ver=7):
         if isinstance(v, list):
             n = len(v)
             vals = [inline(x) for x in v]
-            body = bytes([0xC0]) + n.to_bytes(3, 'little') + bytes(_type(x) for x in v)
+            body = bytes([0xC0]) + n.to_bytes(3, order) + bytes(_type(x) for x in v)
             body += b'\0' * (((n + 3) & ~3) - n)
-            body += b''.join(struct.pack('<I', x) for x in vals)
+            body += b''.join(struct.pack(e + 'I', x) for x in vals)
             return put(body)
         items = sorted(v.items(), key=lambda kv: kidx[kv[0]])
         ents = [(kidx[k], _type(x), inline(x)) for k, x in items]
-        body = bytes([0xC1]) + len(ents).to_bytes(3, 'little')
-        body += b''.join(k.to_bytes(3, 'little') + bytes([t]) + struct.pack('<I', x) for k, t, x in ents)
+        body = bytes([0xC1]) + len(ents).to_bytes(3, order)
+        body += b''.join(k.to_bytes(3, order) + bytes([t]) + struct.pack(e + 'I', x) for k, t, x in ents)
         return put(body)
 
     ro = emit(root) if root is not None else 0
-    struct.pack_into('<2sHIII', out, 0, b'YB', ver, ko, so, ro)
+    struct.pack_into(e + '2sHIII', out, 0, b'BY' if big_endian else b'YB', ver, ko, so, ro)
     while len(out) % 4: out.append(0)
     return bytes(out)

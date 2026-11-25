@@ -58,6 +58,20 @@ class SettingsTest(unittest.TestCase):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 browser.parse_settings({'shuffle_dungeon_rewards': bad})
 
+    def test_bridge_and_trials(self):
+        d = browser.parse_settings({})
+        self.assertEqual((d.bridge, d.bridge_medallions, d.trials, d.trials_random),
+                         ('vanilla', 6, 6, False))
+        s = browser.parse_settings({'bridge': 'medallions', 'bridge_medallions': 3,
+                                    'trials': 0, 'trials_random': True})
+        self.assertEqual((s.bridge, s.bridge_medallions, s.trials, s.trials_random),
+                         ('medallions', 3, 0, True))
+        for bad in ({'bridge': 'stones'}, {'bridge': 1}, {'bridge_medallions': 7},
+                    {'bridge_medallions': '3'}, {'bridge_medallions': True},
+                    {'trials': -1}, {'trials': 2.0}, {'trials_random': 'yes'}):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                browser.parse_settings(bad)
+
     def test_batch_3a_switches(self):
         names = ('shuffle_ocarinas', 'shuffle_gerudo_card', 'shuffle_expensive_merchants')
         for name in names:
