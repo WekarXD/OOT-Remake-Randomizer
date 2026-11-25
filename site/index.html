@@ -175,19 +175,19 @@
           </select>
           <div class="tip-text" id="tip-rewards">
             <p>This shuffles the Spiritual Stones and the Medallions.</p>
-            <p>'Dungeon Reward Locations': they are shuffled among the places that normally give one (the bosses and Rauru). The Door of Time and the bridge still open when you beat the bosses, as in the remake.</p>
+            <p>'Dungeon Reward Locations': they are shuffled among the places that normally give one (the bosses and Rauru). The Door of Time still opens when you beat the bosses, as in the remake; the bridge follows the Rainbow Bridge Requirement below.</p>
             <p>'Vanilla': each boss gives its usual reward.</p>
           </div>
         </div>
 
         <div class="field">
           <div class="field-head">
-            <label for="bridge">Rainbow Bridge Requirement <span class="badge">untested</span></label>
+            <label for="bridge">Rainbow Bridge Requirement</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-bridge" aria-label="About Rainbow Bridge Requirement">ⓘ</button>
           </div>
           <select id="bridge">
-            <option value="vanilla" selected>Vanilla</option>
-            <option value="medallions">Medallions</option>
+            <option value="vanilla">Vanilla</option>
+            <option value="medallions" selected>Medallions</option>
           </select>
           <div class="tip-text" id="tip-bridge">
             <p>What makes the rainbow bridge to Ganon's Castle appear.</p>
@@ -195,7 +195,7 @@
             <p>'Medallions': as soon as you own the number of medallions chosen below, wherever they came from.</p>
           </div>
         </div>
-        <div class="field" id="bridge-medallions-field" hidden>
+        <div class="field" id="bridge-medallions-field">
           <div class="field-head">
             <label for="bridge_medallions">Medallions Required for Bridge:</label>
             <output class="range-value" id="bridge_medallions_value" for="bridge_medallions">6</output>
@@ -205,7 +205,7 @@
 
         <div class="field">
           <div class="field-head">
-            <label class="switch"><input type="checkbox" id="trials_random"><span class="slider" aria-hidden="true"></span> Random Number of Ganon's Trials <span class="badge">untested</span></label>
+            <label class="switch"><input type="checkbox" id="trials_random"><span class="slider" aria-hidden="true"></span> Random Number of Ganon's Trials</label>
             <button type="button" class="tip" aria-expanded="false" aria-controls="tip-trials" aria-label="About Ganon's Trials">ⓘ</button>
           </div>
           <div class="tip-text" id="tip-trials">
